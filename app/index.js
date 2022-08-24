@@ -20,6 +20,7 @@ class App {
         //     useCreateIndex: true
         // });
     }
+
     setConfig() {
         require('dotenv').config();
 
@@ -35,7 +36,7 @@ class App {
 
     routes() {
         let route = require('./routes/route');
-        app.use('api/', route);
+        app.use('/api', route);
     }
 
     serveServer() {
