@@ -13,12 +13,12 @@ class App {
     }
 
     async connectTODB() {
-        // await mongoose.connect('mongodb://localhost/cvmanager', {
-        //     useNewUrlParser: true,
-        //     useUnifiedTopology: true,
-        //     useFindAndModify: false,
-        //     useCreateIndex: true
-        // });
+        await mongoose.connect('mongodb://localhost/cvmanager', {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        });
+
+        
     }
 
     setConfig() {
