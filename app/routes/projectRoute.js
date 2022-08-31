@@ -1,11 +1,11 @@
 const router = require('express').Router()
 const Project = require('../model/Project')
 
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
     let newProject = Project(req.body)
     try {
         let resObj = {
-            status: newProject.save(),
+            status: await newProject.save(),
             msg: "Succussfully Created",
             errors: [],
             data: newProject
