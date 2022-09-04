@@ -8,8 +8,7 @@
  * @desc    Send any success response
  *
  * @param   {string} message
- * @param   {object | array} results
- * @param   {number} statusCode
+ * @param   {array} data
  */
 exports.success = (message, data) => {
     return {
@@ -24,7 +23,7 @@ exports.success = (message, data) => {
  * @desc    Send any error response
  *
  * @param   {string} message
- * @param   {number} statusCode
+ * @param   {array} errors
  */
 exports.error = (message, errors) => {
     return {
