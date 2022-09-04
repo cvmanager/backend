@@ -1,25 +1,20 @@
 const controller = require('./controller');
 const Project = require('../../model/Project')
+const { validationResult } = require('express-validator');
+const { success, error } = require('../../helper/responseApi')
 
 class projectController extends controller {
 
-    async get(req,res) {
+    async get(req, res) {
         const { page = 1, size = 1 } = req.query
 
         try {
             let allProjects = await Project
                 .find()
                 .limit(size)
-                .skip(size * (page - 1))
+                .skip(size * (page - 1));
+            return res.status(200).json(success("Succussfully Founded!", allProjects))
 
-            let resObj = {
-                status: true,
-                msg: "Succussfully Founded!",
-                errors: [],
-                data: allProjects
-            }
-
-            return res.status(200).json(resObj)
         } catch (err) {
             let resObj = {
                 status: false,
@@ -32,51 +27,38 @@ class projectController extends controller {
         }
     }
 
-    async create(req,res){
+    async create(req, res) {
+        const validationErrors = validationResult(req);
+        if (!validationErrors.isEmpty()) {
+            let errors = [];
+            validationErrors.errors.forEach(errr => {
+                errors.push(errr.msg)
+            });
+
+            return res.status(422).json(error("validation Error", errors))
+        }
+
+
         let newProject = Project(req.body)
         try {
-            let resObj = {
-                status: await newProject.save(),
-                msg: "Succussfully Created",
-                errors: [],
-                data: newProject
-            }
-            res.status(200).json(resObj)
+            await newProject.save();
+            res.status(200).json(success("Succussfully Created", newProject))
         } catch (err) {
-            let resObj = {
-                status: false,
-                msg: "Failed",
-                errors: [err],
-                data: {}
-            }
-            res.status(500).json(resObj)
+            res.status(500).json(error("Server Error", [err]))
         }
     }
 
-    async find(req,res){
+    async find(req, res) {
         let projectId = req.params.projectId
 
         try {
-            let project = await Project
-                .findById(projectId)
-                
-            let resObj = {
-                status: true,
-                msg: "Succussfully Founded!",
-                errors: [],
-                data: project
+            let project = await Project.findById(projectId);
+            if (project) {
+                return res.status(200).json(success("Succussfully Founded!", project))
             }
-    
-            return res.status(200).json(resObj)
+            return res.status(404).json(error("Project Not Found!", []))
         } catch (err) {
-            let resObj = {
-                status: false,
-                msg: "Failed",
-                errors: [err],
-                data: {}
-            }
-    
-            return res.status(500).json(resObj)
+            return res.status(500).json(error("Server Error", [err]))
         }
     }
 }
