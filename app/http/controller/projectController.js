@@ -31,6 +31,21 @@ class projectController extends controller {
         }
     }
 
+    async update(req, res) {
+        let projectId = req.params.projectId
+        try {
+            let project = await Project.findById(projectId);
+            if (!project) {
+                throw new NotFoundError('Project Not Found');
+            }
+            await Project.updateOne({id:projectId},{ name: req.body.name}, { description: req.body.description });
+            // await Project.findOneAndUpdate({id:projectId},{ name: req.body.name}, { description: req.body.description })
+            return res.status(200).json(success("Succussfully Founded!", project))
+        } catch (err) {
+            next(err);
+        }
+    }
+
     async find(req, res, next) {
         let projectId = req.params.projectId
         try {
