@@ -2,7 +2,7 @@ const path = require('path');
 const express = require('express');
 const mongoose = require('mongoose');
 const session = require('express-session');
-
+const errorHandler = require('./middleware/ErorHandler');
 const app = express();
 class App {
     constructor() {
@@ -37,6 +37,7 @@ class App {
     routes() {
         let route = require('./routes/route');
         app.use('/api', route);
+        app.use(errorHandler);
     }
 
     serveServer() {
