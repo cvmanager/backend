@@ -1,7 +1,7 @@
 const router = require('express').Router();
 
 let userRouting = require('./userRoute');
-let projectRouting = require('./projectRoute');
+let projectRouting = require('./project-route');
 
 
 router.use('/user', userRouting);

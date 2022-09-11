@@ -1,6 +1,6 @@
 const router = require('express').Router()
-const ProjectController = require('../http/controller/projectController');
-const projectValidation = require('../validators/projectValidation')
+const ProjectController = require('../http/controller/project-controller');
+const projectValidation = require('../validators/project-validation')
 
 router.post('/', projectValidation.project_create_check, ProjectController.create);
 router.patch('/:projectId', projectValidation.project_update_check, ProjectController.update);

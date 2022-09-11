@@ -3,7 +3,7 @@ const Project = require('../../model/Project')
 const { validationResult } = require('express-validator');
 const { success, error } = require('../../helper/responseApi')
 const NotFoundError = require('../../middleware/NotFoundError')
-class projectController extends controller {
+class ProjectController extends controller {
 
     async get(req, res, next) {
         const { page = 1, size = 1 } = req.query
@@ -70,4 +70,4 @@ class projectController extends controller {
     }
 }
 
-module.exports = new projectController;
+module.exports = new ProjectController;
