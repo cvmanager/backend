@@ -6,8 +6,8 @@ const NotFoundError = require('../../middleware/NotFoundError')
 class ProjectController extends controller {
 
     async get(req, res, next) {
-        const { page = 1, size = 1 } = req.query
         try {
+            const { page = 1, size = 1 } = req.query
             let allProjects = await Project
                 .find()
                 .limit(size)
@@ -29,8 +29,8 @@ class ProjectController extends controller {
     }
 
     async update(req, res, next) {
-        let projectId = req.params.projectId
         try {
+            let projectId = req.params.id;
             let project = await Project.findById(projectId);
             if (!project) {
                 throw new NotFoundError('Project Not Found');
@@ -43,9 +43,8 @@ class ProjectController extends controller {
     }
 
     async delete(req, res, next) {
-        let projectId = req.params.projectId
         try {
-            let project = await Project.findById(projectId);
+            let project = await Project.findById(req.params.id);
             if (!project) {
                 throw new NotFoundError('Project Not Found');
             }
@@ -57,9 +56,8 @@ class ProjectController extends controller {
     }
 
     async find(req, res, next) {
-        let projectId = req.params.projectId
         try {
-            let project = await Project.findById(projectId);
+            let project = await Project.findById(req.params.id);
             if (!project) {
                 throw new NotFoundError('Project Not Found');
             }
