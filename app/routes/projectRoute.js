@@ -7,5 +7,6 @@ router.patch('/:projectId', projectValidation.project_update_check, ProjectContr
 
 router.get('/', ProjectController.get)
 router.get('/:projectId', ProjectController.find)
+router.delete('/:projectId', ProjectController.delete)
 
 module.exports = router
