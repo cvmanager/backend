@@ -22,7 +22,7 @@ module.exports = class AppResponse {
     }
 
     erros(erros) {
-        this.responseData = erros;
+        this.responseErrors = erros;
         return this;
     }
 
