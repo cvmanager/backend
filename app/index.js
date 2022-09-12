@@ -6,19 +6,19 @@ const errorHandler = require('./middleware/ErorHandler');
 const app = express();
 class App {
     constructor() {
-        this.connectTODB();
         this.setConfig();
+        this.connectTODB();
         this.routes();
         this.serveServer();
     }
 
     async connectTODB() {
-        await mongoose.connect('mongodb://localhost/cvmanager', {
+        await mongoose.connect(process.env.DATABASE_URL, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
         });
 
-        
+
     }
 
     setConfig() {
