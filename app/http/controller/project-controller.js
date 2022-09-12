@@ -1,10 +1,8 @@
-const controller = require('./controller');
+const Controller = require('./controller');
 const Project = require('../../model/Project')
-const { validationResult } = require('express-validator');
-const { success, error } = require('../../helper/responseApi')
 const NotFoundError = require('../../middleware/NotFoundError');
 const AppResponse = require('../../helper/response');
-class ProjectController extends controller {
+class ProjectController extends Controller {
 
     async get(req, res, next) {
         try {

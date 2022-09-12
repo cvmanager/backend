@@ -1,5 +1,5 @@
-class controller {
+class Controller {
     
 }
 
-module.exports = controller; 
+module.exports = Controller; 
