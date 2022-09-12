@@ -2,7 +2,8 @@ const controller = require('./controller');
 const Project = require('../../model/Project')
 const { validationResult } = require('express-validator');
 const { success, error } = require('../../helper/responseApi')
-const NotFoundError = require('../../middleware/NotFoundError')
+const NotFoundError = require('../../middleware/NotFoundError');
+const AppResponse = require('../../helper/response');
 class ProjectController extends controller {
 
     async get(req, res, next) {
@@ -12,7 +13,7 @@ class ProjectController extends controller {
                 .find()
                 .limit(size)
                 .skip(size * (page - 1));
-            return res.status(200).json(success("Succussfully Founded!", allProjects))
+            AppResponse.builder(res).message("Succussfully Founded!").data(allProjects).send();
         } catch (err) {
             next(err);
         }
@@ -22,7 +23,7 @@ class ProjectController extends controller {
         let newProject = Project(req.body)
         try {
             await newProject.save();
-            res.status(200).json(success("Succussfully Created", newProject))
+            AppResponse.builder(res).message("Succussfully Created!").data(newProject).send();
         } catch (err) {
             next(err);
         }
@@ -36,7 +37,7 @@ class ProjectController extends controller {
                 throw new NotFoundError('Project Not Found');
             }
             await Project.updateOne({ id: projectId }, { name: req.body.name }, { description: req.body.description });
-            return res.status(200).json(success("Succussfully Founded!", project))
+            AppResponse.builder(res).message("Succussfully Founded!").data(project).send();
         } catch (err) {
             next(err);
         }
@@ -49,7 +50,7 @@ class ProjectController extends controller {
                 throw new NotFoundError('Project Not Found');
             }
             await project.delete()
-            return res.status(200).json(success("Succussfully Deleted!", project))
+            AppResponse.builder(res).message("Succussfully Deleted!").data(project).send();
         } catch (err) {
             next(err);
         }
@@ -61,7 +62,7 @@ class ProjectController extends controller {
             if (!project) {
                 throw new NotFoundError('Project Not Found');
             }
-            return res.status(200).json(success("Succussfully Founded!", project))
+            AppResponse.builder(res).message("Succussfully Founded!").data(project).send();
         } catch (err) {
             next(err);
         }
