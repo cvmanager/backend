@@ -6,9 +6,18 @@ class ProjectController extends Controller {
 
     async get(req, res, next) {
         try {
-            const { page = 1, size = 1 } = req.query
+            const { page = 1, size = 10, q = '' } = req.query
+            let searchQuery = {}
+            if (q.length > 0) {
+                searchQuery = {
+                    $or: [
+                        { name: { '$regex': q } },
+                        { description: { '$regex': q } }
+                    ]
+                }
+            }
             let allProjects = await Project
-                .find()
+                .find(searchQuery)
                 .limit(size)
                 .skip(size * (page - 1));
             AppResponse.builder(res).message("Succussfully Founded!").data(allProjects).send();
