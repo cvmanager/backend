@@ -5,7 +5,7 @@ const projectValidation = require('../validators/project-validation')
 router.post('/', projectValidation.project_create_check, ProjectController.create);
 router.patch('/:d', projectValidation.project_update_check, ProjectController.update);
 
-router.get('/', ProjectController.get)
+router.get('/', ProjectController.index)
 router.get('/:id', ProjectController.find)
 router.delete('/:id', ProjectController.delete)
 

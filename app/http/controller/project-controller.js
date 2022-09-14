@@ -4,7 +4,7 @@ const NotFoundError = require('../../middleware/NotFoundError');
 const AppResponse = require('../../helper/response');
 class ProjectController extends Controller {
 
-    async get(req, res, next) {
+    async index(req, res, next) {
         try {
             const { page = 1, size = 10, q = '' } = req.query
             let searchQuery = {}
