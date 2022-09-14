@@ -56,7 +56,10 @@ class ProjectController extends Controller {
             if (!project) {
                 throw new NotFoundError('Project Not Found');
             }
-            await project.delete()
+            project.deleted_at = Date.now();
+            project.deleted_by = 1;
+            
+            await project.save();
             AppResponse.builder(res).message("Succussfully Deleted!").data(project).send();
         } catch (err) {
             next(err);
