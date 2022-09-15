@@ -1,6 +1,6 @@
 const Controller = require('./controller');
 const Project = require('../../model/project.model')
-const NotFoundError = require('../../middleware/NotFoundError');
+const NotFoundError = require('../../exceptions/NotFoundError');
 const AppResponse = require('../../helper/response');
 class ProjectController extends Controller {
 

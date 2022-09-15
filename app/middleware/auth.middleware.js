@@ -1,5 +1,5 @@
 const JWT = require('jsonwebtoken');
-const BadRequestError = require('../middleware/BadRequestError')
+const BadRequestError = require('../exceptions/BadRequestError')
 function generateJwtToken(data) {
     return JWT.sign({ sub: data, }, process.env.JWT_SECRET_TOKEN, {
         expiresIn: process.env.JWT_EXPIRATION_TIME_TOKEN
@@ -32,12 +32,12 @@ async function verifyRefrshToken(req, res, next) {
         if (!token) {
             throw new BadRequestError('token not sended!');
         }
-        
+
         let payload = await JWT.verify(token, process.env.JWT_SECRET_REFRESH_TOKEN);
         req.user_id = payload.sub;
 
 
-        
+
         next();
     } catch (err) {
         next(err);

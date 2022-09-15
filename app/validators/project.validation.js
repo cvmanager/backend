@@ -1,5 +1,5 @@
 const { body, validationResult } = require('express-validator');
-const BadRequestError = require('../middleware/BadRequestError');
+const BadRequestError = require('../exceptions/BadRequestError');
 exports.project_create_check = [
     body('name')
         .notEmpty().withMessage('name is require')

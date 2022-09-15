@@ -2,8 +2,8 @@ const path = require('path');
 const express = require('express');
 const mongoose = require('mongoose');
 const session = require('express-session');
-const errorHandler = require('./middleware/ErorHandler');
-const NotFoundError = require('./middleware/NotFoundError');
+const errorHandler = require('./exceptions/ErorHandler');
+const NotFoundError = require('./exceptions/NotFoundError');
 const app = express();
 class App {
     constructor() {

@@ -1,10 +1,10 @@
 const Controller = require('./controller');
 const User = require('../../model/user.model');
 const AppResponse = require('../../helper/response');
-const BadRequestError = require('../../middleware/BadRequestError');
-const NotFoundError = require('../../middleware/NotFoundError');
+const BadRequestError = require('../../exceptions/BadRequestError');
+const NotFoundError = require('../../exceptions/NotFoundError');
 const JWT = require('jsonwebtoken');
-const { generateJwtToken, generateJwtRefeshToken } = require('../../helper/jwt');
+const { generateJwtToken, generateJwtRefeshToken } = require('../../middleware/auth.middleware');
 const bcrypt = require('bcrypt');
 class AuthController extends Controller {
 

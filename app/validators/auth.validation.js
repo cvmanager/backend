@@ -1,5 +1,5 @@
 const { body, validationResult } = require('express-validator');
-const BadRequestError = require('../middleware/BadRequestError');
+const BadRequestError = require('../exceptions/BadRequestError');
 
 
 exports.signup = [
