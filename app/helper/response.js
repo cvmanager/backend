@@ -1,7 +1,7 @@
 module.exports = class AppResponse {
-    responseMessage = "";
-    responseData;
-    responseErrors;
+    responseMessage = "Successfuly";
+    responseData = [];
+    responseErrors = [];
     responseStatus = 200;
     res;
     constructor(res) {
@@ -33,17 +33,10 @@ module.exports = class AppResponse {
     }
 
     send() {
-        let responseObject = {};
-        if (this.responseMessage != "") {
-            responseObject.message = this.responseMessage;
-        }
-        if (this.responseData) {
-            responseObject.data = this.responseData;
-        }
-
-        if (this.responseErrors) {
-            responseObject.erros = this.responseErrors;
-        }
-        this.res.status(this.status).send(responseObject);
+        this.res.status(this.responseStatus).send({
+            'message': this.responseMessage,
+            'data': this.responseData,
+            'erros': this.responseErrors,
+        });
     }
 }
