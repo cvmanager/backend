@@ -27,10 +27,13 @@ class ProjectController extends Controller {
     }
 
     async create(req, res, next) {
-        let newProject = Project(req.body)
         try {
-            await newProject.save();
-            AppResponse.builder(res).status(201).message("Succussfully Created!").data(newProject).send();
+            let project = await Project.create({
+                name: req.body.name,
+                description: req.body.description,
+                created_by: req.user_id,
+            })
+            AppResponse.builder(res).status(201).message("Succussfully Created!").data(project).send();
         } catch (err) {
             next(err);
         }
