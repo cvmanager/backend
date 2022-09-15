@@ -28,7 +28,7 @@ class App {
         app.use(express.json({ strict: false }));
         app.use(express.urlencoded({ extended: false }));
         app.use(session({
-            cookie: { maxAge: process.env.COOKIE_MAXAGE },
+            cookie: { maxAge: 60000 },
             secret: process.env.COOKIE_SECRET,
             resave: process.env.COOKIE_RESAVE,
             saveUninitialized: process.env.COOKIE_SAVE_UNINITIALIZED
