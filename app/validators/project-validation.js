@@ -2,17 +2,15 @@ const { body, validationResult } = require('express-validator');
 const BadRequestError = require('../middleware/BadRequestError');
 exports.project_create_check = [
     body('name')
-        .exists()
         .notEmpty().withMessage('name is require')
-        .isLength({ min: 1, max: 50 }).withMessage('firstName should not be empty, should be more than one and less than 50 character')
+        .isLength({ min: 3, max: 50 }).withMessage('project name should not be empty, should be more than one and less than 3 character')
         .trim(),
     body('description')
         .notEmpty().withMessage('description is require')
-        .isLength({ min: 10 }).withMessage('des min 10 char')
+        .isLength({ min: 10 , max:100 }).withMessage('project description should not be empty, should be more than one and less than 3 character')
         .trim(),
     function (req, res, next) {
         try {
-            var errorValidation = validationResult(req);
             var errorValidation = validationResult(req);
             if (!errorValidation.isEmpty()) {
                 let validationErr = errorValidation.errors.map(item => item.msg);
@@ -36,7 +34,6 @@ exports.project_update_check = [
         .trim(),
     function (req, res, next) {
         try {
-            var errorValidation = validationResult(req);
             var errorValidation = validationResult(req);
             if (!errorValidation.isEmpty()) {
                 let validationErr = errorValidation.errors.map(item => item.msg);
