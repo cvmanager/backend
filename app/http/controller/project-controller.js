@@ -30,7 +30,7 @@ class ProjectController extends Controller {
         let newProject = Project(req.body)
         try {
             await newProject.save();
-            AppResponse.builder(res).message("Succussfully Created!").data(newProject).send();
+            AppResponse.builder(res).status(201).message("Succussfully Created!").data(newProject).send();
         } catch (err) {
             next(err);
         }
@@ -58,7 +58,7 @@ class ProjectController extends Controller {
             }
             project.deleted_at = Date.now();
             project.deleted_by = 1;
-            
+
             await project.save();
             AppResponse.builder(res).message("Succussfully Deleted!").data(project).send();
         } catch (err) {
