@@ -1,6 +1,7 @@
 const NotFoundError = require('./NotFoundError');
 const BadRequestError = require('./BadRequestError');
 const UnauthorizedError = require('./UnauthorizedError');
+const JWT = require('jsonwebtoken');
 //================================================
 function errorHandler(err, req, res, next) {
     if (err instanceof NotFoundError) {
@@ -19,7 +20,7 @@ function errorHandler(err, req, res, next) {
         });
     }
 
-    if (err instanceof UnauthorizedError) {
+    if (err instanceof UnauthorizedError || err instanceof JWT.JsonWebTokenError) {
         return res.status(401).json({
             message: err.message ? err.message : "Unauthorized",
             errors: err.errors ? err.errors : [],
