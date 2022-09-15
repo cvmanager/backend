@@ -19,7 +19,6 @@ async function verifyToken(req, res, next) {
             throw new BadRequestError('token not sended!');
         }
         let token = req.headers.authorization.split(' ')[1];
-        console.log(token);
         let payload = await JWT.verify(token, process.env.JWT_SECRET_TOKEN);
         req.user_id = payload.sub;
         next();
@@ -27,5 +26,22 @@ async function verifyToken(req, res, next) {
         next(err);
     }
 }
+async function verifyRefrshToken(req, res, next) {
+    try {
+        const token = req.body.token;
+        if (!token) {
+            throw new BadRequestError('token not sended!');
+        }
+        
+        let payload = await JWT.verify(token, process.env.JWT_SECRET_REFRESH_TOKEN);
+        req.user_id = payload.sub;
 
-module.exports = { generateJwtToken, generateJwtRefeshToken, verifyToken }
+
+        
+        next();
+    } catch (err) {
+        next(err);
+    }
+}
+
+module.exports = { generateJwtToken, generateJwtRefeshToken, verifyToken, verifyRefrshToken }

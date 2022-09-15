@@ -1,5 +1,5 @@
 const Controller = require('./controller');
-const Project = require('../../model/Project')
+const Project = require('../../model/project.model')
 const NotFoundError = require('../../middleware/NotFoundError');
 const AppResponse = require('../../helper/response');
 class ProjectController extends Controller {
@@ -54,13 +54,14 @@ class ProjectController extends Controller {
     }
 
     async delete(req, res, next) {
+        const project_id = req.params.id;
         try {
-            let project = await Project.findById(req.params.id);
+            let project = await Project.findById(project_id);
             if (!project) {
                 throw new NotFoundError('Project Not Found');
             }
             project.deleted_at = Date.now();
-            project.deleted_by = 1;
+            project.deleted_by = req.user_id;
 
             await project.save();
             AppResponse.builder(res).message("Succussfully Deleted!").data(project).send();
