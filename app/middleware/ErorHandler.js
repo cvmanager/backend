@@ -1,5 +1,6 @@
 const NotFoundError = require('./NotFoundError');
 const BadRequestError = require('./BadRequestError');
+const UnauthorizedError = require('./UnauthorizedError');
 //================================================
 function errorHandler(err, req, res, next) {
     if (err instanceof NotFoundError) {
@@ -18,6 +19,15 @@ function errorHandler(err, req, res, next) {
         });
     }
 
+    if (err instanceof UnauthorizedError) {
+        return res.status(401).json({
+            message: err.message ? err.message : "Unauthorized",
+            errors: err.errors ? err.errors : [],
+            data: []
+        });
+    }
+
+    console.log(err);
     return res.status(500).json({
         message: "Server Error :)",
         errors: [],
