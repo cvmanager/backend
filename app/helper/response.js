@@ -2,6 +2,7 @@ module.exports = class AppResponse {
     responseMessage = "";
     responseData;
     responseErrors;
+    responseStatus = 200;
     res;
     constructor(res) {
         this.res = res;
@@ -18,6 +19,11 @@ module.exports = class AppResponse {
 
     data(data) {
         this.responseData = data;
+        return this;
+    }
+
+    status(status) {
+        this.responseStatus = status;
         return this;
     }
 
@@ -38,6 +44,6 @@ module.exports = class AppResponse {
         if (this.responseErrors) {
             responseObject.erros = this.responseErrors;
         }
-        this.res.send(responseObject);
+        this.res.status(this.status).send(responseObject);
     }
 }
