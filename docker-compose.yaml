@@ -1,0 +1,39 @@
+version: "3.9"
+
+services:
+
+  mongo_db:
+    container_name: db_container
+    image: mongo:latest
+    restart: always
+    volumes:
+      - mongo_db:/data/db
+  redis_db:
+    container_name: redis_container
+    image: redis:latest
+    restart: always
+    ports:
+      - 6379:6379
+    volumes:
+      - redis_db:/data/redis
+
+  app:
+    container_name: app_container
+    build: .
+    ports:
+      - 4000:3000
+    environment:
+      APP_PORT: 3000
+      JWT_SECRET_TOKEN: 'fdsfdsfasdasdasgffgvfdsbgv'
+      JWT_EXPIRATION_TIME_TOKEN: '15m'
+      JWT_SECRET_REFRESH_TOKEN: 'dsadasdasdasdasdasdasdasdfdsfds'
+      JWT_EXPIRATION_TIME_REFRESH_TOKEN: '30d'
+      DB_URL: 'mongodb://mongo_db/cvmanager'
+      REDIS_PORT: 6379
+      REDIS_HOST:
+    depends_on:
+      - mongo_db
+      - redis_db
+volumes:
+  mongo_db: {}
+  redis_db: {}
