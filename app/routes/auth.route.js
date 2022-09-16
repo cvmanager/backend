@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const authController = require('../http/controller/auth.controller');
+const authController = require('../http/controllers/auth.controller');
 const AuthValidation = require('../validators/auth.validation');
 const { verifyRefrshToken, verifyToken } = require('../middleware/auth.middleware')
 

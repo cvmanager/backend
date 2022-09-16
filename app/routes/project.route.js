@@ -1,5 +1,5 @@
 const router = require('express').Router()
-const ProjectController = require('../http/controller/project.controller');
+const ProjectController = require('../http/controllers/project.controller');
 const projectValidation = require('../validators/project.validation')
 
 router.post('/', projectValidation.project_create_check, ProjectController.create);
