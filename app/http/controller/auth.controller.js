@@ -3,12 +3,11 @@ const User = require('../../model/user.model');
 const AppResponse = require('../../helper/response');
 const BadRequestError = require('../../exceptions/BadRequestError');
 const NotFoundError = require('../../exceptions/NotFoundError');
-const JWT = require('jsonwebtoken');
-const { generateJwtToken, generateJwtRefeshToken } = require('../../middleware/auth.middleware');
+const { generateJwtToken, generateJwtRefeshToken } = require('../../helper/jwt');
 const bcrypt = require('bcrypt');
+const redis_client = require('../../helper/redis_client');
 class AuthController extends Controller {
 
-    storedTokens = [];
     async login(req, res, next) {
         try {
             let user = await User.findOne({ mobile: req.body.mobile, deleted_at: null });
@@ -23,16 +22,6 @@ class AuthController extends Controller {
 
             const access_token = await generateJwtToken(user._id)
             const refresh_token = await generateJwtRefeshToken(user._id);
-
-            // let storedToken = this.storedTokens.find(x => x.id == user._id);
-            // if (storedToken == undefined) {
-            //     this.storedTokens.push({
-            //         id: user._id,
-            //         token: refresh_token
-            //     });
-            // } else {
-            //     this.storedTokens[this.storedTokens.find(x => x.id == user._id)].token = refresh_token;
-            // }
 
             AppResponse.builder(res).message('successfuly login').data({ access_token, refresh_token }).send();
         } catch (err) {
@@ -70,6 +59,15 @@ class AuthController extends Controller {
             const access_token = await generateJwtToken(req.user_id)
             const refresh_token = await generateJwtRefeshToken(req.user_id);
             AppResponse.builder(res).message('successfuly login').data({ access_token, refresh_token }).send();
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    async logout(req, res, next) {
+        try {
+            await redis_client.del(req.user_id.toString());
+            AppResponse.builder(res).message("Successfuly logout from account").send();
         } catch (err) {
             next(err);
         }

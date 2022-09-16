@@ -1,18 +1,6 @@
 const JWT = require('jsonwebtoken');
-const BadRequestError = require('../exceptions/BadRequestError')
-function generateJwtToken(data) {
-    return JWT.sign({ sub: data, }, process.env.JWT_SECRET_TOKEN, {
-        expiresIn: process.env.JWT_EXPIRATION_TIME_TOKEN
-    });
-}
-
-
-async function generateJwtRefeshToken(data) {
-    return await JWT.sign({ sub: data }, process.env.JWT_SECRET_REFRESH_TOKEN, {
-        expiresIn: process.env.JWT_EXPIRATION_TIME_REFRESH_TOKEN
-    });
-}
-
+const BadRequestError = require('../exceptions/BadRequestError');
+const redis_client = require('../helper/redis_client');
 async function verifyToken(req, res, next) {
     try {
         if (!req.headers.authorization) {
@@ -26,17 +14,22 @@ async function verifyToken(req, res, next) {
         next(err);
     }
 }
+
 async function verifyRefrshToken(req, res, next) {
     try {
         const token = req.body.token;
-        if (!token) {
-            throw new BadRequestError('token not sended!');
-        }
+        if (token === null) throw new BadRequestError('token not sended!');
 
         let payload = await JWT.verify(token, process.env.JWT_SECRET_REFRESH_TOKEN);
         req.user_id = payload.sub;
 
 
+        await redis_client.get(payload.sub.toString())
+            .then((data) => {
+
+                if (data == null) throw new BadRequestError('Token is not in store.');
+                if (JSON.parse(data).token != token) throw new BadRequestError('Token is not same store.');
+            });
 
         next();
     } catch (err) {
@@ -44,4 +37,4 @@ async function verifyRefrshToken(req, res, next) {
     }
 }
 
-module.exports = { generateJwtToken, generateJwtRefeshToken, verifyToken, verifyRefrshToken }
+module.exports = { verifyToken, verifyRefrshToken }

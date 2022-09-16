@@ -1,25 +1,23 @@
-const path = require('path');
 const express = require('express');
 const mongoose = require('mongoose');
-const session = require('express-session');
 const errorHandler = require('./exceptions/ErorHandler');
 const NotFoundError = require('./exceptions/NotFoundError');
+
+
 const app = express();
 class App {
     constructor() {
         this.setConfig();
-        this.connectTODB();
+        this.databaseConnect();
         this.routes();
         this.serveServer();
     }
 
-    async connectTODB() {
+    async databaseConnect() {
         await mongoose.connect(process.env.DB_URL, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
         });
-
-
     }
 
     setConfig() {
@@ -27,12 +25,6 @@ class App {
 
         app.use(express.json({ strict: false }));
         app.use(express.urlencoded({ extended: false }));
-        app.use(session({
-            cookie: { maxAge: 60000 },
-            secret: process.env.COOKIE_SECRET,
-            resave: process.env.COOKIE_RESAVE,
-            saveUninitialized: process.env.COOKIE_SAVE_UNINITIALIZED
-        }));
     }
 
     routes() {
