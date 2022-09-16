@@ -2,7 +2,7 @@ const Controller = require('./controller');
 const User = require('../../models/user.model');
 const AppResponse = require('../../helper/response');
 const BadRequestError = require('../../exceptions/BadRequestError');
-const NotFoundError = require('../../exceptions/NotFoundError');
+const UserNotFoundError = require('../../exceptions/UserNotFoundError');
 const { generateJwtToken, generateJwtRefeshToken } = require('../../helper/jwt');
 const bcrypt = require('bcrypt');
 const redis_client = require('../../helper/redis_client');
@@ -11,7 +11,7 @@ class AuthController extends Controller {
     async login(req, res, next) {
         try {
             let user = await User.findOne({ mobile: req.body.mobile, deleted_at: null });
-            if (!user) throw new NotFoundError('user not found');
+            if (!user) throw new UserNotFoundError();
 
 
             let validPassword = await bcrypt.compare(req.body.password, user.password)
