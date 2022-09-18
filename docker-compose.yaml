@@ -8,14 +8,13 @@ services:
     restart: always
     volumes:
       - mongo_db:/data/db
-  redis_db:
-    container_name: redis_container
+  redis:
     image: redis:latest
     restart: always
-    ports:
-      - 6379:6379
+    expose:
+      - 6379
     volumes:
-      - redis_db:/data/redis
+      - redis_db:/data/myredis
 
   app:
     container_name: app_container
@@ -29,11 +28,10 @@ services:
       JWT_SECRET_REFRESH_TOKEN: 'dsadasdasdasdasdasdasdasdfdsfds'
       JWT_EXPIRATION_TIME_REFRESH_TOKEN: '30d'
       DB_URL: 'mongodb://mongo_db/cvmanager'
-      REDIS_PORT: 6379
-      REDIS_HOST:
+      REDIS_URL: 'redis://redis:6379'      
     depends_on:
       - mongo_db
-      - redis_db
+      - redis
 volumes:
   mongo_db: {}
   redis_db: {}
