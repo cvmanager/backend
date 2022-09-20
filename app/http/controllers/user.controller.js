@@ -8,7 +8,7 @@ class UserController extends Controller {
 
     }
 
-    async get(req, res, next) {
+    async find(req, res, next) {
 
     }
 
@@ -20,9 +20,6 @@ class UserController extends Controller {
 
     }
 
-    async find(req, res, next) {
-
-    }
 }
 
 module.exports = new UserController;
