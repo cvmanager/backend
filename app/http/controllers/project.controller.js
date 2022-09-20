@@ -72,11 +72,16 @@ class ProjectController extends Controller {
 
     async find(req, res, next) {
         try {
-            let project = await Project.findById(req.params.id);
-            if (!project) {
-                throw new NotFoundError('Project Not Found');
+            const projectId = req.params.id
+            if (projectId.match(/^[0-9a-fA-F]{24}$/)) {
+                let project = await Project.findById(projectId);
+                if (!project) {
+                    throw new NotFoundError('Project Not Found');
+                }
+                AppResponse.builder(res).message("Succussfully Founded!").data(project).send();
+            } else {
+                throw new BadRequestError("Project Id Is Not Valid!")
             }
-            AppResponse.builder(res).message("Succussfully Founded!").data(project).send();
         } catch (err) {
             next(err);
         }
