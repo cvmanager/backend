@@ -181,7 +181,7 @@ exports.checkStatus = [
         .isMongoId().withMessage('resume id is invalid')
         .trim(),
     body('status')
-        .optional({ nullable: true, checkFalsy: true })
+        .notEmpty().withMessage('status is required')
         .isIn([
             'pending',
             'call_review',
