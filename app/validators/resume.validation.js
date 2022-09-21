@@ -1,4 +1,4 @@
-const { body, validationResult } = require('express-validator');
+const { body, validationResult, param } = require('express-validator');
 const BadRequestError = require('../exceptions/BadRequestError');
 
 exports.resume_create = [
@@ -174,3 +174,35 @@ exports.resume_update = [
         }
     }
 ];
+
+exports.checkStatus = [
+    param('id')
+        .notEmpty().withMessage('resume id is required')
+        .isMongoId().withMessage('resume id is invalid')
+        .trim(),
+    body('status')
+        .optional({ nullable: true, checkFalsy: true })
+        .isIn([
+            'pending',
+            'call_review',
+            'tech_review',
+            'wait_reject',
+            'rejected',
+            'hired',
+            'wait_hire',
+        ])
+        .withMessage('status value is invalid!')
+        .trim(),
+    function (req, res, next) {
+        try {
+            var errorValidation = validationResult(req);
+            if (!errorValidation.isEmpty()) {
+                let validationErr = errorValidation.errors.map(item => item.msg);
+                throw new BadRequestError("BadRequest", validationErr);
+            }
+            next();
+        } catch (err) {
+            next(err)
+        }
+    }
+]
