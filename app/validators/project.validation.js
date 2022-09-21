@@ -1,4 +1,4 @@
-const { body, validationResult } = require('express-validator');
+const { body, validationResult , param } = require('express-validator');
 const BadRequestError = require('../exceptions/BadRequestError');
 exports.create = [
     body('name')

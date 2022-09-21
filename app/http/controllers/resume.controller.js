@@ -49,10 +49,10 @@ class ResumeController extends Controller {
     async create(req, res, next) {
         try {
             let project = await Project.findById(req.body.project_id);
-            if (!project) throw new NotFoundError('Project Not Found');
+            if (!project) throw new NotFoundError('project not found');
 
             req.body.created_by = req.user_id
-            req.body.resume_status = 'pending'
+            req.body.status = 'pending'
             let resume = await Resume.create(req.body)
             AppResponse.builder(res).status(201).message("resume was successfully found and created").data(resume).send();
         } catch (err) {
