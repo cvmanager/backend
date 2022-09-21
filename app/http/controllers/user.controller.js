@@ -20,7 +20,7 @@ class UserController extends Controller {
                 .find(searchQuery)
                 .limit(size)
                 .skip(size * (page - 1));
-            AppResponse.builder(res).message("Succussfully Founded!").data(users).send();
+            AppResponse.builder(res).message("user list successfuly found.").data(users).send();
         } catch (err) {
             next(err);
         }
@@ -28,12 +28,10 @@ class UserController extends Controller {
 
     async find(req, res, next) {
         try {
-            const userId = req.params.id
-            let user = await User.findById(userId);
-            if (!user) {
-                throw new NotFoundError('User Not Found');
-            }
-            AppResponse.builder(res).message("Succussfully Founded!").data(user).send();
+            let user = await User.findById(req.params.id);
+            if (!user) throw new NotFoundError('User Not Found');
+
+            AppResponse.builder(res).message("user successfuly found").data(user).send();
         } catch (err) {
             next(err);
         }

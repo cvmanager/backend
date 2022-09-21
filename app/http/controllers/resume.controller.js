@@ -5,24 +5,10 @@ const NotFoundError = require('../../exceptions/NotFoundError');
 const AppResponse = require('../../helper/response');
 
 class ResumeController extends Controller {
-    async create(req, res, next) {
-        try {
-            let project = await Project.findById(req.body.project_id);
-            if (!project) {
-                throw new NotFoundError('Project Not Found');
-            }
-            req.body.created_by = req.user_id
-            req.body.resume_status = 'pending'
-            let resume = await Resume.create(req.body)
-            AppResponse.builder(res).status(201).message("Succussfully Created!").data(resume).send();
-        } catch (err) {
-            next(err);
-        }
-    }
-
+    
     async index(req, res, next) {
         try {
-            const { page = 1, size = 10, query = '' } = req.query
+            const { page = 1, size = 10, q: query = '' } = req.query
             let searchQuery = {}
             if (query.length > 0) {
                 searchQuery = {
@@ -36,55 +22,14 @@ class ResumeController extends Controller {
                         { education: { '$regex': query } },
                         { major: { '$regex': query } },
                         { phone: { '$regex': query } },
-                        { military_status: { '$regex': query } }
                     ]
                 }
             }
-            let allResumes = await Resume
+            let resumeList = await Resume
                 .find(searchQuery)
                 .limit(size)
                 .skip(size * (page - 1));
-            AppResponse.builder(res).message("Succussfully Founded!").data(allResumes).send();
-        } catch (err) {
-            next(err);
-        }
-    }
-
-    async update(req, res, next) {
-        try {
-            let resumeId = req.params.id;
-            Resume.findByIdAndUpdate(resumeId, req.body, { new: true }, function (err, newResume) {
-                AppResponse.builder(res).message("Succussfully Updated!").data(newResume).send();
-            });
-        } catch (err) {
-            next(err);
-        }
-    }
-
-    async updateStatus(req, res, next) {
-        try {
-            const resumeId = req.params.id
-            const { status: newStatus } = req.body
-            await Resume.findByIdAndUpdate(resumeId, { status: newStatus }, { new: true }, function (err, newResume) {
-                AppResponse.builder(res).message("Status Succussfully Updated!").data(newResume).send();
-            });
-        } catch (err) {
-            next(err);
-        }
-    }
-
-    async delete(req, res, next) {
-        const resume_id = req.params.id;
-        try {
-            let resume = await Resume.findById(resume_id);
-            if (!resume) {
-                throw new NotFoundError('Resume Not Found');
-            }
-            resume.deleted_at = Date.now();
-            resume.deleted_by = req.user_id;
-
-            await resume.save();
-            AppResponse.builder(res).message("Succussfully Deleted!").data(resume).send();
+            AppResponse.builder(res).message("succussfully founded!").data(resumeList).send();
         } catch (err) {
             next(err);
         }
@@ -93,14 +38,62 @@ class ResumeController extends Controller {
     async find(req, res, next) {
         try {
             let resume = await Resume.findById(req.params.id);
-            if (!resume) {
-                throw new NotFoundError('Resume Not Found');
-            }
-            AppResponse.builder(res).message("Succussfully Founded!").data(resume).send();
+            if (!resume) throw new NotFoundError('resume not found');
+
+            AppResponse.builder(res).message("resume found successfully").data(resume).send();
         } catch (err) {
             next(err);
         }
     }
+
+    async create(req, res, next) {
+        try {
+            let project = await Project.findById(req.body.project_id);
+            if (!project) throw new NotFoundError('Project Not Found');
+
+            req.body.created_by = req.user_id
+            req.body.resume_status = 'pending'
+            let resume = await Resume.create(req.body)
+            AppResponse.builder(res).status(201).message("resume was successfully found and created").data(resume).send();
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    async update(req, res, next) {
+        try {
+            await Resume.findByIdAndUpdate(req.params.id, req.body, { new: true })
+                .then(resume => AppResponse.builder(res).message("the resume has been successfully updated").data(resume).send())
+                .catch(err => next(err));
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    async delete(req, res, next) {
+        try {
+            let resume = await Resume.findById(req.params.id);
+            if (!resume) throw new NotFoundError('resume not found');
+            resume.deleted_at = Date.now();
+            resume.deleted_by = req.user_id;
+
+            await resume.save();
+            AppResponse.builder(res).message("resume successfully deleted").data(resume).send();
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    async updateStatus(req, res, next) {
+        try {
+            await Resume.findByIdAndUpdate(req.params.id, { status: req.body.status }, { new: true })
+                .then(resume => AppResponse.builder(res).message("the resume status has been successfully updated").data(resume).send())
+                .catch(err => next(err));
+        } catch (err) {
+            next(err);
+        }
+    }
+
 }
 
 module.exports = new ResumeController;

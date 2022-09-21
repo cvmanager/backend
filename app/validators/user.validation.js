@@ -1,7 +1,7 @@
 const { validationResult, param } = require('express-validator');
 const BadRequestError = require('../exceptions/BadRequestError');
 
-exports.user_id_check = [
+exports.find = [
     param('id')
         .notEmpty().withMessage('user id is required')
         .isMongoId().withMessage('user id invalid')
