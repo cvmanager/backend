@@ -32,7 +32,7 @@ const resumeSchema = new Schema(
             type: String,
             required: true
         },
-        resume_status: {
+        status: {
             type: String,
             required: true
         },
