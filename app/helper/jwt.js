@@ -1,5 +1,5 @@
 const JWT = require('jsonwebtoken');
-const redis_client = require('../helper/redis_client')
+// const redis_client = require('../helper/redis_client')
 
 function generateJwtToken(data) {
     return JWT.sign({ sub: data, }, process.env.JWT_SECRET_TOKEN, {
@@ -13,10 +13,10 @@ async function generateJwtRefeshToken(user_id) {
         expiresIn: process.env.JWT_EXPIRATION_TIME_REFRESH_TOKEN
     });
 
-    await redis_client.get(user_id.toString(), (err, data) => {
-        if (err) throw new Error(err);
-    });
-    await redis_client.set(user_id.toString(), JSON.stringify({ token: refresh_token }))
+    // await redis_client.get(user_id.toString(), (err, data) => {
+    //     if (err) throw new Error(err);
+    // });
+    // await redis_client.set(user_id.toString(), JSON.stringify({ token: refresh_token }))
 
     return refresh_token;
 }
