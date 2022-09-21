@@ -29,6 +29,8 @@ class App {
 
     routes() {
         let route = require('./routes/route');
+        let cors = require('cors')
+        app.use(cors())
         app.use('/api', route);
         app.use('*', () => { throw new NotFoundError('url not found') });
         app.use(errorHandler);
