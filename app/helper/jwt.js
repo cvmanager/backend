@@ -1,8 +1,8 @@
 const JWT = require('jsonwebtoken');
 const redis_client = require('../helper/redis_client')
 
-function generateJwtToken(data) {
-    return JWT.sign({ sub: data, }, process.env.JWT_SECRET_TOKEN, {
+async function generateJwtToken(data) {
+    return await JWT.sign({ sub: data, }, process.env.JWT_SECRET_TOKEN, {
         expiresIn: process.env.JWT_EXPIRATION_TIME_TOKEN
     });
 }
@@ -20,4 +20,6 @@ async function generateJwtRefeshToken(user_id) {
 
     return refresh_token;
 }
+
+
 module.exports = { generateJwtToken, generateJwtRefeshToken }
