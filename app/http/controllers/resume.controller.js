@@ -54,7 +54,19 @@ class ResumeController extends Controller {
         try {
             let resumeId = req.params.id;
             Resume.findByIdAndUpdate(resumeId, req.body, { new: true }, function (err, newResume) {
-                AppResponse.builder(res).message("Succussfully Founded!").data(newResume).send();
+                AppResponse.builder(res).message("Succussfully Updated!").data(newResume).send();
+            });
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    async updateStatus(req, res, next) {
+        try {
+            const resumeId = req.params.id
+            const { status: newStatus } = req.body
+            Resume.findByIdAndUpdate(resumeId, { status: newStatus }, { new: true }, function (err, newResume) {
+                AppResponse.builder(res).message("Status Succussfully Updated!").data(newResume).send();
             });
         } catch (err) {
             next(err);
