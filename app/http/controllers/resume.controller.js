@@ -29,10 +29,7 @@ class ResumeController extends Controller {
                     $or: [
                         { firstname: { '$regex': query } },
                         { lastname: { '$regex': query } },
-                        { gender: { '$regex': query } },
                         { email: { '$regex': query } },
-                        { marital_status: { '$regex': query } },
-                        { resume_status: { '$regex': query } },
                         { mobile: { '$regex': query } },
                         { residence_city: { '$regex': query } },
                         { work_city: { '$regex': query } },
