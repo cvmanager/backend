@@ -19,6 +19,18 @@ class ResumeController extends Controller {
             next(err);
         }
     }
+
+    async find(req, res, next) {
+        try {
+            let resume = await Resume.findById(req.params.id);
+            if (!resume) {
+                throw new NotFoundError('Resume Not Found');
+            }
+            AppResponse.builder(res).message("Succussfully Founded!").data(resume).send();
+        } catch (err) {
+            next(err);
+        }
+    }
 }
 
 module.exports = new ResumeController;
