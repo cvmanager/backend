@@ -6,9 +6,9 @@ class ProjectController extends Controller {
 
     async index(req, res, next) {
         try {
-            const { page = 1, size = 10, q: query = '' } = req.query
+            const { page = 1, size = 10, query = '' } = req.query
             let searchQuery = {}
-            if (q.length > 0) {
+            if (query.length > 0) {
                 searchQuery = {
                     $or: [
                         { name: { '$regex': query } },
@@ -25,10 +25,10 @@ class ProjectController extends Controller {
             next(err);
         }
     }
-    
+
     async find(req, res, next) {
         try {
-            let project = await Project.findById(req.params.id);
+            let project = await Project.findById(req.params.id).exec();
             if (!project) throw new NotFoundError('project not found');
 
             AppResponse.builder(res).message("Succussfully Founded!").data(project).send();
@@ -36,7 +36,7 @@ class ProjectController extends Controller {
             next(err);
         }
     }
-    
+
     async create(req, res, next) {
         try {
             req.body.created_by = req.user_id;
@@ -61,10 +61,7 @@ class ProjectController extends Controller {
         try {
             let project = await Project.findById(req.params.id);
             if (!project) throw new NotFoundError('project not found');
-            project.deleted_at = Date.now();
-            project.deleted_by = req.user_id;
-
-            await project.save();
+            await project.delete(req.user_id);
             AppResponse.builder(res).message("project successfully deleted").data(project).send();
         } catch (err) {
             next(err);

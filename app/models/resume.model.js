@@ -1,11 +1,13 @@
 const mongoose = require('mongoose');
+const Project = require('./project.model');
+const mongoose_delete = require('mongoose-delete');
 
-const Schema = mongoose.Schema;
 
-const resumeSchema = new Schema(
+const schema = new mongoose.Schema(
     {
         project_id: {
-            type: Schema.Types.ObjectId,
+            type: mongoose.Schema.Types.ObjectId,
+            ref: Project,
             required: true
         },
         firstname: {
@@ -18,7 +20,8 @@ const resumeSchema = new Schema(
         },
         gender: {
             type: String,
-            required: true
+            required: true,
+            enum: ['men', 'women']
         },
         email: {
             type: String,
@@ -81,22 +84,35 @@ const resumeSchema = new Schema(
             default: null
         },
         created_by: {
-            type: Schema.Types.ObjectId,
+            type: mongoose.Schema.Types.ObjectId,
             required: true
-        },
-        deleted_at: {
-            type: Date,
-            default: null
-        },
-        deleted_by: {
-            type: Schema.Types.ObjectId,
-            default: null
-        },
+        }
     },
-    { timestamps: { createdAt: 'created_at', updatedAt: "updated_at" } }
+    {
+        timestamps: {
+            createdAt: true,
+            updatedAt: true
+        },
+        toJSON: {
+            transform: function (doc, ret, opt) {
+                delete ret['deletedBy']
+                delete ret['deletedAt']
+                delete ret['__v']
+                return ret
+            }
+        }
+    }
 );
 
+schema.plugin(mongoose_delete, { deletedBy: true, deletedAt: true });
 
-const Resume = mongoose.model("resumes", resumeSchema);
+schema.pre(/^find/, function () {
+    this.where({ deleted: false });
+});
+
+
+
+
+const Resume = mongoose.model("resumes", schema);
 
 module.exports = Resume;
