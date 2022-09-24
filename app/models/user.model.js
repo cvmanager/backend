@@ -34,14 +34,6 @@ const schema = new mongoose.Schema(
             type: Boolean,
             default: null,
         },
-        deleted_at: {
-            type: Date,
-            default: null
-        },
-        deleted_by: {
-            type: Number,
-            default: null
-        },
 
     },
     {

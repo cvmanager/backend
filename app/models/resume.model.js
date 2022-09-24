@@ -79,7 +79,7 @@ const schema = new mongoose.Schema(
             type: String,
             default: null
         },
-        resume_status_updated_at: {
+        status_updated_at: {
             type: Date,
             default: null
         },
