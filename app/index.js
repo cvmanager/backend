@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const errorHandler = require('./exceptions/ErorHandler');
 const NotFoundError = require('./exceptions/NotFoundError');
+let cors = require('cors');
 
 
 const app = express();
@@ -22,6 +23,7 @@ class App {
 
     setConfig() {
         require('dotenv').config();
+        app.use(cors());
 
         app.use(express.json({ strict: false }));
         app.use(express.urlencoded({ extended: false }));
@@ -29,8 +31,6 @@ class App {
 
     routes() {
         let route = require('./routes/route');
-        let cors = require('cors')
-        app.use(cors())
         app.use('/api', route);
         app.use('*', () => { throw new NotFoundError('url not found') });
         app.use(errorHandler);
