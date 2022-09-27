@@ -1,6 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const errorHandler = require('./exceptions/ErorHandler');
+const errorHandler = require('./exceptions/ErrorHandler');
 const NotFoundError = require('./exceptions/NotFoundError');
 let cors = require('cors');
 
