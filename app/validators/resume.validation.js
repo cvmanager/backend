@@ -2,9 +2,13 @@ const { body, validationResult, param } = require('express-validator');
 const BadRequestError = require('../exceptions/BadRequestError');
 
 exports.create = [
+    body('company_id')
+        .notEmpty().withMessage('company  field is required')
+        .isMongoId().withMessage('company  invalid')
+        .trim(),
     body('project_id')
-        .notEmpty().withMessage('project id field is required')
-        .isMongoId().withMessage('project id invalid')
+        .notEmpty().withMessage('project  field is required')
+        .isMongoId().withMessage('project  invalid')
         .trim(),
     body('firstname')
         .notEmpty().withMessage('firstname field is required')
@@ -93,9 +97,13 @@ exports.update = [
         .notEmpty().withMessage('resume id is required')
         .isMongoId().withMessage('resume id invalid')
         .trim(),
+    body('company_id')
+        .optional({ nullable: true, checkFalsy: true })
+        .isMongoId().withMessage('company invalid')
+        .trim(),
     body('project_id')
         .optional({ nullable: true, checkFalsy: true })
-        .isMongoId().withMessage('project id invalid')
+        .isMongoId().withMessage('project  invalid')
         .trim(),
     body('firstname')
         .optional({ nullable: true, checkFalsy: true })

@@ -5,7 +5,7 @@ const NotFoundError = require('../../exceptions/NotFoundError');
 const AppResponse = require('../../helper/response');
 
 class ResumeController extends Controller {
-    
+
     async index(req, res, next) {
         try {
             const { page = 1, size = 10, q: query = '' } = req.query
@@ -48,6 +48,9 @@ class ResumeController extends Controller {
 
     async create(req, res, next) {
         try {
+            let company = await Company.findById(req.body.company_id);
+            if (!company) throw new NotFoundError('company not found');
+
             let project = await Project.findById(req.body.project_id);
             if (!project) throw new NotFoundError('project not found');
 

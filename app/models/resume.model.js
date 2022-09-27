@@ -1,14 +1,18 @@
 const mongoose = require('mongoose');
-const Project = require('./project.model');
 const mongoose_delete = require('mongoose-delete');
 
 
 const schema = new mongoose.Schema(
     {
+        company_id: {
+            type: mongoose.Schema.Types.ObjectId,
+            required: true,
+            ref: 'Company',
+        },
         project_id: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: Project,
-            required: true
+            required: true,
+            ref: 'Project',
         },
         firstname: {
             type: String,

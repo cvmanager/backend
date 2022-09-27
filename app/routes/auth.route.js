@@ -8,6 +8,6 @@ router
     .post('/login', AuthValidation.login, authController.login)
     .post('/logout', verifyToken, authController.logout)
     .post('/refresh', verifyRefrshToken, authController.refresh)
-    .post('/verify-token',verifyToken,auth.verifyToken)
+    .post('/verify-token',verifyToken,authController.verifyToken)
 
 module.exports = router;

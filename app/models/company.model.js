@@ -1,18 +1,13 @@
-const mongoose = require('mongoose');
+const mongoose = require('mongoose')
 const mongoose_delete = require('mongoose-delete');
 
 const schema = new mongoose.Schema(
     {
-        company_id: {
-            type: mongoose.Schema.Types.ObjectId,
-            required: true,
-            ref: 'Company'
-        },
         name: {
             type: String,
-            required: true
+            required: true,
         },
-        description: {
+        logo: {
             type: String,
             default: null
         },
@@ -29,7 +24,7 @@ const schema = new mongoose.Schema(
     {
         timestamps: {
             createdAt: true,
-            updatedAt: true,
+            updatedAt: true
         },
         toJSON: {
             transform: function (doc, ret, opt) {
@@ -39,17 +34,13 @@ const schema = new mongoose.Schema(
                 return ret
             }
         }
-    }
-);
+    })
 
 schema.plugin(mongoose_delete, { deletedBy: true, deletedAt: true });
-
 schema.pre(/^find/, function () {
     this.where({ deleted: false });
 });
 
+const Company = mongoose.model('companies', schema);
 
-
-const Project = mongoose.model('projects', schema);
-
-module.exports = Project;
+module.exports = Company;
