@@ -24,11 +24,14 @@ async function verifyRefrshToken(req, res, next) {
         req.user_id = payload.sub;
 
 
-        await redis_client.get(payload.sub.toString())
-            .then((data) => {
 
+
+            await redis_client.get(payload.sub.toString(), (err, data) => {
+                if (err) throw new Error(err);
                 if (data == null) throw new BadRequestError('Token is not in store.');
+    
                 if (JSON.parse(data).token != token) throw new BadRequestError('Token is not same store.');
+    
             });
 
         next();
