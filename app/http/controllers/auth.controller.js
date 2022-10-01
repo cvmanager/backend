@@ -74,7 +74,7 @@ class AuthController extends Controller {
     }
 
     async verifyToken(req, res, next) {
-        AppResponse.builder(res).message("token is verified");
+        AppResponse.builder(res).message("token is verified").send();
     }
 }
 
