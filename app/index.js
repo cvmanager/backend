@@ -2,7 +2,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const errorHandler = require('./exceptions/ErrorHandler');
 const NotFoundError = require('./exceptions/NotFoundError');
-let cors = require('cors');
+const cors = require('cors');
+const morgan = require('morgan')
 
 
 const app = express();
@@ -27,6 +28,11 @@ class App {
 
         app.use(express.json({ strict: false }));
         app.use(express.urlencoded({ extended: false }));
+        
+
+        if(process.env.NODE_ENV == 'development'){
+            app.use(morgan('combined'))
+        }
     }
 
     routes() {

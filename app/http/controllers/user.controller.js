@@ -1,7 +1,8 @@
 const Controller = require('./controller');
 const User = require('../../models/user.model')
-const NotFoundError = require('../../exceptions/NotFoundError');
+const UserNotFoundError = require('../../exceptions/UserNotFoundError');
 const AppResponse = require('../../helper/response');
+
 class UserController extends Controller {
 
     async index(req, res, next) {
@@ -29,9 +30,22 @@ class UserController extends Controller {
     async find(req, res, next) {
         try {
             let user = await User.findById(req.params.id);
-            if (!user) throw new NotFoundError('User Not Found');
+            if (!user) throw new UserNotFoundError('User Not Found');
 
             AppResponse.builder(res).message("user successfuly found").data(user).send();
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    async uploadProfileImage(req, res, next) {
+        console.log('constoller upliad',req.body.image);
+
+        try {
+            let user = await User.findById(req.param.id);
+            if (!user) throw new UserNotFoundError();
+            console.log(req.body.image);
+            res.send('OK')
         } catch (err) {
             next(err);
         }
