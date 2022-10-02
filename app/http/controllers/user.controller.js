@@ -40,14 +40,10 @@ class UserController extends Controller {
     }
 
     async uploadProfileImage(req, res, next) {
-        const { image_name:imageName } = req.body
-        const { id:userId } = req.params
+
         try {
-            if (!imageName) {
-                throw new BadRequestError("BadRequest", 'Image File Not Uploaded!');
-            }
-            const user = await User.findByIdAndUpdate(userId, { avatar: imageName }, { new: true })
-            AppResponse.builder(res).message("Profile Image Successfully Uploaded!").data(user).send()
+            let user = await User.findOneAndUpdate({_id : req.user_id} , {avatar : req.body.avatar} , {new : true});
+            AppResponse.builder(res).message("profile image successfully uploaded!").data(user).send();
         } catch (err) {
             next(err);
         }

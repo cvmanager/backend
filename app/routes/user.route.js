@@ -5,6 +5,6 @@ const uploadProfileImage = require('../helper/upload');
 router
     .get('/', UserController.index)
     .get('/:id', userValidation.find, UserController.find)
-    .patch('/update-profile-image/:id', userValidation.updateProfileImage, uploadProfileImage.single('image'), UserController.uploadProfileImage)
+    .post('/avatar', uploadProfileImage.single('avatar'), userValidation.updateProfileImage, UserController.uploadProfileImage)
 
 module.exports = router
