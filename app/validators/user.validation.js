@@ -27,11 +27,10 @@ exports.updateProfileImage = [
         .notEmpty().withMessage('user id is required')
         .isMongoId().withMessage('user id invalid')
         .trim(),
+    
     async function (req, res, next) {
         try {
             var errorValidation = validationResult(req);
-            const user = await User.findById(req.params.id);
-            if (!user) throw new UserNotFoundError();
             if (!errorValidation.isEmpty()) {
                 let validationErr = errorValidation.errors.map(item => item.msg);
                 throw new BadRequestError("BadRequest", validationErr);
