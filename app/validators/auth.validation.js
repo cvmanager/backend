@@ -1,6 +1,6 @@
 const { body, validationResult } = require('express-validator');
 const BadRequestError = require('../exceptions/BadRequestError');
-
+const { mobileFormat } = require('../helper/helper');
 
 exports.signup = [
     body('firstname')
@@ -13,7 +13,7 @@ exports.signup = [
         .trim(),
     body('mobile')
         .notEmpty().withMessage('mobile is require')
-        .isMobilePhone().withMessage('mobile number is invalid!')
+        .matches(mobileFormat).withMessage('Mobile number invalid(must start with 98)')
         .trim(),
     body('password')
         .notEmpty().withMessage('password is require')
@@ -45,7 +45,7 @@ exports.signup = [
 exports.login = [
     body('mobile')
         .notEmpty().withMessage('mobile is require')
-        .isMobilePhone().withMessage('mobile number is invalid!')
+        .matches(mobileFormat).withMessage('Mobile number invalid(must start with 98)')
         .trim(),
     body('password')
         .notEmpty().withMessage('password is require')
