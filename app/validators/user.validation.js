@@ -1,9 +1,7 @@
-const { validationResult, param, body } = require('express-validator');
-const BadRequestError = require('../exceptions/BadRequestError');
-const UserNotFoundError = require('../exceptions/UserNotFoundError');
-const User = require('../models/user.model');
+import { validationResult, param, body } from 'express-validator';
+import BadRequestError from '../exceptions/BadRequestError.js';
 
-exports.find = [
+const find = [
     param('id')
         .notEmpty().withMessage('user id is required')
         .isMongoId().withMessage('user id invalid')
@@ -22,7 +20,7 @@ exports.find = [
     }
 ];
 
-exports.updateProfileImage = [
+const updateProfileImage = [
     body('avatar')
         .notEmpty().withMessage('avatar is required')
         .trim(),
@@ -40,3 +38,6 @@ exports.updateProfileImage = [
         }
     }
 ]
+
+
+export {find,updateProfileImage}

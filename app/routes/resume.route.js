@@ -1,14 +1,15 @@
-const router = require('express').Router()
-const ResumeController = require('../http/controllers/resume.controller');
-const ResumeValidation = require('../validators/resume.validation')
+import express from 'express'
+import ResumeController from '../http/controllers/resume.controller.js';
+import { create, update, update_status, remove, find } from '../validators/resume.validation.js';
 
+const resumeRouter = express.Router();
 
-router
+resumeRouter
     .get('/', ResumeController.index)
-    .get('/:id', ResumeValidation.find, ResumeController.find)
-    .post('/', ResumeValidation.create, ResumeController.create)
-    .patch('/:id', ResumeValidation.update, ResumeController.update)
-    .delete('/:id', ResumeValidation.delete, ResumeController.delete)
-    .patch('/:id/status', ResumeValidation.update_status, ResumeController.updateStatus)
+    .get('/:id', find, ResumeController.find)
+    .post('/', create, ResumeController.create)
+    .patch('/:id', update, ResumeController.update)
+    .delete('/:id', remove, ResumeController.delete)
+    .patch('/:id/status', update_status, ResumeController.updateStatus)
 
-module.exports = router
+export default resumeRouter

@@ -1,6 +1,6 @@
-const { body, validationResult, param } = require('express-validator');
-const BadRequestError = require('../exceptions/BadRequestError');
-exports.create = [
+import { body, validationResult, param } from 'express-validator';
+import BadRequestError from '../exceptions/BadRequestError.js'
+const create = [
     body('company_id')
         .notEmpty().withMessage('company is require')
         .isMongoId().withMessage('company is not valid!')
@@ -27,7 +27,7 @@ exports.create = [
     }
 ];
 
-exports.update = [
+const update = [
     body('name')
         .isLength({ min: 1, max: 50 }).withMessage('name should not be empty, should be more than one and less than 50 character')
         .optional({ nullable: true, checkFalsy: true })
@@ -50,7 +50,7 @@ exports.update = [
     }
 ];
 
-exports.find = [
+const find = [
     param('id')
         .notEmpty().withMessage('project id is required')
         .isMongoId().withMessage('project id invalid')
@@ -69,7 +69,7 @@ exports.find = [
     }
 ];
 
-exports.delete = [
+const remove = [
     param('id')
         .notEmpty().withMessage('project id is required')
         .isMongoId().withMessage('project id invalid')
@@ -87,3 +87,5 @@ exports.delete = [
         }
     }
 ];
+
+export { create, find, update, remove }

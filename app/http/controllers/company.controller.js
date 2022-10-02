@@ -1,9 +1,7 @@
-const Controller = require('./controller');
-const Company = require('../../models/company.model');
-const AppResponse = require('../../helper/response');
-const BadRequestError = require('../../exceptions/BadRequestError');
-
-
+import Controller from './controller.js';
+import Company from '../../models/company.model.js';
+import AppResponse from '../../helper/response.js';
+import BadRequestError from '../../exceptions/BadRequestError.js';
 class CompanyController extends Controller {
 
     async index(req, res, next) {
@@ -63,4 +61,4 @@ class CompanyController extends Controller {
     }
 }
 
-module.exports = new CompanyController
+export default new CompanyController

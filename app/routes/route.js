@@ -1,16 +1,19 @@
-const router = require('express').Router()
-const { verifyToken } = require('../middlewares/auth.middleware')
-const projectRouting = require('./project.route')
-const resumeRouting = require('./resume.route')
-const authRouting = require('./auth.route')
-const userRouting = require('./user.route')
-const companyRouting = require('./company.route')
-
-router.use('/auth', authRouting)
-router.use('/users', verifyToken, userRouting)
-router.use('/companies', verifyToken, companyRouting)
-router.use('/projects', verifyToken, projectRouting)
-router.use('/resumes', verifyToken, resumeRouting)
+import express from 'express'
+import { verifyToken } from '../middlewares/auth.middleware.js'
+import projectRouter from './project.route.js'
+import resumeRouter from './resume.route.js'
+import authRouter from './auth.route.js'
+import userRouter from './user.route.js'
+import companyRouter from './company.route.js'
 
 
-module.exports = router;
+const router = express.Router();
+
+router.use('/auth', authRouter)
+router.use('/users', verifyToken, userRouter)
+router.use('/companies', verifyToken, companyRouter)
+router.use('/projects', verifyToken, projectRouter)
+router.use('/resumes', verifyToken, resumeRouter)
+
+
+export default router;

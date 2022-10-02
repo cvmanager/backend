@@ -1,7 +1,7 @@
-const Controller = require('./controller');
-const Project = require('../../models/project.model')
-const NotFoundError = require('../../exceptions/NotFoundError');
-const AppResponse = require('../../helper/response');
+import Controller from './controller.js';
+import Project from '../../models/project.model.js';
+import AppResponse from '../../helper/response.js';
+import NotFoundError from '../../exceptions/NotFoundError.js';
 class ProjectController extends Controller {
 
     async index(req, res, next) {
@@ -69,4 +69,4 @@ class ProjectController extends Controller {
     }
 }
 
-module.exports = new ProjectController;
+export default new ProjectController;

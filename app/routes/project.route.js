@@ -1,12 +1,14 @@
-const router = require('express').Router()
-const ProjectController = require('../http/controllers/project.controller');
-const ProjectValidation = require('../validators/project.validation')
+import express from 'express'
+import ProjectController from '../http/controllers/project.controller.js';
+import { create, find, update, remove } from '../validators/project.validation.js'
 
-router
+const projectRouter = express.Router();
+
+projectRouter
     .get('/', ProjectController.index)
-    .get('/:id', ProjectValidation.find, ProjectController.find)
-    .post('/', ProjectValidation.create, ProjectController.create)
-    .patch('/:id', ProjectValidation.update, ProjectController.update)
-    .delete('/:id', ProjectValidation.delete, ProjectController.delete)
+    .get('/:id', find, ProjectController.find)
+    .post('/', create, ProjectController.create)
+    .patch('/:id', update, ProjectController.update)
+    .delete('/:id', remove, ProjectController.delete)
 
-module.exports = router
+export default projectRouter

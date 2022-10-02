@@ -1,8 +1,8 @@
-const Controller = require('./controller');
-const Resume = require('../../models/resume.model')
-const Project = require('../../models/project.model')
-const NotFoundError = require('../../exceptions/NotFoundError');
-const AppResponse = require('../../helper/response');
+import Controller from './controller.js';
+import Resume from '../../models/resume.model.js';
+import Project from '../../models/project.model.js';
+import AppResponse from '../../helper/response.js';
+import NotFoundError from '../../exceptions/NotFoundError.js';
 
 class ResumeController extends Controller {
 
@@ -99,4 +99,4 @@ class ResumeController extends Controller {
 
 }
 
-module.exports = new ResumeController;
+export default new ResumeController;

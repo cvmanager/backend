@@ -1,11 +1,11 @@
-const Controller = require('./controller');
-const User = require('../../models/user.model');
-const AppResponse = require('../../helper/response');
-const BadRequestError = require('../../exceptions/BadRequestError');
-const UserNotFoundError = require('../../exceptions/UserNotFoundError');
-const { generateJwtToken, generateJwtRefeshToken } = require('../../helper/jwt');
-const bcrypt = require('bcrypt');
-const redis_client = require('../../helper/redis_client');
+import Controller from './controller.js';
+import User from '../../models/user.model.js';
+import AppResponse from '../../helper/response.js';
+import BadRequestError from '../../exceptions/BadRequestError.js';
+import UserNotFoundError from '../../exceptions/UserNotFoundError.js';
+import { generateJwtToken, generateJwtRefeshToken } from '../../helper/jwt.js'
+import bcrypt from 'bcrypt'
+import redisClient from '../../helper/redis_client.js';
 class AuthController extends Controller {
 
     async login(req, res, next) {
@@ -66,7 +66,7 @@ class AuthController extends Controller {
 
     async logout(req, res, next) {
         try {
-            await redis_client.del(req.user_id.toString());
+            await redisClient.del(req.user_id.toString());
             AppResponse.builder(res).message("Successfuly logout from account").send();
         } catch (err) {
             next(err);
@@ -79,4 +79,4 @@ class AuthController extends Controller {
 }
 
 
-module.exports = new AuthController;
+export default new AuthController;

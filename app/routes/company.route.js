@@ -1,13 +1,15 @@
-const router = require('express').Router();
-const CompanyValidation = require('../validators/company.validation');
-const CompanyController = require('../http/controllers/company.controller')
+import express from 'express'
+import {find,create,update,remove} from '../validators/company.validation.js'
+import CompanyController from '../http/controllers/company.controller.js'
+
+const companyRouter = express.Router();
 
 
-router
+companyRouter
     .get('/', CompanyController.index)
-    .get('/:id', CompanyValidation.find, CompanyController.find)
-    .post('/', CompanyValidation.create, CompanyController.create)
-    .patch('/:id', CompanyValidation.update, CompanyController.update)
-    .delete('/:id', CompanyValidation.delete, CompanyController.delete)
+    .get('/:id', find, CompanyController.find)
+    .post('/', create, CompanyController.create)
+    .patch('/:id', update, CompanyController.update)
+    .delete('/:id', remove, CompanyController.delete)
 
-module.exports = router;
+export default companyRouter;

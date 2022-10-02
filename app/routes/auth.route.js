@@ -1,13 +1,15 @@
-const router = require('express').Router();
-const authController = require('../http/controllers/auth.controller');
-const AuthValidation = require('../validators/auth.validation');
-const { verifyRefrshToken, verifyToken } = require('../middlewares/auth.middleware')
+import express from 'express'
+import AuthController from '../http/controllers/auth.controller.js'
+import { signup, login } from '../validators/auth.validation.js'
+import { verifyRefrshToken, verifyToken } from '../middlewares/auth.middleware.js';
 
-router
-    .post('/signup', AuthValidation.signup, authController.signup)
-    .post('/login', AuthValidation.login, authController.login)
-    .post('/logout', verifyToken, authController.logout)
-    .post('/refresh', verifyRefrshToken, authController.refresh)
-    .post('/verify-token',verifyToken,authController.verifyToken)
+const authRouter = express.Router();
 
-module.exports = router;
+authRouter
+    .post('/signup', signup, AuthController.signup)
+    .post('/login', login, AuthController.login)
+    .post('/logout', verifyToken, AuthController.logout)
+    .post('/refresh', verifyRefrshToken, AuthController.refresh)
+    .post('/verify-token', verifyToken, AuthController.verifyToken)
+
+export default authRouter

@@ -1,10 +1,10 @@
-const multer = require('multer');
-const mkdir = require('mkdirp');
-const BadRequestError = require('../exceptions/BadRequestError');
+import multer from 'multer';
+import mkdirp from 'mkdirp';
+import BadRequestError from '../exceptions/BadRequestError.js';
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        mkdir('./public/profile/')
+        mkdirp('./public/profile/')
             .then((result) => {
                 cb(null, './public/profile/')
             })
@@ -17,8 +17,8 @@ const storage = multer.diskStorage({
     }
 })
 
-const maxSize = 0.1 ; //1mb
-const upload = multer({
+const maxSize = 0.1; //1mb
+const Upload = multer({
     storage: storage,
     fileFilter: (req, file, cb) => {
         if (!['image/jpeg', 'image/jpg', 'image/png'].includes(file.mimetype)) {
@@ -30,4 +30,4 @@ const upload = multer({
     limits: { fileSize: maxSize }
 })
 
-module.exports = upload;
+export { Upload };

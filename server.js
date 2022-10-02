@@ -1,3 +1,3 @@
-const app = require('./app/index');
+import App from './app/index.js'
 
-new app();
+new App();

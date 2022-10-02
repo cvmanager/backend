@@ -1,8 +1,8 @@
-const { body, validationResult } = require('express-validator');
-const BadRequestError = require('../exceptions/BadRequestError');
-const { mobileFormat } = require('../helper/helper');
+import { body, validationResult } from 'express-validator';
+import BadRequestError from '../exceptions/BadRequestError.js';
+import { mobileFormat } from '../helper/helper.js';
 
-exports.signup = [
+const signup = [
     body('firstname')
         .notEmpty().withMessage('firstname is require')
         .isLength({ min: 3, max: 80 }).withMessage('first name should not be empty, should be more than one and less than 3 character')
@@ -42,7 +42,7 @@ exports.signup = [
 ];
 
 
-exports.login = [
+const login = [
     body('mobile')
         .notEmpty().withMessage('mobile is require')
         .matches(mobileFormat).withMessage('Mobile number invalid(must start with 98)')
@@ -64,3 +64,5 @@ exports.login = [
         }
     }
 ];
+
+export { signup, login }

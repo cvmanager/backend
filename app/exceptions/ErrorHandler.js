@@ -1,8 +1,8 @@
-const NotFoundError = require('./NotFoundError');
-const BadRequestError = require('./BadRequestError');
-const UnauthorizedError = require('./UnauthorizedError');
-const UserNotFoundError = require('./UserNotFoundError');
-const JWT = require('jsonwebtoken');
+import NotFoundError from './NotFoundError.js';
+import BadRequestError from './BadRequestError.js'
+import UnauthorizedError from './UnauthorizedError.js';
+import UserNotFoundError from './UserNotFoundError.js';
+import jsonwebtoken from 'jsonwebtoken';
 //================================================
 function errorHandler(err, req, res, next) {
     if (err instanceof NotFoundError) {
@@ -21,7 +21,7 @@ function errorHandler(err, req, res, next) {
         });
     }
 
-    if (err instanceof UnauthorizedError || err instanceof JWT.JsonWebTokenError) {
+    if (err instanceof UnauthorizedError || err instanceof jsonwebtoken.JsonWebTokenError) {
         return res.status(401).json({
             message: err.message ? err.message : "Unauthorized",
             errors: err.errors ? err.errors : [],
@@ -48,4 +48,4 @@ function errorHandler(err, req, res, next) {
 
 }
 
-module.exports = errorHandler;
+export default errorHandler;

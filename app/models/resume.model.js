@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const mongoose_delete = require('mongoose-delete');
+import mongoose from 'mongoose';
+import MongooseDelete from 'mongoose-delete';
 
 
 const schema = new mongoose.Schema(
@@ -108,7 +108,7 @@ const schema = new mongoose.Schema(
     }
 );
 
-schema.plugin(mongoose_delete, { deletedBy: true, deletedAt: true });
+schema.plugin(MongooseDelete, { deletedBy: true, deletedAt: true });
 
 schema.pre(/^find/, function () {
     this.where({ deleted: false });
@@ -119,4 +119,4 @@ schema.pre(/^find/, function () {
 
 const Resume = mongoose.model("resumes", schema);
 
-module.exports = Resume;
+export default Resume;

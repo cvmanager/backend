@@ -1,7 +1,7 @@
-const mongoose = require('mongoose');
-const Resume = require('./resume.model')
-const Project = require('./project.model')
-const mongoose_delete = require('mongoose-delete');
+import mongoose from 'mongoose';
+import MongooseDelete from 'mongoose-delete';
+import Resume from './resume.model.js';
+import Project from './project.model.js';
 
 
 const schema = new mongoose.Schema(
@@ -53,7 +53,7 @@ const schema = new mongoose.Schema(
     }
 );
 
-schema.plugin(mongoose_delete, { deletedBy: true, deletedAt: true });
+schema.plugin(MongooseDelete, { deletedBy: true, deletedAt: true });
 
 schema.pre(/^find/, function () {
     this.where({ deleted: false });
@@ -75,4 +75,4 @@ schema.virtual('resumes', {
 });
 
 const User = mongoose.model("users", schema);
-module.exports = User;
+export default User;

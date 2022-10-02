@@ -7,4 +7,4 @@ class UserNotFoundError extends Error {
     }
 }
 
-module.exports = UserNotFoundError;
+export default UserNotFoundError;

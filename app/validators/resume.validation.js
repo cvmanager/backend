@@ -1,8 +1,8 @@
-const { body, validationResult, param } = require('express-validator');
-const BadRequestError = require('../exceptions/BadRequestError');
-const { mobileFormat } = require('../helper/helper');
+import { body, validationResult, param } from 'express-validator';
+import BadRequestError from '../exceptions/BadRequestError.js';
+import { mobileFormat } from '../helper/helper.js';
 
-exports.create = [
+const create = [
     body('company_id')
         .notEmpty().withMessage('company  field is required')
         .isMongoId().withMessage('company  invalid')
@@ -93,7 +93,7 @@ exports.create = [
     }
 ];
 
-exports.update = [
+const update = [
     param('id')
         .notEmpty().withMessage('resume id is required')
         .isMongoId().withMessage('resume id invalid')
@@ -188,7 +188,7 @@ exports.update = [
     }
 ];
 
-exports.update_status = [
+const update_status = [
     param('id')
         .notEmpty().withMessage('resume id is required')
         .isMongoId().withMessage('resume id is invalid')
@@ -220,7 +220,7 @@ exports.update_status = [
     }
 ]
 
-exports.delete = [
+const remove = [
     param('id')
         .notEmpty().withMessage('resume id is required')
         .isMongoId().withMessage('resume id invalid')
@@ -240,7 +240,7 @@ exports.delete = [
 ];
 
 
-exports.find = [
+const find = [
     param('id')
         .notEmpty().withMessage('resume id is required')
         .isMongoId().withMessage('resume id invalid')
@@ -258,3 +258,5 @@ exports.find = [
         }
     }
 ];
+
+export { create, update, update_status, remove, find }

@@ -1,13 +1,14 @@
-const JWT = require('jsonwebtoken');
-const BadRequestError = require('../exceptions/BadRequestError');
-const redis_client = require('../helper/redis_client');
+import jsonwebtoken from 'jsonwebtoken';
+import BadRequestError from '../exceptions/BadRequestError.js'
+import redisClient from '../helper/redis_client.js'
+
 async function verifyToken(req, res, next) {
     try {
         if (!req.headers.authorization) {
             throw new BadRequestError('token not sended!');
         }
         let token = req.headers.authorization.split(' ')[1];
-        let payload = await JWT.verify(token, process.env.JWT_SECRET_TOKEN);
+        let payload = await jsonwebtoken.verify(token, process.env.JWT_SECRET_TOKEN);
         req.user_id = payload.sub;
         next();
     } catch (err) {
@@ -20,13 +21,13 @@ async function verifyRefrshToken(req, res, next) {
         const token = req.body.token;
         if (token === null) throw new BadRequestError('token not sended!');
 
-        let payload = await JWT.verify(token, process.env.JWT_SECRET_REFRESH_TOKEN);
+        let payload = await jsonwebtoken.verify(token, process.env.JWT_SECRET_REFRESH_TOKEN);
         req.user_id = payload.sub;
 
 
 
 
-            await redis_client.get(payload.sub.toString(), (err, data) => {
+            await redisClient.get(payload.sub.toString(), (err, data) => {
                 if (err) throw new Error(err);
                 if (data == null) throw new BadRequestError('Token is not in store.');
     
@@ -40,4 +41,4 @@ async function verifyRefrshToken(req, res, next) {
     }
 }
 
-module.exports = { verifyToken, verifyRefrshToken }
+export { verifyToken, verifyRefrshToken }

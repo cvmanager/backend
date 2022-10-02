@@ -1,4 +1,4 @@
-module.exports = class AppResponse {
+ class AppResponse {
     responseMessage = "Successfuly";
     responseData = [];
     responseErrors = [];
@@ -40,3 +40,5 @@ module.exports = class AppResponse {
         });
     }
 }
+
+export default AppResponse

@@ -1,8 +1,7 @@
-const Controller = require('./controller');
-const User = require('../../models/user.model')
-const UserNotFoundError = require('../../exceptions/UserNotFoundError');
-const AppResponse = require('../../helper/response');
-const BadRequestError = require('../../exceptions/BadRequestError');
+import Controller from './controller.js';
+import User from '../../models/user.model.js';
+import UserNotFoundError from '../../exceptions/UserNotFoundError.js';
+import AppResponse from '../../helper/response.js';
 
 class UserController extends Controller {
 
@@ -50,4 +49,4 @@ class UserController extends Controller {
     }
 }
 
-module.exports = new UserController;
+export default new UserController;
