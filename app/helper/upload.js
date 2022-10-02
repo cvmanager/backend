@@ -9,8 +9,13 @@ const storage = multer.diskStorage({
             })
     },
     filename: function (req, file, cb) {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
-        cb(null, file.fieldname + '-' + uniqueSuffix)
+        const { originalname } = file
+        const userId = req.params.id
+        let suffix = originalname.split('.')
+        suffix = suffix.at(-1)
+        const imageName = userId + '.' + suffix
+        cb(null, imageName)
+        req.body.image_name = imageName
     }
 })
 

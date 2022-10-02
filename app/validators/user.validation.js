@@ -1,5 +1,7 @@
 const { validationResult, param,body } = require('express-validator');
 const BadRequestError = require('../exceptions/BadRequestError');
+const UserNotFoundError = require('../exceptions/UserNotFoundError');
+const User = require('../models/user.model');
 
 exports.find = [
     param('id')
@@ -25,12 +27,11 @@ exports.updateProfileImage = [
         .notEmpty().withMessage('user id is required')
         .isMongoId().withMessage('user id invalid')
         .trim(),
-    // body('image')
-    //     .notEmpty().withMessage('image is required')
-    //     .trim(),
-    function (req, res, next) {
+    async function (req, res, next) {
         try {
             var errorValidation = validationResult(req);
+            const user = await User.findById(req.params.id);
+            if (!user) throw new UserNotFoundError();
             if (!errorValidation.isEmpty()) {
                 let validationErr = errorValidation.errors.map(item => item.msg);
                 throw new BadRequestError("BadRequest", validationErr);

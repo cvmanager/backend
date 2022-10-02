@@ -2,6 +2,7 @@ const Controller = require('./controller');
 const User = require('../../models/user.model')
 const UserNotFoundError = require('../../exceptions/UserNotFoundError');
 const AppResponse = require('../../helper/response');
+const BadRequestError = require('../../exceptions/BadRequestError');
 
 class UserController extends Controller {
 
@@ -39,13 +40,14 @@ class UserController extends Controller {
     }
 
     async uploadProfileImage(req, res, next) {
-        console.log('constoller upliad',req.body.image);
-
+        const { image_name:imageName } = req.body
+        const { id:userId } = req.params
         try {
-            let user = await User.findById(req.param.id);
-            if (!user) throw new UserNotFoundError();
-            console.log(req.body.image);
-            res.send('OK')
+            if (!imageName) {
+                throw new BadRequestError("BadRequest", 'Image File Not Uploaded!');
+            }
+            const user = await User.findByIdAndUpdate(userId, { avatar: imageName }, { new: true })
+            AppResponse.builder(res).message("Profile Image Successfully Uploaded!").data(user).send()
         } catch (err) {
             next(err);
         }
