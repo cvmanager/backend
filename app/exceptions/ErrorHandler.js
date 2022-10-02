@@ -29,13 +29,17 @@ function errorHandler(err, req, res, next) {
         });
     }
 
-    if(err instanceof UserNotFoundError){
+    if (err instanceof UserNotFoundError) {
         return res.status(400).json({
             message: err.message ? err.message : "UserNotFoundError",
             errors: err.errors ? err.errors : [],
             data: []
         });
     }
+
+
+    if (process.NODE_ENV == 'development') console.log(err);
+
     return res.status(500).json({
         message: "Server Error :)",
         errors: [],
