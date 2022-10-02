@@ -1,5 +1,6 @@
 const { body, validationResult, param } = require('express-validator');
 const BadRequestError = require('../exceptions/BadRequestError');
+const { mobileFormat } = require('../helper/helper');
 
 exports.create = [
     body('company_id')
@@ -36,7 +37,7 @@ exports.create = [
         .trim(),
     body('mobile')
         .notEmpty().withMessage('mobile field is required')
-        .isMobilePhone().withMessage('the mobile format entered is invalid')
+        .matches(mobileFormat).withMessage('Mobile number invalid(must start with 98)')
         .trim(),
     body('residence_city')
         .notEmpty().withMessage('residence city field is required')
@@ -131,7 +132,7 @@ exports.update = [
         .trim(),
     body('mobile')
         .optional({ nullable: true, checkFalsy: true })
-        .isMobilePhone().withMessage('mobile number invalid')
+        .matches(mobileFormat).withMessage('Mobile number invalid(must start with 98)')
         .trim(),
     body('residence_city')
         .optional({ nullable: true, checkFalsy: true })
