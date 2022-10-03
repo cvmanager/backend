@@ -1,5 +1,6 @@
-import { body, validationResult } from 'express-validator';
-import BadRequestError from '../exceptions/BadRequestError.js';
+import { body } from 'express-validator';
+
+import generalValidator from '../helper/validator.js';
 import { mobileFormat } from '../helper/helper.js';
 
 const signup = [
@@ -27,18 +28,7 @@ const signup = [
             return true;
         })
         .trim(),
-    function (req, res, next) {
-        try {
-            var errorValidation = validationResult(req);
-            if (!errorValidation.isEmpty()) {
-                let validationErr = errorValidation.errors.map(item => item.msg);
-                throw new BadRequestError("BadRequest", validationErr);
-            }
-            next();
-        } catch (err) {
-            next(err)
-        }
-    }
+    generalValidator
 ];
 
 
@@ -51,18 +41,7 @@ const login = [
         .notEmpty().withMessage('password is require')
         .isLength({ min: 8, max: 10 }).withMessage('password should not be empty, should be more than one and between 8 - 10  character')
         .trim(),
-    (req, res, next) => {
-        try {
-            var errorValidation = validationResult(req);
-            if (!errorValidation.isEmpty()) {
-                let validationErr = errorValidation.errors.map(item => item.msg);
-                throw new BadRequestError("BadRequest", validationErr);
-            }
-            next();
-        } catch (err) {
-            next(err)
-        }
-    }
+    generalValidator
 ];
 
 export { signup, login }

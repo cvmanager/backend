@@ -1,5 +1,6 @@
-import { body, validationResult, param } from 'express-validator';
-import BadRequestError from '../exceptions/BadRequestError.js';
+import { body, param } from 'express-validator';
+
+import generalValidator from '../helper/validator.js';
 import { mobileFormat } from '../helper/helper.js';
 
 const create = [
@@ -78,19 +79,7 @@ const create = [
         .optional({ nullable: true, checkFalsy: true })
         .isIn(['included', 'end', 'exemption-edu', 'exemption-spo']).withMessage('the selected military status is incorrect')
         .trim(),
-
-    function (req, res, next) {
-        try {
-            var errorValidation = validationResult(req);
-            if (!errorValidation.isEmpty()) {
-                let validationErr = errorValidation.errors.map(item => item.msg);
-                throw new BadRequestError("BadRequest", validationErr);
-            }
-            next();
-        } catch (err) {
-            next(err)
-        }
-    }
+    generalValidator
 ];
 
 const update = [
@@ -173,19 +162,7 @@ const update = [
         .optional({ nullable: true, checkFalsy: true })
         .isIn(['included', 'end', 'exemption-edu', 'exemption-spo']).withMessage('military_status   value invalid!')
         .trim(),
-
-    function (req, res, next) {
-        try {
-            var errorValidation = validationResult(req);
-            if (!errorValidation.isEmpty()) {
-                let validationErr = errorValidation.errors.map(item => item.msg);
-                throw new BadRequestError("BadRequest", validationErr);
-            }
-            next();
-        } catch (err) {
-            next(err)
-        }
-    }
+    generalValidator
 ];
 
 const update_status = [
@@ -206,18 +183,7 @@ const update_status = [
         ])
         .withMessage('status value is invalid!')
         .trim(),
-    function (req, res, next) {
-        try {
-            var errorValidation = validationResult(req);
-            if (!errorValidation.isEmpty()) {
-                let validationErr = errorValidation.errors.map(item => item.msg);
-                throw new BadRequestError("BadRequest", validationErr);
-            }
-            next();
-        } catch (err) {
-            next(err)
-        }
-    }
+    generalValidator
 ]
 
 const remove = [
@@ -225,18 +191,7 @@ const remove = [
         .notEmpty().withMessage('resume id is required')
         .isMongoId().withMessage('resume id invalid')
         .trim(),
-    function (req, res, next) {
-        try {
-            var errorValidation = validationResult(req);
-            if (!errorValidation.isEmpty()) {
-                let validationErr = errorValidation.errors.map(item => item.msg);
-                throw new BadRequestError("BadRequest", validationErr);
-            }
-            next();
-        } catch (err) {
-            next(err)
-        }
-    }
+    generalValidator
 ];
 
 
@@ -245,18 +200,7 @@ const find = [
         .notEmpty().withMessage('resume id is required')
         .isMongoId().withMessage('resume id invalid')
         .trim(),
-    function (req, res, next) {
-        try {
-            var errorValidation = validationResult(req);
-            if (!errorValidation.isEmpty()) {
-                let validationErr = errorValidation.errors.map(item => item.msg);
-                throw new BadRequestError("BadRequest", validationErr);
-            }
-            next();
-        } catch (err) {
-            next(err)
-        }
-    }
+    generalValidator
 ];
 
 export { create, update, update_status, remove, find }
