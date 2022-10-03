@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
-import MongooseDelete from 'mongoose-delete';
-import Resume from './resume.model.js';
-import Project from './project.model.js';
 
+import basePlugin from '../helper/mongoose/base.plugin.js';
+import Project from './project.model.js';
+import Resume from './resume.model.js';
 
 const schema = new mongoose.Schema(
     {
@@ -33,34 +33,11 @@ const schema = new mongoose.Schema(
         is_banded: {
             type: Boolean,
             default: null,
-        },
-
-    },
-    {
-        timestamps: {
-            createdAt: true,
-            updatedAt: true
-        },
-        toJSON: {
-            virtuals: true,
-            transform: function (doc, ret, opt) {
-                delete ret['deletedBy']
-                delete ret['deletedAt']
-                delete ret['__v']
-                return ret
-            }
         }
     }
 );
 
-schema.plugin(MongooseDelete, { deletedBy: true, deletedAt: true });
-
-schema.pre(/^find/, function () {
-    this.where({ deleted: false });
-});
-
-
-
+schema.plugin(basePlugin)
 
 schema.virtual('projects', {
     ref: Project,
