@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
-import MongooseDelete from 'mongoose-delete';
+
+import basePlugin from '../helper/mongoose/base.plugin.js';
 
 const schema = new mongoose.Schema(
     {
@@ -25,30 +26,10 @@ const schema = new mongoose.Schema(
             required: true,
             ref: 'User'
         }
-    },
-    {
-        timestamps: {
-            createdAt: true,
-            updatedAt: true,
-        },
-        toJSON: {
-            transform: function (doc, ret, opt) {
-                delete ret['deletedBy']
-                delete ret['deletedAt']
-                delete ret['__v']
-                return ret
-            }
-        }
     }
 );
 
-schema.plugin(MongooseDelete, { deletedBy: true, deletedAt: true });
-
-schema.pre(/^find/, function () {
-    this.where({ deleted: false });
-});
-
-
+schema.plugin(basePlugin)
 
 const Project = mongoose.model('projects', schema);
 
