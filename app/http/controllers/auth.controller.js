@@ -1,11 +1,13 @@
-import Controller from './controller.js';
-import User from '../../models/user.model.js';
-import AppResponse from '../../helper/response.js';
-import BadRequestError from '../../exceptions/BadRequestError.js';
-import UserNotFoundError from '../../exceptions/UserNotFoundError.js';
-import { generateJwtToken, generateJwtRefeshToken } from '../../helper/jwt.js'
 import bcrypt from 'bcrypt'
+
+import { generateJwtToken, generateJwtRefeshToken } from '../../helper/jwt.js'
+import UserNotFoundError from '../../exceptions/UserNotFoundError.js';
+import BadRequestError from '../../exceptions/BadRequestError.js';
 import redisClient from '../../helper/redis_client.js';
+import AppResponse from '../../helper/response.js';
+import User from '../../models/user.model.js';
+import Controller from './controller.js';
+
 class AuthController extends Controller {
 
     async login(req, res, next) {
@@ -15,15 +17,15 @@ class AuthController extends Controller {
 
 
             let validPassword = await bcrypt.compare(req.body.password, user.password)
-            if (!validPassword) throw new BadRequestError('mobile or password is not match!');
+            if (!validPassword) throw new BadRequestError('auth.error.invalid_credentials');
 
-            if (user.is_banded) throw new BadRequestError('user is banded');
+            if (user.is_banded) throw new BadRequestError('auth.error.user_banned');
 
 
             const access_token = await generateJwtToken(user._id)
             const refresh_token = await generateJwtRefeshToken(user._id);
 
-            AppResponse.builder(res).message('successfuly login').data({ access_token, refresh_token }).send();
+            AppResponse.builder(res).message('auth.suc.success_login').data({ access_token, refresh_token }).send();
         } catch (err) {
             next(err);
         }
@@ -34,7 +36,7 @@ class AuthController extends Controller {
 
             let user = await User.findOne({ mobile: req.body.mobile });
             if (user) {
-                throw new BadRequestError('there is currently a user with entered information in the system');
+                throw new BadRequestError('auth.error.duplicate_user');
             }
             let salt = await bcrypt.genSalt(10);
             let hash_password = await bcrypt.hash(req.body.password, salt);
@@ -48,7 +50,7 @@ class AuthController extends Controller {
             const access_token = await generateJwtToken(user._id)
             const refresh_token = await generateJwtRefeshToken(user._id);
 
-            AppResponse.builder(res).status(201).message("Account Successfuly Created").data({ access_token, refresh_token }).send();
+            AppResponse.builder(res).status(201).message("auth.suc.created").data({ access_token, refresh_token }).send();
         } catch (err) {
             next(err);
         }
@@ -58,7 +60,7 @@ class AuthController extends Controller {
         try {
             const access_token = await generateJwtToken(req.user_id)
             const refresh_token = await generateJwtRefeshToken(req.user_id);
-            AppResponse.builder(res).message('successfuly login').data({ access_token, refresh_token }).send();
+            AppResponse.builder(res).message('auth.suc.success_login').data({ access_token, refresh_token }).send();
         } catch (err) {
             next(err);
         }
@@ -67,14 +69,14 @@ class AuthController extends Controller {
     async logout(req, res, next) {
         try {
             await redisClient.del(req.user_id.toString());
-            AppResponse.builder(res).message("Successfuly logout from account").send();
+            AppResponse.builder(res).message("auth.suc.success_logout").send();
         } catch (err) {
             next(err);
         }
     }
 
     async verifyToken(req, res, next) {
-        AppResponse.builder(res).message("token is verified").send();
+        AppResponse.builder(res).message("auth.suc.token_verified").send();
     }
 }
 

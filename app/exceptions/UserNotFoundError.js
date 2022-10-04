@@ -1,5 +1,5 @@
 class UserNotFoundError extends Error {
-    message = "user not found";
+    message = "user.err.not_found";
     constructor(message, validationErr = []) {
         super(message);
         if(message) this.message = message 

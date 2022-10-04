@@ -1,5 +1,6 @@
 import multer from 'multer';
 import mkdirp from 'mkdirp';
+
 import BadRequestError from '../exceptions/BadRequestError.js';
 
 const storage = multer.diskStorage({
@@ -23,7 +24,7 @@ const Upload = multer({
     fileFilter: (req, file, cb) => {
         if (!['image/jpeg', 'image/jpg', 'image/png'].includes(file.mimetype)) {
             cb(null, false);
-            return cb(new BadRequestError('Only .jpg .png format image'));
+            return cb(new BadRequestError('exceptions.valid_image_format'));
         }
         cb(null, true);
     },

@@ -41,7 +41,7 @@ class App {
 
     routes() {
         app.use('/api', route);
-        app.use('*', () => { throw new NotFoundError('url not found') });
+        app.use('*', () => { throw new NotFoundError('exceptions.url_not_found') });
         app.use(errorHandler);
     }
 
