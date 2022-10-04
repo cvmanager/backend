@@ -28,7 +28,7 @@ class App {
     setConfig() {
         dotenv.config();
         app.use(cors());
-        app.use(i18n);
+        app.use(i18n.init);
 
         app.use(express.json({ strict: false }));
         app.use(express.urlencoded({ extended: false }));

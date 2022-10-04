@@ -11,4 +11,4 @@ i18n.configure({
     objectNotation: true
 })
 
-export default i18n.init
+export default i18n

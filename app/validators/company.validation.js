@@ -5,7 +5,6 @@ import generalValidator from '../helper/validator.js';
 const create = [
     body('name')
         .notEmpty()
-            
             .withMessage('company.validator.name_require')
         .isLength({ min: 3, max: 50 })
             .withMessage('company.validator.name_length')
