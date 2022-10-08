@@ -1,11 +1,17 @@
 import jsonwebtoken from 'jsonwebtoken';
+import Logger from '../helper/logger.js'
 
 import UnauthorizedError from './UnauthorizedError.js';
 import UserNotFoundError from './UserNotFoundError.js';
 import BadRequestError from './BadRequestError.js'
 import NotFoundError from './NotFoundError.js';
 
-function errorHandler(err, req, res, next) {
+
+async function errorHandler(err, req, res, next) {
+
+    await Logger.builder(req).setExeption(err);
+
+
     if (err instanceof NotFoundError) {
         return res.status(404).json({
             message: res.__(err.message),
