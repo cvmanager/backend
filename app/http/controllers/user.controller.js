@@ -1,7 +1,7 @@
-import Controller from './controller.js';
-import User from '../../models/user.model.js';
 import UserNotFoundError from '../../exceptions/UserNotFoundError.js';
 import AppResponse from '../../helper/response.js';
+import User from '../../models/user.model.js';
+import Controller from './controller.js';
 
 class UserController extends Controller {
 
@@ -21,7 +21,7 @@ class UserController extends Controller {
                 .find(searchQuery)
                 .limit(size)
                 .skip(size * (page - 1));
-            AppResponse.builder(res).message("user list successfuly found.").data(users).send();
+            AppResponse.builder(res).message("user.suc.list_found").data(users).send();
         } catch (err) {
             next(err);
         }
@@ -30,9 +30,9 @@ class UserController extends Controller {
     async find(req, res, next) {
         try {
             let user = await User.findById(req.params.id);
-            if (!user) throw new UserNotFoundError('User Not Found');
+            if (!user) throw new UserNotFoundError('user.err.not_found');
 
-            AppResponse.builder(res).message("user successfuly found").data(user).send();
+            AppResponse.builder(res).message("user.suc.found").data(user).send();
         } catch (err) {
             next(err);
         }
@@ -42,7 +42,7 @@ class UserController extends Controller {
 
         try {
             let user = await User.findOneAndUpdate({_id : req.user_id} , {avatar : req.body.avatar} , {new : true});
-            AppResponse.builder(res).message("profile image successfully uploaded!").data(user).send();
+            AppResponse.builder(res).message("user.suc.profile_image_updated").data(user).send();
         } catch (err) {
             next(err);
         }

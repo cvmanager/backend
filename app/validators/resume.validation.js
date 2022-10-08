@@ -1,195 +1,250 @@
 import { body, param } from 'express-validator';
 
 import generalValidator from '../helper/validator.js';
+import i18n from '../middlewares/lang.middleware.js';
 import { mobileFormat } from '../helper/helper.js';
 
 const create = [
     body('company_id')
-        .notEmpty().withMessage('company  field is required')
-        .isMongoId().withMessage('company  invalid')
+        .notEmpty()
+            .withMessage('resume.validator.company_require')
+        .isMongoId()
+            .withMessage('resume.validator.company_invalid')
         .trim(),
     body('project_id')
-        .notEmpty().withMessage('project  field is required')
-        .isMongoId().withMessage('project  invalid')
+        .notEmpty()
+            .withMessage('resume.validator.project_require')
+        .isMongoId()
+            .withMessage('resume.validator.porject_invalid')
         .trim(),
     body('firstname')
-        .notEmpty().withMessage('firstname field is required')
-        .isLength({ min: 3, max: 50 }).withMessage('firstname should not be empty, should be more than 3 and less than 50 character')
+        .notEmpty()
+            .withMessage('resume.validator.firstname_require')
+        .isLength({ min: 3, max: 50 })
+            .withMessage('resume.validator.firstname_length')
         .trim(),
     body('lastname')
-        .notEmpty().withMessage('lastname field is required')
-        .isLength({ min: 3, max: 50 }).withMessage('lastname should not be empty, should be more than 3 and less than 50 character')
+        .notEmpty()
+            .withMessage('resume.validator.lastname_require')
+        .isLength({ min: 3, max: 50 })
+            .withMessage('resume.validator.lastname_length')
         .trim(),
     body('gender')
-        .notEmpty().withMessage('ender field is required')
-        .isIn(['men', 'women']).withMessage('the selected gender is incorrect')
+        .notEmpty()
+            .withMessage('resume.validator.gender_require')
+        .isIn(i18n.__("enums.gender"))
+            .withMessage('resume.validator.gender_incorrect')
         .trim(),
     body('email')
-        .notEmpty().withMessage('email field is required')
-        .isEmail().withMessage('the email entered is invalid')
+        .notEmpty()
+            .withMessage('resume.validator.email_require')
+        .isEmail()
+            .withMessage('resume.validator.email_invalid')
         .trim(),
     body('birth_year')
-        .notEmpty().withMessage('birth year field is required')
-        .isLength({ min: 4, max: 4 }).withMessage('birth year should not be empty, should be 4 character')
+        .notEmpty()
+            .withMessage('resume.validator.birth_year_require')
+        .isLength({ min: 4, max: 4 })
+            .withMessage('resume.validator.birth_year_length')
         .trim(),
     body('marital_status')
-        .notEmpty().withMessage('marital status field is required')
-        .isIn(['single', 'married', 'isolated', 'unknow']).withMessage('the selected marital status is incorrect')
+        .notEmpty()
+            .withMessage('resume.validator.marital_status_require')
+        .isIn(i18n.__("enums.marital_status"))
+            .withMessage('resume.validator.marital_status_incorrect')
         .trim(),
     body('mobile')
-        .notEmpty().withMessage('mobile field is required')
-        .matches(mobileFormat).withMessage('Mobile number invalid(must start with 98)')
+        .notEmpty()
+            .withMessage('resume.validator.mobile_require')
+        .matches(mobileFormat) 
+            .withMessage('auth.validator.mobile_pattern')
         .trim(),
     body('residence_city')
-        .notEmpty().withMessage('residence city field is required')
-        .isLength({ min: 2, max: 50 }).withMessage('residence city should not be empty, should be more than 2 and less than 50 character')
+        .notEmpty()
+            .withMessage('resume.validator.residence_city_require')
+        .isLength({ min: 2, max: 50 })
+            .withMessage('resume.validator.residence_city_length')
         .trim(),
     body('work_city')
-        .notEmpty().withMessage('work city field is required')
-        .isLength({ min: 2, max: 50 }).withMessage('work city should not be empty, should be more than 2 and less than 50 character')
+        .notEmpty()
+            .withMessage('resume.validator.work_city_require')
+        .isLength({ min: 2, max: 50 })
+            .withMessage('resume.validator.work_city_length')
         .trim(),
     body('education')
-        .notEmpty().withMessage('education field is required')
-        .isIn(['phd', 'diploma', 'associate_degree', 'bachelors_degree', 'masters']).withMessage('the selected education is incorrect')
+        .notEmpty() 
+            .withMessage('resume.validator.education_require')
+        .isIn(i18n.__('enums.education'))
+            .withMessage('resume.validator.education_incorrect')
         .trim(),
     body('major')
-        .notEmpty().withMessage('major field is required')
-        .isLength({ min: 3, max: 20 }).withMessage('major should not be empty, should be more than 2 and less than 20 character')
+        .notEmpty()
+            .withMessage('resume.validator.major_require')
+        .isLength({ min: 3, max: 20 })
+            .withMessage('resume.validator.major_length')
         .trim(),
     body('phone')
         .optional({ nullable: true, checkFalsy: true })
-        .isNumeric().withMessage('the phone field can only contain numbers')
-        .isLength({ min: 9, max: 12 }).withMessage('phone should not be empty, should be more than 9 and less than 12 character')
+        .isNumeric()
+            .withMessage('resume.validator.phone_numeric')
+        .isLength({ min: 9, max: 12 }) 
+            .withMessage('resume.validator.phone_length')
         .trim(),
     body('min_salary')
         .optional({ nullable: true, checkFalsy: true })
-        .isNumeric().withMessage('the min salary field can only contain numbers')
-        .isLength({ min: 0, max: 1000000000 }).withMessage('min salary should not be empty, should should be between 0 and 1000000000')
+        .isNumeric()
+            .withMessage('resume.validator.min_salary_numeric')
+        .isLength({ min: 0, max: 1000000000 })
+            .withMessage('resume.validator.min_salary_length')
         .trim(),
     body('max_salary')
         .optional({ nullable: true, checkFalsy: true })
-        .isNumeric().withMessage('the max salary field can only contain numbers')
-        .isLength({ min: 0, max: 1000000000 }).withMessage('max salary should not be empty, should should be between 0 and 1000000000')
+        .isNumeric()
+            .withMessage('resume.validator.max_salary_numeric')
+        .isLength({ min: 0, max: 1000000000 })
+            .withMessage('resume.validator.max_salary_length')
         .trim(),
     body('work_experience')
         .optional({ nullable: true, checkFalsy: true })
-        .isNumeric().withMessage('the work experience field can only contain numbers')
+        .isNumeric()
+            .withMessage('resume.validator.work_exp_numeric')
         .trim(),
     body('military_status')
         .optional({ nullable: true, checkFalsy: true })
-        .isIn(['included', 'end', 'exemption-edu', 'exemption-spo']).withMessage('the selected military status is incorrect')
+        .isIn(i18n.__("enums.military_status"))
+            .withMessage('resume.validator.military_status_incorrect')
         .trim(),
     generalValidator
 ];
 
 const update = [
     param('id')
-        .notEmpty().withMessage('resume id is required')
-        .isMongoId().withMessage('resume id invalid')
+        .notEmpty()
+            .withMessage('resume.validator.id_require')
+        .isMongoId()
+            .withMessage('resume.validator.id_invalid')
         .trim(),
     body('company_id')
         .optional({ nullable: true, checkFalsy: true })
-        .isMongoId().withMessage('company invalid')
+        .isMongoId()
+            .withMessage('resume.validator.company_invalid')
         .trim(),
     body('project_id')
         .optional({ nullable: true, checkFalsy: true })
-        .isMongoId().withMessage('project  invalid')
+        .isMongoId()
+            .withMessage('resume.validator.porject_invalid')
         .trim(),
     body('firstname')
         .optional({ nullable: true, checkFalsy: true })
-        .isLength({ min: 3, max: 50 }).withMessage('firstname should not be empty, should be more than one and less than 3 character')
+        .isLength({ min: 3, max: 50 })
+            .withMessage('resume.validator.update_firstname_legth')
         .trim(),
     body('lastname')
         .optional({ nullable: true, checkFalsy: true })
-        .isLength({ min: 3, max: 50 }).withMessage('lastname should not be empty, should be more than one and less than 3 character')
+        .isLength({ min: 3, max: 50 })
+            .withMessage('resume.validator.update_lastname_legth')
         .trim(),
     body('gender')
         .optional({ nullable: true, checkFalsy: true })
-        .isIn(['men', 'women']).withMessage('gender value invalid!')
+        .isIn(i18n.__("enums.gender"))
+            .withMessage('resume.validator.gender_incorrect')
         .trim(),
     body('email')
         .optional({ nullable: true, checkFalsy: true })
-        .isEmail().withMessage('email is not valid')
+        .isEmail()
+            .withMessage('resume.validator.email_invalid')
         .trim(),
     body('birth_year')
         .optional({ nullable: true, checkFalsy: true })
-        .isLength({ min: 4, max: 4 }).withMessage('birth year should not be empty, should be more than one and less than 4 character')
+        .isLength({ min: 4, max: 4 })
+            .withMessage('resume.validator.birth_year_length')
         .trim(),
     body('marital_status')
         .optional({ nullable: true, checkFalsy: true })
-        .isIn(['single', 'married', 'isolated', 'unknow']).withMessage('marital status  value invalid!')
+        .isIn(i18n.__("marital_status"))
+            .withMessage('resume.validator.marital_status_incorrect')
         .trim(),
     body('mobile')
         .optional({ nullable: true, checkFalsy: true })
-        .matches(mobileFormat).withMessage('Mobile number invalid(must start with 98)')
+        .matches(mobileFormat)
+            .withMessage('auth.validator.mobile_pattern')
         .trim(),
     body('residence_city')
         .optional({ nullable: true, checkFalsy: true })
-        .isLength({ min: 2, max: 50 }).withMessage('residence_city  should not be empty, should be more than one and less than 2 character')
+        .isLength({ min: 2, max: 50 })
+            .withMessage('resume.validator.residence_city_length')
         .trim(),
     body('work_city')
         .optional({ nullable: true, checkFalsy: true })
-        .isLength({ min: 2, max: 50 }).withMessage('work_city  should not be empty, should be more than one and less than 2 character')
+        .isLength({ min: 2, max: 50 })
+            .withMessage('resume.validator.work_city_length')
         .trim(),
     body('education')
         .optional({ nullable: true, checkFalsy: true })
-        .isIn(['phd', 'diploma', 'associate_degree', 'bachelors_degree', 'masters']).withMessage('education   value invalid!')
+        .isIn(i18n.__("enums.education"))
+            .withMessage('resume.validator.education_incorrect')
         .trim(),
     body('major')
         .optional({ nullable: true, checkFalsy: true })
-        .isLength({ min: 3, max: 20 }).withMessage('major is not valid')
+        .isLength({ min: 3, max: 20 })
+            .withMessage('resume.validator.major_invalid')
         .trim(),
     body('phone')
         .optional({ nullable: true, checkFalsy: true })
-        .isNumeric().withMessage('phone only is number!')
-        .isLength({ min: 9, max: 12 }).withMessage('phone 9-12!')
+        .isNumeric()
+            .withMessage('')
+        .isLength({ min: 9, max: 12 })
+            .withMessage('resume.validator.phone_length')
         .trim(),
     body('min_salary')
         .optional({ nullable: true, checkFalsy: true })
-        .isNumeric().withMessage('min_salary only is number!')
-        .isLength({ min: 0, max: 1000000000 }).withMessage('phone 9-12!')
+        .isNumeric()
+            .withMessage('resume.validator.min_salary_numeric')
+        .isLength({ min: 0, max: 1000000000 })
+            .withMessage('resume.validator.min_salary_length')
         .trim(),
     body('max_salary')
         .optional({ nullable: true, checkFalsy: true })
-        .isNumeric().withMessage('max_salary only is number!')
-        .isLength({ min: 0, max: 1000000000 }).withMessage('phone 9-12!')
+        .isNumeric()
+            .withMessage('resume.validator.max_salary_numeric')
+        .isLength({ min: 0, max: 1000000000 })
+            .withMessage('resume.validator.max_salary_length')
         .trim(),
     body('work_experience')
         .optional({ nullable: true, checkFalsy: true })
-        .isNumeric().withMessage('work_experience only is number!')
+        .isNumeric()
+            .withMessage('resume.validator.work_exp_numeric')
         .trim(),
     body('military_status')
         .optional({ nullable: true, checkFalsy: true })
-        .isIn(['included', 'end', 'exemption-edu', 'exemption-spo']).withMessage('military_status   value invalid!')
+        .isIn(i18n.__("enums.military_status"))
+            .withMessage('resume.validator.military_status_incorrect')
         .trim(),
     generalValidator
 ];
 
 const update_status = [
     param('id')
-        .notEmpty().withMessage('resume id is required')
-        .isMongoId().withMessage('resume id is invalid')
+        .notEmpty()
+            .withMessage('resume.validator.id_require')
+        .isMongoId()
+            .withMessage('resume.validator.id_invalid')
         .trim(),
     body('status')
-        .notEmpty().withMessage('status is required')
-        .isIn([
-            'pending',
-            'call_review',
-            'tech_review',
-            'wait_reject',
-            'rejected',
-            'hired',
-            'wait_hire',
-        ])
-        .withMessage('status value is invalid!')
+        .notEmpty()
+            .withMessage('resume.validator.status_require')
+        .isIn(i18n.__("enums.resume_status"))
+        .withMessage('resume.validator.status_require')
         .trim(),
     generalValidator
 ]
 
 const remove = [
     param('id')
-        .notEmpty().withMessage('resume id is required')
-        .isMongoId().withMessage('resume id invalid')
+        .notEmpty()
+            .withMessage('resume.validator.id_require')
+        .isMongoId()
+            .withMessage('resume.validator.id_invalid')
         .trim(),
     generalValidator
 ];
@@ -197,8 +252,10 @@ const remove = [
 
 const find = [
     param('id')
-        .notEmpty().withMessage('resume id is required')
-        .isMongoId().withMessage('resume id invalid')
+        .notEmpty()
+            .withMessage('resume.validator.id_require')
+        .isMongoId()
+            .withMessage('resume.validator.id_invalid')
         .trim(),
     generalValidator
 ];

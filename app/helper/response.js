@@ -13,7 +13,7 @@
     }
 
     message(message) {
-        this.responseMessage = message;
+        this.responseMessage = this.res.__(message);
         return this;
     }
 

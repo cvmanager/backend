@@ -1,12 +1,13 @@
-import express from 'express'
 import mongoose from 'mongoose'
-import errorHandler from './exceptions/ErrorHandler.js';
-import NotFoundError from './exceptions/NotFoundError.js';
-import cors from 'cors'
+import express from 'express'
 import morgan from 'morgan'
 import dotenv from 'dotenv'
-import route from './routes/route.js'
+import cors from 'cors'
 
+import NotFoundError from './exceptions/NotFoundError.js';
+import errorHandler from './exceptions/ErrorHandler.js';
+import i18n from './middlewares/lang.middleware.js'
+import route from './routes/route.js'
 
 const app = express();
 class App {
@@ -27,6 +28,7 @@ class App {
     setConfig() {
         dotenv.config();
         app.use(cors());
+        app.use(i18n.init);
 
         app.use(express.json({ strict: false }));
         app.use(express.urlencoded({ extended: false }));
@@ -39,7 +41,7 @@ class App {
 
     routes() {
         app.use('/api', route);
-        app.use('*', () => { throw new NotFoundError('url not found') });
+        app.use('*', () => { throw new NotFoundError('exceptions.url_not_found') });
         app.use(errorHandler);
     }
 

@@ -1,7 +1,8 @@
-import Controller from './controller.js';
+import BadRequestError from '../../exceptions/BadRequestError.js';
 import Company from '../../models/company.model.js';
 import AppResponse from '../../helper/response.js';
-import BadRequestError from '../../exceptions/BadRequestError.js';
+import Controller from './controller.js';
+
 class CompanyController extends Controller {
 
     async index(req, res, next) {
@@ -11,7 +12,7 @@ class CompanyController extends Controller {
             let searchQuery = (query.length > 0 ? { $or: [{ name: { '$regex': query } }] } : null);
 
             let companyList = await Company.find(searchQuery).limit(size).skip(size * (page - 1));
-            AppResponse.builder(res).message("succussfully founded").data(companyList).send();
+            AppResponse.builder(res).message("company.suc.found").data(companyList).send();
         } catch (err) {
             next(err);
         }
@@ -20,9 +21,9 @@ class CompanyController extends Controller {
     async find(req, res, next) {
         try {
             const company = Company.findById(req.params.id);
-            if (!company) throw new BadRequestError('company not found!');
+            if (!company) throw new BadRequestError('company.err.not_found');
 
-            AppResponse.builder(res).message('company successfuly found').data(company).send();
+            AppResponse.builder(res).message('company.suc.found').data(company).send();
         } catch (err) {
             next(err);
         }
@@ -33,7 +34,7 @@ class CompanyController extends Controller {
             req.body.created_by = req.user_id;
             const company = await Company.create(req.body);
 
-            AppResponse.builder(res).status(201).message('company successfuly created').data(company).send();
+            AppResponse.builder(res).status(201).message('company.suc.created').data(company).send();
         } catch (err) {
             next(err)
         }
@@ -42,7 +43,7 @@ class CompanyController extends Controller {
     async update(req, res, next) {
         try {
             await Company.findByIdAndUpdate(req.params.id, req.body, { new: true })
-                .then(company => AppResponse.builder(res).message("the company has been successfully updated").data(company).send())
+                .then(company => AppResponse.builder(res).message("company.suc.updated").data(company).send())
                 .catch(err => next(err));
         } catch (err) {
             next(err);
@@ -52,9 +53,9 @@ class CompanyController extends Controller {
     async delete(req, res, next) {
         try {
             let company = await Company.findById(req.params.id);
-            if (!company) throw new NotFoundError('company not found');
+            if (!company) throw new NotFoundError('company.err.not_found');
             await company.delete(req.user_id);
-            AppResponse.builder(res).message("company successfully deleted").data(company).send();
+            AppResponse.builder(res).message("company.suc.deleted").data(company).send();
         } catch (err) {
             next(err);
         }

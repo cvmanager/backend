@@ -4,15 +4,18 @@ import generalValidator from '../helper/validator.js';
 
 const find = [
     param('id')
-        .notEmpty().withMessage('user id is required')
-        .isMongoId().withMessage('user id invalid')
+        .notEmpty()
+            .withMessage('user.validator.id_require')
+        .isMongoId()
+            .withMessage('user.validator.id_invalid')
         .trim(),
     generalValidator
 ];
 
 const updateProfileImage = [
     body('avatar')
-        .notEmpty().withMessage('avatar is required')
+        .notEmpty()
+            .withMessage('user.validator.avatar_require')
         .trim(),
     generalValidator
 ]
