@@ -1,4 +1,4 @@
-class AlreadyCreated extends Error {
+class AlreadyExists extends Error {
     message = "AlreaduCreated:((";
     // status = 404;
     constructor(message) {
@@ -7,4 +7,4 @@ class AlreadyCreated extends Error {
     }
 } 
 
-export default AlreadyCreated;
+export default AlreadyExists;
