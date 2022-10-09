@@ -5,6 +5,7 @@ import UnauthorizedError from './UnauthorizedError.js';
 import UserNotFoundError from './UserNotFoundError.js';
 import BadRequestError from './BadRequestError.js'
 import NotFoundError from './NotFoundError.js';
+import AlreadyExists from './AlreadyExists.js';
 
 
 async function errorHandler(err, req, res, next) {
@@ -44,6 +45,13 @@ async function errorHandler(err, req, res, next) {
         });
     }
 
+    if (err instanceof AlreadyExists) {
+        return res.status(403).json({
+            message: res.__(err.message),
+            errors: err.errors ? err.errors : [],
+            data: []
+        });
+    }
 
     if (process.env.NODE_ENV == 'development') console.log(err);
 
