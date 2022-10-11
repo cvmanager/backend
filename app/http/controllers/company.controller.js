@@ -5,6 +5,15 @@ import Controller from './controller.js';
 
 class CompanyController extends Controller {
 
+    /**
+    * GET /companies
+    * @summary gets a list of companies
+    * @tags company
+    * @return { company_success } 200 - success response
+    * @return { company_bad_request } 400 - bad request respone
+    * @return { company_bad_request } 404 - not found respone
+    * @security BearerAuth
+    */
     async index(req, res, next) {
         try {
             const { page = 1, size = 10, query = '' } = req.query
@@ -18,6 +27,16 @@ class CompanyController extends Controller {
         }
     }
 
+    /**
+    * GET /companies/:id
+    * @summary gets a company by id
+    * @tags company
+    * @param  { string } id.path - company id
+    * @return { company_success } 200 - success response
+    * @return { company_bad_request } 400 - bad request respone
+    * @return { company_bad_request } 404 - not found respone
+    * @security BearerAuth
+    */
     async find(req, res, next) {
         try {
             const company = Company.findById(req.params.id);
@@ -29,6 +48,18 @@ class CompanyController extends Controller {
         }
     }
 
+
+    /**
+    * POST /companies
+    * @summary creates a copmany by id
+    * @tags company
+    * @param { create_company } request.body - company info - multipart/form-data
+    * @param { create_company } request.body - company info - application/json
+    * @return { company_success } 200 - success response
+    * @return { company_bad_request } 400 - bad request respone
+    * @return { company_bad_request } 404 - not found respone
+    * @security BearerAuth
+    */
     async create(req, res, next) {
         try {
             req.body.created_by = req.user_id;
@@ -40,6 +71,18 @@ class CompanyController extends Controller {
         }
     }
 
+    /**
+    * PATCH /companies/:id
+    * @summary updates a copmany
+    * @tags company
+    * @param  { string } id.path - company id
+    * @param { create_company } request.body - company info - multipart/form-data
+    * @param { create_company } request.body - company info - application/json
+    * @return { company_success } 200 - success response
+    * @return { company_bad_request } 400 - bad request respone
+    * @return { company_bad_request } 404 - not found respone
+    * @security BearerAuth
+    */
     async update(req, res, next) {
         try {
             await Company.findByIdAndUpdate(req.params.id, req.body, { new: true })
@@ -50,6 +93,16 @@ class CompanyController extends Controller {
         }
     }
 
+    /**
+    * DELETE /companies/:id
+    * @summary deletes a copmany by id
+    * @tags company
+    * @param  { string } id.path - company id
+    * @return { company_success } 200 - success response
+    * @return { company_bad_request } 400 - bad request respone
+    * @return { company_bad_request } 404 - not found respone
+    * @security BearerAuth
+    */
     async delete(req, res, next) {
         try {
             let company = await Company.findById(req.params.id);
