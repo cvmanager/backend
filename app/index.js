@@ -1,3 +1,4 @@
+import expressJSDocSwagger from 'express-jsdoc-swagger'
 import mongoose from 'mongoose'
 import express from 'express'
 import morgan from 'morgan'
@@ -7,6 +8,7 @@ import cors from 'cors'
 import NotFoundError from './exceptions/NotFoundError.js';
 import errorHandler from './exceptions/ErrorHandler.js';
 import i18n from './middlewares/lang.middleware.js'
+import options from './docs/swaggerSpecs.js'
 import route from './routes/route.js'
 
 const app = express();
@@ -33,6 +35,7 @@ class App {
         app.use(express.json({ strict: false }));
         app.use(express.urlencoded({ extended: false }));
 
+        expressJSDocSwagger(app)(options);
 
         if (process.env.NODE_ENV == 'development') {
             app.use(morgan('combined'))
