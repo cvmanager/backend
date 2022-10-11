@@ -18,6 +18,7 @@
     }
 
     data(data) {
+        data = Array.isArray(data) ? data : [data]
         this.responseData = data;
         return this;
     }
