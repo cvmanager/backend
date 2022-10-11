@@ -1,4 +1,5 @@
 import BadRequestError from '../../exceptions/BadRequestError.js';
+import AlreadyExists from '../../exceptions/AlreadyExists.js';
 import Company from '../../models/company.model.js';
 import AppResponse from '../../helper/response.js';
 import Controller from './controller.js';
@@ -31,8 +32,11 @@ class CompanyController extends Controller {
 
     async create(req, res, next) {
         try {
+            let company = await Company.findOne({'name':req.body.name});
+            if (company) throw new AlreadyExists('company.err.already_exists');
+
             req.body.created_by = req.user_id;
-            const company = await Company.create(req.body);
+            company = await Company.create(req.body);
 
             AppResponse.builder(res).status(201).message('company.suc.created').data(company).send();
         } catch (err) {
