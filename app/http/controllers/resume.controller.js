@@ -1,5 +1,7 @@
+import { resumeEvents } from '../../events/subscribers/resumes.subscriber.js';
 import NotFoundError from '../../exceptions/NotFoundError.js';
 import Project from '../../models/project.model.js';
+import EventEmitter from '../../events/emitter.js';
 import AppResponse from '../../helper/response.js';
 import Resume from '../../models/resume.model.js';
 import Controller from './controller.js';
@@ -57,6 +59,9 @@ class ResumeController extends Controller {
             req.body.created_by = req.user_id
             req.body.status = 'pending'
             let resume = await Resume.create(req.body)
+
+            EventEmitter.emit(resumeEvents.NEW_RESUME, resume)
+
             AppResponse.builder(res).status(201).message("resume.suc.create_and_found").data(resume).send();
         } catch (err) {
             next(err);
