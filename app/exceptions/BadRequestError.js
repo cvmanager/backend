@@ -3,7 +3,8 @@ class BadRequestError extends Error {
     // status = 404;
     constructor(message, validationErr = []) {
         super(message);
-        this.message = message;
+        if(message) this.message = message 
+
         this.errors = validationErr;
     }
 }

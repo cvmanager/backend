@@ -10,7 +10,7 @@ import errorHandler from './exceptions/ErrorHandler.js';
 import i18n from './middlewares/lang.middleware.js'
 import options from './docs/swaggerSpecs.js'
 import route from './routes/route.js'
-
+import  Ratelimiter  from '../app/middlewares/rate-limiter.js'
 const app = express();
 class App {
     constructor() {
@@ -31,6 +31,7 @@ class App {
         dotenv.config();
         app.use(cors());
         app.use(i18n.init);
+        app.use(Ratelimiter);
 
         app.use(express.json({ strict: false }));
         app.use(express.urlencoded({ extended: false }));
