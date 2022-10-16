@@ -1,6 +1,5 @@
 import BadRequestError from '../../exceptions/BadRequestError.js';
 import UserNotFoundError from '../../exceptions/UserNotFoundError.js';
-import { getCurentDate } from '../../helper/helper.js';
 import AppResponse from '../../helper/response.js';
 import User from '../../models/user.model.js';
 import Controller from './controller.js';
