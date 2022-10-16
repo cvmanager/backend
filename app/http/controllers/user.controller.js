@@ -1,4 +1,6 @@
+import BadRequestError from '../../exceptions/BadRequestError.js';
 import UserNotFoundError from '../../exceptions/UserNotFoundError.js';
+import { getCurentDate } from '../../helper/helper.js';
 import AppResponse from '../../helper/response.js';
 import User from '../../models/user.model.js';
 import Controller from './controller.js';
@@ -41,8 +43,29 @@ class UserController extends Controller {
     async uploadProfileImage(req, res, next) {
 
         try {
-            let user = await User.findOneAndUpdate({_id : req.user_id} , {avatar : req.body.avatar} , {new : true});
+            let user = await User.findOneAndUpdate({ _id: req.user_id }, { avatar: req.body.avatar }, { new: true });
             AppResponse.builder(res).message("user.suc.profile_image_updated").data(user).send();
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    async banned(req, res, next) {
+
+
+        try {
+            let user = await User.findById(req.params.id);
+            if (!user) throw new UserNotFoundError();
+
+            if (user.is_banned) throw new BadRequestError('user.err.user_is_currently_blocked')
+
+            user.is_banned = 1;
+            user.banned_by = req.user_id;
+            user.banned_at = new Date().toISOString();
+            await user.save();
+
+            AppResponse.builder(res).message('user.suc.user_successfully_blocked').data(user).send();
+
         } catch (err) {
             next(err);
         }

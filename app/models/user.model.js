@@ -30,8 +30,16 @@ const schema = new mongoose.Schema(
             type: String,
             default: null,
         },
-        is_banded: {
+        is_banned: {
             type: Boolean,
+            default: null,
+        },
+        banned_by: {
+            type: mongoose.Schema.Types.ObjectId,
+            default: null,
+        },
+        banned_at: {
+            type: Date,
             default: null,
         }
     }
