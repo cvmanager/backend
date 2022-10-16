@@ -5,9 +5,9 @@ import generalValidator from '../helper/validator.js';
 const find = [
     param('id')
         .notEmpty()
-            .withMessage('user.validator.id_require')
+        .withMessage('user.validator.id_require')
         .isMongoId()
-            .withMessage('user.validator.id_invalid')
+        .withMessage('user.validator.id_invalid')
         .trim(),
     generalValidator
 ];
@@ -15,10 +15,20 @@ const find = [
 const updateProfileImage = [
     body('avatar')
         .notEmpty()
-            .withMessage('user.validator.avatar_require')
+        .withMessage('user.validator.avatar_require')
+        .trim(),
+    generalValidator
+]
+
+const ban = [
+    param('id')
+        .notEmpty()
+        .withMessage('user.validator.id_require')
+        .isMongoId()
+        .withMessage('user.validator.id_invalid')
         .trim(),
     generalValidator
 ]
 
 
-export { find,updateProfileImage }
+export { find, updateProfileImage, ban }
