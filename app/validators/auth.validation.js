@@ -6,32 +6,32 @@ import { mobileFormat } from '../helper/helper.js';
 const signup = [
     body('firstname')
         .notEmpty()
-            .withMessage('auth.validator.firstname_require')
+            .withMessage('auth.validation.firstname_required')
         .isLength({ min: 3, max: 80 })
-            .withMessage('auth.validator.firstname_length')
+            .withMessage('auth.validation.firstname_length')
         .trim(),
     body('lastname')
         .notEmpty()
-            .withMessage('auth.validator.lastname_require')
+            .withMessage('auth.validation.lastname_required')
         .isLength({ min: 3, max: 80 })
-            .withMessage('auth.validator.lastname_length')
+            .withMessage('auth.validation.lastname_length')
         .trim(),
     body('mobile')
         .notEmpty()
-            .withMessage('auth.validator.mobile_require')
+            .withMessage('auth.validation.mobile_required')
         .matches(mobileFormat)
-            .withMessage('auth.validator.mobile_pattern')
+            .withMessage('auth.validation.mobile_pattern')
         .trim(),
     body('password')
         .notEmpty()
-            .withMessage('auth.validator.pass_require')
+            .withMessage('auth.validation.password_required')
         .isLength({ min: 8, max: 10 })
-            .withMessage('auth.validator.pass_length')
+            .withMessage('auth.validation.password_length')
         .trim(),
     body('password_confirm')
         .custom((value, { req }) => {
             if (value !== req.body.password) {
-                throw new Error('auth.validator.pass_confirm_match')
+                throw new Error('auth.validation.pass_confirm_match')
             }
             return true;
         })
@@ -43,15 +43,15 @@ const signup = [
 const login = [
     body('mobile')
         .notEmpty()
-            .withMessage('auth.validator.mobile_require')
+            .withMessage('auth.validation.mobile_required')
         .matches(mobileFormat)
-            .withMessage('auth.validator.mobile_pattern')
+            .withMessage('auth.validation.mobile_pattern')
         .trim(),
     body('password')
         .notEmpty()
-            .withMessage('auth.validator.pass_require')
+            .withMessage('auth.validation.password_required')
         .isLength({ min: 8, max: 10 })
-            .withMessage('auth.validator.pass_length')
+            .withMessage('auth.validation.password_length')
         .trim(),
     generalValidator
 ];

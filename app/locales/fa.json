@@ -1,0 +1,36 @@
+{
+	"enums": {
+		"gender": [
+			"men",
+			"womens"
+		],
+		"marital_status": [
+			"single",
+			"married",
+			"isolated",
+			"unknow"
+		],
+		"education": [
+			"phd",
+			"diploma",
+			"associate_degree",
+			"bachelors_degree",
+			"masters"
+		],
+		"military_status": [
+			"included",
+			"end",
+			"exemption-edu",
+			"exemption-spo"
+		],
+		"resume_status": [
+			"pending",
+			"call_review",
+			"tech_review",
+			"wait_reject",
+			"rejected",
+			"hired",
+			"wait_hire"
+		]
+	}
+}

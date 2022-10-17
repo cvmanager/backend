@@ -19,13 +19,13 @@ class AuthController extends Controller {
             let validPassword = await bcrypt.compare(req.body.password, user.password)
             if (!validPassword) throw new BadRequestError('auth.error.invalid_credentials');
 
-            if (user.is_banded) throw new BadRequestError('auth.error.user_banned');
+            if (user.is_banded) throw new BadRequestError('auth.error.user_is_banned');
 
 
             const access_token = await generateJwtToken(user._id)
             const refresh_token = await generateJwtRefeshToken(user._id);
 
-            AppResponse.builder(res).message('auth.suc.success_login').data({ access_token, refresh_token }).send();
+            AppResponse.builder(res).message('auth.message.success_login').data({ access_token, refresh_token }).send();
         } catch (err) {
             next(err);
         }
@@ -36,7 +36,7 @@ class AuthController extends Controller {
 
             let user = await User.findOne({ mobile: req.body.mobile });
             if (user) {
-                throw new BadRequestError('auth.error.duplicate_user');
+                throw new BadRequestError('auth.error.user_already_exists');
             }
             let salt = await bcrypt.genSalt(10);
             let hash_password = await bcrypt.hash(req.body.password, salt);
@@ -50,7 +50,7 @@ class AuthController extends Controller {
             const access_token = await generateJwtToken(user._id)
             const refresh_token = await generateJwtRefeshToken(user._id);
 
-            AppResponse.builder(res).status(201).message("auth.suc.created").data({ access_token, refresh_token }).send();
+            AppResponse.builder(res).status(201).message("auth.message.user_successfuly_created").data({ access_token, refresh_token }).send();
         } catch (err) {
             next(err);
         }
@@ -60,7 +60,7 @@ class AuthController extends Controller {
         try {
             const access_token = await generateJwtToken(req.user_id)
             const refresh_token = await generateJwtRefeshToken(req.user_id);
-            AppResponse.builder(res).message('auth.suc.success_login').data({ access_token, refresh_token }).send();
+            AppResponse.builder(res).message('auth.message.success_login').data({ access_token, refresh_token }).send();
         } catch (err) {
             next(err);
         }
@@ -69,14 +69,14 @@ class AuthController extends Controller {
     async logout(req, res, next) {
         try {
             await redisClient.del(req.user_id.toString());
-            AppResponse.builder(res).message("auth.suc.success_logout").send();
+            AppResponse.builder(res).message("auth.message.success_logout").send();
         } catch (err) {
             next(err);
         }
     }
 
     async verifyToken(req, res, next) {
-        AppResponse.builder(res).message("auth.suc.token_verified").send();
+        AppResponse.builder(res).message("auth.message.token_verified").send();
     }
 }
 

@@ -2,7 +2,7 @@
 	"enums": {
 		"gender": [
 			"men",
-			"womens"
+			"women"
 		],
 		"marital_status": [
 			"single",
@@ -33,159 +33,81 @@
 			"wait_hire"
 		]
 	},
-	"exceptions": {
-		"url_not_found": "url not found",
-		"no_authentication": "No authentication",
-		"valid_image_format ": "Only .jpg .png format image",
-		"bad_request": "BadRequest"
+	"marital_status": "marital_status",
+	"error": {
+		"server_error": "Server Error",
+		"bad_request": "Bad Request"
 	},
 	"auth": {
-		"err": {
-			"invalid_credentials": "mobile or password is not match!",
-			"user_banned": "user is banded",
-			"duplicate_user": "there is currently a user with entered information in the system",
-			"token_not_sended": "token not sended!",
-			"token_not_stored": "Token is not in store.",
-			"token_not_same": "Token is not same store."
+		"message": {
+			"user_successfuly_created": "The account was created successfully",
+			"success_login": "You have successfully logged into your account",
+			"success_logout": "You have successfully logged out"
 		},
-		"suc": {
-			"token_verified": "token is verified",
-			"success_login": "successful login",
-			"success_logout": "Successfuly logout from account",
-			"created": "Account Successfuly Created"
+		"error": {
+			"user_already_exists": "There is already a user with this information",
+			"invalid_credentials": "The username or password is incorrect",
+			"token_not_same": "auth.error.token_not_same",
+			"token_not_sended": "Authentication key not sent"
 		},
-		"validator": {
-			"firstname_require": "firstname is require",
-			"firstname_length": "first name should not be empty, should be more than one and less than 3 character",
-			"lastname_require": "lastname is require",
-			"lastname_legth": "last name should not be empty, should be more than one and less than 3 character",
-			"mobile_require": "mobile is require",
-			"mobile_pattern": "Mobile number invalid(must start with 98)",
-			"pass_require": "password is require",
-			"pass_length": "password should not be empty, should be more than one and between 8 - 10  character",
-			"pass_confirm_match": "Password confirmation does not match with password"
-		}
-	},
-	"project": {
-		"err": {
-			"not_found": "project not found"
-		},
-		"suc": {
-			"found": "Succussfully Founded!",
-			"deleted": "project successfully deleted",
-			"updated": "the project has been successfully updated",
-			"created": "project successfully created"
-		},
-		"validator": {
-			"name_require": "name is require",
-			"name_length": "project name should not be empty, should be more than one and less than 3 character",
-			"description_require": "description is require",
-			"description_length": "desdescription min 10 char",
-			"id_require": "project id is required",
-			"id_invalid": "project id invalid"
-		}
-	},
-	"resume": {
-		"err": {
-			"not_found": "resume not found"
-		},
-		"suc": {
-			"found": "resume found successfully",
-			"create_and_found": "resume was successfully found and created",
-			"updated": "the resume has been successfully updated",
-			"deleted": "the resume has been successfully deleted",
-			"status_updated": "the resume status has been successfully updated"
-		},
-		"validator": {
-			"company_require": "company field is required",
-			"company_invalid": "company invalid",
-			"project_require": "project field is required",
-			"project_invalid": "project invalid",
-			"firstname_require": "firstname field is required",
-			"firstname_length": "firstname should not be empty, should be more than 3 and less than 50 character",
-			"update_firstname_legth": "firstname should not be empty, should be more than one and less than 3 character",
-			"lastname_require": "lastname field is require",
-			"lastname_length": "should not be empty, should be more than 3 and less than 50 character",
-			"update_lastname_legth": "lastname should not be empty, should be more than one and less than 3 character",
-			"gender_require": " gender field is require",
-			"gender_incorrect": "the selected gender is incorrect",
-			"email_require": " email field is require",
-			"email_invalid": "the email entered is invalid",
-			"birth_year_require": " birth_year field is require",
-			"birth_year_length": "birth year should not be empty, should be 4 character",
-			"marital_status_require": " marital_status field is require",
-			"marital_status_incorrect": "the selected marital status is incorrect",
-			"mobile_require": " mobile field is require",
-			"mobile_numeric": "phone only is number!",
-			"residence_city_require": " residence_city field is require",
-			"residence_city_length": "residence city should not be empty, should be more than 2 and less than 50 character",
-			"work_city_require": " work_city field is require",
-			"work_city_length": "work city should not be empty, should be more than 2 and less than 50 character",
-			"education_require": " education field is require",
-			"education_incorrect": "the selected education is incorrect",
-			"major_require": " major field is require",
-			"major_length": "major should not be empty, should be more than 2 and less than 20 character",
-			"phone_numeric": "the phone field can only contain numbers",
-			"phone_length": "phone should not be empty, should be more than 9 and less than 12 character",
-			"min_salary_numeric": "the min salary field can only contain numbers",
-			"min_salary_length": "the min salary field can only contain numbers",
-			"max_salary_numeric": "the max salary field can only contain numbers",
-			"max_salary_length": "the max salary field can only contain numbers",
-			"work_exp_numeric": "the work experience field can only contain numbers",
-			"military_status_incorrect": "the selected military status is incorrect",
-			"id_require": "resume id is required",
-			"id_invalid": "resume id is invalid",
-			"status_require": "status is required",
-			"major_invalid": "major is not valid",
-			"porject_invalid": "porject is invalid",
-			"firstname_required": "resume.validator.firstname_required",
-			"lastname_required": "resume.validator.lastname_required",
-			"email_required": "resume.validator.email_required",
-			"birth_year_required": "resume.validator.birth_year_required",
-			"marital_status_required": "resume.validator.marital_status_required",
-			"mobile_required": "resume.validator.mobile_required",
-			"residence_city_required": "resume.validator.residence_city_required",
-			"work_city_required": "resume.validator.work_city_required",
-			"education_required": "resume.validator.education_required",
-			"major_required": "resume.validator.major_required"
-		}
-	},
-	"company": {
-		"err": {
-			"not_found": "company not found"
-		},
-		"suc": {
-			"found": "succussfully founded",
-			"created": "company successfuly created",
-			"updated": "the company has been successfully updated",
-			"deleted": "company successfully deleted"
-		},
-		"validator": {
-			"name_require": "name is require",
-			"name_length": "name should not be empty, should be more than one and less than 50 character",
-			"id_require": "company id is require",
-			"id_invalid": "company id invalid!"
+		"validation": {
+			"pass_confirm_match": "Password and confirmation are not the same",
+			"password_required": "The password field is required",
+			"password_length": "The password field has a character limit",
+			"firstname_required": "The firstname field is required",
+			"firstname_length": "The firstname field has a character limit",
+			"lastname_required": "The lastname field is required",
+			"lastname_length": "The lastname field has a character limit",
+			"mobile_required": "The mobile field is required",
+			"mobile_pattern": "The mobile number entered is invalid"
 		}
 	},
 	"user": {
-		"err": {
-			"not_found": "User Not Found"
-		},
-		"suc": {
-			"found": "user successfuly found",
-			"profile_image_updated": "profile image successfully uploaded!",
-			"list_found": "user list successfuly found."
-		},
-		"validator": {
-			"id_require": "user id is required",
-			"id_invalid": "user id invalid",
-			"avatar_require": "avatar is required"
+		"error": {
+			"user_notfound": "The desired user was not found"
 		}
 	},
-	"esume": {
-		"validator": {
-			"company_invalid": "company invalid"
+	"project": {
+		"message": {
+			"project_found": "Project Found"
+		},
+		"validation": {
+			"project_id_invalid": "project id invalid"
 		}
 	},
-	"marital_status": "marital_status"
+	"company": {
+		"validation": {
+			"company_id_require": "company is required",
+			"company_id_invalid": "company invalid"
+		}
+	},
+	"resume": {
+		"validation": {
+			"company_id_required": "resume.validation.company_id_required",
+			"company_id_invalid": "resume.validation.company_id_invalid",
+			"project_id_required": "resume.validation.project_id_required",
+			"porject_id_invalid": "resume.validation.porject_id_invalid",
+			"firstname_required": "resume.validation.firstname_required",
+			"firstname_length": "resume.validation.firstname_length",
+			"lastname_required": "resume.validation.lastname_required",
+			"lastname_length": "resume.validation.lastname_length",
+			"gender_required": "resume.validation.gender_required",
+			"gender_incorrect": "resume.validation.gender_incorrect",
+			"email_required": "resume.validation.email_required",
+			"email_invalid": "resume.validation.email_invalid",
+			"birth_year_required": "resume.validation.birth_year_required",
+			"birth_year_length": "resume.validation.birth_year_length",
+			"marital_status_required": "resume.validation.marital_status_required",
+			"marital_status_incorrect": "resume.validation.marital_status_incorrect",
+			"mobile_required": "resume.validation.mobile_required",
+			"residence_city_required": "resume.validation.residence_city_required",
+			"residence_city_length": "resume.validation.residence_city_length",
+			"work_city_required": "resume.validation.work_city_required",
+			"work_city_length": "resume.validation.work_city_length",
+			"education_required": "resume.validation.education_required",
+			"education_incorrect": "resume.validation.education_incorrect",
+			"major_required": "resume.validation.major_required",
+			"major_length": "resume.validation.major_length"
+		}
+	}
 }

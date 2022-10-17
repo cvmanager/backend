@@ -1,5 +1,5 @@
 class ManyRequestsError extends Error {
-    message = "Too many requests, please try again later";
+    message = "error.too_many_requests";
     constructor(message) {
         super(message);
         if(message) this.message = message 

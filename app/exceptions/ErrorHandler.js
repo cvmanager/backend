@@ -32,7 +32,7 @@ async function errorHandler(err, req, res, next) {
 
     if (err instanceof UnauthorizedError || err instanceof jsonwebtoken.JsonWebTokenError) {
         return res.status(401).json({
-            message: err.message ? res.__(err.message) : res.__("Unauthorized"),
+            message: err.message ? res.__(err.message) : res.__("auth.error.no_authentication"),
             errors: err.errors ? err.errors : [],
             data: []
         });
@@ -65,7 +65,7 @@ async function errorHandler(err, req, res, next) {
     if (process.env.NODE_ENV == 'development') console.log(err);
 
     return res.status(500).json({
-        message: res.__("Server Error"),
+        message: res.__("error.server_error"),
         errors: [],
         data: []
     });

@@ -22,7 +22,7 @@ describe("endpoints /companies", () => {
 
       newCompany.id = response.body.data._id
       expect(response.statusCode).toBe(201);
-      expect(resMessage).toBe('company successfuly created');
+      expect(resMessage).toBe(i18n.__('company.message.company_successfuly_created'));
     });
 
     it("should update a company", async () => {
@@ -38,7 +38,7 @@ describe("endpoints /companies", () => {
       const resMessage = response.body.message
 
       expect(response.statusCode).toBe(200);
-      expect(resMessage).toBe(i18n.__('company.suc.updated'));
+      expect(resMessage).toBe(i18n.__('company.message.company_successfuly_updated'));
     })
 
     
@@ -50,7 +50,7 @@ describe("endpoints /companies", () => {
       const resMessage = response.body.message
 
       expect(response.statusCode).toBe(200);
-      expect(resMessage).toBe(i18n.__('company.suc.found'));
+      expect(resMessage).toBe(i18n.__('company.message.company_successfuly_updated'));
     })
     
     it("should get a single company", async () => {
@@ -61,7 +61,7 @@ describe("endpoints /companies", () => {
       const resMessage = response.body.message
 
       expect(response.statusCode).toBe(200);
-      expect(resMessage).toBe(i18n.__('company.suc.found'));
+      expect(resMessage).toBe(i18n.__('company.message.company_found'));
     })
 
     it("should remove a single company", async () => {
@@ -72,7 +72,7 @@ describe("endpoints /companies", () => {
       const resMessage = response.body.message
 
       expect(response.statusCode).toBe(200);
-      expect(resMessage).toBe(i18n.__('company.suc.deleted'));
+      expect(resMessage).toBe(i18n.__('company.message.company_successfuly_deleted'));
     })
 
     /*
@@ -99,10 +99,10 @@ describe("endpoints /companies", () => {
       [method, route, message, statusCode, body?]  
     */
     it.each([
-      ["post", "", "company.validator.name_require", 400],
-      ["patch", "/123", "company.validator.id_invalid", 400],
-      ["delete", "/123", "company.validator.id_invalid", 400],
-      ["get", "/123", "company.validator.id_invalid", 400]
+      ["post", "", "company.validation.company_name_required", 400],
+      ["patch", "/123", "company.validation.company_id_invalid", 400],
+      ["delete", "/123", "company.validation.company_id_invalid", 400],
+      ["get", "/123", "company.validation.company_id_invalid", 400]
     ])("%s input should return with bad request status", async (method, route, message, statusCode) => {
 
       const response = await request(baseURL)
@@ -112,7 +112,7 @@ describe("endpoints /companies", () => {
       const resMessage = response.body.message
 
       expect(response.statusCode).toBe(statusCode);
-      expect(resMessage).toBe(i18n.__("exceptions.bad_request"));
+      expect(resMessage).toBe(i18n.__("error.bad_request"));
       expect(response.body.errors).toContain(i18n.__(message))
     });
   

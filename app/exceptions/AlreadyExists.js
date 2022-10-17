@@ -1,6 +1,5 @@
 class AlreadyExists extends Error {
-    message = "AlreaduCreated:((";
-    // status = 404;
+    message = "error.already_exists";
     constructor(message) {
         super(message);
         if(message) this.message = message 

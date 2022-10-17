@@ -22,7 +22,7 @@ class UserController extends Controller {
                 .find(searchQuery)
                 .limit(size)
                 .skip(size * (page - 1));
-            AppResponse.builder(res).message("user.suc.list_found").data(users).send();
+            AppResponse.builder(res).message("user.message.list_found").data(users).send();
         } catch (err) {
             next(err);
         }
@@ -31,9 +31,9 @@ class UserController extends Controller {
     async find(req, res, next) {
         try {
             let user = await User.findById(req.params.id);
-            if (!user) throw new UserNotFoundError('user.err.not_found');
+            if (!user) throw new UserNotFoundError('user.error.user_notfound');
 
-            AppResponse.builder(res).message("user.suc.found").data(user).send();
+            AppResponse.builder(res).message("user.message.user_founded").data(user).send();
         } catch (err) {
             next(err);
         }
@@ -43,7 +43,7 @@ class UserController extends Controller {
 
         try {
             let user = await User.findOneAndUpdate({ _id: req.user_id }, { avatar: req.body.avatar }, { new: true });
-            AppResponse.builder(res).message("user.suc.profile_image_updated").data(user).send();
+            AppResponse.builder(res).message("user.message.profile_image_successfuly_updated").data(user).send();
         } catch (err) {
             next(err);
         }
@@ -54,14 +54,14 @@ class UserController extends Controller {
             let user = await User.findById(req.params.id);
             if (!user) throw new UserNotFoundError();
 
-            if (user.is_banned) throw new BadRequestError('user.err.user_is_currently_blocked')
+            if (user.is_banned) throw new BadRequestError('user.error.user_is_currently_blocked')
 
             user.is_banned = 1;
             user.banned_by = req.user_id;
             user.banned_at = new Date().toISOString();
             await user.save();
 
-            AppResponse.builder(res).message('user.suc.user_successfully_blocked').data(user).send();
+            AppResponse.builder(res).message('user.message.user_successfully_blocked').data(user).send();
 
         } catch (err) {
             next(err);

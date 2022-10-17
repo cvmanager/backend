@@ -31,7 +31,7 @@ class ResumeController extends Controller {
                 .find(searchQuery)
                 .limit(size)
                 .skip(size * (page - 1));
-            AppResponse.builder(res).message("project.suc.found").data(resumeList).send();
+            AppResponse.builder(res).message("project.message.resume_list_found").data(resumeList).send();
         } catch (err) {
             next(err);
         }
@@ -40,9 +40,9 @@ class ResumeController extends Controller {
     async find(req, res, next) {
         try {
             let resume = await Resume.findById(req.params.id).populate('Project').exec();
-            if (!resume) throw new NotFoundError('resume.err.not_found');
+            if (!resume) throw new NotFoundError('resume.error.project_notfound');
 
-            AppResponse.builder(res).message("resume.suc.found").data(resume).send();
+            AppResponse.builder(res).message("resume.message.project_found").data(resume).send();
         } catch (err) {
             next(err);
         }
@@ -51,10 +51,10 @@ class ResumeController extends Controller {
     async create(req, res, next) {
         try {
             let company = await Company.findById(req.body.company_id);
-            if (!company) throw new NotFoundError('company.err.not_found');
+            if (!company) throw new NotFoundError('company.error.company_notfound');
 
             let project = await Project.findById(req.body.project_id);
-            if (!project) throw new NotFoundError('project.err.not_found');
+            if (!project) throw new NotFoundError('project.error.project_not_found');
 
             req.body.created_by = req.user_id
             req.body.status = 'pending'
@@ -62,7 +62,7 @@ class ResumeController extends Controller {
 
             EventEmitter.emit(resumeEvents.NEW_RESUME, resume)
 
-            AppResponse.builder(res).status(201).message("resume.suc.create_and_found").data(resume).send();
+            AppResponse.builder(res).status(201).message("resume.message.resume_successfuly_created").data(resume).send();
         } catch (err) {
             next(err);
         }
@@ -71,7 +71,7 @@ class ResumeController extends Controller {
     async update(req, res, next) {
         try {
             await Resume.findByIdAndUpdate(req.params.id, req.body, { new: true })
-                .then(resume => AppResponse.builder(res).message("resume.suc.updated").data(resume).send())
+                .then(resume => AppResponse.builder(res).message("resume.message.resume_successfuly_updated").data(resume).send())
                 .catch(err => next(err));
         } catch (err) {
             next(err);
@@ -81,12 +81,12 @@ class ResumeController extends Controller {
     async delete(req, res, next) {
         try {
             let resume = await Resume.findById(req.params.id);
-            if (!resume) throw new NotFoundError('resume.err.not_found');
+            if (!resume) throw new NotFoundError('resume.error.resume_notfound');
             resume.deleted_at = Date.now();
             resume.deleted_by = req.user_id;
 
             await resume.save();
-            AppResponse.builder(res).message("resume.suc.deleted").data(resume).send();
+            AppResponse.builder(res).message("resume.message.resume_successfuly_deleted").data(resume).send();
         } catch (err) {
             next(err);
         }
@@ -95,7 +95,7 @@ class ResumeController extends Controller {
     async updateStatus(req, res, next) {
         try {
             await Resume.findByIdAndUpdate(req.params.id, { status: req.body.status }, { new: true })
-                .then(resume => AppResponse.builder(res).message("resume.suc.status_updated").data(resume).send())
+                .then(resume => AppResponse.builder(res).message("resume.message.resume_status_successfuly_updated").data(resume).send())
                 .catch(err => next(err));
         } catch (err) {
             next(err);

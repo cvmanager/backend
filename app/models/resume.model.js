@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-
+import i18n from '../middlewares/lang.middleware.js'
 import basePlugin from '../helper/mongoose/base.plugin.js';
 
 const schema = new mongoose.Schema(
@@ -25,7 +25,7 @@ const schema = new mongoose.Schema(
         gender: {
             type: String,
             required: true,
-            enum: ['men', 'women']
+            enum: i18n.__("enums.gender")
         },
         email: {
             type: String,
@@ -37,7 +37,8 @@ const schema = new mongoose.Schema(
         },
         marital_status: {
             type: String,
-            required: true
+            required: true,
+            enum: i18n.__("enums.gender")
         },
         status: {
             type: String,

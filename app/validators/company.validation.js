@@ -5,9 +5,9 @@ import generalValidator from '../helper/validator.js';
 const create = [
     body('name')
         .notEmpty()
-            .withMessage('company.validator.name_require')
+            .withMessage('company.validation.company_name_required')
         .isLength({ min: 3, max: 50 })
-            .withMessage('company.validator.name_length')
+            .withMessage('company.validation.company_name_length')
         .trim(),
     generalValidator
 ];
@@ -15,9 +15,9 @@ const create = [
 const find = [
     param('id')
         .notEmpty()
-            .withMessage('company.validator.id_require')
+            .withMessage('company.validation.company_id_required')
         .isMongoId()
-            .withMessage('company.validator.id_invalid')
+            .withMessage('company.validation.company_id_invalid')
         .trim(),
     generalValidator
 ];
@@ -25,13 +25,13 @@ const find = [
 const update = [
     param('id')
         .notEmpty()
-            .withMessage('company.validator.id_require')
+            .withMessage('company.validation.company_id_required')
         .isMongoId()
-            .withMessage('company.validator.id_invalid')
+            .withMessage('company.validation.company_id_invalid')
         .trim(),
     body('name')
         .isLength({ min: 1, max: 50 })
-            .withMessage('company.validator.name_length')
+            .withMessage('company.validation.company_name_length')
         .optional({ nullable: true, checkFalsy: true })
         .trim(),
     generalValidator
@@ -40,9 +40,9 @@ const update = [
 const remove = [
     param('id')
         .notEmpty()
-            .withMessage('company.validator.id_require')
+            .withMessage('company.validation.company_id_required')
         .isMongoId()
-            .withMessage('company.validator.id_invalid')
+            .withMessage('company.validation.company_id_invalid')
         .trim(),
     generalValidator
 ];

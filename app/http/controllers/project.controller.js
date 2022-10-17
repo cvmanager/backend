@@ -21,7 +21,7 @@ class ProjectController extends Controller {
                 .find(searchQuery)
                 .limit(size)
                 .skip(size * (page - 1));
-            AppResponse.builder(res).message("project.suc.found").data(projectList).send();
+            AppResponse.builder(res).message("project.message.project_found").data(projectList).send();
         } catch (err) {
             next(err);
         }
@@ -30,9 +30,9 @@ class ProjectController extends Controller {
     async find(req, res, next) {
         try {
             let project = await Project.findById(req.params.id).exec();
-            if (!project) throw new NotFoundError('project.err.not_found');
+            if (!project) throw new NotFoundError('project.error.project_notfound');
 
-            AppResponse.builder(res).message("project.suc.found").data(project).send();
+            AppResponse.builder(res).message("project.message.project_found").data(project).send();
         } catch (err) {
             next(err);
         }
@@ -42,7 +42,7 @@ class ProjectController extends Controller {
         try {
             req.body.created_by = req.user_id;
             let project = await Project.create(req.body);
-            AppResponse.builder(res).status(201).message("project.suc.created").data(project).send();
+            AppResponse.builder(res).status(201).message("project.message.project_successfuly_created").data(project).send();
         } catch (err) {
             next(err);
         }
@@ -51,7 +51,7 @@ class ProjectController extends Controller {
     async update(req, res, next) {
         try {
             await Project.findByIdAndUpdate(req.params.id, req.body, { new: true })
-                .then(project => AppResponse.builder(res).message("project.suc.updated").data(project).send())
+                .then(project => AppResponse.builder(res).message("project.message.project_successfuly_updated").data(project).send())
                 .catch(err => next(err));
         } catch (err) {
             next(err);
@@ -61,9 +61,9 @@ class ProjectController extends Controller {
     async delete(req, res, next) {
         try {
             let project = await Project.findById(req.params.id);
-            if (!project) throw new NotFoundError('project.err.not_found');
+            if (!project) throw new NotFoundError('project.error.project_notfound');
             await project.delete(req.user_id);
-            AppResponse.builder(res).message("project.suc.deleted").data(project).send();
+            AppResponse.builder(res).message("project.message.project_successfuly_deleted").data(project).send();
         } catch (err) {
             next(err);
         }

@@ -5,21 +5,21 @@ import generalValidator from '../helper/validator.js';
 const create = [
     body('company_id')
         .notEmpty()
-            .withMessage('company.validator.id_require')
+            .withMessage('company.validation.company_id_require')
         .isMongoId()
-            .withMessage('company.validator.id_invalid')
+            .withMessage('company.validation.company_id_invalid')
         .trim(),
     body('name')
         .notEmpty()
-            .withMessage('project.validator.name_require')
+            .withMessage('project.validation.project_name_require')
         .isLength({ min: 3, max: 50 })
-            .withMessage('project.validator.name_length')
+            .withMessage('project.validation.project_name_length')
         .trim(),
     body('description')
         .notEmpty()
-            .withMessage('project.validator.description_require')
+            .withMessage('project.validation.project_description_require')
         .isLength({ min: 10, max: 100 })
-            .withMessage('project.validator.name_length')
+            .withMessage('project.validation.project_name_length')
         .trim(),
     generalValidator
 ];
@@ -27,12 +27,12 @@ const create = [
 const update = [
     body('name')
         .isLength({ min: 1, max: 50 })
-            .withMessage('project.validator.name_length')
+            .withMessage('project.validation.project_name_length')
         .optional({ nullable: true, checkFalsy: true })
         .trim(),
     body('description')
         .isLength({ min: 10 })
-            .withMessage('project.validator.description_length')
+            .withMessage('project.validation.project_description_length')
         .optional({ nullable: true, checkFalsy: true })
         .trim(),
     generalValidator
@@ -41,9 +41,9 @@ const update = [
 const find = [
     param('id')
         .notEmpty()
-            .withMessage('project.validator.id_require')
+            .withMessage('project.validation.project_id_required')
         .isMongoId()
-            .withMessage('project.validator.id_invalid')
+            .withMessage('project.validation.project_id_invalid')
         .trim(),
     generalValidator
 ];
@@ -51,9 +51,9 @@ const find = [
 const remove = [
     param('id')
         .notEmpty()
-            .withMessage('project.validator.id_require')
+            .withMessage('project.validation.project_id_required')
         .isMongoId()
-            .withMessage('project.validator.id_invalid')
+            .withMessage('project.validation.project_id_invalid')
         .trim(),
     generalValidator
 ];

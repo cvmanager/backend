@@ -7,7 +7,7 @@ function generalValidator(req, res, next) {
         var errorValidation = validationResult(req);
         if (!errorValidation.isEmpty()) {
             let validationErr = errorValidation.errors.map(item => res.__(item.msg));
-            throw new BadRequestError("exceptions.bad_request", validationErr);
+            throw new BadRequestError("error.bad_request", validationErr);
         }
         next();
     } catch (err) {
