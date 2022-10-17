@@ -50,8 +50,6 @@ class UserController extends Controller {
     }
 
     async banned(req, res, next) {
-
-
         try {
             let user = await User.findById(req.params.id);
             if (!user) throw new UserNotFoundError();
