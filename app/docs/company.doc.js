@@ -12,22 +12,14 @@
 
 /**
 * create company
-* @typedef { object } create_company
+* @typedef { object } company.create
 * @property { string } name.required - company name
 */
 
 /**
 * company success response
-* @typedef { object } company_success
+* @typedef { object } company.success
 * @property { string }         message
 * @property { array<Company> } data
 * @property { array<> }        errors
-*/
-
-/**
-* company bad_request response
-* @typedef { object } company_bad_request
-* @property { string }     message
-* @property { array<string> } data
-* @property { array<string> } errors
 */
