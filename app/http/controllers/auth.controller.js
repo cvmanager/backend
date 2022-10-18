@@ -7,6 +7,7 @@ import redisClient from '../../helper/redis_client.js';
 import AppResponse from '../../helper/response.js';
 import User from '../../models/user.model.js';
 import Controller from './controller.js';
+import env from '../../helper/env.js';
 
 class AuthController extends Controller {
 
@@ -60,6 +61,10 @@ class AuthController extends Controller {
         try {
             const access_token = await generateJwtToken(req.user_id)
             const refresh_token = await generateJwtRefeshToken(req.user_id);
+
+            const redisKey = req.user_id.toString() + env("REDIS_KEY_REF_TOKENS")
+            redisClient.sRem(redisKey, req.body.token)
+            
             AppResponse.builder(res).message('auth.message.success_login').data({ access_token, refresh_token }).send();
         } catch (err) {
             next(err);
@@ -68,7 +73,12 @@ class AuthController extends Controller {
 
     async logout(req, res, next) {
         try {
-            await redisClient.del(req.user_id.toString());
+            const token = req.body.token;
+            if (token === null) throw new BadRequestError('auth.error.token_not_sended');
+
+            const redisKey = req.user_id.toString() + env("REDIS_KEY_REF_TOKENS")
+            await redisClient.sRem(redisKey, token);
+
             AppResponse.builder(res).message("auth.message.success_logout").send();
         } catch (err) {
             next(err);

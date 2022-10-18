@@ -2,6 +2,7 @@ import jsonwebtoken from 'jsonwebtoken';
 
 import BadRequestError from '../exceptions/BadRequestError.js'
 import redisClient from '../helper/redis_client.js'
+import env from '../helper/env.js';
 
 async function verifyToken(req, res, next) {
     try {
@@ -25,12 +26,10 @@ async function verifyRefrshToken(req, res, next) {
         let payload = await jsonwebtoken.verify(token, process.env.JWT_SECRET_REFRESH_TOKEN);
         req.user_id = payload.sub;
 
-        const tokenExist = await redisClient.get(payload.sub.toString())
+        const redisKey = payload.sub.toString() + env("REDIS_KEY_REF_TOKENS")
+        const tokenExist = await redisClient.sIsMember(redisKey, token)
 
-
-        if (tokenExist == null) throw new BadRequestError('auth.error.token_not_stored');
-
-        if (JSON.parse(tokenExist).token != token) throw new BadRequestError('auth.error.token_not_same');
+        if (!tokenExist) throw new BadRequestError('auth.error.token_not_stored');
 
         next();
     } catch (err) {
