@@ -4,7 +4,17 @@ import AppResponse from '../../helper/response.js';
 import Controller from './controller.js';
 
 class ProjectController extends Controller {
-
+    /**
+     * GET /projects
+     * 
+     * @summary Get a list of all projects 
+     * @tags Project
+     * @security BearerAuth
+     * 
+     * @return { project.success } 200 - success response
+     * @return { message.bad_request }     401 - UnauthorizedError
+     * @return { message.server_error } 500 - Server Error
+     */
     async index(req, res, next) {
         try {
             const { page = 1, size = 10, query = '' } = req.query
@@ -27,6 +37,18 @@ class ProjectController extends Controller {
         }
     }
 
+    /**
+     * GET /projects/:id
+     * 
+     * @summary Get special project info
+     * @tags Project
+     * @security BearerAuth
+     * 
+     * @param  { string } id.path - project id
+     * 
+     * @return { message.bad_request }     401 - UnauthorizedError
+     * @return { message.server_error }    500 - Server Error
+     */
     async find(req, res, next) {
         try {
             let project = await Project.findById(req.params.id).exec();
@@ -38,6 +60,20 @@ class ProjectController extends Controller {
         }
     }
 
+    /**
+     * POST /projects
+     * 
+     * @summary Create a new project
+     * @tags Project
+     * @security BearerAuth
+     * 
+     * @param  { project.create } request.body - project info - application/json
+     * 
+     * @return { project.success }     201 - Project Successfuly Created  
+     * @return { message.bad_request }     401 - UnauthorizedError
+     * @return { message.badrequest_error } 400 - Bad Request
+     * @return { message.server_error  } 500 - Server Error
+     */
     async create(req, res, next) {
         try {
             req.body.created_by = req.user_id;
@@ -48,6 +84,19 @@ class ProjectController extends Controller {
         }
     }
 
+    /**
+     * PATCH /projects/:id
+     * 
+     * @summary Update project info 
+     * @tags Project
+     * @security BearerAuth
+     * 
+     * @param  { string } id.path - project id
+     * @param  { project.update } request.body - project info - application/json
+     * 
+     * @return { message.bad_request }     401 - UnauthorizedError
+     * @return { message.server_error } 500 - Server Error
+     */
     async update(req, res, next) {
         try {
             await Project.findByIdAndUpdate(req.params.id, req.body, { new: true })
@@ -58,6 +107,18 @@ class ProjectController extends Controller {
         }
     }
 
+    /**
+     * DELETE /projects/:id
+     * 
+     * @summary Remove special project
+     * @tags Project
+     * @security BearerAuth
+     * 
+     * @param  { string } id.path - project id
+     * 
+     * @return { message.bad_request }     401 - UnauthorizedError
+     * @return { message.server_error } 500 - Server Error
+     */
     async delete(req, res, next) {
         try {
             let project = await Project.findById(req.params.id);
