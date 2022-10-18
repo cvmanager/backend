@@ -3,7 +3,7 @@ const options = {
     version: '1.0.0',
     title: 'CV Manager',
     description: "",
-    
+
   },
   security: {
     BearerAuth: {
@@ -13,7 +13,7 @@ const options = {
   },
   servers: [
     {
-      "url": "http://localhost:3000/api",
+      "url": `http://localhost:${process.env.PORT}/api/v1`,
       "description": "Development server"
     }
   ]
@@ -21,9 +21,12 @@ const options = {
   // Base directory which we use to locate your JSDOC files
   baseDir: "./app",
   // Glob pattern to find your jsdoc files (multiple patterns can be added in an array)
-  filesPattern: ['./http/controllers/*.controller.js', './docs/*.doc.js'],
+  filesPattern: [
+    './http/controllers/*.controller.js',
+    './docs/*.doc.js'
+  ],
   // URL where SwaggerUI will be rendered
-  swaggerUIPath: '/api/docs',
+  swaggerUIPath: '/api/v1/docs',
   // Expose OpenAPI UI
   exposeSwaggerUI: true,
   // Expose Open API JSON Docs documentation in `apiDocsPath` path.

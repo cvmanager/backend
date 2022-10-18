@@ -50,8 +50,8 @@ class App {
     }
 
     serveServer() {
-        app.listen(process.env.APP_PORT, () => {
-            console.log(`server running at ${process.env.APP_PORT}`)
+        app.listen(process.env.PORT, () => {
+            console.log(`server running at ${process.env.PORT}`)
         })
     }
 }
