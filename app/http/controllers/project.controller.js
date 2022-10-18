@@ -12,7 +12,7 @@ class ProjectController extends Controller {
      * @security BearerAuth
      * 
      * @return { project.success } 200 - success response
-     * @return { message.bad_request }     401 - UnauthorizedError
+     * @return { message.badrequest_error }     401 - UnauthorizedError
      * @return { message.server_error } 500 - Server Error
      */
     async index(req, res, next) {
@@ -46,7 +46,7 @@ class ProjectController extends Controller {
      * 
      * @param  { string } id.path - project id
      * 
-     * @return { message.bad_request }     401 - UnauthorizedError
+     * @return { message.badrequest_error }     401 - UnauthorizedError
      * @return { message.server_error }    500 - Server Error
      */
     async find(req, res, next) {
@@ -70,7 +70,7 @@ class ProjectController extends Controller {
      * @param  { project.create } request.body - project info - application/json
      * 
      * @return { project.success }     201 - Project Successfuly Created  
-     * @return { message.bad_request }     401 - UnauthorizedError
+     * @return { message.badrequest_error }     401 - UnauthorizedError
      * @return { message.badrequest_error } 400 - Bad Request
      * @return { message.server_error  } 500 - Server Error
      */
@@ -94,7 +94,7 @@ class ProjectController extends Controller {
      * @param  { string } id.path - project id
      * @param  { project.update } request.body - project info - application/json
      * 
-     * @return { message.bad_request }     401 - UnauthorizedError
+     * @return { message.badrequest_error }     401 - UnauthorizedError
      * @return { message.server_error } 500 - Server Error
      */
     async update(req, res, next) {
@@ -116,7 +116,7 @@ class ProjectController extends Controller {
      * 
      * @param  { string } id.path - project id - application/json
      * 
-     * @return { message.bad_request }     401 - UnauthorizedError
+     * @return { message.badrequest_error }     401 - UnauthorizedError
      * @return { message.server_error } 500 - Server Error
      */
     async delete(req, res, next) {

@@ -14,7 +14,7 @@ class UserController extends Controller {
      * @security BearerAuth
      * 
      * @return { user.success }             200 - get list of all users
-     * @return { message.bad_request }     401 - UnauthorizedError
+     * @return { message.badrequest_error }     401 - UnauthorizedError
      * @return { message.server_error  }    500 - Server Error
      */
     async index(req, res, next) {
@@ -48,8 +48,8 @@ class UserController extends Controller {
      * @param {string} id.path.required user id
      * 
      * @return { user.success }              200 - find user data
-     * @return { message.bad_request }      400 - user not found
-     * @return { message.bad_request }      401 - UnauthorizedError
+     * @return { message.badrequest_error }      400 - user not found
+     * @return { message.badrequest_error }      401 - UnauthorizedError
      * @return { message.server_error}      500 - Server Error
      */
     async find(req, res, next) {
@@ -72,8 +72,8 @@ class UserController extends Controller {
      * @param { user.avatar } request.body - user info - multipart/form-data
      * 
      * @return { user.success }              200 - update user profile
-     * @return { message.bad_request }      400 - user not found
-     * @return { message.bad_request }      401 - UnauthorizedError
+     * @return { message.badrequest_error }      400 - user not found
+     * @return { message.badrequest_error }      401 - UnauthorizedError
      * @return { message.server_error}      500 - Server Error
      */
     async uploadProfileImage(req, res, next) {
@@ -95,8 +95,8 @@ class UserController extends Controller {
      * @param { user.avatar } id.path.required - user id - application/json
      * 
      * @return { user.success }             200 - user successfuly banded
-     * @return { message.bad_request }      400 - user not found
-     * @return { message.bad_request }      401 - UnauthorizedError
+     * @return { message.badrequest_error }      400 - user not found
+     * @return { message.badrequest_error }      401 - UnauthorizedError
      * @return { message.server_error}      500 - Server Error
      */
     async banned(req, res, next) {

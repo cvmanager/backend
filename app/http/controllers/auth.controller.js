@@ -52,7 +52,7 @@ class AuthController extends Controller {
      * @param { auth.signup } request.body - signup info - application/json
      * 
      * @return { auth.success_signup }  201 - signup successfuly 
-     * @return { message.bad_request }     400 - Bad Request
+     * @return { message.badrequest_error }     400 - Bad Request
      * @return { message.server_error  }    500 - Server Error
      */
     async signup(req, res, next) {
@@ -90,7 +90,7 @@ class AuthController extends Controller {
      * @param { auth.refresh } request.body - refresh info - application/json
      * 
      * @return { auth.success_signup }  200 - refresh successfuly 
-     * @return { message.bad_request }     400 - Bad Request
+     * @return { message.badrequest_error }     400 - Bad Request
      * @return { message.server_error  }    500 - Server Error
      */
     async refresh(req, res, next) {
@@ -117,7 +117,7 @@ class AuthController extends Controller {
      * @param { auth.refresh } request.body - refresh info - application/json
      * 
      * @return { auth.success_signup }  200 - logout successfuly 
-     * @return { message.bad_request }     400 - Bad Request
+     * @return { message.badrequest_error }     400 - Bad Request
      * @return { message.server_error  }    500 - Server Error
      */
     async logout(req, res, next) {
@@ -144,7 +144,7 @@ class AuthController extends Controller {
      * @param { auth.refresh } request.body - refresh info - application/json
      * 
      * @return { auth.success_signup }  200 - logout successfuly 
-     * @return { message.bad_request }     401 - UnauthorizedError
+     * @return { message.badrequest_error }     401 - UnauthorizedError
      * @return { message.server_error  }    500 - Server Error
      */
     async verifyToken(req, res, next) {

@@ -14,9 +14,9 @@ class CompanyController extends Controller {
     * @security BearerAuth
     * 
     * @return { company.success } 200 - success response
-    * @return { message.bad_request } 400 - bad request respone
-    * @return { message.bad_request } 404 - not found respone
-    * @return { message.bad_request }     401 - UnauthorizedError
+    * @return { message.badrequest_error } 400 - bad request respone
+    * @return { message.badrequest_error } 404 - not found respone
+    * @return { message.badrequest_error }     401 - UnauthorizedError
     * @return { message.server_error  }    500 - Server Error
     */
     async index(req, res, next) {
@@ -42,9 +42,9 @@ class CompanyController extends Controller {
     * @param  { string } id.path.required - company id
     * 
     * @return { company.success } 200 - success response
-    * @return { message.bad_request } 400 - bad request respone
-    * @return { message.bad_request } 404 - not found respone
-    * @return { message.bad_request }     401 - UnauthorizedError
+    * @return { message.badrequest_error } 400 - bad request respone
+    * @return { message.badrequest_error } 404 - not found respone
+    * @return { message.badrequest_error }     401 - UnauthorizedError
     * @return { message.server_error  }    500 - Server Error
     */
     async find(req, res, next) {
@@ -72,7 +72,7 @@ class CompanyController extends Controller {
     * @return { company.success }           201 - success response
     * @return { message.badrequest_error }  400 - bad request respone
     * @return { message.badrequest_error }  404 - not found respone
-    * @return { message.bad_request }       401 - UnauthorizedError
+    * @return { message.badrequest_error }       401 - UnauthorizedError
     * @return { message.server_error  }     500 - Server Error
     */
     async create(req, res, next) {
@@ -103,7 +103,7 @@ class CompanyController extends Controller {
     * @return { company.success }           200 - success response
     * @return { message.badrequest_error }  400 - bad request respone
     * @return { message.badrequest_error }  404 - not found respone
-    * @return { message.bad_request }     401 - UnauthorizedError
+    * @return { message.badrequest_error }     401 - UnauthorizedError
     * @return { message.server_error  }    500 - Server Error
     */
     async update(req, res, next) {
@@ -128,7 +128,7 @@ class CompanyController extends Controller {
     * @return { company.success } 200 - success response
     * @return { message.badrequest_error } 400 - bad request respone
     * @return { message.badrequest_error } 404 - not found respone
-    * @return { message.bad_request }     401 - UnauthorizedError
+    * @return { message.badrequest_error }     401 - UnauthorizedError
     * @return { message.server_error  }    500 - Server Error
     */
     async delete(req, res, next) {
