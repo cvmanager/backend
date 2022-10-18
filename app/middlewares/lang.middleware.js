@@ -8,7 +8,8 @@ const __dirname = path.resolve();
 i18n.configure({
     directory: path.join(__dirname, '/app/locales'),
     defaultLocale: env("DEFAULT_LANGUAGE"),
-    objectNotation: true
+    objectNotation: true,
+    updateFiles: false,
 })
 
 export default i18n
