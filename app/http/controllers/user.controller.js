@@ -14,7 +14,7 @@ class UserController extends Controller {
      * @security BearerAuth
      * 
      * @return { user.success }             200 - get list of all users
-     * @return { message.badrequest_error }     401 - UnauthorizedError
+     * @return { message.unauthorized_error }     401 - UnauthorizedError
      * @return { message.server_error  }    500 - Server Error
      */
     async index(req, res, next) {

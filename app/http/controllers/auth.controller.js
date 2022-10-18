@@ -144,7 +144,7 @@ class AuthController extends Controller {
      * @param { auth.refresh } request.body - refresh info - application/json
      * 
      * @return { auth.success_signup }  200 - logout successfuly 
-     * @return { message.badrequest_error }     401 - UnauthorizedError
+     * @return { message.unauthorized_error }     401 - UnauthorizedError
      * @return { message.server_error  }    500 - Server Error
      */
     async verifyToken(req, res, next) {
