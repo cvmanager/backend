@@ -25,13 +25,12 @@ async function verifyRefrshToken(req, res, next) {
         let payload = await jsonwebtoken.verify(token, process.env.JWT_SECRET_REFRESH_TOKEN);
         req.user_id = payload.sub;
 
-        await redisClient.get(payload.sub.toString(), (err, data) => {
-            if (err) throw new Error(err);
-            if (data == null) throw new BadRequestError('auth.error.token_not_stored');
+        const tokenExist = await redisClient.get(payload.sub.toString())
 
-            if (JSON.parse(data).token != token) throw new BadRequestError('auth.error.token_not_same');
 
-        });
+        if (tokenExist == null) throw new BadRequestError('auth.error.token_not_stored');
+
+        if (JSON.parse(tokenExist).token != token) throw new BadRequestError('auth.error.token_not_same');
 
         next();
     } catch (err) {
