@@ -6,6 +6,17 @@ import Controller from './controller.js';
 
 class UserController extends Controller {
 
+    /**
+     * GET /users
+     * 
+     * @summary get list of all users
+     * @tags User
+     * @security BearerAuth
+     * 
+     * @return { user.success }             200 - get list of all users
+     * @return { message.bad_request }     401 - UnauthorizedError
+     * @return { message.server_error  }    500 - Server Error
+     */
     async index(req, res, next) {
         try {
             const { page = 1, size = 10, q: query = '' } = req.query
@@ -28,6 +39,19 @@ class UserController extends Controller {
         }
     }
 
+    /**
+     * GET /users/:id
+     * @summary get special user by id
+     * @tags User
+     * @security BearerAuth
+     * 
+     * @param {string} id.path.required user id
+     * 
+     * @return { user.success }              200 - find user data
+     * @return { message.bad_request }      400 - user not found
+     * @return { message.bad_request }      401 - UnauthorizedError
+     * @return { message.server_error}      500 - Server Error
+     */
     async find(req, res, next) {
         try {
             let user = await User.findById(req.params.id);
@@ -39,6 +63,19 @@ class UserController extends Controller {
         }
     }
 
+    /**
+     * POST /users/avatar
+     * @summary update user prifile image
+     * @tags User
+     * @security BearerAuth
+     * 
+     * @param { user.avatar } request.body - user info - multipart/form-data
+     * 
+     * @return { user.success }              200 - update user profile
+     * @return { message.bad_request }      400 - user not found
+     * @return { message.bad_request }      401 - UnauthorizedError
+     * @return { message.server_error}      500 - Server Error
+     */
     async uploadProfileImage(req, res, next) {
 
         try {
@@ -49,6 +86,19 @@ class UserController extends Controller {
         }
     }
 
+    /**
+     * POST /users/:id/ban
+     * @summary update user prifile image
+     * @tags User
+     * @security BearerAuth
+     * 
+     * @param { user.avatar } id.path.required - user id - application/json
+     * 
+     * @return { user.success }             200 - user successfuly banded
+     * @return { message.bad_request }      400 - user not found
+     * @return { message.bad_request }      401 - UnauthorizedError
+     * @return { message.server_error}      500 - Server Error
+     */
     async banned(req, res, next) {
         try {
             let user = await User.findById(req.params.id);

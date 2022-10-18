@@ -114,7 +114,7 @@ class ProjectController extends Controller {
      * @tags Project
      * @security BearerAuth
      * 
-     * @param  { string } id.path - project id
+     * @param  { string } id.path - project id - application/json
      * 
      * @return { message.bad_request }     401 - UnauthorizedError
      * @return { message.server_error } 500 - Server Error
