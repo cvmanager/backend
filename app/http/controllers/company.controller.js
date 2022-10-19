@@ -33,7 +33,7 @@ class CompanyController extends Controller {
     }
 
     /**
-    * GET /companies/:id
+    * GET /companies/{id}
     * 
     * @summary gets a company by id
     * @tags Company
@@ -90,7 +90,7 @@ class CompanyController extends Controller {
     }
 
     /**
-    * PATCH /companies/:id
+    * PATCH /companies/{id}
     * 
     * @summary updates a copmany
     * @tags Company
@@ -117,7 +117,7 @@ class CompanyController extends Controller {
     }
 
     /**
-    * DELETE /companies/:id
+    * DELETE /companies/{id}
     * 
     * @summary deletes a copmany by id
     * @tags Company

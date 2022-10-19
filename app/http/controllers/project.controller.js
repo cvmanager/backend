@@ -38,7 +38,7 @@ class ProjectController extends Controller {
     }
 
     /**
-     * GET /projects/:id
+     * GET /projects/{id}
      * 
      * @summary Get special project info
      * @tags Project
@@ -85,7 +85,7 @@ class ProjectController extends Controller {
     }
 
     /**
-     * PATCH /projects/:id
+     * PATCH /projects/{id}
      * 
      * @summary Update project info 
      * @tags Project
@@ -108,7 +108,7 @@ class ProjectController extends Controller {
     }
 
     /**
-     * DELETE /projects/:id
+     * DELETE /projects/{id}
      * 
      * @summary Remove special project
      * @tags Project

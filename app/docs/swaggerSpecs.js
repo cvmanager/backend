@@ -16,8 +16,7 @@ const options = {
       "url": `http://127.0.0.1:${process.env.PORT}/api/v1`,
       "description": "Development server"
     }
-  ]
-  ,
+  ],
   // Base directory which we use to locate your JSDOC files
   baseDir: "./app",
   // Glob pattern to find your jsdoc files (multiple patterns can be added in an array)
@@ -38,7 +37,11 @@ const options = {
   // You can customize your UI options.
   // you can extend swagger-ui-express config. You can checkout an example of this
   // in the `example/configuration/swaggerOptions.js`
-  swaggerUiOptions: {},
+  swaggerUiOptions: {
+    swaggerOptions: {
+      // defaultModelsExpandDepth: -1, hides all the schemas
+    }
+  },
   // multiple option in case you want more that one instance
   multiple: true,
 };

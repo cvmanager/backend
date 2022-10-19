@@ -38,14 +38,19 @@
  * @property { string } token.required
  */
 
-
+/**
+ * sign-up success
+ * @typedef  { object } auth.success
+ * @property { string } access_token
+ * @property { string } refresh_token
+ */
 
 
 /**
-* auth server error response
-* @typedef { object } auth.success_signup
+* auth server success response
+* @typedef { object } auth.success_response
 * @property { string }     message
-* @property { array<string> } data
+* @property { array<auth.success> } data
 * @property { array<string> } errors
 */
 

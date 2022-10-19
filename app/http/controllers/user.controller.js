@@ -40,7 +40,7 @@ class UserController extends Controller {
     }
 
     /**
-     * GET /users/:id
+     * GET /users/{id}
      * @summary get special user by id
      * @tags User
      * @security BearerAuth
@@ -87,7 +87,7 @@ class UserController extends Controller {
     }
 
     /**
-     * POST /users/:id/ban
+     * POST /users/{id}/ban
      * @summary update user prifile image
      * @tags User
      * @security BearerAuth
