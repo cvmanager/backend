@@ -8,6 +8,19 @@ import Controller from './controller.js';
 
 class ResumeController extends Controller {
 
+    /**
+    * GET /resumes
+    * 
+    * @summary get a list of all resumes
+    * @tags Resume
+    * @security BearerAuth
+    * 
+    * @return { resume.success } 200 - success response
+    * @return { message.badrequest_error } 400 - bad request respone
+    * @return { message.badrequest_error } 404 - not found respone
+    * @return { message.unauthorized_error }     401 - UnauthorizedError
+    * @return { message.server_error  }    500 - Server Error
+    */
     async index(req, res, next) {
         try {
             const { page = 1, size = 10, q: query = '' } = req.query
@@ -37,6 +50,21 @@ class ResumeController extends Controller {
         }
     }
 
+    /**
+    * GET /resumes/:id
+    * 
+    * @summary gets a resume by id
+    * @tags Resume
+    * @security BearerAuth
+    *
+    * @param  { string } id.path.required - resume id
+    * 
+    * @return { resume.success } 200 - success response
+    * @return { message.badrequest_error }  400 - bad request respone
+    * @return { message.badrequest_error }  404 - not found respone
+    * @return { message.badrequest_error }       401 - UnauthorizedError
+    * @return { message.server_error  }     500 - Server Error
+    */
     async find(req, res, next) {
         try {
             let resume = await Resume.findById(req.params.id).populate('Project').exec();
@@ -48,6 +76,22 @@ class ResumeController extends Controller {
         }
     }
 
+    /**
+    * POST /resumes
+    * 
+    * @summary creates a resume
+    * @tags Resume
+    * @security BearerAuth
+    * 
+    * @param { resume.create } request.body - resume info - multipart/form-data
+    * @param { resume.create } request.body - resume info - application/json
+    * 
+    * @return { resume.success } 200 - success response
+    * @return { message.badrequest_error }  400 - bad request respone
+    * @return { message.badrequest_error }  404 - not found respone
+    * @return { message.badrequest_error }       401 - UnauthorizedError
+    * @return { message.server_error  }     500 - Server Error
+    */
     async create(req, res, next) {
         try {
             let company = await Company.findById(req.body.company_id);
@@ -68,6 +112,23 @@ class ResumeController extends Controller {
         }
     }
 
+    /**
+    * PATCH /resumes/:id
+    * 
+    * @summary updates a resume
+    * @tags Resume
+    * @security BearerAuth
+    * 
+    * @param  { string } id.path.required - resume id
+    * @param { resume.update } request.body - resume info - multipart/form-data
+    * @param { resume.update } request.body - resume info - application/json
+    * 
+    * @return { resume.success } 200 - success response
+    * @return { message.badrequest_error }  400 - bad request respone
+    * @return { message.badrequest_error }  404 - not found respone
+    * @return { message.badrequest_error }       401 - UnauthorizedError
+    * @return { message.server_error  }     500 - Server Error
+    */
     async update(req, res, next) {
         try {
             await Resume.findByIdAndUpdate(req.params.id, req.body, { new: true })
@@ -78,6 +139,22 @@ class ResumeController extends Controller {
         }
     }
 
+    /**
+    * DELETE /resumes/:id
+    * 
+    * @summary deletes a resume by id
+    * @tags Resume
+    * @security BearerAuth
+    * 
+    * 
+    * @param  { string } id.path.required - resume id
+    * 
+    * @return { resume.success } 200 - success response
+    * @return { message.badrequest_error }  400 - bad request respone
+    * @return { message.badrequest_error }  404 - not found respone
+    * @return { message.badrequest_error }       401 - UnauthorizedError
+    * @return { message.server_error  }     500 - Server Error
+    */
     async delete(req, res, next) {
         try {
             let resume = await Resume.findById(req.params.id);
@@ -92,6 +169,23 @@ class ResumeController extends Controller {
         }
     }
 
+    /**
+    * DELETE /resumes/:id/status
+    * 
+    * @summary update status a resume by id
+    * @tags Resume
+    * @security BearerAuth
+    * 
+    * @param  { string } id.path.required - resume id
+    * @param { resume.update_status } request.body - resume info - multipart/form-data
+    * @param { resume.update_status } request.body - resume info - application/json
+    * 
+    * @return { resume.success } 200 - success response
+    * @return { message.badrequest_error }  400 - bad request respone
+    * @return { message.badrequest_error }  404 - not found respone
+    * @return { message.badrequest_error }       401 - UnauthorizedError
+    * @return { message.server_error  }     500 - Server Error
+    */
     async updateStatus(req, res, next) {
         try {
             await Resume.findByIdAndUpdate(req.params.id, { status: req.body.status }, { new: true })
