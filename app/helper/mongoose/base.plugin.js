@@ -1,5 +1,5 @@
 import MongooseDelete from "mongoose-delete"
-
+import MongoosePaginate from 'mongoose-paginate-v2';
 function basePlugin(schema, options) {
     
     const timestamps = {
@@ -23,6 +23,7 @@ function basePlugin(schema, options) {
     });
 
     schema.plugin(MongooseDelete, { deletedBy: true, deletedAt: true });
+    schema.plugin(MongoosePaginate);
 
 };
 

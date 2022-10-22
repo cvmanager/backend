@@ -27,10 +27,13 @@ class ProjectController extends Controller {
                     ]
                 }
             }
-            let projectList = await Project
-                .find(searchQuery)
-                .limit(size)
-                .skip(size * (page - 1));
+
+
+            const projectList = await Project.paginate(searchQuery, {
+                page: (page - 1) || 1,
+                limit: size,
+                // populate: 'likes'
+            });
             AppResponse.builder(res).message("project.message.project_found").data(projectList).send();
         } catch (err) {
             next(err);
