@@ -30,7 +30,7 @@ class ProjectController extends Controller {
 
 
             const projectList = await Project.paginate(searchQuery, {
-                page: (page - 1) || 1,
+                page: (page) || 1,
                 limit: size,
                 // populate: 'likes'
             });
