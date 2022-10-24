@@ -25,7 +25,10 @@ class CompanyController extends Controller {
 
             let searchQuery = (query.length > 0 ? { $or: [{ name: { '$regex': query } }] } : null);
 
-            let companyList = await Company.find(searchQuery).limit(size).skip(size * (page - 1));
+            const companyList = await Company.paginate(searchQuery, {
+                page: (page - 1) || 1,
+                limit: size,
+            });
             AppResponse.builder(res).message("company.message.company_list_found").data(companyList).send();
         } catch (err) {
             next(err);
@@ -77,7 +80,7 @@ class CompanyController extends Controller {
     */
     async create(req, res, next) {
         try {
-            let company = await Company.findOne({'name':req.body.name});
+            let company = await Company.findOne({ 'name': req.body.name });
             if (company) throw new AlreadyExists('company.error.company_already_exists');
 
             req.body.created_by = req.user_id;
