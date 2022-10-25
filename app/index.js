@@ -10,7 +10,7 @@ import errorHandler from './exceptions/ErrorHandler.js';
 import i18n from './middlewares/lang.middleware.js'
 import options from './docs/swaggerSpecs.js'
 import route from './routes/route.js'
-import  Ratelimiter  from '../app/middlewares/rate-limiter.js'
+import rateLimiter from '../app/middlewares/rate-limiter.js'
 const app = express();
 class App {
     constructor() {
@@ -21,17 +21,25 @@ class App {
     }
 
     async databaseConnect() {
-        await mongoose.connect(process.env.DB_URL, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-        });
+
+        await mongoose.connect(
+            `mongodb://${process.env.DB_USER_NAME}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`,
+            {
+                useNewUrlParser: true,
+                useUnifiedTopology: true,
+            }, (err) => {
+                if (err) console.error('FAILED TO CONNECT TO DATABASE ...');
+                console.log('successfuly connect to database ...');
+
+            }
+        );
     }
 
     setConfig() {
         dotenv.config();
         app.use(cors());
         app.use(i18n.init);
-        app.use(Ratelimiter);
+        app.use(rateLimiter);
 
         app.use(express.json({ strict: false }));
         app.use(express.urlencoded({ extended: false }));
@@ -50,7 +58,8 @@ class App {
     }
 
     serveServer() {
-        app.listen(process.env.PORT, () => {
+        app.listen(process.env.PORT, (err) => {
+            if(err) console.error(`can not run server in port ${process.env.PORT}`)
             console.log(`server running at ${process.env.PORT}`)
         })
     }
