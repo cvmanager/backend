@@ -1,5 +1,6 @@
 import jsonwebtoken from 'jsonwebtoken';
 import Logger from '../helper/logger.js'
+import env from '../helper/env.js'
 
 import UnauthorizedError from './UnauthorizedError.js';
 import UserNotFoundError from './UserNotFoundError.js';
@@ -62,7 +63,7 @@ async function errorHandler(err, req, res, next) {
         });
     }
 
-    if (process.env.NODE_ENV == 'development') console.log(err);
+    if (env('NODE_ENV') == 'development') console.log(err);
 
     return res.status(500).json({
         message: res.__("error.server_error"),

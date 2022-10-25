@@ -11,6 +11,7 @@ import i18n from './middlewares/lang.middleware.js'
 import options from './docs/swaggerSpecs.js'
 import route from './routes/route.js'
 import rateLimiter from '../app/middlewares/rate-limiter.js'
+import env from './helper/env.js'
 const app = express();
 class App {
     constructor() {
@@ -21,18 +22,15 @@ class App {
     }
 
     async databaseConnect() {
-
         await mongoose.connect(
-            `mongodb://${process.env.DB_USER_NAME}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`,
+            `mongodb://${env('DB_USER_NAME')}:${env('DB_PASSWORD')}@${env('DB_HOST')}:${env('DB_PORT')}/${env('DB_NAME')}`,
             {
                 useNewUrlParser: true,
                 useUnifiedTopology: true,
-            }, (err) => {
-                if (err) console.error('FAILED TO CONNECT TO DATABASE ...');
-                console.log('successfuly connect to database ...');
-
             }
-        );
+        )
+            .then(data => console.log('successfuly connect to database ...'))
+            .catch(err => console.error('failed to connect to database ...'))
     }
 
     setConfig() {
@@ -46,9 +44,7 @@ class App {
 
         expressJSDocSwagger(app)(options);
 
-        if (process.env.NODE_ENV == 'development') {
-            app.use(morgan('combined'))
-        }
+        if (env('NODE_ENV') == 'development') app.use(morgan('combined'))
     }
 
     routes() {
@@ -58,9 +54,9 @@ class App {
     }
 
     serveServer() {
-        app.listen(process.env.PORT, (err) => {
-            if(err) console.error(`can not run server in port ${process.env.PORT}`)
-            console.log(`server running at ${process.env.PORT}`)
+        app.listen(env('PORT'), (err) => {
+            if (err) console.error(`can not run server in port ${env('PORT')}`)
+            console.log(`server running at ${env('PORT')}`)
         })
     }
 }

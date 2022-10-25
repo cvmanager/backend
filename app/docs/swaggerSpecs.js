@@ -1,3 +1,4 @@
+import env from "../helper/env.js";
 const options = {
   info: {
     version: '1.0.0',
@@ -13,7 +14,7 @@ const options = {
   },
   servers: [
     {
-      "url": `http://127.0.0.1:${process.env.PORT}/api/v1`,
+      "url": `http://127.0.0.1:${env('PORT')}/api/v1`,
       "description": "Development server"
     }
   ],
