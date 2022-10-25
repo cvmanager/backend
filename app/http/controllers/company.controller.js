@@ -26,7 +26,7 @@ class CompanyController extends Controller {
             let searchQuery = (query.length > 0 ? { $or: [{ name: { '$regex': query } }] } : null);
 
             const companyList = await Company.paginate(searchQuery, {
-                page: (page - 1) || 1,
+                page: (page) || 1,
                 limit: size,
             });
             AppResponse.builder(res).message("company.message.company_list_found").data(companyList).send();
