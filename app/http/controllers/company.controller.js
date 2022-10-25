@@ -52,7 +52,7 @@ class CompanyController extends Controller {
     */
     async find(req, res, next) {
         try {
-            const company = await Company.findById(req.params.id);
+            const company = await Company.findById(req.params.id).populate('created_by');
             if (!company) throw new BadRequestError('company.error.company_notfound');
 
             AppResponse.builder(res).message('company.message.company_found').data(company).send();

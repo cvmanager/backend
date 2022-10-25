@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import i18n from '../middlewares/lang.middleware.js'
 import basePlugin from '../helper/mongoose/base.plugin.js';
+import User from './user.model.js';
 
 const schema = new mongoose.Schema(
     {
@@ -90,7 +91,8 @@ const schema = new mongoose.Schema(
         },
         created_by: {
             type: mongoose.Schema.Types.ObjectId,
-            required: true
+            required: true,
+            ref: User
         }
     }
 );
