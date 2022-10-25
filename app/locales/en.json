@@ -37,7 +37,8 @@
 	"error": {
 		"server_error": "Server Error",
 		"bad_request": "Bad Request",
-		"url_not_found": "Url NotFound"
+		"url_not_found": "Url NotFound",
+		"too_many_requests" : "Too Many Requests"
 	},
 	"auth": {
 		"message": {
