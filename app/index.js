@@ -21,8 +21,8 @@ class App {
         this.serveServer();
     }
 
-    async databaseConnect() {
-        await mongoose.connect(
+    databaseConnect() {
+        mongoose.connect(
             `mongodb://${env('DB_USER_NAME')}:${env('DB_PASSWORD')}@${env('DB_HOST')}:${env('DB_PORT')}/${env('DB_NAME')}`,
             {
                 useNewUrlParser: true,
