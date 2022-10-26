@@ -1,5 +1,6 @@
 import NotFoundError from '../../exceptions/NotFoundError.js';
 import Project from '../../models/project.model.js';
+import User from '../../models/user.model.js';
 import AppResponse from '../../helper/response.js';
 import Controller from './controller.js';
 
@@ -128,6 +129,36 @@ class ProjectController extends Controller {
             if (!project) throw new NotFoundError('project.error.project_notfound');
             await project.delete(req.user_id);
             AppResponse.builder(res).message("project.message.project_successfuly_deleted").data(project).send();
+        } catch (err) {
+            next(err);
+        }
+    }
+
+     /**
+     * set manager /projects/{id}/manager
+     * 
+     * @summary set manager for special project
+     * @tags Project
+     * @security BearerAuth
+     * 
+     * @param  { string } id.path - project id - application/json
+     * @param  { project.manager } request.body - project info - application/json
+     * 
+     * @return { message.unauthorized_error }     401 - UnauthorizedError
+     * @return { message.server_error } 500 - Server Error
+     */
+    async manager(req, res, next) {
+        try {
+            let project = await Project.findById(req.params.id);
+            if (!project) throw new NotFoundError('project.error.project_notfound');
+
+            let user = await User.findById(req.body.manager_id);
+            if (!user) throw new NotFoundError('user.error.user_notfound');
+
+            project.manager_id = req.body.manager_id;
+            project.save();
+
+            AppResponse.builder(res).message("project.message.project_id_successfuly_updated").data(project).send()
         } catch (err) {
             next(err);
         }

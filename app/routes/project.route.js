@@ -1,6 +1,6 @@
 import express from 'express'
 import ProjectController from '../http/controllers/project.controller.js';
-import { create, find, update, remove } from '../validators/project.validation.js'
+import { create, find, update, remove ,manager} from '../validators/project.validation.js'
 
 const projectRouter = express.Router();
 
@@ -10,5 +10,6 @@ projectRouter
     .post('/', create, ProjectController.create)
     .patch('/:id', update, ProjectController.update)
     .delete('/:id', remove, ProjectController.delete)
+    .patch('/:id/manager', manager, ProjectController.manager)
 
 export default projectRouter
