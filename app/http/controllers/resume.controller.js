@@ -27,10 +27,13 @@ class ResumeController extends Controller {
                     ]
                 }
             }
-            let resumeList = await Resume
-                .find(searchQuery)
-                .limit(size)
-                .skip(size * (page - 1));
+
+            const resumeList = await Resume.paginate(searchQuery, {
+                page: (page) || 1,
+                limit: size,
+                sort: { createdAt: -1 },
+                // populate: 'likes'
+            });
             AppResponse.builder(res).message("project.message.resume_list_found").data(resumeList).send();
         } catch (err) {
             next(err);

@@ -28,6 +28,7 @@ class CompanyController extends Controller {
             const companyList = await Company.paginate(searchQuery, {
                 page: (page) || 1,
                 limit: size,
+                sort: { createdAt: -1 },
             });
             AppResponse.builder(res).message("company.message.company_list_found").data(companyList).send();
         } catch (err) {
