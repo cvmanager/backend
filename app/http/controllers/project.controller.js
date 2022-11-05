@@ -1,4 +1,5 @@
 import NotFoundError from '../../exceptions/NotFoundError.js';
+import AlreadyExists from '../../exceptions/AlreadyExists.js';
 import Project from '../../models/project.model.js';
 import AppResponse from '../../helper/response.js';
 import Controller from './controller.js';
@@ -79,8 +80,11 @@ class ProjectController extends Controller {
      */
     async create(req, res, next) {
         try {
+            let project = await Project.findOne({ 'name': req.body.name , 'company_id' : req.body.company_id });
+            if (project) throw new AlreadyExists('project.error.project_already_attached_company');
+
             req.body.created_by = req.user_id;
-            let project = await Project.create(req.body);
+            project = await Project.create(req.body);
             AppResponse.builder(res).status(201).message("project.message.project_successfuly_created").data(project).send();
         } catch (err) {
             next(err);
@@ -102,6 +106,9 @@ class ProjectController extends Controller {
      */
     async update(req, res, next) {
         try {
+            let project = await Project.findOne({ 'name': req.body.name , 'company_id' : req.body.company_id });
+            if (project) throw new AlreadyExists('project.error.project_already_attached_company');
+
             await Project.findByIdAndUpdate(req.params.id, req.body, { new: true })
                 .then(project => AppResponse.builder(res).message("project.message.project_successfuly_updated").data(project).send())
                 .catch(err => next(err));
