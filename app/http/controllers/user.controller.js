@@ -29,10 +29,12 @@ class UserController extends Controller {
                     ]
                 }
             }
-            let users = await User
-                .find(searchQuery)
-                .limit(size)
-                .skip(size * (page - 1));
+            const users = await User.paginate(searchQuery, {
+                page: (page) || 1,
+                limit: size,
+                sort: { createdAt: -1 },
+                // populate: 'likes'
+            });
             AppResponse.builder(res).message("user.message.list_found").data(users).send();
         } catch (err) {
             next(err);

@@ -33,6 +33,7 @@ class ProjectController extends Controller {
             const projectList = await Project.paginate(searchQuery, {
                 page: (page) || 1,
                 limit: size,
+                sort: { createdAt: -1 },
                 // populate: 'likes'
             });
             AppResponse.builder(res).message("project.message.project_found").data(projectList).send();
