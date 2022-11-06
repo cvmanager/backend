@@ -10,6 +10,11 @@ const schema = new mongoose.Schema(
             required: true,
             ref: 'Company'
         },
+        manager_id: {
+            type: mongoose.Schema.Types.ObjectId,
+            required: true,
+            ref: 'User'
+        },
         name: {
             type: String,
             required: true
