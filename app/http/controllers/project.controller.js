@@ -135,7 +135,7 @@ class ProjectController extends Controller {
     }
 
      /**
-     * set manager /projects/{id}/manager
+     * PATCH manager /projects/{id}/manager
      * 
      * @summary set manager for special project
      * @tags Project
@@ -145,6 +145,7 @@ class ProjectController extends Controller {
      * @param  { project.manager } request.body - project info - application/json
      * 
      * @return { message.unauthorized_error }     401 - UnauthorizedError
+     * @return { message.unauthorized_error }     404 - NotFoundError
      * @return { message.server_error } 500 - Server Error
      */
     async manager(req, res, next) {
@@ -156,7 +157,7 @@ class ProjectController extends Controller {
             if (!user) throw new NotFoundError('user.error.user_notfound');
 
             project.manager_id = req.body.manager_id;
-            project.save();
+            await project.save();
 
             AppResponse.builder(res).message("project.message.project_id_successfuly_updated").data(project).send()
         } catch (err) {
