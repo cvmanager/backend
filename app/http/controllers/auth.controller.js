@@ -71,7 +71,7 @@ class AuthController extends Controller {
                 password: hash_password,
             });
 
-            const access_token = await generateJwtToken(user._id)
+            const access_token = await generateJwtToken({ _id: user._id, role: user.role })
             const refresh_token = await generateJwtRefeshToken(user._id);
 
             AppResponse.builder(res).status(201).message("auth.message.user_successfuly_created").data({ access_token, refresh_token }).send();
