@@ -20,15 +20,23 @@ services:
     container_name: app_container
     build: .
     ports:
-      - 4000:3000
+      - 4000:8080
     environment:
-      APP_PORT: 3000
+      PORT: 8080
       JWT_SECRET_TOKEN: 'fdsfdsfasdasdasgffgvfdsbgv'
       JWT_EXPIRATION_TIME_TOKEN: '15m'
       JWT_SECRET_REFRESH_TOKEN: 'dsadasdasdasdasdasdasdasdfdsfds'
       JWT_EXPIRATION_TIME_REFRESH_TOKEN: '30d'
-      DB_URL: 'mongodb://mongo_db/cvmanager'
-      REDIS_URL: 'redis://redis:6379'      
+   
+      DB_HOST: 'mongo_db'
+      DB_PORT: '27017'
+      DB_NAME: 'cvmanager'
+      DB_USER_NAME: ''
+      DB_PASSWORD: ''
+      REDIS_HOST: 'redis'
+      REDIS_PORT: '6379'
+      DEFAULT_LANGUAGE: 'en'
+      REDIS_KEY_REF_TOKENS: refTokens
     depends_on:
       - mongo_db
       - redis
