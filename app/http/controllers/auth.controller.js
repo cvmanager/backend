@@ -122,8 +122,7 @@ class AuthController extends Controller {
      */
     async logout(req, res, next) {
         try {
-            const token = req.body.token;
-            if (token === null) throw new BadRequestError('auth.error.token_not_sended');
+            const token = req.headers.authorization.split(' ')[1];
 
             const redisKey = req.user_id.toString() + env("REDIS_KEY_REF_TOKENS")
             await redisClient.sRem(redisKey, token);
