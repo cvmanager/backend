@@ -1,34 +1,42 @@
 import { param, body } from 'express-validator';
 
 import generalValidator from '../helper/validator.js';
+class UserValidation {
+    find() {
+        return [
+            param('id')
+                .notEmpty()
+                .withMessage('user.validator.user_id_required')
+                .isMongoId()
+                .withMessage('user.validator.user_id_invalid')
+                .trim(),
+            generalValidator
+        ];
+    }
 
-const find = [
-    param('id')
-        .notEmpty()
-        .withMessage('user.validator.user_id_required')
-        .isMongoId()
-        .withMessage('user.validator.user_id_invalid')
-        .trim(),
-    generalValidator
-];
+    updateProfileImage() {
+        return [
+            body('avatar')
+                .notEmpty()
+                .withMessage('user.validator.avatar_required')
+                .trim(),
+            generalValidator
+        ];
+    }
 
-const updateProfileImage = [
-    body('avatar')
-        .notEmpty()
-        .withMessage('user.validator.avatar_required')
-        .trim(),
-    generalValidator
-]
+    ban() {
+        return [
+            param('id')
+                .notEmpty()
+                .withMessage('user.validator.user_id_required')
+                .isMongoId()
+                .withMessage('user.validator.user_id_invalid')
+                .trim(),
+            generalValidator
+        ];
+    }
 
-const ban = [
-    param('id')
-        .notEmpty()
-        .withMessage('user.validator.user_id_required')
-        .isMongoId()
-        .withMessage('user.validator.user_id_invalid')
-        .trim(),
-    generalValidator
-]
+}
 
 
-export { find, updateProfileImage, ban }
+export default new UserValidation()
