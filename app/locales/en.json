@@ -38,7 +38,7 @@
 		"server_error": "Server Error",
 		"bad_request": "Bad Request",
 		"url_not_found": "Url NotFound",
-		"too_many_requests" : "Too Many Requests"
+		"too_many_requests": "Too Many Requests"
 	},
 	"auth": {
 		"message": {
@@ -69,6 +69,9 @@
 	"user": {
 		"error": {
 			"user_notfound": "The desired user was not found"
+		},
+		"message": {
+			"user_founded": "user successfuly found"
 		}
 	},
 	"project": {
