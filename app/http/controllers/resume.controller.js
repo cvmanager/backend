@@ -4,6 +4,7 @@ import Project from '../../models/project.model.js';
 import EventEmitter from '../../events/emitter.js';
 import AppResponse from '../../helper/response.js';
 import Resume from '../../models/resume.model.js';
+import Company from '../../models/company.model.js';
 import Controller from './controller.js';
 
 class ResumeController extends Controller {
