@@ -11,6 +11,8 @@ function basePlugin(schema, options) {
                 delete ret['deletedBy']
                 delete ret['deletedAt']
                 delete ret['__v']
+
+                if (options.transform.length > 0) options.transform.map(item => delete ret[item])
                 return ret
             }
         }

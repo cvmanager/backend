@@ -43,7 +43,10 @@ const schema = new mongoose.Schema(
     }
 );
 
-schema.plugin(basePlugin)
+let options = {
+    transform: ['password']
+}
+schema.plugin(basePlugin, options);
 
 const User = mongoose.model("users", schema);
 export default User;
