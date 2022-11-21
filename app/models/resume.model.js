@@ -39,7 +39,7 @@ const schema = new mongoose.Schema(
         marital_status: {
             type: String,
             required: true,
-            enum: i18n.__("enums.gender")
+            enum: i18n.__("enums.marital_status")
         },
         status: {
             type: String,
