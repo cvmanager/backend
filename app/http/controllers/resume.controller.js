@@ -98,14 +98,13 @@ class ResumeController extends Controller {
     */
     async create(req, res, next) {
         try {
-            let company = await Company.findById(req.body.company_id);
-            if (!company) throw new NotFoundError('company.error.company_notfound');
 
             let project = await Project.findById(req.body.project_id);
             if (!project) throw new NotFoundError('project.error.project_not_found');
 
             req.body.created_by = req.user_id
-            req.body.status = 'pending'
+            req.body.status = 'pending';
+            req.body.company.id = project.company_id;
             let resume = await Resume.create(req.body)
 
             EventEmitter.emit(resumeEvents.NEW_RESUME, resume)

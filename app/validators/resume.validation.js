@@ -5,12 +5,6 @@ import i18n from '../middlewares/lang.middleware.js';
 import { mobileFormat } from '../helper/helper.js';
 
 const create = [
-    body('company_id')
-        .notEmpty()
-            .withMessage('resume.validation.company_id_required')
-        .isMongoId()
-            .withMessage('resume.validation.company_id_invalid')
-        .trim(),
     body('project_id')
         .notEmpty()
             .withMessage('resume.validation.project_id_required')
