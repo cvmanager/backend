@@ -119,6 +119,27 @@ class UserController extends Controller {
             next(err);
         }
     }
+    /**
+     * GET /users/getMe
+     * @summary Get authenticated user information
+     * @tags User
+     * @security BearerAuth
+     * 
+     * @return { user.success }             200 - user successfuly found
+     * @return { message.badrequest_error } 400 - user not found
+     * @return { message.badrequest_error } 401 - UnauthorizedError
+     * @return { message.server_error}      500 - Server Error
+     */
+    async getMe(req, res, next) {
+        try {
+            let user = await User.findById(req.user_id);
+            if (!user) throw new UserNotFoundError();
+
+            AppResponse.builder(res).data(user).message('user.message.user_founded').send();
+        } catch (err) {
+            next(err);
+        }
+    }
 }
 
 export default new UserController;
