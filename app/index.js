@@ -8,7 +8,7 @@ import cors from 'cors'
 import NotFoundError from './exceptions/NotFoundError.js';
 import errorHandler from './exceptions/ErrorHandler.js';
 import i18n from './middlewares/lang.middleware.js'
-import options from './docs/swaggerSpecs.js'
+import swaggerOptions from './docs/swaggerSpecs.js'
 import route from './routes/route.js'
 import rateLimiter from '../app/middlewares/rate-limiter.js'
 import env from './helper/env.js'
@@ -42,7 +42,7 @@ class App {
         app.use(express.json({ strict: false }));
         app.use(express.urlencoded({ extended: false }));
 
-        expressJSDocSwagger(app)(options);
+        expressJSDocSwagger(app)(swaggerOptions);
 
         if (env('NODE_ENV') == 'development') app.use(morgan('combined'))
     }
