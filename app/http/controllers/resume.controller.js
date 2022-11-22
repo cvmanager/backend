@@ -46,7 +46,7 @@ class ResumeController extends Controller {
                 page: (page) || 1,
                 limit: size,
                 sort: { createdAt: -1 },
-                // populate: 'likes'
+                populate: [{ path: 'company_id', select: 'name' },{path: 'project_id', select: 'name' },{path: 'created_by', select: 'name' }]
             });
             AppResponse.builder(res).message("project.message.resume_list_found").data(resumeList).send();
         } catch (err) {
