@@ -90,6 +90,11 @@
 			"company_successfuly_created": "شرکت با موفقیت ایجاد شد"
 		}
 	},
+	"constant": {
+		"message": {
+			"constant_list_found": "فهرست ثابت ها"
+		}
+	},
 	"resume": {
 		"validation": {
 			"company_id_required": "resume.validation.company_id_required",

@@ -93,6 +93,11 @@
 			"company_successfuly_created": "Company successfuly created"
 		}
 	},
+	"constant": {
+		"message": {
+			"constant_list_found": "Constant successfuly created"
+		}
+	},
 	"resume": {
 		"validation": {
 			"company_id_required": "resume.validation.company_id_required",
