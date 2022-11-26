@@ -91,6 +91,7 @@ const schema = new mongoose.Schema(
             type: Date,
             default: null
         },
+        status_log: Array,
         created_by: {
             type: mongoose.Schema.Types.ObjectId,
             required: true,

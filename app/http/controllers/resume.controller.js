@@ -5,6 +5,7 @@ import EventEmitter from '../../events/emitter.js';
 import AppResponse from '../../helper/response.js';
 import Resume from '../../models/resume.model.js';
 import Company from '../../models/company.model.js';
+import ResumeStatusLog from '../../models/resumeStatusLog.model.js';
 import Controller from './controller.js';
 
 class ResumeController extends Controller {
@@ -46,7 +47,7 @@ class ResumeController extends Controller {
                 page: (page) || 1,
                 limit: size,
                 sort: { createdAt: -1 },
-                populate: [{ path: 'company_id', select: 'name' },{path: 'project_id', select: 'name' },{path: 'created_by', select: 'name' }]
+                populate: [{ path: 'company_id', select: 'name' }, { path: 'project_id', select: 'name' }, { path: 'created_by', select: 'name' }]
             });
             AppResponse.builder(res).message("project.message.resume_list_found").data(resumeList).send();
         } catch (err) {
@@ -104,7 +105,7 @@ class ResumeController extends Controller {
 
             req.body.created_by = req.user_id
             req.body.status = 'pending';
-            req.body.company.id = project.company_id;
+            req.body.company_id = project.company_id;
             let resume = await Resume.create(req.body)
 
             EventEmitter.emit(resumeEvents.NEW_RESUME, resume)
@@ -191,9 +192,20 @@ class ResumeController extends Controller {
     */
     async updateStatus(req, res, next) {
         try {
-            await Resume.findByIdAndUpdate(req.params.id, { status: req.body.status }, { new: true })
-                .then(resume => AppResponse.builder(res).message("resume.message.resume_status_successfuly_updated").data(resume).send())
-                .catch(err => next(err));
+            let resume = await Resume.findById(req.params.id);
+            if (!resume) throw new NotFoundError('resume.error.resume_notfound');
+
+            let newResumeStatusLog = new ResumeStatusLog();
+            newResumeStatusLog.new_status = req.body.status;
+            newResumeStatusLog.old_status = resume.status;
+            newResumeStatusLog.createdAt = new Date();
+
+            resume.status_log.push(newResumeStatusLog);
+            resume.status = req.body.status;
+
+            await resume.save();
+
+            AppResponse.builder(res).message("resume.message.resume_status_successfuly_updated").data(resume).send();
         } catch (err) {
             next(err);
         }
