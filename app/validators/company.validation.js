@@ -56,6 +56,24 @@ class CompanyValidation {
             generalValidator
         ];
     }
+
+    manager() {
+        return [
+            param('id')
+                .notEmpty()
+                .withMessage('company.validation.id_required')
+                .isMongoId()
+                .withMessage('company.validation.id_invalid')
+                .trim(),
+            body('manager_id')
+                .notEmpty()
+                .withMessage('company.validation.company_id_required')
+                .isMongoId()
+                .withMessage('company.validation.company_id_invalid')
+                .trim(),
+            generalValidator
+        ]
+    }
 }
 
 export default new CompanyValidation();

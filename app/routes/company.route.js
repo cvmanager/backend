@@ -11,5 +11,6 @@ companyRouter
     .post('/', CompanyValidation.create(), CompanyController.create)
     .patch('/:id', CompanyValidation.update(), CompanyController.update)
     .delete('/:id', CompanyValidation.remove(), CompanyController.delete)
+    .patch('/:id/manager', CompanyValidation.manager(), CompanyController.manager)
 
 export default companyRouter;

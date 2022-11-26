@@ -1,8 +1,10 @@
 import BadRequestError from '../../exceptions/BadRequestError.js';
 import AlreadyExists from '../../exceptions/AlreadyExists.js';
 import Company from '../../models/company.model.js';
+import User from '../../models/user.model.js'
 import AppResponse from '../../helper/response.js';
 import Controller from './controller.js';
+import { Console } from 'console';
 
 class CompanyController extends Controller {
 
@@ -141,6 +143,23 @@ class CompanyController extends Controller {
             if (!company) throw new NotFoundError('company.error.company_notfound');
             await company.delete(req.user_id);
             AppResponse.builder(res).message("company.message.company_successfuly_deleted").data(company).send();
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    async manager(req, res, next) {
+        try {
+            let company = await Company.findById(req.params.id);
+            if (!company) throw new NotFoundError('company.error.company_notfound');
+
+            let user = await User.findById(req.body.manager_id);
+            if (!user) throw new NotFoundError('user.error.user_notfound');
+
+            company.manager_id = req.body.manager_id;
+            await company.save();
+
+            AppResponse.builder(res).message("company.message.company_id_successfuly_updated").data(company).send()
         } catch (err) {
             next(err);
         }
