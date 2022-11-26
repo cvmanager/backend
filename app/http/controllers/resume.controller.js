@@ -104,7 +104,7 @@ class ResumeController extends Controller {
 
             req.body.created_by = req.user_id
             req.body.status = 'pending';
-            req.body.company.id = project.company_id;
+            req.body.company_id = project.company_id;
             let resume = await Resume.create(req.body)
 
             EventEmitter.emit(resumeEvents.NEW_RESUME, resume)
