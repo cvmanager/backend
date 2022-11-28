@@ -12,10 +12,16 @@ class CompanyValidation {
                 .isLength({ min: 3, max: 50 })
                 .withMessage('company.validation.company_name_length')
                 .trim(),
+            body('manager_id')
+                .notEmpty()
+                .withMessage('company.validation.manager_id_required')
+                .isMongoId()
+                .withMessage('company.validation.manager_id_invalid')
+                .trim(),
             generalValidator
         ];
     }
-    
+
     find() {
         return [
             param('id')
@@ -41,6 +47,11 @@ class CompanyValidation {
                 .withMessage('company.validation.company_name_length')
                 .optional({ nullable: true, checkFalsy: true })
                 .trim(),
+            body('manager_id')
+                .isMongoId()
+                .withMessage('company.validation.manager_id_invalid')
+                .optional({ nullable: true, checkFalsy: true })
+                .trim(),
             generalValidator
         ];
     }
@@ -61,15 +72,15 @@ class CompanyValidation {
         return [
             param('id')
                 .notEmpty()
-                .withMessage('company.validation.id_required')
-                .isMongoId()
-                .withMessage('company.validation.id_invalid')
-                .trim(),
-            body('manager_id')
-                .notEmpty()
                 .withMessage('company.validation.company_id_required')
                 .isMongoId()
                 .withMessage('company.validation.company_id_invalid')
+                .trim(),
+            body('manager_id')
+                .notEmpty()
+                .withMessage('company.validation.manager_id_required')
+                .isMongoId()
+                .withMessage('company.validation.manager_id_invalid')
                 .trim(),
             generalValidator
         ]

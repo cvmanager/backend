@@ -77,13 +77,18 @@
 			"project_successfuly_created": "پروژه با موفقیت ایجاد شد"
 		},
 		"validation": {
+			"project_name_required": "نام پروژه الزامی می باشد",
+			"project_name_length": "نام پروژه باید بزرگتر از ۳ کاراکتر و کوچکتر از ۵۰ کاراکتر باشد ",
+			"project_description_length": "نام پروژه باید بزرگتر از ۱۰ کاراکتر و کوچکتر از ۱۰۰ کاراکتر باشد ",
 			"project_id_invalid": "شناسه پروژه نامعتبر می باشد"
 		}
 	},
 	"company": {
 		"validation": {
-			"company_id_require": "انتخاب شرکت ضروری می باشد",
-			"company_id_invalid": "شرکت انتخاب شده نامعتبر است"
+			"company_id_required": "انتخاب شرکت ضروری می باشد",
+			"company_id_invalid": "شرکت انتخاب شده نامعتبر است",
+			"manager_id_required": "انتخاب مدیر ضروری می باشد",
+			"manager_id_invalid": "مدیر انتخاب شده نامعتبر است"
 		},
 		"message": {
 			"company_list_found": "فهرست شرکت ها",
