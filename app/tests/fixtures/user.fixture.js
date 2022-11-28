@@ -2,6 +2,8 @@ import { Types } from 'mongoose';
 import bcrypt from 'bcrypt';
 
 import User from '../../models/user.model';
+import jsonwebtoken from 'jsonwebtoken';
+import env from '../../helper/env.js';
 
 const password = 'password1';
 const salt = bcrypt.genSaltSync(10);
@@ -20,5 +22,8 @@ export const insertUsers = async (users) => {
   await User.insertMany(users.map((user) => ({ ...user, password: hashedPassword })));
 };
 
-export const access_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2MzM5M2U4OTBkNzIwZDBjYWZlNWE0NWIiLCJpYXQiOjE2NjkyMDcyMzgsImV4cCI6MTY2OTI5MzYzOH0.S5BHgfXI8ohWAfEjavx7IX4xNgyVfXUQCnSX4mhF17s"
-export const refresh_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2MzM5M2U4OTBkNzIwZDBjYWZlNWE0NWIiLCJpYXQiOjE2NjkyMDcyMzgsImV4cCI6MTY2OTI5MzYzOH0.S5BHgfXI8ohWAfEjavx7IX4xNgyVfXUQCnSX4mhF17s"
+export const accessToken = async (user) => {
+  return jsonwebtoken.sign({ sub: user._id, }, env("JWT_SECRET_TOKEN"), {
+    expiresIn: env("JWT_EXPIRATION_TIME_TOKEN")
+});
+};
