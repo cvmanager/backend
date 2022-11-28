@@ -1,4 +1,4 @@
-// import httpStatus from 'http-status'
+import httpStatus from 'http-status'
 import request from 'supertest'
 import { userOne, insertUsers, accessToken } from './fixtures/user.fixture.js'
 import setupTestDB from './utils/setupTestDB.js';
@@ -35,7 +35,7 @@ describe('Constant routes', () => {
                 .get("/constant")
                 .set('Authorization', token)
                 .send();
-            expect(response.statusCode).toEqual(200);
+            expect(response.statusCode).toEqual(httpStatus.OK);
         })
 
     })
