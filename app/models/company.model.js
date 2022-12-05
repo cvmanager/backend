@@ -30,6 +30,8 @@ const schema = new mongoose.Schema(
     }
 )
 
+
+
 schema.plugin(basePlugin)
 
 const Company = mongoose.model('companies', schema);

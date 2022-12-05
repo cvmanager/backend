@@ -1,20 +1,18 @@
 import mongoose from 'mongoose';
-
+import i18n from '../middlewares/lang.middleware.js'
 import basePlugin from '../helper/mongoose/base.plugin.js';
-import Project from './project.model.js';
-import Company from './conpany.model.js';
 
 const schema = new mongoose.Schema(
     {
         project_id: {
             type: mongoose.Schema.Types.ObjectId,
             required: true,
-            ref: Project
+            ref: 'projects'
         },
         company_id: {
             type: mongoose.Schema.Types.ObjectId,
             required: true,
-            ref: Company
+            ref: 'companies'
         },
         title: {
             type: String,
