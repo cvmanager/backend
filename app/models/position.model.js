@@ -6,15 +6,6 @@ import Company from './conpany.model.js';
 
 const schema = new mongoose.Schema(
     {
-        title: {
-            type: String,
-            required: true,
-        },
-        level: {
-            type: String,
-            required: true,
-            enum: i18n.__("enums.positions")
-        },
         project_id: {
             type: mongoose.Schema.Types.ObjectId,
             required: true,
@@ -25,14 +16,18 @@ const schema = new mongoose.Schema(
             required: true,
             ref: Company
         },
+        title: {
+            type: String,
+            required: true,
+        },
+        level: {
+            type: String,
+            required: true,
+            enum: i18n.__("enums.positions")
+        },
         is_active: {
             type: Boolean,
             default: 1
-        },
-        created_by: {
-            type: mongoose.Schema.Types.ObjectId,
-            required: true,
-            ref: User
         }
     }
 )
