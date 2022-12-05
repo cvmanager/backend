@@ -1,19 +1,18 @@
 import mongoose from 'mongoose';
 
 import basePlugin from '../helper/mongoose/base.plugin.js';
-import User from './user.model.js';
 
 const schema = new mongoose.Schema(
     {
         company_id: {
             type: mongoose.Schema.Types.ObjectId,
             required: true,
-            ref: 'Company'
+            ref: 'companies'
         },
         manager_id: {
             type: mongoose.Schema.Types.ObjectId,
             required: true,
-            ref: 'User'
+            ref: 'users'
         },
         name: {
             type: String,
@@ -30,7 +29,7 @@ const schema = new mongoose.Schema(
         created_by: {
             type: mongoose.Schema.Types.ObjectId,
             required: true,
-            ref: User
+            ref: 'users'
         }
     }
 );
