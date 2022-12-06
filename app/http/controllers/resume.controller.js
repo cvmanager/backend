@@ -46,7 +46,7 @@ class ResumeController extends Controller {
                 page: (page) || 1,
                 limit: size,
                 sort: { createdAt: -1 },
-                populate: [{ path: 'company_id', select: 'name' },{path: 'project_id', select: 'name' },{path: 'created_by', select: 'name' }]
+                populate: [{ path: 'company_id', select: 'name' }, { path: 'project_id', select: 'name' }, { path: 'created_by', select: 'name' }]
             });
             AppResponse.builder(res).message("project.message.resume_list_found").data(resumeList).send();
         } catch (err) {
@@ -173,7 +173,7 @@ class ResumeController extends Controller {
     }
 
     /**
-    * DELETE /resumes/:id/status
+    * PATCH /resumes/:id/status
     * 
     * @summary update status a resume by id
     * @tags Resume
@@ -194,6 +194,41 @@ class ResumeController extends Controller {
             await Resume.findByIdAndUpdate(req.params.id, { status: req.body.status }, { new: true })
                 .then(resume => AppResponse.builder(res).message("resume.message.resume_status_successfuly_updated").data(resume).send())
                 .catch(err => next(err));
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
+    * PATCH /resumes/:id/file
+    * @summary upload resume file
+    * @tags Resume
+    * @security BearerAuth
+    * 
+    * @param { string } id.path.required - resume id
+    * @param { resume.upload_file } request.body - resume info - multipart/form-data
+    * 
+    * @return { resume.success }              200 - update resume profile
+    * @return { message.badrequest_error }      400 - resume not found
+    * @return { message.badrequest_error }      401 - UnauthorizedError
+    * @return { message.server_error}      500 - Server Error
+    */
+    async uploadFile(req, res, next) {
+        try {
+            let resume = await Resume.findById(req.params.id);
+            if (!resume) throw new NotFoundError('resume.error.resume_notfound');
+
+            let files = [];
+            if (resume.file) {
+                files = resume.file.filter(fileName => {
+                    return fileName != null & fileName != "";
+                })
+            }
+            if(req.body.file) files.push(req.body.file);
+            resume.file = files;
+            await resume.save();
+
+            AppResponse.builder(res).message("resume.message.resume_file_successfuly_upload").data(resume).send()
         } catch (err) {
             next(err);
         }

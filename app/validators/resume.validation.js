@@ -269,6 +269,22 @@ class ResumeValidation {
             generalValidator
         ];
     }
+
+    upload_file() {
+        return [
+            param('id')
+                .notEmpty()
+                .withMessage('resume.validation.resume_id_required')
+                .isMongoId()
+                .withMessage('resume.validation.resume_id_invalid')
+                .trim(),
+            body('file')
+                .notEmpty()
+                .withMessage('resume.validation.file_required')
+                .trim(),
+            generalValidator
+        ];
+    }
 }
 
 export default new ResumeValidation();

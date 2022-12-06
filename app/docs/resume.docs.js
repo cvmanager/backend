@@ -79,6 +79,11 @@
 * @property { string } status.required - resume status
 */
 
+/**
+* upload file resume
+* @typedef { object } resume.upload_file
+* @property { file } file.required - resume file
+*/
 
 /**
 * resume success response
