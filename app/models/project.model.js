@@ -1,6 +1,8 @@
 import mongoose from 'mongoose';
 
 import basePlugin from '../helper/mongoose/base.plugin.js';
+import Company from './company.model.js';
+import User from './user.model.js';
 
 const schema = new mongoose.Schema(
     {
