@@ -14,7 +14,8 @@ function basePlugin(schema, options) {
 
                 if (typeof options !== "undefined" && options.transform.length > 0) options.transform.map(item => delete ret[item])
                 return ret
-            }
+            },
+            virtuals: true
         }
 
     schema.set('timestamps', timestamps)

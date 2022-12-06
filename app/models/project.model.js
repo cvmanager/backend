@@ -9,12 +9,12 @@ const schema = new mongoose.Schema(
         company_id: {
             type: mongoose.Schema.Types.ObjectId,
             required: true,
-            ref: Company
+            ref: 'companies'
         },
         manager_id: {
             type: mongoose.Schema.Types.ObjectId,
             required: true,
-            ref: User
+            ref: 'users'
         },
         name: {
             type: String,
@@ -31,7 +31,7 @@ const schema = new mongoose.Schema(
         created_by: {
             type: mongoose.Schema.Types.ObjectId,
             required: true,
-            ref: User
+            ref: 'users'
         }
     }
 );
