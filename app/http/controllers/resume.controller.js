@@ -72,7 +72,7 @@ class ResumeController extends Controller {
     async find(req, res, next) {
         try {
             let resume = await Resume.findById(req.params.id).populate('created_by').exec();
-            if (!resume) throw new NotFoundError('resume.error.project_notfound');
+            if (!resume) throw new NotFoundError('resume.error.resume_notfound');
 
             AppResponse.builder(res).message("resume.message.project_found").data(resume).send();
         } catch (err) {
