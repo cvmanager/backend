@@ -31,7 +31,7 @@ class PositionValidation {
                 .trim(),
             body('is_active')
                 .optional({ nullable: true, checkFalsy: true })
-                .isNumeric()
+                .isBoolean()
                 .withMessage('position.validation.position_is_active_incorrect')
                 .trim(),
             generalValidator

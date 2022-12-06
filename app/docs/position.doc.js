@@ -19,6 +19,7 @@
 * @property { string } company_id.required - position company_id
 * @property { string } title.required - position title
 * @property { string } level.required - position level
+* @property { boolean } is_active - position is_active
 */
 
 /**
