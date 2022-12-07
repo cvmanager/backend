@@ -103,6 +103,52 @@ class PositionController extends Controller {
     }
 
     /**
+    * PATCH /positions/{id}
+    * 
+    * @summary updates a copmany
+    * @tags Position
+    * @security BearerAuth
+    * 
+    * @param  { string } id.path - position id
+    * @param { position.create } request.body - position info - multipart/form-data
+    * @param { position.create } request.body - position info - application/json
+    * 
+    * @return { position.success }           200 - success response
+    * @return { message.badrequest_error }  400 - bad request respone
+    * @return { message.badrequest_error }  404 - not found respone
+    * @return { message.unauthorized_error }     401 - UnauthorizedError
+    * @return { message.server_error  }    500 - Server Error
+    */
+    async update(req, res, next) {
+        try {
+
+            let position = await Position.findById(req.params.id);
+            if (!position) throw new NotFoundError('position.error.position_notfound');
+
+            if (req.body.project_id !== undefined) {
+                let project = await Project.findById(req.body.project_id);
+                if (!project) throw new NotFoundError('project.error.project_notfound');
+            }
+
+            if (req.body.company_id !== undefined) {
+                let company = await Company.findById(req.body.company_id);
+                if (!company) throw new NotFoundError('company.error.company_notfound');
+            }
+
+            if (req.body.title !== undefined) {
+                let position = await Position.findOne({ 'title': req.body.title, 'project_id': req.body.project_id !== undefined ? req.body.project_id : req.params.id  });
+                if (position) throw new AlreadyExists('position.error.position_already_exists');
+            }
+
+            await Position.findByIdAndUpdate(req.params.id, req.body, { new: true })
+                .then(position => AppResponse.builder(res).message("position.message.position_successfuly_updated").data(position).send())
+                .catch(err => next(err));
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
     * DELETE /positions/{id}
     * 
     * @summary delete a position by id

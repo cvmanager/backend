@@ -50,6 +50,43 @@ class PositionValidation {
         ]
     }
 
+    update() {
+        return [
+            param('id')
+                .notEmpty()
+                .withMessage('position.validation.position_id_required')
+                .isMongoId()
+                .withMessage('position.validation.position_id_invalid')
+                .trim(),
+            body('project_id')
+                .optional({ nullable: true, checkFalsy: true })
+                .isMongoId()
+                .withMessage('position.validation.project_id_invalid')
+                .trim(),
+            body('company_id')
+                .optional({ nullable: true, checkFalsy: true })
+                .isMongoId()
+                .withMessage('position.validation.company_id_invalid')
+                .trim(),
+            body('title')
+                .optional({ nullable: true, checkFalsy: true })
+                .isLength({ min: 3, max: 50 })
+                .withMessage('position.validation.position_title_length')
+                .trim(),
+            body('level')
+                .optional({ nullable: true, checkFalsy: true })
+                .isIn(i18n.__("enums.positions"))
+                .withMessage('position.validation.position_level_incorrect')
+                .trim(),
+            body('is_active')
+                .optional({ nullable: true, checkFalsy: true })
+                .isBoolean()
+                .withMessage('position.validation.position_is_active_incorrect')
+                .trim(),
+            generalValidator
+        ];
+    }
+
     remove() {
         return [
             param('id')
