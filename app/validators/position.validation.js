@@ -49,6 +49,18 @@ class PositionValidation {
             generalValidator
         ]
     }
+
+    remove() {
+        return [
+            param('id')
+                .notEmpty()
+                .withMessage('position.validation.position_id_required')
+                .isMongoId()
+                .withMessage('position.validation.position_id_invalid')
+                .trim(),
+            generalValidator
+        ];
+    }
 }
 
 export default new PositionValidation();

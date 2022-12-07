@@ -43,7 +43,7 @@ class PositionController extends Controller {
     /**
     * GET /positions/{id}
     * 
-    * @summary gets a position by id
+    * @summary get a position by id
     * @tags Position
     * @security BearerAuth
     * 
@@ -55,7 +55,7 @@ class PositionController extends Controller {
     * @return { message.unauthorized_error }     401 - UnauthorizedError
     * @return { message.server_error  }    500 - Server Error
     */
-     async find(req, res, next) {
+    async find(req, res, next) {
         try {
             const position = await Position.findById(req.params.id);
             if (!position) throw new NotFoundError('position.error.position_notfound');
@@ -99,6 +99,33 @@ class PositionController extends Controller {
             AppResponse.builder(res).status(201).message('position.message.position_successfuly_created').data(position).send();
         } catch (err) {
             next(err)
+        }
+    }
+
+    /**
+    * DELETE /positions/{id}
+    * 
+    * @summary delete a position by id
+    * @tags Position
+    * @security BearerAuth
+    * 
+    * @param  { string } id.path - position id
+    * 
+    * @return { position.success } 200 - success response
+    * @return { message.badrequest_error } 400 - bad request respone
+    * @return { message.badrequest_error } 404 - not found respone
+    * @return { message.unauthorized_error }     401 - UnauthorizedError
+    * @return { message.server_error  }    500 - Server Error
+    */
+    async delete(req, res, next) {
+        try {
+            let position = await Position.findById(req.params.id);
+            if (!position) throw new NotFoundError('position.error.position_notfound');
+
+            await position.delete(req.user_id);
+            AppResponse.builder(res).message("position.message.position_successfuly_deleted").data(position).send();
+        } catch (err) {
+            next(err);
         }
     }
 

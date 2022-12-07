@@ -282,5 +282,31 @@ describe('Postition routes', () => {
         });
 
     })
+
+    describe('DELETE /:id', () => {
+
+        it('should return ' + httpStatus.BAD_REQUEST + ' error if position id invalid', async () => {
+            const response = await request(baseURL)
+                .delete("/positions/invalid id")
+                .set('Authorization', token)
+                .send();
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        });
+        it('should return ' + httpStatus.NOT_FOUND + ' error if position not found', async () => {
+            const response = await request(baseURL)
+                .delete("/positions/" + Types.ObjectId())
+                .set('Authorization', token)
+                .send();
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        });
+        it('should return ' + httpStatus.OK + ' if position delete', async () => {
+            const response = await request(baseURL)
+                .delete("/positions/" + positionOne._id)
+                .set('Authorization', token)
+                .send();
+            expect(response.statusCode).toBe(httpStatus.OK);
+        });
+
+    })
 })
 
