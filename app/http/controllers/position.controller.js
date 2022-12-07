@@ -13,7 +13,7 @@ class PositionController extends Controller {
     /**
     * GET /positions
     * 
-    * @summary get a list of all companies
+    * @summary get a list of all positions
     * @tags Position
     * @security BearerAuth
     * 
@@ -35,6 +35,32 @@ class PositionController extends Controller {
                 sort: { createdAt: -1 },
             });
             AppResponse.builder(res).message("position.message.position_list_found").data(positionList).send();
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
+    * GET /positions/{id}
+    * 
+    * @summary gets a position by id
+    * @tags Position
+    * @security BearerAuth
+    * 
+    * @param  { string } id.path.required - position id
+    * 
+    * @return { position.success } 200 - success response
+    * @return { message.badrequest_error } 400 - bad request respone
+    * @return { message.badrequest_error } 404 - not found respone
+    * @return { message.unauthorized_error }     401 - UnauthorizedError
+    * @return { message.server_error  }    500 - Server Error
+    */
+     async find(req, res, next) {
+        try {
+            const position = await Position.findById(req.params.id);
+            if (!position) throw new NotFoundError('position.error.position_notfound');
+
+            AppResponse.builder(res).message('position.message.position_found').data(position).send();
         } catch (err) {
             next(err);
         }

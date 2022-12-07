@@ -19,6 +19,7 @@ describe('Postition routes', () => {
         await insertUsers([userOne]);
         await insertCompanies([companyOne]);
         await insertProjects([projectOne]);
+        await insertPositions(positionOne);
 
         token = 'Bearer ' + await accessToken(userOne);
 
@@ -32,10 +33,6 @@ describe('Postition routes', () => {
     })
 
     describe('GET /', () => {
-
-        beforeEach(async () => {
-            await insertPositions(positionOne);
-        })
 
         it('should get ' + httpStatus.INTERNAL_SERVER_ERROR + ' error if page is not number', async () => {
             const response = await request(baseURL)
@@ -102,11 +99,54 @@ describe('Postition routes', () => {
 
     })
 
+    describe('GET /:id', () => {
+
+        it('should return ' + httpStatus.BAD_REQUEST + ' error if position id invalid', async () => {
+            const response = await request(baseURL)
+                .get("/positions/invalid id")
+                .set('Authorization', token)
+                .send();
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        });
+        it('should return ' + httpStatus.NOT_FOUND + ' error if position not found', async () => {
+            const response = await request(baseURL)
+                .get("/positions/" + Types.ObjectId())
+                .set('Authorization', token)
+                .send();
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        });
+        it('should return ' + httpStatus.OK + ' if position found', async () => {
+            const response = await request(baseURL)
+                .get("/positions/" + positionOne._id)
+                .set('Authorization', token)
+                .send();
+            expect(response.statusCode).toBe(httpStatus.OK);
+        });
+
+        it("should check field of object returned", async () => {
+            const response = await request(baseURL)
+                .get("/positions/" + positionOne._id)
+                .set('Authorization', token)
+                .send();
+
+            let data = response.body.data[0];
+            expect(data).toHaveProperty('_id')
+            expect(data).toHaveProperty('project_id')
+            expect(data).toHaveProperty('company_id')
+            expect(data).toHaveProperty('title')
+            expect(data).toHaveProperty('level')
+            expect(data).toHaveProperty('is_active')
+            expect(data).toHaveProperty('deleted')
+            expect(data).toHaveProperty('createdAt')
+            expect(data).toHaveProperty('updatedAt')
+        })
+    })
+
     describe('POST /', () => {
 
         describe('project check', () => {
 
-            it('should return '+httpStatus.BAD_REQUEST+' error if project_id field dont send', async () => {
+            it('should return ' + httpStatus.BAD_REQUEST + ' error if project_id field dont send', async () => {
                 delete newPostition.project_id
                 const response = await request(baseURL)
                     .post("/positions")
@@ -114,7 +154,7 @@ describe('Postition routes', () => {
                     .send(newPostition);
                 expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
             });
-            it('should return '+httpStatus.BAD_REQUEST+' error if project_id is not valid', async () => {
+            it('should return ' + httpStatus.BAD_REQUEST + ' error if project_id is not valid', async () => {
                 newPostition.project_id = 'invalid project id'
                 const response = await request(baseURL)
                     .post("/positions")
@@ -122,7 +162,7 @@ describe('Postition routes', () => {
                     .send(newPostition);
                 expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
             });
-            it('should return '+httpStatus.NOT_FOUND+' error if project is not found', async () => {
+            it('should return ' + httpStatus.NOT_FOUND + ' error if project is not found', async () => {
                 newPostition.project_id = Types.ObjectId()
                 const response = await request(baseURL)
                     .post("/positions")
@@ -135,7 +175,7 @@ describe('Postition routes', () => {
 
         describe('company check', () => {
 
-            it('should return '+httpStatus.BAD_REQUEST+' error if company_id field dont send', async () => {
+            it('should return ' + httpStatus.BAD_REQUEST + ' error if company_id field dont send', async () => {
                 delete newPostition.company_id
                 const response = await request(baseURL)
                     .post("/positions")
@@ -143,7 +183,7 @@ describe('Postition routes', () => {
                     .send(newPostition);
                 expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
             });
-            it('should return '+httpStatus.BAD_REQUEST+' error if company_id is not valid', async () => {
+            it('should return ' + httpStatus.BAD_REQUEST + ' error if company_id is not valid', async () => {
                 newPostition.company_id = 'invalid company id'
                 const response = await request(baseURL)
                     .post("/positions")
@@ -151,7 +191,7 @@ describe('Postition routes', () => {
                     .send(newPostition);
                 expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
             });
-            it('should return '+httpStatus.NOT_FOUND+' error if company is not found', async () => {
+            it('should return ' + httpStatus.NOT_FOUND + ' error if company is not found', async () => {
                 newPostition.company_id = Types.ObjectId()
                 const response = await request(baseURL)
                     .post("/positions")
@@ -164,7 +204,7 @@ describe('Postition routes', () => {
 
         describe('title check', () => {
 
-            it('should return '+httpStatus.BAD_REQUEST+' error if title field dont send', async () => {
+            it('should return ' + httpStatus.BAD_REQUEST + ' error if title field dont send', async () => {
                 delete newPostition.title
                 const response = await request(baseURL)
                     .post("/positions")
@@ -172,7 +212,7 @@ describe('Postition routes', () => {
                     .send(newPostition);
                 expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
             });
-            it('should return '+httpStatus.BAD_REQUEST+' error if title field smaller than 3 character', async () => {
+            it('should return ' + httpStatus.BAD_REQUEST + ' error if title field smaller than 3 character', async () => {
                 newPostition.title = 'a'
                 const response = await request(baseURL)
                     .post("/positions")
@@ -180,7 +220,7 @@ describe('Postition routes', () => {
                     .send(newPostition);
                 expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
             });
-            it('should return '+httpStatus.BAD_REQUEST+' error if title field grather than 50 character', async () => {
+            it('should return ' + httpStatus.BAD_REQUEST + ' error if title field grather than 50 character', async () => {
                 newPostition.title = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
                 const response = await request(baseURL)
                     .post("/positions")
@@ -188,8 +228,7 @@ describe('Postition routes', () => {
                     .send(newPostition);
                 expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
             });
-            it('should return '+httpStatus.FORBIDDEN+' error if title is already saved for this project', async () => {
-                await insertPositions(positionOne);
+            it('should return ' + httpStatus.FORBIDDEN + ' error if title is already saved for this project', async () => {
                 newPostition.title = positionOne.title
                 const response = await request(baseURL)
                     .post("/positions")
@@ -202,7 +241,7 @@ describe('Postition routes', () => {
 
         describe('level check', () => {
 
-            it('should return '+httpStatus.BAD_REQUEST+' error if level field dont send', async () => {
+            it('should return ' + httpStatus.BAD_REQUEST + ' error if level field dont send', async () => {
                 delete newPostition.level
                 const response = await request(baseURL)
                     .post("/positions")
@@ -210,7 +249,7 @@ describe('Postition routes', () => {
                     .send(newPostition);
                 expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
             });
-            it('should return '+httpStatus.BAD_REQUEST+' error if level field none of enums positions list', async () => {
+            it('should return ' + httpStatus.BAD_REQUEST + ' error if level field none of enums positions list', async () => {
                 newPostition.level = 'wrong level'
                 const response = await request(baseURL)
                     .post("/positions")
@@ -223,7 +262,7 @@ describe('Postition routes', () => {
 
         describe('is_active check', () => {
 
-            it('should return '+httpStatus.BAD_REQUEST+' error if is_active is not valid', async () => {
+            it('should return ' + httpStatus.BAD_REQUEST + ' error if is_active is not valid', async () => {
                 newPostition.is_active = 'wrong is_active'
                 const response = await request(baseURL)
                     .post("/positions")
@@ -234,7 +273,7 @@ describe('Postition routes', () => {
 
         })
 
-        it('should return '+httpStatus.CREATED+' success if all feild is correct', async () => {
+        it('should return ' + httpStatus.CREATED + ' success if all feild is correct', async () => {
             const response = await request(baseURL)
                 .post("/positions")
                 .set('Authorization', token)

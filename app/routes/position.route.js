@@ -6,6 +6,7 @@ const positionRouter = express.Router();
 
 positionRouter
     .get('/', PositionController.index)
+    .get('/:id', PositionValidation.find(), PositionController.find)
     .post('/', PositionValidation.create(), PositionController.create)
 
 export default positionRouter;

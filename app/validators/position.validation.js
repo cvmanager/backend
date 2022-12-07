@@ -3,7 +3,7 @@ import generalValidator from '../helper/validator.js';
 import i18n from '../middlewares/lang.middleware.js'
 
 class PositionValidation {
-    create() {generalValidator
+    create() {
         return [
             body('project_id')
                 .notEmpty()
@@ -36,6 +36,18 @@ class PositionValidation {
                 .trim(),
             generalValidator
         ];
+    }
+
+    find() {
+        return [
+            param('id')
+                .notEmpty()
+                .withMessage('position.validation.position_id_required')
+                .isMongoId()
+                .withMessage('position.validation.position_id_invalid')
+                .trim(),
+            generalValidator
+        ]
     }
 }
 
