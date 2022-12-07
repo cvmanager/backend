@@ -6,7 +6,7 @@ import { projectOne, insertProjects } from './fixtures/project.fixture.js'
 import setupTestDB from './utils/setupTestDB.js';
 import env from '../helper/env.js';
 import { Types } from 'mongoose';
-import { positionOne,insertPositions } from './fixtures/position.fixture.js'
+import { positionOne, insertPositions } from './fixtures/position.fixture.js'
 
 let baseURL = env("TEST_BASE_URL")
 setupTestDB();
@@ -19,7 +19,7 @@ describe('Postition routes', () => {
         await insertUsers([userOne]);
         await insertCompanies([companyOne]);
         await insertProjects([projectOne]);
-        
+
         token = 'Bearer ' + await accessToken(userOne);
 
         newPostition = {
@@ -31,7 +31,78 @@ describe('Postition routes', () => {
         };
     })
 
-    describe('POST /positions', () => {
+    describe('GET /', () => {
+
+        beforeEach(async () => {
+            await insertPositions(positionOne);
+        })
+
+        it('should get ' + httpStatus.INTERNAL_SERVER_ERROR + ' error if page is not number', async () => {
+            const response = await request(baseURL)
+                .get("/positions?page=string")
+                .set('Authorization', token)
+                .send();
+            expect(response.statusCode).toBe(httpStatus.INTERNAL_SERVER_ERROR);
+        })
+
+        it('should get ' + httpStatus.OK + ' success if size sting and return empty', async () => {
+            const response = await request(baseURL)
+                .get("/positions?page=1&size=string")
+                .set('Authorization', token)
+                .send();
+            let data = response.body.data[0].docs;
+
+            expect(data.length).toBe(0);
+            expect(response.statusCode).toBe(httpStatus.OK);
+        })
+
+        it('should get no item if name is not find', async () => {
+            const response = await request(baseURL)
+                .get("/positions?page=1&size=1&query=no item")
+                .set('Authorization', token)
+                .send();
+            let data = response.body.data[0].docs;
+            expect(data.length).toBe(0);
+        })
+
+        it('should get one item if page = 1 and size = 1', async () => {
+            const response = await request(baseURL)
+                .get("/positions?page=1&size=1")
+                .set('Authorization', token)
+                .send();
+            let data = response.body.data[0].docs;
+            expect(data.length).toBe(1);
+        })
+
+        it("should check field of object returned", async () => {
+            const response = await request(baseURL)
+                .get("/positions")
+                .set('Authorization', token)
+                .send();
+
+            let data = response.body.data[0].docs[0];
+            expect(data).toHaveProperty('_id')
+            expect(data).toHaveProperty('project_id')
+            expect(data).toHaveProperty('company_id')
+            expect(data).toHaveProperty('title')
+            expect(data).toHaveProperty('level')
+            expect(data).toHaveProperty('is_active')
+            expect(data).toHaveProperty('deleted')
+            expect(data).toHaveProperty('createdAt')
+            expect(data).toHaveProperty('updatedAt')
+        })
+
+        it('should get list of positions', async () => {
+            const response = await request(baseURL)
+                .get("/positions")
+                .set('Authorization', token)
+                .send();
+            expect(response.statusCode).toBe(httpStatus.OK);
+        })
+
+    })
+
+    describe('POST /', () => {
 
         describe('project check', () => {
 
@@ -118,7 +189,7 @@ describe('Postition routes', () => {
                 expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
             });
             it('should return '+httpStatus.FORBIDDEN+' error if title is already saved for this project', async () => {
-                insertPositions(positionOne);
+                await insertPositions(positionOne);
                 newPostition.title = positionOne.title
                 const response = await request(baseURL)
                     .post("/positions")

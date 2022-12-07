@@ -3,18 +3,48 @@ import NotFoundError from '../../exceptions/NotFoundError.js';
 import AlreadyExists from '../../exceptions/AlreadyExists.js';
 import Company from '../../models/company.model.js';
 import Project from '../../models/project.model.js';
-import User from '../../models/user.model.js'
 import Position from '../../models/position.model.js'
 import AppResponse from '../../helper/response.js';
 import Controller from './controller.js';
 
 class PositionController extends Controller {
 
-        /**
+
+    /**
+    * GET /positions
+    * 
+    * @summary get a list of all companies
+    * @tags Position
+    * @security BearerAuth
+    * 
+    * @return { position.success } 200 - success response
+    * @return { message.badrequest_error } 400 - bad request respone
+    * @return { message.badrequest_error } 404 - not found respone
+    * @return { message.unauthorized_error }     401 - UnauthorizedError
+    * @return { message.server_error  }    500 - Server Error
+    */
+    async index(req, res, next) {
+        try {
+            const { page = 1, size = 10, query = '' } = req.query
+
+            let searchQuery = (query.length > 0 ? { $or: [{ title: { '$regex': query } }] } : null);
+
+            const positionList = await Position.paginate(searchQuery, {
+                page: (page) || 1,
+                limit: size,
+                sort: { createdAt: -1 },
+            });
+            AppResponse.builder(res).message("position.message.position_list_found").data(positionList).send();
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
     * POST /positions
     * 
     * @summary create a position
-    * @tags Posinion
+    * @tags Position
     * @security BearerAuth
     * 
     * @param { position.create } request.body - position info - multipart/form-data
