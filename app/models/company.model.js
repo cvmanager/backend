@@ -1,7 +1,6 @@
 import mongoose from 'mongoose';
 
 import basePlugin from '../helper/mongoose/base.plugin.js';
-import User from './user.model.js';
 
 const schema = new mongoose.Schema(
     {
@@ -16,7 +15,7 @@ const schema = new mongoose.Schema(
         manager_id: {
             type: mongoose.Schema.Types.ObjectId,
             required: true,
-            ref: User
+            ref: 'users'
         },
         is_active: {
             type: Boolean,
@@ -25,12 +24,16 @@ const schema = new mongoose.Schema(
         created_by: {
             type: mongoose.Schema.Types.ObjectId,
             required: true,
-            ref: User
+            ref: 'users'
         }
     }
 )
 
-
+schema.virtual("projects", {
+    ref: 'projects',
+    localField: "_id",
+    foreignField: "company_id"
+});
 
 schema.plugin(basePlugin)
 

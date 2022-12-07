@@ -14,6 +14,13 @@ const schema = new mongoose.Schema(
             required: true,
             ref: 'companies'
         },
+        manager_id: {
+            type: [{
+                id: mongoose.Schema.Types.ObjectId,
+                required: true,
+                ref: User
+            }]
+        },
         title: {
             type: String,
             required: true,
