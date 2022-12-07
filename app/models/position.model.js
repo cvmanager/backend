@@ -22,7 +22,8 @@ const schema = new mongoose.Schema(
                 id: mongoose.Schema.Types.ObjectId,
                 required: true,
                 ref: User
-            }]
+            }],
+            required: true
         },
         title: {
             type: String,
