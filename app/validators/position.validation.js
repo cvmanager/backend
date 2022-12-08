@@ -11,12 +11,6 @@ class PositionValidation {
                 .isMongoId()
                 .withMessage('position.validations.project_id_invalid')
                 .trim(),
-            body('company_id')
-                .notEmpty()
-                .withMessage('position.validations.company_id_required')
-                .isMongoId()
-                .withMessage('position.validations.company_id_invalid')
-                .trim(),
             body('title')
                 .notEmpty()
                 .withMessage('position.validations.position_title_required')
