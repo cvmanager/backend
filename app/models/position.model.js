@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
+import i18n from '../middlewares/lang.middleware.js'
 import basePlugin from '../helper/mongoose/base.plugin.js';
-
 
 const schema = new mongoose.Schema(
     {
