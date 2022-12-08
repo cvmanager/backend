@@ -29,15 +29,15 @@
 			"junior"
 		]
 	},
-	"error": {
+	"errors": {
 		"server_error": "Server Error",
 		"bad_request": "Bad Request",
 		"url_not_found": "Url NotFound",
 		"too_many_requests": "Too Many Requests"
 	},
 	"auth": {
-		"enums" : {},
-		"validation": {
+		"enums": {},
+		"validations": {
 			"pass_confirm_match": "Password and confirmation are not the same",
 			"password_required": "The password field is required",
 			"password_length": "The password field has a character limit",
@@ -48,13 +48,13 @@
 			"mobile_required": "The mobile field is required",
 			"mobile_pattern": "The mobile number entered is invalid"
 		},
-		"message": {
+		"messages": {
 			"user_successfuly_created": "The account was created successfully",
 			"success_login": "You have successfully logged into your account",
 			"success_logout": "You have successfully logged out",
 			"token_verified": "Token Verified"
 		},
-		"error": {
+		"errors": {
 			"user_already_exists": "There is already a user with this information",
 			"invalid_credentials": "The username or password is incorrect",
 			"token_not_same": "auth.error.token_not_same",
@@ -62,46 +62,36 @@
 			"token_not_stored": "Authentication key not stored"
 		}
 	},
-	"user": {
-		"enums" : {},
-		"validation":{},
-		"message": {
-			"user_founded": "user successfuly found"
-		},
-		"error": {
-			"user_notfound": "The desired user was not found"
-		},
-	},
-	"project": {
-		"enums" : {},
-		"validation":{
-			"project_id_invalid": "project id invalid"
-		},
-		"message": {
-			"project_found": "Project Found",
-			"project_successfuly_created": "Project Successfuly Created"
-		},
-		"error":{}
-	},
-	"company": {
-		"enums" : {},
-		"validation": {
-			"company_id_require": "company is required",
-			"company_id_invalid": "company invalid"
-		},
-		"message": {
-			"company_list_found": "company list found",
-			"company_successfuly_created": "Company successfuly created"
-		},
-		"error":{}
-	},
 	"constant": {
-		"message": {
+		"messages": {
 			"constant_list_found": "Constant successfuly created"
 		}
 	},
+	"company": {
+		"enums": {},
+		"validations": {
+			"company_id_require": "company is required",
+			"company_id_invalid": "company invalid"
+		},
+		"messages": {
+			"company_list_found": "company list found",
+			"company_successfuly_created": "Company successfuly created"
+		},
+		"errors": {}
+	},
+	"project": {
+		"enums": {},
+		"validations": {
+			"project_id_invalid": "project id invalid"
+		},
+		"messages": {
+			"project_found": "Project Found",
+			"project_successfuly_created": "Project Successfuly Created"
+		},
+		"errors": {}
+	},
 	"resume": {
-		"enums" : {
+		"enums": {
 			"status": [
 				"pending",
 				"call_review",
@@ -112,9 +102,7 @@
 				"wait_hire"
 			]
 		},
-
-
-		"validation": {
+		"validations": {
 			"company_id_required": "resume.validation.company_id_required",
 			"company_id_invalid": "resume.validation.company_id_invalid",
 			"project_id_required": "resume.validation.project_id_required",
@@ -141,7 +129,20 @@
 			"major_required": "resume.validation.major_required",
 			"major_length": "resume.validation.major_length"
 		},
-		"message":{},
-		"error":{}
+		"messages": {},
+		"errors": {
+			"resume_notfound": "Sorry, Resume not found",
+			"can_not_update_status_to_current": "It is not possible to update the status to the current status"
+		}
+	},
+	"user": {
+		"enums": {},
+		"validations": {},
+		"messags": {
+			"user_founded": "user successfuly found"
+		},
+		"errors": {
+			"user_notfound": "The desired user was not found"
+		}
 	}
 }

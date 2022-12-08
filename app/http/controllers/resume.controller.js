@@ -4,8 +4,8 @@ import Project from '../../models/project.model.js';
 import EventEmitter from '../../events/emitter.js';
 import AppResponse from '../../helper/response.js';
 import Resume from '../../models/resume.model.js';
-import Company from '../../models/company.model.js';
 import Controller from './controller.js';
+import BadRequestError from '../../exceptions/BadRequestError.js';
 
 class ResumeController extends Controller {
 
@@ -46,7 +46,7 @@ class ResumeController extends Controller {
                 page: (page) || 1,
                 limit: size,
                 sort: { createdAt: -1 },
-                populate: [{ path: 'company_id', select: 'name' },{path: 'project_id', select: 'name' },{path: 'created_by', select: 'name' }]
+                populate: [{ path: 'company_id', select: 'name' }, { path: 'project_id', select: 'name' }, { path: 'created_by', select: 'name' }]
             });
             AppResponse.builder(res).message("project.message.resume_list_found").data(resumeList).send();
         } catch (err) {
@@ -100,16 +100,16 @@ class ResumeController extends Controller {
         try {
 
             let project = await Project.findById(req.body.project_id);
-            if (!project) throw new NotFoundError('project.error.project_not_found');
+            if (!project) throw new NotFoundError('project.errors.project_not_found');
 
             req.body.created_by = req.user_id
-            req.body.status = 'pending';
             req.body.company_id = project.company_id;
+
             let resume = await Resume.create(req.body)
 
             EventEmitter.emit(resumeEvents.NEW_RESUME, resume)
 
-            AppResponse.builder(res).status(201).message("resume.message.resume_successfuly_created").data(resume).send();
+            AppResponse.builder(res).status(201).message("resume.messages.resume_successfuly_created").data(resume).send();
         } catch (err) {
             next(err);
         }
@@ -191,9 +191,23 @@ class ResumeController extends Controller {
     */
     async updateStatus(req, res, next) {
         try {
-            await Resume.findByIdAndUpdate(req.params.id, { status: req.body.status }, { new: true })
-                .then(resume => AppResponse.builder(res).message("resume.message.resume_status_successfuly_updated").data(resume).send())
-                .catch(err => next(err));
+            let resume = await Resume.findById(req.params.id);
+
+            if (!resume) throw new NotFoundError('resume.errors.resume_notfound');
+
+            if (resume.status == req.body.status) throw new BadRequestError('resume.errors.can_not_update_status_to_current')
+
+            resume.status_history.push({
+                old_status: resume.status,
+                new_status: req.body.status,
+                createdAt: new Date(),
+                created_by: req.user_id
+            });
+            resume.status = req.body.status;
+            await resume.save();
+
+
+            AppResponse.builder(res).message("resume.messages.resume_status_successfuly_updated").data(resume).send();
         } catch (err) {
             next(err);
         }
