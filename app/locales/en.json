@@ -1,39 +1,41 @@
 {
-	"enums": {
-		"gender": [
-			"men",
-			"women"
-		],
-		"marital_status": [
-			"single",
-			"married",
-			"isolated",
-			"unknow"
-		],
-		"education": [
-			"phd",
-			"diploma",
-			"associate_degree",
-			"bachelors_degree",
-			"masters"
-		],
-		"military_status": [
-			"included",
-			"end",
-			"exemption-edu",
-			"exemption-spo"
-		],
-		"positions": [
-			"senior",
-			"mid",
-			"junior"
-		]
-	},
-	"errors": {
-		"server_error": "Server Error",
-		"bad_request": "Bad Request",
-		"url_not_found": "Url NotFound",
-		"too_many_requests": "Too Many Requests"
+	"system": {
+		"enums": {
+			"gender": [
+				"men",
+				"women"
+			],
+			"marital_status": [
+				"single",
+				"married",
+				"isolated",
+				"unknow"
+			],
+			"education": [
+				"phd",
+				"diploma",
+				"associate_degree",
+				"bachelors_degree",
+				"masters"
+			],
+			"military_status": [
+				"included",
+				"end",
+				"exemption-edu",
+				"exemption-spo"
+			],
+			"positions": [
+				"senior",
+				"mid",
+				"junior"
+			]
+		},
+		"errors": {
+			"server_error": "Server Error",
+			"bad_request": "Bad Request",
+			"url_not_found": "Url NotFound",
+			"too_many_requests": "Too Many Requests"
+		}
 	},
 	"auth": {
 		"enums": {},

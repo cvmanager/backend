@@ -29,7 +29,7 @@ const schema = new mongoose.Schema(
         level: {
             type: String,
             required: true,
-            enum: i18n.__("enums.positions")
+            enum: i18n.__("system.enums.positions")
         },
         is_active: {
             type: Boolean,

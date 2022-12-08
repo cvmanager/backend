@@ -27,7 +27,7 @@ class ResumeValidation {
             body('gender')
                 .notEmpty()
                 .withMessage('resume.validations.gender_required')
-                .isIn(i18n.__("enums.gender"))
+                .isIn(i18n.__("system.enums.gender"))
                 .withMessage('resume.validations.gender_incorrect')
                 .trim(),
             body('email')
@@ -45,7 +45,7 @@ class ResumeValidation {
             body('marital_status')
                 .notEmpty()
                 .withMessage('resume.validations.marital_status_required')
-                .isIn(i18n.__("enums.marital_status"))
+                .isIn(i18n.__("system.enums.marital_status"))
                 .withMessage('resume.validations.marital_status_incorrect')
                 .trim(),
             body('mobile')
@@ -106,7 +106,7 @@ class ResumeValidation {
                 .trim(),
             body('military_status')
                 .optional({ nullable: true, checkFalsy: true })
-                .isIn(i18n.__("enums.military_status"))
+                .isIn(i18n.__("system.enums.military_status"))
                 .withMessage('resume.validations.military_status_incorrect')
                 .trim(),
             generalValidator
@@ -143,7 +143,7 @@ class ResumeValidation {
                 .trim(),
             body('gender')
                 .optional({ nullable: true, checkFalsy: true })
-                .isIn(i18n.__("enums.gender"))
+                .isIn(i18n.__("system.enums.gender"))
                 .withMessage('resume.validations.gender_incorrect')
                 .trim(),
             body('email')
@@ -158,7 +158,7 @@ class ResumeValidation {
                 .trim(),
             body('marital_status')
                 .optional({ nullable: true, checkFalsy: true })
-                .isIn(i18n.__("enums.marital_status"))
+                .isIn(i18n.__("system.enums.marital_status"))
                 .withMessage('resume.validations.marital_status_incorrect')
                 .trim(),
             body('mobile')
@@ -178,7 +178,7 @@ class ResumeValidation {
                 .trim(),
             body('education')
                 .optional({ nullable: true, checkFalsy: true })
-                .isIn(i18n.__("enums.education"))
+                .isIn(i18n.__("system.enums.education"))
                 .withMessage('resume.validations.education_incorrect')
                 .trim(),
             body('major')
@@ -214,7 +214,7 @@ class ResumeValidation {
                 .trim(),
             body('military_status')
                 .optional({ nullable: true, checkFalsy: true })
-                .isIn(i18n.__("enums.military_status"))
+                .isIn(i18n.__("system.enums.military_status"))
                 .withMessage('resume.validations.military_status_incorrect')
                 .trim(),
             generalValidator

@@ -25,7 +25,7 @@ const schema = new mongoose.Schema(
         gender: {
             type: String,
             required: true,
-            enum: i18n.__("enums.gender")
+            enum: i18n.__("system.enums.gender")
         },
         email: {
             type: String,
@@ -38,7 +38,7 @@ const schema = new mongoose.Schema(
         marital_status: {
             type: String,
             required: true,
-            enum: i18n.__("enums.marital_status")
+            enum: i18n.__("system.enums.marital_status")
         },
         status: {
             type: String,
@@ -61,7 +61,7 @@ const schema = new mongoose.Schema(
         education: {
             type: String,
             required: true,
-            enum: i18n.__("enums.education")
+            enum: i18n.__("system.enums.education")
         },
         major: {
             type: mongoose.Schema.Types.ObjectId,
@@ -86,7 +86,7 @@ const schema = new mongoose.Schema(
         military_status: {
             type: String,
             default: null,
-            enum: i18n.__("enums.military_status")
+            enum: i18n.__("system.enums.military_status")
         },
         status_updated_at: {
             type: Date,

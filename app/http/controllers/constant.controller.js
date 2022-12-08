@@ -19,7 +19,7 @@ class ConstantController extends Controller {
     */
     async index(req, res, next) {
         try {
-            const constant = i18n.__("enums");
+            const constant = i18n.__("system.enums");
             AppResponse.builder(res).message("constant.messages.constant_list_found").data(constant).send();
         } catch (err) {
             next(err);
