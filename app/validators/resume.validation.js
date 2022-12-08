@@ -158,7 +158,7 @@ class ResumeValidation {
                 .trim(),
             body('marital_status')
                 .optional({ nullable: true, checkFalsy: true })
-                .isIn(i18n.__("marital_status"))
+                .isIn(i18n.__("enums.marital_status"))
                 .withMessage('resume.validations.marital_status_incorrect')
                 .trim(),
             body('mobile')

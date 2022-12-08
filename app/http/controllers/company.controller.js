@@ -33,7 +33,7 @@ class CompanyController extends Controller {
                 sort: { createdAt: -1 },
                 populate: [{path: 'projects'}]
             });
-            AppResponse.builder(res).message("company.message.company_list_found").data(companyList).send();
+            AppResponse.builder(res).message("company.messages.company_list_found").data(companyList).send();
         } catch (err) {
             next(err);
         }
@@ -57,9 +57,9 @@ class CompanyController extends Controller {
     async find(req, res, next) {
         try {
             const company = await Company.findById(req.params.id).populate('created_by');
-            if (!company) throw new BadRequestError('company.error.company_notfound');
+            if (!company) throw new BadRequestError('company.errors.company_notfound');
 
-            AppResponse.builder(res).message('company.message.company_found').data(company).send();
+            AppResponse.builder(res).message('company.messages.company_found').data(company).send();
         } catch (err) {
             next(err);
         }
@@ -85,12 +85,12 @@ class CompanyController extends Controller {
     async create(req, res, next) {
         try {
             let company = await Company.findOne({ 'name': req.body.name });
-            if (company) throw new AlreadyExists('company.error.company_already_exists');
+            if (company) throw new AlreadyExists('company.errors.company_already_exists');
 
             req.body.created_by = req.user_id;
             company = await Company.create(req.body);
 
-            AppResponse.builder(res).status(201).message('company.message.company_successfuly_created').data(company).send();
+            AppResponse.builder(res).status(201).message('company.messages.company_successfuly_created').data(company).send();
         } catch (err) {
             next(err)
         }
@@ -116,7 +116,7 @@ class CompanyController extends Controller {
     async update(req, res, next) {
         try {
             await Company.findByIdAndUpdate(req.params.id, req.body, { new: true })
-                .then(company => AppResponse.builder(res).message("company.message.company_successfuly_updated").data(company).send())
+                .then(company => AppResponse.builder(res).message("company.messages.company_successfuly_updated").data(company).send())
                 .catch(err => next(err));
         } catch (err) {
             next(err);
@@ -141,9 +141,9 @@ class CompanyController extends Controller {
     async delete(req, res, next) {
         try {
             let company = await Company.findById(req.params.id);
-            if (!company) throw new NotFoundError('company.error.company_notfound');
+            if (!company) throw new NotFoundError('company.errors.company_notfound');
             await company.delete(req.user_id);
-            AppResponse.builder(res).message("company.message.company_successfuly_deleted").data(company).send();
+            AppResponse.builder(res).message("company.messages.company_successfuly_deleted").data(company).send();
         } catch (err) {
             next(err);
         }
@@ -152,15 +152,15 @@ class CompanyController extends Controller {
     async manager(req, res, next) {
         try {
             let company = await Company.findById(req.params.id);
-            if (!company) throw new NotFoundError('company.error.company_notfound');
+            if (!company) throw new NotFoundError('company.errors.company_notfound');
 
             let user = await User.findById(req.body.manager_id);
-            if (!user) throw new NotFoundError('user.error.user_notfound');
+            if (!user) throw new NotFoundError('user.errors.user_notfound');
 
             company.manager_id = req.body.manager_id;
             await company.save();
 
-            AppResponse.builder(res).message("company.message.company_id_successfuly_updated").data(company).send()
+            AppResponse.builder(res).message("company.messages.company_id_successfuly_updated").data(company).send()
         } catch (err) {
             next(err);
         }

@@ -48,7 +48,7 @@ class ResumeController extends Controller {
                 sort: { createdAt: -1 },
                 populate: [{ path: 'company_id', select: 'name' }, { path: 'project_id', select: 'name' }, { path: 'created_by', select: 'name' }]
             });
-            AppResponse.builder(res).message("project.message.resume_list_found").data(resumeList).send();
+            AppResponse.builder(res).message("project.messages.resume_list_found").data(resumeList).send();
         } catch (err) {
             next(err);
         }
@@ -72,9 +72,9 @@ class ResumeController extends Controller {
     async find(req, res, next) {
         try {
             let resume = await Resume.findById(req.params.id).populate('created_by').exec();
-            if (!resume) throw new NotFoundError('resume.error.project_notfound');
+            if (!resume) throw new NotFoundError('resume.errors.project_notfound');
 
-            AppResponse.builder(res).message("resume.message.project_found").data(resume).send();
+            AppResponse.builder(res).message("resume.messages.project_found").data(resume).send();
         } catch (err) {
             next(err);
         }
@@ -135,7 +135,7 @@ class ResumeController extends Controller {
     async update(req, res, next) {
         try {
             await Resume.findByIdAndUpdate(req.params.id, req.body, { new: true })
-                .then(resume => AppResponse.builder(res).message("resume.message.resume_successfuly_updated").data(resume).send())
+                .then(resume => AppResponse.builder(res).message("resume.messages.resume_successfuly_updated").data(resume).send())
                 .catch(err => next(err));
         } catch (err) {
             next(err);
@@ -161,12 +161,12 @@ class ResumeController extends Controller {
     async delete(req, res, next) {
         try {
             let resume = await Resume.findById(req.params.id);
-            if (!resume) throw new NotFoundError('resume.error.resume_notfound');
+            if (!resume) throw new NotFoundError('resume.errors.resume_notfound');
             resume.deleted_at = Date.now();
             resume.deleted_by = req.user_id;
 
             await resume.save();
-            AppResponse.builder(res).message("resume.message.resume_successfuly_deleted").data(resume).send();
+            AppResponse.builder(res).message("resume.messages.resume_successfuly_deleted").data(resume).send();
         } catch (err) {
             next(err);
         }
