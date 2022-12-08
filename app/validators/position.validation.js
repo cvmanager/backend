@@ -7,32 +7,32 @@ class PositionValidation {
         return [
             body('project_id')
                 .notEmpty()
-                .withMessage('position.validation.project_id_required')
+                .withMessage('position.validations.project_id_required')
                 .isMongoId()
-                .withMessage('position.validation.project_id_invalid')
+                .withMessage('position.validations.project_id_invalid')
                 .trim(),
             body('company_id')
                 .notEmpty()
-                .withMessage('position.validation.company_id_required')
+                .withMessage('position.validations.company_id_required')
                 .isMongoId()
-                .withMessage('position.validation.company_id_invalid')
+                .withMessage('position.validations.company_id_invalid')
                 .trim(),
             body('title')
                 .notEmpty()
-                .withMessage('position.validation.position_title_required')
+                .withMessage('position.validations.position_title_required')
                 .isLength({ min: 3, max: 50 })
-                .withMessage('position.validation.position_title_length')
+                .withMessage('position.validations.position_title_length')
                 .trim(),
             body('level')
                 .notEmpty()
-                .withMessage('position.validation.position_level_required')
-                .isIn(i18n.__("enums.positions"))
-                .withMessage('position.validation.position_level_incorrect')
+                .withMessage('position.validations.position_level_required')
+                .isIn(i18n.__("position.enums.level"))
+                .withMessage('position.validations.position_level_incorrect')
                 .trim(),
             body('is_active')
                 .optional({ nullable: true, checkFalsy: true })
                 .isBoolean()
-                .withMessage('position.validation.position_is_active_incorrect')
+                .withMessage('position.validations.position_is_active_incorrect')
                 .trim(),
             generalValidator
         ];
@@ -42,9 +42,9 @@ class PositionValidation {
         return [
             param('id')
                 .notEmpty()
-                .withMessage('position.validation.position_id_required')
+                .withMessage('position.validations.position_id_required')
                 .isMongoId()
-                .withMessage('position.validation.position_id_invalid')
+                .withMessage('position.validations.position_id_invalid')
                 .trim(),
             generalValidator
         ]
@@ -54,34 +54,34 @@ class PositionValidation {
         return [
             param('id')
                 .notEmpty()
-                .withMessage('position.validation.position_id_required')
+                .withMessage('position.validations.position_id_required')
                 .isMongoId()
-                .withMessage('position.validation.position_id_invalid')
+                .withMessage('position.validations.position_id_invalid')
                 .trim(),
             body('project_id')
                 .optional({ nullable: true, checkFalsy: true })
                 .isMongoId()
-                .withMessage('position.validation.project_id_invalid')
+                .withMessage('position.validations.project_id_invalid')
                 .trim(),
             body('company_id')
                 .optional({ nullable: true, checkFalsy: true })
                 .isMongoId()
-                .withMessage('position.validation.company_id_invalid')
+                .withMessage('position.validations.company_id_invalid')
                 .trim(),
             body('title')
                 .optional({ nullable: true, checkFalsy: true })
                 .isLength({ min: 3, max: 50 })
-                .withMessage('position.validation.position_title_length')
+                .withMessage('position.validations.position_title_length')
                 .trim(),
             body('level')
                 .optional({ nullable: true, checkFalsy: true })
-                .isIn(i18n.__("enums.positions"))
-                .withMessage('position.validation.position_level_incorrect')
+                .isIn(i18n.__("position.enums.level"))
+                .withMessage('position.validations.position_level_incorrect')
                 .trim(),
             body('is_active')
                 .optional({ nullable: true, checkFalsy: true })
                 .isBoolean()
-                .withMessage('position.validation.position_is_active_incorrect')
+                .withMessage('position.validations.position_is_active_incorrect')
                 .trim(),
             generalValidator
         ];
@@ -91,9 +91,9 @@ class PositionValidation {
         return [
             param('id')
                 .notEmpty()
-                .withMessage('position.validation.position_id_required')
+                .withMessage('position.validations.position_id_required')
                 .isMongoId()
-                .withMessage('position.validation.position_id_invalid')
+                .withMessage('position.validations.position_id_invalid')
                 .trim(),
             generalValidator
         ];
