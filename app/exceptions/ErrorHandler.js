@@ -33,7 +33,7 @@ async function errorHandler(err, req, res, next) {
 
     if (err instanceof UnauthorizedError || err instanceof jsonwebtoken.JsonWebTokenError) {
         return res.status(401).json({
-            message: err.message ? res.__(err.message) : res.__("auth.error.no_authentication"),
+            message: err.message ? res.__(err.message) : res.__("auth.errors.no_authentication"),
             errors: err.errors ? err.errors : [],
             data: []
         });

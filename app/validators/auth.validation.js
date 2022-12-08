@@ -31,15 +31,6 @@ class AuthValidator {
                 .isLength({ min: 8, max: 10 })
                 .withMessage('auth.validations.password_length')
                 .trim(),
-            body('password_confirm')
-                .custom((value, { req }) => {
-                    if (value !== req.body.password) {
-                        throw new Error('auth.validations.pass_confirm_match')
-                    }
-                    return true;
-                })
-                .trim(),
-            generalValidator
         ]
     }
 

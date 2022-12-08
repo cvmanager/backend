@@ -140,8 +140,9 @@
 	"user": {
 		"enums": {},
 		"validations": {},
-		"messags": {
-			"user_founded": "user successfuly found"
+		"messages": {
+			"user_founded": "user successfuly found",
+			"list_found" : "the list of users"
 		},
 		"errors": {
 			"user_notfound": "The desired user was not found"

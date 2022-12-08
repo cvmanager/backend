@@ -59,9 +59,8 @@ class AuthController extends Controller {
         try {
 
             let user = await User.findOne({ mobile: req.body.mobile });
-            if (user) {
-                throw new BadRequestError('auth.errors.user_already_exists');
-            }
+            if (user) throw new BadRequestError('auth.errors.user_already_exists');
+
             let salt = await bcrypt.genSalt(10);
             let hash_password = await bcrypt.hash(req.body.password, salt);
             user = await User.create({
