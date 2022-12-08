@@ -1,21 +1,18 @@
 import mongoose from 'mongoose';
 import i18n from '../middlewares/lang.middleware.js'
 import basePlugin from '../helper/mongoose/base.plugin.js';
-import User from './user.model.js';
-import Company from './company.model.js';
-import Project from './project.model.js';
 
 const schema = new mongoose.Schema(
     {
         company_id: {
             type: mongoose.Schema.Types.ObjectId,
             required: true,
-            ref: Company,
+            ref: 'companies',
         },
         project_id: {
             type: mongoose.Schema.Types.ObjectId,
             required: true,
-            ref: Project,
+            ref: 'projects',
         },
         firstname: {
             type: String,
@@ -45,26 +42,28 @@ const schema = new mongoose.Schema(
         },
         status: {
             type: String,
-            required: true
+            required: true,
+            enum: i18n.__("resume.enums.status")
         },
         mobile: {
             type: String,
             required: true
         },
         residence_city: {
-            type: String,
+            type: mongoose.Schema.Types.ObjectId,
             required: true
         },
         work_city: {
-            type: String,
+            type: mongoose.Schema.Types.ObjectId,
             required: true
         },
         education: {
             type: String,
-            required: true
+            required: true,
+            enum: i18n.__("enums.education")
         },
         major: {
-            type: String,
+            type: mongoose.Schema.Types.ObjectId,
             required: true
         },
         phone: {
@@ -85,7 +84,8 @@ const schema = new mongoose.Schema(
         },
         military_status: {
             type: String,
-            default: null
+            default: null,
+            enum: i18n.__("enums.marital_status")
         },
         status_updated_at: {
             type: Date,
@@ -95,7 +95,7 @@ const schema = new mongoose.Schema(
         created_by: {
             type: mongoose.Schema.Types.ObjectId,
             required: true,
-            ref: User
+            ref: 'users'
         }
     }
 );

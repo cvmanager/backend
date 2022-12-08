@@ -6,6 +6,12 @@ import { mobileFormat } from '../helper/helper.js';
 class ResumeValidation {
     create() {
         return [
+            body('company_id')
+                .notEmpty()
+                .withMessage('company.validation.company_id_required')
+                .isMongoId()
+                .withMessage('company.validation.company_id_invalid')
+                .trim(),
             body('project_id')
                 .notEmpty()
                 .withMessage('resume.validation.project_id_required')
@@ -117,9 +123,9 @@ class ResumeValidation {
         return [
             param('id')
                 .notEmpty()
-                .withMessage('resume.validation.id_required')
+                .withMessage('resume.validation.resume_id_required')
                 .isMongoId()
-                .withMessage('resume.validation.id_invalid')
+                .withMessage('resume.validation.resume_id_invalid')
                 .trim(),
             body('company_id')
                 .optional({ nullable: true, checkFalsy: true })
@@ -225,9 +231,9 @@ class ResumeValidation {
         return [
             param('id')
                 .notEmpty()
-                .withMessage('resume.validation.id_required')
+                .withMessage('resume.validation.resume_id_required')
                 .isMongoId()
-                .withMessage('resume.validation.id_invalid')
+                .withMessage('resume.validation.resume_id_invalid')
                 .trim(),
             body('status')
                 .notEmpty()

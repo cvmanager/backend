@@ -31,6 +31,7 @@ class CompanyController extends Controller {
                 page: (page) || 1,
                 limit: size,
                 sort: { createdAt: -1 },
+                populate: [{path: 'projects'}]
             });
             AppResponse.builder(res).message("company.message.company_list_found").data(companyList).send();
         } catch (err) {

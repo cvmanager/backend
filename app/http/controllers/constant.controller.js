@@ -5,7 +5,7 @@ import i18n from '../../middlewares/lang.middleware.js';
 class ConstantController extends Controller {
 
     /**
-    * GET /constants
+    * GET /constant
     * 
     * @summary get a list of all constants
     * @tags Constant

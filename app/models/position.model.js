@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-
 import basePlugin from '../helper/mongoose/base.plugin.js';
 
 
@@ -10,18 +9,27 @@ const schema = new mongoose.Schema(
             required: true,
             ref: 'companies'
         },
-        manager_id: {
+        project_id: {
             type: mongoose.Schema.Types.ObjectId,
             required: true,
-            ref: 'users'
+            ref: 'projects'
         },
-        name: {
-            type: String,
+        manager_id: {
+            type: [{
+                id: mongoose.Schema.Types.ObjectId,
+                required: true,
+                ref: 'users'
+            }],
             required: true
         },
-        description: {
+        title: {
             type: String,
-            default: null
+            required: true,
+        },
+        level: {
+            type: String,
+            required: true,
+            enum: i18n.__("enums.positions")
         },
         is_active: {
             type: Boolean,
@@ -33,10 +41,10 @@ const schema = new mongoose.Schema(
             ref: 'users'
         }
     }
-);
+)
 
 schema.plugin(basePlugin)
 
-const Project = mongoose.model('projects', schema);
+const Position = mongoose.model('positions', schema);
 
-export default Project;
+export default Position;

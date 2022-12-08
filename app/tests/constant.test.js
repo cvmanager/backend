@@ -1,13 +1,18 @@
-// import httpStatus from 'http-status'
+import httpStatus from 'http-status'
 import request from 'supertest'
-const baseURL = "http://localhost:3000/api/v1"
-import { access_token } from './fixtures/user.fixture.js'
+import { userOne, insertUsers, accessToken } from './fixtures/user.fixture.js'
+import setupTestDB from './utils/setupTestDB.js';
+import env from '../helper/env.js';
+
+let baseURL = env("TEST_BASE_URL")
+setupTestDB();
 
 describe('Constant routes', () => {
 
     let token;
-    beforeAll(() => {
-        token = 'Bearer ' + access_token;
+    beforeEach(async () => {
+        await insertUsers([userOne]);
+        token = 'Bearer ' + await accessToken(userOne);
     })
 
     describe('GET /', () => {
@@ -30,7 +35,7 @@ describe('Constant routes', () => {
                 .get("/constant")
                 .set('Authorization', token)
                 .send();
-            expect(response.statusCode).toEqual(200);
+            expect(response.statusCode).toEqual(httpStatus.OK);
         })
 
     })

@@ -23,17 +23,12 @@
 			"exemption-edu",
 			"exemption-spo"
 		],
-		"resume_status": [
-			"pending",
-			"call_review",
-			"tech_review",
-			"wait_reject",
-			"rejected",
-			"hired",
-			"wait_hire"
+		"positions": [
+			"senior",
+			"mid",
+			"junior"
 		]
 	},
-	"marital_status": "marital_status",
 	"error": {
 		"server_error": "Server Error",
 		"bad_request": "Bad Request",
@@ -41,6 +36,18 @@
 		"too_many_requests": "Too Many Requests"
 	},
 	"auth": {
+		"enums" : {},
+		"validation": {
+			"pass_confirm_match": "Password and confirmation are not the same",
+			"password_required": "The password field is required",
+			"password_length": "The password field has a character limit",
+			"firstname_required": "The firstname field is required",
+			"firstname_length": "The firstname field has a character limit",
+			"lastname_required": "The lastname field is required",
+			"lastname_length": "The lastname field has a character limit",
+			"mobile_required": "The mobile field is required",
+			"mobile_pattern": "The mobile number entered is invalid"
+		},
 		"message": {
 			"user_successfuly_created": "The account was created successfully",
 			"success_login": "You have successfully logged into your account",
@@ -53,37 +60,31 @@
 			"token_not_same": "auth.error.token_not_same",
 			"token_not_sended": "Authentication key not sent",
 			"token_not_stored": "Authentication key not stored"
-		},
-		"validation": {
-			"pass_confirm_match": "Password and confirmation are not the same",
-			"password_required": "The password field is required",
-			"password_length": "The password field has a character limit",
-			"firstname_required": "The firstname field is required",
-			"firstname_length": "The firstname field has a character limit",
-			"lastname_required": "The lastname field is required",
-			"lastname_length": "The lastname field has a character limit",
-			"mobile_required": "The mobile field is required",
-			"mobile_pattern": "The mobile number entered is invalid"
 		}
 	},
 	"user": {
+		"enums" : {},
+		"validation":{},
+		"message": {
+			"user_founded": "user successfuly found"
+		},
 		"error": {
 			"user_notfound": "The desired user was not found"
 		},
-		"message": {
-			"user_founded": "user successfuly found"
-		}
 	},
 	"project": {
+		"enums" : {},
+		"validation":{
+			"project_id_invalid": "project id invalid"
+		},
 		"message": {
 			"project_found": "Project Found",
 			"project_successfuly_created": "Project Successfuly Created"
 		},
-		"validation": {
-			"project_id_invalid": "project id invalid"
-		}
+		"error":{}
 	},
 	"company": {
+		"enums" : {},
 		"validation": {
 			"company_id_require": "company is required",
 			"company_id_invalid": "company invalid"
@@ -91,7 +92,8 @@
 		"message": {
 			"company_list_found": "company list found",
 			"company_successfuly_created": "Company successfuly created"
-		}
+		},
+		"error":{}
 	},
 	"constant": {
 		"message": {
@@ -99,6 +101,19 @@
 		}
 	},
 	"resume": {
+		"enums" : {
+			"status": [
+				"pending",
+				"call_review",
+				"tech_review",
+				"wait_reject",
+				"rejected",
+				"hired",
+				"wait_hire"
+			]
+		},
+
+
 		"validation": {
 			"company_id_required": "resume.validation.company_id_required",
 			"company_id_invalid": "resume.validation.company_id_invalid",
@@ -125,6 +140,8 @@
 			"education_incorrect": "resume.validation.education_incorrect",
 			"major_required": "resume.validation.major_required",
 			"major_length": "resume.validation.major_length"
-		}
+		},
+		"message":{},
+		"error":{}
 	}
 }
