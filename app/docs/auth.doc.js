@@ -29,7 +29,6 @@
  * @property { string } lastname.required
  * @property { string } mobile.required
  * @property { string } password.required
- * @property { string } password_confirm.required
  */
 
 /**
