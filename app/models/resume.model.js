@@ -42,26 +42,28 @@ const schema = new mongoose.Schema(
         },
         status: {
             type: String,
-            required: true
+            required: true,
+            enum: i18n.__("resume.enums.status")
         },
         mobile: {
             type: String,
             required: true
         },
         residence_city: {
-            type: String,
+            type: mongoose.Schema.Types.ObjectId,
             required: true
         },
         work_city: {
-            type: String,
+            type: mongoose.Schema.Types.ObjectId,
             required: true
         },
         education: {
             type: String,
-            required: true
+            required: true,
+            enum: i18n.__("enums.education")
         },
         major: {
-            type: String,
+            type: mongoose.Schema.Types.ObjectId,
             required: true
         },
         phone: {
@@ -82,7 +84,8 @@ const schema = new mongoose.Schema(
         },
         military_status: {
             type: String,
-            default: null
+            default: null,
+            enum: i18n.__("enums.marital_status")
         },
         status_updated_at: {
             type: Date,

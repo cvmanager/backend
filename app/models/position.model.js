@@ -1,27 +1,24 @@
 import mongoose from 'mongoose';
-
 import basePlugin from '../helper/mongoose/base.plugin.js';
-import Project from './project.model.js';
-import Company from './conpany.model.js';
-import User from './user.model.js';
+
 
 const schema = new mongoose.Schema(
     {
-        project_id: {
-            type: mongoose.Schema.Types.ObjectId,
-            required: true,
-            ref: Project
-        },
         company_id: {
             type: mongoose.Schema.Types.ObjectId,
             required: true,
-            ref: Company
+            ref: 'companies'
+        },
+        project_id: {
+            type: mongoose.Schema.Types.ObjectId,
+            required: true,
+            ref: 'projects'
         },
         manager_id: {
             type: [{
                 id: mongoose.Schema.Types.ObjectId,
                 required: true,
-                ref: User
+                ref: 'users'
             }],
             required: true
         },
@@ -37,6 +34,11 @@ const schema = new mongoose.Schema(
         is_active: {
             type: Boolean,
             default: 1
+        },
+        created_by: {
+            type: mongoose.Schema.Types.ObjectId,
+            required: true,
+            ref: 'users'
         }
     }
 )
