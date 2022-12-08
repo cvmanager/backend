@@ -43,6 +43,7 @@ const schema = new mongoose.Schema(
         status: {
             type: String,
             required: true,
+            default: 'pending',
             enum: i18n.__("resume.enums.status")
         },
         mobile: {
@@ -64,7 +65,7 @@ const schema = new mongoose.Schema(
         },
         major: {
             type: mongoose.Schema.Types.ObjectId,
-            required: true
+            default: null
         },
         phone: {
             type: String,
@@ -85,13 +86,38 @@ const schema = new mongoose.Schema(
         military_status: {
             type: String,
             default: null,
-            enum: i18n.__("enums.marital_status")
+            enum: i18n.__("enums.military_status")
         },
         status_updated_at: {
             type: Date,
             default: null
         },
-        status_log: Array,
+        status_history: {
+            type: [
+                {
+                    old_status: {
+                        type: String,
+                        required: true,
+                        enum: i18n.__("resume.enums.status")
+                    },
+                    new_status: {
+                        type: String,
+                        required: true,
+                        enum: i18n.__("resume.enums.status")
+                    },
+                    created_by: {
+                        type: mongoose.Schema.Types.ObjectId,
+                        required: true,
+                        ref: 'users'
+                    },
+                    createdAt: {
+                        type: mongoose.Schema.Types.Date,
+                        required: true
+                    },
+                }
+            ],
+            default: null
+        },
         created_by: {
             type: mongoose.Schema.Types.ObjectId,
             required: true,
