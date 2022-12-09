@@ -16,7 +16,7 @@ const schema = new mongoose.Schema(
         },
         manager_id: {
             type: [{
-                id: mongoose.Schema.Types.ObjectId,
+                type: mongoose.Schema.Types.ObjectId,
                 required: true,
                 ref: 'users'
             }],
