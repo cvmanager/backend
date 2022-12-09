@@ -124,7 +124,6 @@ class ResumeController extends Controller {
     * @security BearerAuth
     * 
     * @param  { string } id.path.required - resume id
-    * @param { resume.update } request.body - resume info - multipart/form-data
     * @param { resume.update } request.body - resume info - application/json
     * 
     * @return { resume.success } 200 - success response
@@ -181,7 +180,6 @@ class ResumeController extends Controller {
     * @security BearerAuth
     * 
     * @param  { string } id.path.required - resume id
-    * @param { resume.update_status } request.body - resume info - multipart/form-data
     * @param { resume.update_status } request.body - resume info - application/json
     * 
     * @return { resume.success } 200 - success response
