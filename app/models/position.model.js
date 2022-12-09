@@ -16,11 +16,22 @@ const schema = new mongoose.Schema(
         },
         manager_id: {
             type: [{
-                type: mongoose.Schema.Types.ObjectId,
-                required: true,
-                ref: 'users'
+                id: mongoose.Schema.Types.ObjectId,
+                manager_id: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    required: true,
+                    ref: 'users'
+                },
+                createdAt: {
+                    type: Date(),
+                    required: true,
+                },
+                created_by: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    required: true,
+                }
             }],
-            required: true
+            required: true,
         },
         title: {
             type: String,
