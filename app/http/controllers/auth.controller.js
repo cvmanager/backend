@@ -18,9 +18,10 @@ class AuthController extends Controller {
      * @tags Auth
      * 
      * @param  { auth.login } request.body - login info - application/json
-     * @return { auth.success_response }  201 - signup successfuly 
-     * @return { auth.user_notfound } 400 - user not found or user is banned or user name or password incorrect
-     * @return { message.server_error  }  500 - Server Error
+     * 
+     * @return { auth.success_response }    200 - signup successfuly 
+     * @return { auth.user_notfound }       400 - user not found || username or password incorrect
+     * @return { message.server_error  }    500 - Server Error
      */
     async login(req, res, next) {
         try {
