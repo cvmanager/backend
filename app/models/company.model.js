@@ -12,11 +12,6 @@ const schema = new mongoose.Schema(
             type: String,
             default: null
         },
-        manager_id: {
-            type: mongoose.Schema.Types.ObjectId,
-            required: true,
-            ref: 'users'
-        },
         is_active: {
             type: Boolean,
             default: 1

@@ -14,25 +14,6 @@ const schema = new mongoose.Schema(
             required: true,
             ref: 'projects'
         },
-        manager_id: {
-            type: [{
-                id: mongoose.Schema.Types.ObjectId,
-                manager_id: {
-                    type: mongoose.Schema.Types.ObjectId,
-                    required: true,
-                    ref: 'users'
-                },
-                createdAt: {
-                    type: Date(),
-                    required: true,
-                },
-                created_by: {
-                    type: mongoose.Schema.Types.ObjectId,
-                    required: true,
-                }
-            }],
-            required: true,
-        },
         title: {
             type: String,
             required: true,
