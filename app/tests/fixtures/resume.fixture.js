@@ -2,11 +2,15 @@ import { Types } from 'mongoose';
 
 import Resume from '../../models/resume.model';
 import { userOne } from './user.fixture';
+import { companyOne } from './company.fixture';
+import { projectOne } from './project.fixture';
+import { positionOne } from './position.fixture';
 
 export const resumeOne = {
     _id: Types.ObjectId(),
-    company_id: "638f13474e23a04f88077875",
-    project_id: "638f13474e23a04f88077876",
+    company_id: companyOne._id,
+    project_id: projectOne._id,
+    position_id: positionOne._id,
     firstname: "sample resume firstname",
     lastname: "sample resume lastname",
     gender: "men",
@@ -15,8 +19,8 @@ export const resumeOne = {
     marital_status: "single",
     status: "pending",
     mobile: "989121211212",
-    residence_city: "sample resume residence city",
-    work_city: "sample resume work city",
+    residence_city: Types.ObjectId(),
+    work_city: Types.ObjectId(),
     education: "phd",
     major: "sample resume residence major",
     phone: "989121211212",

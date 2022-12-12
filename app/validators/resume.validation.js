@@ -58,13 +58,13 @@ class ResumeValidation {
                 .notEmpty()
                 .withMessage('resume.validations.residence_city_required')
                 .isLength({ min: 2, max: 50 })
-                .withMessage('resume.validations.residence_city_length')
+                .withMessage('resume.validations.residence_city_invalid')
                 .trim(),
             body('work_city')
                 .notEmpty()
                 .withMessage('resume.validations.work_city_required')
                 .isLength({ min: 2, max: 50 })
-                .withMessage('resume.validations.work_city_length')
+                .withMessage('resume.validations.work_city_invalid')
                 .trim(),
             body('education')
                 .notEmpty()
@@ -115,11 +115,6 @@ class ResumeValidation {
                 .isMongoId()
                 .withMessage('resume.validations.resume_id_invalid')
                 .trim(),
-            body('company_id')
-                .optional({ nullable: true, checkFalsy: true })
-                .isMongoId()
-                .withMessage('resume.validations.company_invalid')
-                .trim(),
             body('position_id')
                 .optional({ nullable: true, checkFalsy: true })
                 .isMongoId()
@@ -162,13 +157,13 @@ class ResumeValidation {
                 .trim(),
             body('residence_city')
                 .optional({ nullable: true, checkFalsy: true })
-                .isLength({ min: 2, max: 50 })
-                .withMessage('resume.validations.residence_city_length')
+                .isMongoId()
+                .withMessage('resume.validations.residence_city_invalid')
                 .trim(),
             body('work_city')
                 .optional({ nullable: true, checkFalsy: true })
-                .isLength({ min: 2, max: 50 })
-                .withMessage('resume.validations.work_city_length')
+                .isMongoId()
+                .withMessage('resume.validations.work_city_invalid')
                 .trim(),
             body('education')
                 .optional({ nullable: true, checkFalsy: true })

@@ -1,6 +1,9 @@
 import httpStatus from 'http-status'
 import request from 'supertest'
 import { userOne, insertUsers, accessToken } from './fixtures/user.fixture.js'
+import { companyOne, insertCompanies } from './fixtures/company.fixture.js'
+import { projectOne, insertProjects } from './fixtures/project.fixture.js'
+import { positionOne, insertPositions } from './fixtures/position.fixture.js'
 import { resumeOne, insertResumes } from './fixtures/resume.fixture.js'
 import setupTestDB from './utils/setupTestDB.js';
 import env from '../helper/env.js';
@@ -16,12 +19,16 @@ describe('Resume routes', () => {
     let newResume;
     beforeEach(async () => {
         await insertUsers([userOne]);
+        await insertCompanies([companyOne]);
+        await insertProjects([projectOne]);
+        await insertPositions([positionOne]);
         await insertResumes([resumeOne])
         token = 'Bearer ' + await accessToken(userOne);
 
         newResume = {
-            company_id: "638f13474e23a04f88077875",
-            project_id: "638f13474e23a04f88077876",
+            company_id: companyOne._id,
+            project_id: projectOne._id,
+            position_id: positionOne._id,
             firstname: "test firstname",
             lastname: "test lastname",
             gender: "men",
@@ -30,8 +37,8 @@ describe('Resume routes', () => {
             marital_status: "single",
             status: "pending",
             mobile: "989121211212",
-            residence_city: "test residence city",
-            work_city: "test work city",
+            residence_city: Types.ObjectId(),
+            work_city: Types.ObjectId(),
             education: "phd",
             major: "test residence major",
             phone: "989121211212",

@@ -126,7 +126,7 @@ const schema = new mongoose.Schema(
         created_by: {
             type: mongoose.Schema.Types.ObjectId,
             required: true,
-            ref: User
+            ref: 'users'
         },
         file: {
             type: Array,
