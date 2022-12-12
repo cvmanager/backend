@@ -66,12 +66,6 @@ class ResumeValidation {
                 .isLength({ min: 2, max: 50 })
                 .withMessage('resume.validations.work_city_length')
                 .trim(),
-            body('education')
-                .notEmpty()
-                .withMessage('resume.validations.education_required')
-                .isIn(i18n.__('enums.education'))
-                .withMessage('resume.validations.education_incorrect')
-                .trim(),
             body('phone')
                 .optional({ nullable: true, checkFalsy: true })
                 .isNumeric()

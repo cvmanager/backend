@@ -16,7 +16,6 @@
 * create position
 * @typedef { object } position.create
 * @property { string } project_id.required - position project_id
-* @property { string } company_id.required - position company_id
 * @property { string } title.required - position title
 * @property { string } level.required - position level
 * @property { boolean } is_active - position is_active

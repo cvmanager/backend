@@ -34,7 +34,7 @@ class PositionController extends Controller {
                 limit: size,
                 sort: { createdAt: -1 },
             });
-            AppResponse.builder(res).message("position.message.position_list_found").data(positionList).send();
+            AppResponse.builder(res).message("position.messages.position_list_found").data(positionList).send();
         } catch (err) {
             next(err);
         }
@@ -58,9 +58,9 @@ class PositionController extends Controller {
     async find(req, res, next) {
         try {
             const position = await Position.findById(req.params.id);
-            if (!position) throw new NotFoundError('position.error.position_notfound');
+            if (!position) throw new NotFoundError('position.errors.position_notfound');
 
-            AppResponse.builder(res).message('position.message.position_found').data(position).send();
+            AppResponse.builder(res).message('position.messages.position_found').data(position).send();
         } catch (err) {
             next(err);
         }
@@ -84,18 +84,18 @@ class PositionController extends Controller {
     async create(req, res, next) {
         try {
             let project = await Project.findById(req.body.project_id);
-            if (!project) throw new NotFoundError('project.error.project_notfound');
+            if (!project) throw new NotFoundError('project.errors.project_notfound');
 
-            let company = await Company.findById(req.body.company_id);
-            if (!company) throw new NotFoundError('company.error.company_notfound');
+
 
             let position = await Position.findOne({ 'title': req.body.title, 'project_id': req.body.project_id });
-            if (position) throw new AlreadyExists('position.error.position_already_exists');
+            if (position) throw new AlreadyExists('position.errors.position_already_exists');
 
             req.body.created_by = req.user_id;
+            req.body.company_id = project.company_id;
             position = await Position.create(req.body);
 
-            AppResponse.builder(res).status(201).message('position.message.position_successfuly_created').data(position).send();
+            AppResponse.builder(res).status(201).message('position.messages.position_successfuly_created').data(position).send();
         } catch (err) {
             next(err)
         }
@@ -121,25 +121,25 @@ class PositionController extends Controller {
         try {
 
             let position = await Position.findById(req.params.id);
-            if (!position) throw new NotFoundError('position.error.position_notfound');
+            if (!position) throw new NotFoundError('position.errors.position_notfound');
 
             if (req.body.project_id !== undefined) {
                 let project = await Project.findById(req.body.project_id);
-                if (!project) throw new NotFoundError('project.error.project_notfound');
+                if (!project) throw new NotFoundError('project.errors.project_notfound');
             }
 
             if (req.body.company_id !== undefined) {
                 let company = await Company.findById(req.body.company_id);
-                if (!company) throw new NotFoundError('company.error.company_notfound');
+                if (!company) throw new NotFoundError('company.errors.company_notfound');
             }
 
             if (req.body.title !== undefined) {
-                let position = await Position.findOne({ 'title': req.body.title, 'project_id': req.body.project_id !== undefined ? req.body.project_id : req.params.id  });
-                if (position) throw new AlreadyExists('position.error.position_already_exists');
+                let position = await Position.findOne({ 'title': req.body.title, 'project_id': req.body.project_id !== undefined ? req.body.project_id : req.params.id });
+                if (position) throw new AlreadyExists('position.errors.position_already_exists');
             }
 
             await Position.findByIdAndUpdate(req.params.id, req.body, { new: true })
-                .then(position => AppResponse.builder(res).message("position.message.position_successfuly_updated").data(position).send())
+                .then(position => AppResponse.builder(res).message("position.messages.position_successfuly_updated").data(position).send())
                 .catch(err => next(err));
         } catch (err) {
             next(err);
@@ -164,10 +164,10 @@ class PositionController extends Controller {
     async delete(req, res, next) {
         try {
             let position = await Position.findById(req.params.id);
-            if (!position) throw new NotFoundError('position.error.position_notfound');
+            if (!position) throw new NotFoundError('position.errors.position_notfound');
 
             await position.delete(req.user_id);
-            AppResponse.builder(res).message("position.message.position_successfuly_deleted").data(position).send();
+            AppResponse.builder(res).message("position.messages.position_successfuly_deleted").data(position).send();
         } catch (err) {
             next(err);
         }

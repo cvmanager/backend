@@ -48,7 +48,7 @@ async function errorHandler(err, req, res, next) {
     }
 
     if (err instanceof AlreadyExists) {
-        return res.status(403).json({
+        return res.status(409).json({
             message: res.__(err.message),
             errors: err.errors ? err.errors : [],
             data: []

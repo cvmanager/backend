@@ -54,7 +54,7 @@
 		"errors": {
 			"user_already_exists": "There is already a user with this information",
 			"invalid_credentials": "The username or password is incorrect",
-			"token_not_same": "auth.error.token_not_same",
+			"token_not_same": "Token not same",
 			"token_not_sended": "Authentication key not sent",
 			"token_not_stored": "Authentication key not stored"
 		}
@@ -71,8 +71,10 @@
 			"company_id_invalid": "company invalid"
 		},
 		"messages": {
-			"company_list_found": "company list found",
-			"company_successfuly_created": "Company successfuly created"
+			"company_list_found": "Company list found",
+			"company_successfuly_created": "Company successfuly created",
+			"company_found" : "Company Successfuly founded",
+			"company_successfuly_updated":"Company successfuly updated"
 		},
 		"errors": {}
 	},
@@ -86,9 +88,11 @@
 		},
 		"validations": {},
 		"messages": {
+			"position_successfuly_created":"Position successfuly created"
 		},
 		"errors": {
-			"position_not_found":"position not found"
+			"position_not_found":"position not found",
+			"position_already_exists": "position already exists"
 		}
 	},
 	"project": {

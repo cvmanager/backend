@@ -1,6 +1,7 @@
 /**
 * Resume
 * @typedef { object } Resume
+* @property { string }  _id
 * @property { string }  company_id
 * @property { string }  project_id
 * @property { string }  firstname
@@ -20,11 +21,10 @@
 * @property { number }  max_salary
 * @property { number }  work_experience
 * @property { string }  military_status
-* @property { data }  status_updated_at
+* @property { data }    status_updated_at
 * @property { string }  created_by
-* @property { string }  _id
-* @property { data }  createdAt
-* @property { data }  updatedAt
+* @property { data }    createdAt
+* @property { data }    updatedAt
 */
 
 /**
