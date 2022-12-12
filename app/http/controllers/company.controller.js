@@ -73,7 +73,6 @@ class CompanyController extends Controller {
     * @tags Company
     * @security BearerAuth
     * 
-    * @param { company.create } request.body - company info - multipart/form-data
     * @param { company.create } request.body - company info - application/json
     
     * @return { company.success }           201 - success response
@@ -104,7 +103,6 @@ class CompanyController extends Controller {
     * @security BearerAuth
     * 
     * @param  { string } id.path - company id
-    * @param { company.create } request.body - company info - multipart/form-data
     * @param { company.create } request.body - company info - application/json
     * 
     * @return { company.success }           200 - success response

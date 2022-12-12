@@ -73,7 +73,6 @@ class PositionController extends Controller {
     * @tags Position
     * @security BearerAuth
     * 
-    * @param { position.create } request.body - position info - multipart/form-data
     * @param { position.create } request.body - position info - application/json
     
     * @return { position.success }           201 - success response
@@ -110,7 +109,6 @@ class PositionController extends Controller {
     * @security BearerAuth
     * 
     * @param  { string } id.path - position id
-    * @param { position.create } request.body - position info - multipart/form-data
     * @param { position.create } request.body - position info - application/json
     * 
     * @return { position.success }           200 - success response

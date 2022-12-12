@@ -14,21 +14,17 @@ const schema = new mongoose.Schema(
             required: true,
             ref: 'projects'
         },
-        manager_id: {
-            type: [{
-                id: mongoose.Schema.Types.ObjectId,
-                required: true,
-                ref: 'users'
-            }],
-            required: true
-        },
         title: {
             type: String,
             required: true,
         },
         level: {
             type: String,
+<<<<<<< HEAD
             required: true,
+=======
+            default: null,
+>>>>>>> develop
             enum: i18n.__("position.enums.level")
         },
         is_active: {

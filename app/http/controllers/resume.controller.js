@@ -1,6 +1,7 @@
 import { resumeEvents } from '../../events/subscribers/resumes.subscriber.js';
 import NotFoundError from '../../exceptions/NotFoundError.js';
 import Project from '../../models/project.model.js';
+import Position from '../../models/position.model.js';
 import EventEmitter from '../../events/emitter.js';
 import AppResponse from '../../helper/response.js';
 import Resume from '../../models/resume.model.js';
@@ -87,7 +88,6 @@ class ResumeController extends Controller {
     * @tags Resume
     * @security BearerAuth
     * 
-    * @param { resume.create } request.body - resume info - multipart/form-data
     * @param { resume.create } request.body - resume info - application/json
     * 
     * @return { resume.success } 200 - success response
@@ -99,11 +99,12 @@ class ResumeController extends Controller {
     async create(req, res, next) {
         try {
 
-            let project = await Project.findById(req.body.project_id);
-            if (!project) throw new NotFoundError('project.errors.project_not_found');
+            let position = await Position.findById(req.body.position_id)
+            if (!position) throw new NotFoundError('position.errors.position_not_found');
 
             req.body.created_by = req.user_id
-            req.body.company_id = project.company_id;
+            req.body.project_id = position.project_id;
+            req.body.company_id = position.company_id;
 
             let resume = await Resume.create(req.body)
 
@@ -123,7 +124,6 @@ class ResumeController extends Controller {
     * @security BearerAuth
     * 
     * @param  { string } id.path.required - resume id
-    * @param { resume.update } request.body - resume info - multipart/form-data
     * @param { resume.update } request.body - resume info - application/json
     * 
     * @return { resume.success } 200 - success response
@@ -180,7 +180,6 @@ class ResumeController extends Controller {
     * @security BearerAuth
     * 
     * @param  { string } id.path.required - resume id
-    * @param { resume.update_status } request.body - resume info - multipart/form-data
     * @param { resume.update_status } request.body - resume info - application/json
     * 
     * @return { resume.success } 200 - success response

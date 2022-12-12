@@ -14,6 +14,11 @@ const schema = new mongoose.Schema(
             required: true,
             ref: 'projects',
         },
+        position_id: {
+            type: mongoose.Schema.Types.ObjectId,
+            required: true,
+            ref: 'positions',
+        },
         firstname: {
             type: String,
             required: true
@@ -63,21 +68,21 @@ const schema = new mongoose.Schema(
             required: true,
             enum: i18n.__("system.enums.education")
         },
-        major: {
-            type: mongoose.Schema.Types.ObjectId,
-            default: null
-        },
         phone: {
             type: String,
             default: null
         },
         min_salary: {
             type: Number,
-            default: null
+            default: null,
+            minlength: 0,
+            maxlength: 1000000000
         },
         max_salary: {
             type: Number,
-            default: null
+            default: null,
+            minlength: 0,
+            maxlength: 1000000000
         },
         work_experience: {
             type: Number,

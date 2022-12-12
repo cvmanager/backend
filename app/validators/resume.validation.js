@@ -6,11 +6,11 @@ import { mobileFormat } from '../helper/helper.js';
 class ResumeValidation {
     create() {
         return [
-            body('project_id')
+            body('position_id')
                 .notEmpty()
-                .withMessage('resume.validations.project_id_required')
+                .withMessage('resume.validations.position_id_required')
                 .isMongoId()
-                .withMessage('resume.validations.porject_id_invalid')
+                .withMessage('resume.validations.position_id_invalid')
                 .trim(),
             body('firstname')
                 .notEmpty()
@@ -72,12 +72,6 @@ class ResumeValidation {
                 .isIn(i18n.__('enums.education'))
                 .withMessage('resume.validations.education_incorrect')
                 .trim(),
-            body('major')
-                .notEmpty()
-                .withMessage('resume.validations.major_required')
-                .isLength({ min: 3, max: 20 })
-                .withMessage('resume.validations.major_length')
-                .trim(),
             body('phone')
                 .optional({ nullable: true, checkFalsy: true })
                 .isNumeric()
@@ -126,7 +120,7 @@ class ResumeValidation {
                 .isMongoId()
                 .withMessage('resume.validations.company_invalid')
                 .trim(),
-            body('project_id')
+            body('position_id')
                 .optional({ nullable: true, checkFalsy: true })
                 .isMongoId()
                 .withMessage('resume.validations.porject_invalid')

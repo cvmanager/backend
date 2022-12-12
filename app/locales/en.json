@@ -23,11 +23,6 @@
 				"end",
 				"exemption-edu",
 				"exemption-spo"
-			],
-			"positions": [
-				"senior",
-				"mid",
-				"junior"
 			]
 		},
 		"errors": {
@@ -81,7 +76,11 @@
 		},
 		"errors": {}
 	},
+<<<<<<< HEAD
 	"position": {
+=======
+	"position":{
+>>>>>>> develop
 		"enums": {
 			"level": [
 				"senior",
@@ -91,6 +90,7 @@
 		},
 		"validations": {},
 		"messages": {
+<<<<<<< HEAD
 			"position_list_found": "position list",
 			"position_found" : "position found"
 		},
@@ -100,6 +100,11 @@
 			"position_successfuly_created" : "position successfuly created",
 			"position_successfuly_updated" : "position successfuly updated",
 			"position_successfuly_deleted" : "position successfuly deleted"
+=======
+		},
+		"errors": {
+			"position_not_found":"position not found"
+>>>>>>> develop
 		}
 	},
 	"project": {

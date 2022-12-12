@@ -1,8 +1,12 @@
 import request from "supertest"
 const token = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2MzZhNGFkODE4OWUwOWIxMWIxODI1NGEiLCJpYXQiOjE2Njk0NjI5OTAsImV4cCI6MTY2OTQ3MDE5MH0.nKJF_SbFSXLtn4gXgl-Pyb3unZLf_x5Jv8H0TuVeOjY'
-const baseURL = "http://localhost:3080/api/V1"
 const companyId = '6381f836f0beeebaa8d97f7a';
 const managerId = '636a4ad8189e09b11b18254a';
+import env from '../helper/env.js';
+
+
+
+let baseURL = env("TEST_BASE_URL")
 
 describe('Company routes', () => {
     describe('Patch /:id/manager', () => {
