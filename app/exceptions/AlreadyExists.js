@@ -1,5 +1,5 @@
 class AlreadyExists extends Error {
-    message = "error.already_exists";
+    message = "system.errors.already_exists";
     constructor(message) {
         super(message);
         if(message) this.message = message 

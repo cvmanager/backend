@@ -49,7 +49,7 @@ class App {
 
     routes() {
         app.use('/api/v1/', route);
-        app.use('*', () => { throw new NotFoundError('error.url_not_found') });
+        app.use('*', () => { throw new NotFoundError('system.errors.url_not_found') });
         app.use(errorHandler);
     }
 

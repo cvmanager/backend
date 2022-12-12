@@ -35,9 +35,12 @@ class ProjectController extends Controller {
                 page: (page) || 1,
                 limit: size,
                 sort: { createdAt: -1 },
-                // populate: 'likes'
+                populate: [
+                    {path: 'company_id', select: 'name'}, 
+                    {path: 'manager_id', select: ['firstname', 'lastname']},
+                ],
             });
-            AppResponse.builder(res).message("project.message.project_found").data(projectList).send();
+            AppResponse.builder(res).message("project.messages.project_found").data(projectList).send();
         } catch (err) {
             next(err);
         }
@@ -58,9 +61,9 @@ class ProjectController extends Controller {
     async find(req, res, next) {
         try {
             let project = await Project.findById(req.params.id).populate('created_by').exec();
-            if (!project) throw new NotFoundError('project.error.project_notfound');
+            if (!project) throw new NotFoundError('project.errors.project_notfound');
 
-            AppResponse.builder(res).message("project.message.project_found").data(project).send();
+            AppResponse.builder(res).message("project.messages.project_found").data(project).send();
         } catch (err) {
             next(err);
         }
@@ -83,11 +86,11 @@ class ProjectController extends Controller {
     async create(req, res, next) {
         try {
             let project = await Project.findOne({ 'name': req.body.name , 'company_id' : req.body.company_id });
-            if (project) throw new AlreadyExists('project.error.project_already_attached_company');
+            if (project) throw new AlreadyExists('project.errors.project_already_attached_company');
 
             req.body.created_by = req.user_id;
             project = await Project.create(req.body);
-            AppResponse.builder(res).status(201).message("project.message.project_successfuly_created").data(project).send();
+            AppResponse.builder(res).status(201).message("project.messages.project_successfuly_created").data(project).send();
         } catch (err) {
             next(err);
         }
@@ -109,10 +112,10 @@ class ProjectController extends Controller {
     async update(req, res, next) {
         try {
             let project = await Project.findOne({ 'name': req.body.name , 'company_id' : req.body.company_id });
-            if (project) throw new AlreadyExists('project.error.project_already_attached_company');
+            if (project) throw new AlreadyExists('project.errors.project_already_attached_company');
 
             await Project.findByIdAndUpdate(req.params.id, req.body, { new: true })
-                .then(project => AppResponse.builder(res).message("project.message.project_successfuly_updated").data(project).send())
+                .then(project => AppResponse.builder(res).message("project.messages.project_successfuly_updated").data(project).send())
                 .catch(err => next(err));
         } catch (err) {
             next(err);
@@ -134,9 +137,9 @@ class ProjectController extends Controller {
     async delete(req, res, next) {
         try {
             let project = await Project.findById(req.params.id);
-            if (!project) throw new NotFoundError('project.error.project_notfound');
+            if (!project) throw new NotFoundError('project.errors.project_notfound');
             await project.delete(req.user_id);
-            AppResponse.builder(res).message("project.message.project_successfuly_deleted").data(project).send();
+            AppResponse.builder(res).message("project.messages.project_successfuly_deleted").data(project).send();
         } catch (err) {
             next(err);
         }
@@ -159,15 +162,15 @@ class ProjectController extends Controller {
     async manager(req, res, next) {
         try {
             let project = await Project.findById(req.params.id);
-            if (!project) throw new NotFoundError('project.error.project_notfound');
+            if (!project) throw new NotFoundError('project.errors.project_notfound');
 
             let user = await User.findById(req.body.manager_id);
-            if (!user) throw new NotFoundError('user.error.user_notfound');
+            if (!user) throw new NotFoundError('user.errors.user_notfound');
 
             project.manager_id = req.body.manager_id;
             await project.save();
 
-            AppResponse.builder(res).message("project.message.project_id_successfuly_updated").data(project).send()
+            AppResponse.builder(res).message("project.messages.project_id_successfuly_updated").data(project).send()
         } catch (err) {
             next(err);
         }

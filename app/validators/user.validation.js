@@ -6,9 +6,9 @@ class UserValidation {
         return [
             param('id')
                 .notEmpty()
-                .withMessage('user.validator.user_id_required')
+                .withMessage('user.validations.user_id_required')
                 .isMongoId()
-                .withMessage('user.validator.user_id_invalid')
+                .withMessage('user.validations.user_id_invalid')
                 .trim(),
             generalValidator
         ];
@@ -18,7 +18,7 @@ class UserValidation {
         return [
             body('avatar')
                 .notEmpty()
-                .withMessage('user.validator.avatar_required')
+                .withMessage('user.validations.avatar_required')
                 .trim(),
             generalValidator
         ];
@@ -28,9 +28,9 @@ class UserValidation {
         return [
             param('id')
                 .notEmpty()
-                .withMessage('user.validator.user_id_required')
+                .withMessage('user.validations.user_id_required')
                 .isMongoId()
-                .withMessage('user.validator.user_id_invalid')
+                .withMessage('user.validations.user_id_invalid')
                 .trim(),
             generalValidator
         ];

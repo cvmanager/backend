@@ -1,26 +1,17 @@
 import mongoose from 'mongoose';
-
 import basePlugin from '../helper/mongoose/base.plugin.js';
-
 
 const schema = new mongoose.Schema(
     {
-        company_id: {
+        user_id: {
             type: mongoose.Schema.Types.ObjectId,
             required: true,
-            ref: 'companies'
+            ref: 'users'
         },
-        name: {
-            type: String,
-            required: true
-        },
-        description: {
-            type: String,
-            default: null
-        },
-        is_active: {
-            type: Boolean,
-            default: 1
+        entury: {
+            type: string,
+            required: true,
+            enum: ['company', 'project', 'position']
         },
         created_by: {
             type: mongoose.Schema.Types.ObjectId,
@@ -28,10 +19,10 @@ const schema = new mongoose.Schema(
             ref: 'users'
         }
     }
-);
+)
 
 schema.plugin(basePlugin)
 
-const Project = mongoose.model('projects', schema);
+const Manager = mongoose.model('managers', schema);
 
-export default Project;
+export default Manager;

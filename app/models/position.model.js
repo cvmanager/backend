@@ -1,7 +1,6 @@
 import mongoose from 'mongoose';
-
+import i18n from '../middlewares/lang.middleware.js'
 import basePlugin from '../helper/mongoose/base.plugin.js';
-
 
 const schema = new mongoose.Schema(
     {
@@ -10,13 +9,19 @@ const schema = new mongoose.Schema(
             required: true,
             ref: 'companies'
         },
-        name: {
-            type: String,
-            required: true
+        project_id: {
+            type: mongoose.Schema.Types.ObjectId,
+            required: true,
+            ref: 'projects'
         },
-        description: {
+        title: {
             type: String,
-            default: null
+            required: true,
+        },
+        level: {
+            type: String,
+            default: null,
+            enum: i18n.__("position.enums.level")
         },
         is_active: {
             type: Boolean,
@@ -28,10 +33,10 @@ const schema = new mongoose.Schema(
             ref: 'users'
         }
     }
-);
+)
 
 schema.plugin(basePlugin)
 
-const Project = mongoose.model('projects', schema);
+const Position = mongoose.model('positions', schema);
 
-export default Project;
+export default Position;

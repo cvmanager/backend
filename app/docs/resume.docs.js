@@ -30,24 +30,22 @@
 /**
 * create resume
 * @typedef { object } resume.create
-* @property { string } company_id.required - resume company_id
-* @property { string } project_id.required - resume project_id
+* @property { string } position_id.required - resume project_id
 * @property { string } firstname.required - resume firstname
 * @property { string } lastname.required - resume lastname
 * @property { string } gender.required - resume gender
 * @property { string } email.required - resume email
 * @property { number } birth_year.required - resume birth_year
-* @property { string } marital_status.required - resume marital_status
+* @property { string } marital_status - resume marital_status
 * @property { string } mobile.required - resume mobile
 * @property { string } residence_city.required - resume residence_city
 * @property { string } work_city.required - resume work_city
 * @property { string } education.required - resume education
-* @property { string } major.required - resume major
-* @property { string } phone.required - resume phone
-* @property { number } min_salary.required - resume min_salary
-* @property { number } max_salary.required - resume max_salary
-* @property { number } work_experience.required - resume work_experience
-* @property { string } military_status.required - resume military_status
+* @property { string } phone - resume phone
+* @property { number } min_salary - resume min_salary
+* @property { number } max_salary - resume max_salary
+* @property { number } work_experience - resume work_experience
+* @property { string } military_status - resume military_status
 */
 
 /**
