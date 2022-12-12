@@ -20,11 +20,7 @@ const schema = new mongoose.Schema(
         },
         level: {
             type: String,
-<<<<<<< HEAD
-            required: true,
-=======
             default: null,
->>>>>>> develop
             enum: i18n.__("position.enums.level")
         },
         is_active: {
