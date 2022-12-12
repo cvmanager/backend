@@ -19,10 +19,13 @@ class PositionValidation {
                 .trim(),
             body('level')
                 .optional({ nullable: true, checkFalsy: true })
-                .notEmpty()
-                .withMessage('position.validations.position_level_required')
                 .isIn(i18n.__("position.enums.level"))
                 .withMessage('position.validations.position_level_incorrect')
+                .trim(),
+            body('is_active')
+                .optional({ nullable: true, checkFalsy: true })
+                .isBoolean()
+                .withMessage('position.validations.position_is_active_invalid')
                 .trim(),
             generalValidator
         ];
@@ -48,6 +51,11 @@ class PositionValidation {
                 .isMongoId()
                 .withMessage('position.validations.position_id_invalid')
                 .trim(),
+            body('project_id')
+                .optional({ nullable: true, checkFalsy: true })
+                .isMongoId()
+                .withMessage('position.validations.project_id_invalid')
+                .trim(),
             body('title')
                 .optional({ nullable: true, checkFalsy: true })
                 .isLength({ min: 3, max: 50 })
@@ -57,6 +65,11 @@ class PositionValidation {
                 .optional({ nullable: true, checkFalsy: true })
                 .isIn(i18n.__("position.enums.level"))
                 .withMessage('position.validations.position_level_incorrect')
+                .trim(),
+            body('is_active')
+                .optional({ nullable: true, checkFalsy: true })
+                .isBoolean()
+                .withMessage('position.validations.position_is_active_invalid')
                 .trim(),
             generalValidator
         ];

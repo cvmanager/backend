@@ -37,7 +37,6 @@ class ProjectController extends Controller {
                 sort: { createdAt: -1 },
                 populate: [
                     {path: 'company_id', select: 'name'}, 
-                    {path: 'manager_id', select: ['firstname', 'lastname']},
                 ],
             });
             AppResponse.builder(res).message("project.messages.project_found").data(projectList).send();

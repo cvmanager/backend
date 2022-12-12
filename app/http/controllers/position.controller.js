@@ -84,15 +84,13 @@ class PositionController extends Controller {
     async create(req, res, next) {
         try {
             let project = await Project.findById(req.body.project_id);
-            if (!project) throw new NotFoundError('project.errors.project_notfound');
-
-            let company = await Company.findById(req.body.company_id);
-            if (!company) throw new NotFoundError('company.errors.company_notfound');
-
+            if (!project) throw new NotFoundError('project.error.project_notfound');
             let position = await Position.findOne({ 'title': req.body.title, 'project_id': req.body.project_id });
             if (position) throw new AlreadyExists('position.errors.position_already_exists');
 
             req.body.created_by = req.user_id;
+            req.body.company_id = project.company_id;
+        
             position = await Position.create(req.body);
 
             AppResponse.builder(res).status(201).message('position.messages.position_successfuly_created').data(position).send();
@@ -125,17 +123,13 @@ class PositionController extends Controller {
 
             if (req.body.project_id !== undefined) {
                 let project = await Project.findById(req.body.project_id);
-                if (!project) throw new NotFoundError('project.errors.project_notfound');
-            }
-
-            if (req.body.company_id !== undefined) {
-                let company = await Company.findById(req.body.company_id);
-                if (!company) throw new NotFoundError('company.errors.company_notfound');
+                if (!project) throw new NotFoundError('project.error.project_notfound');
+                req.body.company_id = project.company_id;
             }
 
             if (req.body.title !== undefined) {
-                let position = await Position.findOne({ 'title': req.body.title, 'project_id': req.body.project_id !== undefined ? req.body.project_id : req.params.id  });
-                if (position) throw new AlreadyExists('position.errors.position_already_exists');
+                let position = await Position.findOne({ 'title': req.body.title, 'project_id': req.body.project_id !== undefined ? req.body.project_id : req.params.id });
+                if (position) throw new AlreadyExists('position.error.position_already_exists');
             }
 
             await Position.findByIdAndUpdate(req.params.id, req.body, { new: true })
