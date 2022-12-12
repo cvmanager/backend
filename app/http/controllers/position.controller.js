@@ -86,8 +86,6 @@ class PositionController extends Controller {
             let project = await Project.findById(req.body.project_id);
             if (!project) throw new NotFoundError('project.errors.project_notfound');
 
-
-
             let position = await Position.findOne({ 'title': req.body.title, 'project_id': req.body.project_id });
             if (position) throw new AlreadyExists('position.errors.position_already_exists');
 
