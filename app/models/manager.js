@@ -8,10 +8,15 @@ const schema = new mongoose.Schema(
             required: true,
             ref: 'users'
         },
-        entury: {
+        entity: {
             type: string,
             required: true,
             enum: ['company', 'project', 'position']
+        },
+        entity_id: {
+            type: string,
+            required: true,
+            ref: 'positions'
         },
         created_by: {
             type: mongoose.Schema.Types.ObjectId,
