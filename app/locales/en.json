@@ -102,9 +102,14 @@
 		},
 		"messages": {
 			"project_found": "Project Found",
-			"project_successfuly_created": "Project Successfuly Created"
+			"project_successfully_created": "Project successfully Created",
+			"project_successfully_updated": "Project successfully updated",
+			"project_manager_successfully_updated": "Project manager successfully updated",
+			"project_successfully_deleted":"project successfully deleted"
 		},
-		"errors": {}
+		"errors": {
+			"the_user_is_currently_an_manager_for_position":"The user is currently an manager for position"
+		}
 	},
 	"resume": {
 		"enums": {

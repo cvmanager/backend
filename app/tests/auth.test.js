@@ -1,6 +1,6 @@
 import httpStatus from 'http-status'
 import request from 'supertest'
-import { userOne, insertUsers } from './fixtures/user.fixture.js'
+import { userSample, insertUsers } from './fixtures/user.fixture.js'
 import setupTestDB from './utils/setupTestDB.js';
 import env from '../helper/env.js';
 
@@ -55,8 +55,8 @@ describe('Auth routes', () => {
       });
   
       it('should return 400 error if mobile is already used', async () => {
-        await insertUsers([userOne]);
-        newUser.mobile = userOne.mobile;
+        await insertUsers([userSample]);
+        newUser.mobile = userSample.mobile;
   
         let res = await request(baseURL).post('/auth/signup').send(newUser)
 
@@ -172,14 +172,14 @@ describe('Auth routes', () => {
     let loginCredentials;
     beforeEach(() => {
       loginCredentials = {
-        mobile: userOne.mobile,
-        password: userOne.password,
+        mobile: userSample.mobile,
+        password: userSample.password,
       };
     });
     
     describe('success login', () => {
       it('should return 200 and login user if mobile and password match', async () => {
-        await insertUsers([userOne]);
+        await insertUsers([userSample]);
     
         const res = await request(baseURL).post('/auth/login').send(loginCredentials)
   
@@ -201,7 +201,7 @@ describe('Auth routes', () => {
       });
     
       it('should return 400 error if password is wrong', async () => {
-        await insertUsers([userOne]);
+        await insertUsers([userSample]);
         loginCredentials.password = "wrongpass"
     
         const res = await request(baseURL).post('/auth/login').send(loginCredentials)
@@ -211,7 +211,7 @@ describe('Auth routes', () => {
 
       it('should return 400 error if user is banned', async () => {
         
-        await insertUsers([{ ...userOne, is_banned: true }]);
+        await insertUsers([{ ...userSample, is_banned: true }]);
 
         const res = await request(baseURL).post('/auth/login').send(loginCredentials)
     

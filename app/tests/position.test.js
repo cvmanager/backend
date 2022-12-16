@@ -1,31 +1,31 @@
 import httpStatus from 'http-status'
 import request from 'supertest'
-import { userOne, insertUsers, accessToken } from './fixtures/user.fixture.js'
-import { companyOne, insertCompanies } from './fixtures/company.fixture.js'
-import { projectOne, insertProjects } from './fixtures/project.fixture.js'
+import { userSample, insertUsers, accessToken } from './fixtures/user.fixture.js'
+import { companySample, insertCompanies } from './fixtures/company.fixture.js'
+import { projectSample, insertProjects } from './fixtures/project.fixture.js'
 import setupTestDB from './utils/setupTestDB.js';
 import env from '../helper/env.js';
 import { Types } from 'mongoose';
-import { positionOne, insertPositions } from './fixtures/position.fixture.js'
+import { positionSample, insertPositions } from './fixtures/position.fixture.js'
 
 let baseURL = env("TEST_BASE_URL")
 setupTestDB();
 
-describe('Postition routes', () => {
+describe('Position routes', () => {
 
     let token;
-    let newPostition;
+    let newPosition;
     beforeEach(async () => {
-        await insertUsers([userOne]);
-        await insertCompanies([companyOne]);
-        await insertProjects([projectOne]);
-        await insertPositions(positionOne);
+        await insertUsers([userSample]);
+        await insertCompanies([companySample]);
+        await insertProjects([projectSample]);
+        await insertPositions(positionSample);
 
-        token = 'Bearer ' + await accessToken(userOne);
+        token = 'Bearer ' + await accessToken(userSample);
 
-        newPostition = {
-            "project_id": projectOne._id,
-            "company_id": companyOne._id,
+        newPosition = {
+            "project_id": projectSample._id,
+            "company_id": companySample._id,
             "title": "test position",
             "level": "mid",
             "is_active": true
@@ -117,7 +117,7 @@ describe('Postition routes', () => {
         });
         it('should return ' + httpStatus.OK + ' if position found', async () => {
             const response = await request(baseURL)
-                .get("/positions/" + positionOne._id)
+                .get("/positions/" + positionSample._id)
                 .set('Authorization', token)
                 .send();
             expect(response.statusCode).toBe(httpStatus.OK);
@@ -125,7 +125,7 @@ describe('Postition routes', () => {
 
         it("should check field of object returned", async () => {
             const response = await request(baseURL)
-                .get("/positions/" + positionOne._id)
+                .get("/positions/" + positionSample._id)
                 .set('Authorization', token)
                 .send();
 
@@ -146,28 +146,28 @@ describe('Postition routes', () => {
 
         describe('project check', () => {
 
-            it('should return ' + httpStatus.BAD_REQUEST + ' error if project_id field dont send', async () => {
-                delete newPostition.project_id
+            it('should return ' + httpStatus.BAD_REQUEST + ' error if project_id field do not send', async () => {
+                delete newPosition.project_id
                 const response = await request(baseURL)
                     .post("/positions")
                     .set('Authorization', token)
-                    .send(newPostition);
+                    .send(newPosition);
                 expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
             });
             it('should return ' + httpStatus.BAD_REQUEST + ' error if project_id is not valid', async () => {
-                newPostition.project_id = 'invalid project id'
+                newPosition.project_id = 'invalid project id'
                 const response = await request(baseURL)
                     .post("/positions")
                     .set('Authorization', token)
-                    .send(newPostition);
+                    .send(newPosition);
                 expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
             });
             it('should return ' + httpStatus.NOT_FOUND + ' error if project is not found', async () => {
-                newPostition.project_id = Types.ObjectId()
+                newPosition.project_id = Types.ObjectId()
                 const response = await request(baseURL)
                     .post("/positions")
                     .set('Authorization', token)
-                    .send(newPostition);
+                    .send(newPosition);
                 expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
             });
 
@@ -175,28 +175,28 @@ describe('Postition routes', () => {
 
         describe('company check', () => {
 
-            it('should return ' + httpStatus.BAD_REQUEST + ' error if company_id field dont send', async () => {
-                delete newPostition.company_id
+            it('should return ' + httpStatus.BAD_REQUEST + ' error if company_id field do not send', async () => {
+                delete newPosition.company_id
                 const response = await request(baseURL)
                     .post("/positions")
                     .set('Authorization', token)
-                    .send(newPostition);
+                    .send(newPosition);
                 expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
             });
             it('should return ' + httpStatus.BAD_REQUEST + ' error if company_id is not valid', async () => {
-                newPostition.company_id = 'invalid company id'
+                newPosition.company_id = 'invalid company id'
                 const response = await request(baseURL)
                     .post("/positions")
                     .set('Authorization', token)
-                    .send(newPostition);
+                    .send(newPosition);
                 expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
             });
             it('should return ' + httpStatus.NOT_FOUND + ' error if company is not found', async () => {
-                newPostition.company_id = Types.ObjectId()
+                newPosition.company_id = Types.ObjectId()
                 const response = await request(baseURL)
                     .post("/positions")
                     .set('Authorization', token)
-                    .send(newPostition);
+                    .send(newPosition);
                 expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
             });
 
@@ -204,36 +204,36 @@ describe('Postition routes', () => {
 
         describe('title check', () => {
 
-            it('should return ' + httpStatus.BAD_REQUEST + ' error if title field dont send', async () => {
-                delete newPostition.title
+            it('should return ' + httpStatus.BAD_REQUEST + ' error if title field do not send', async () => {
+                delete newPosition.title
                 const response = await request(baseURL)
                     .post("/positions")
                     .set('Authorization', token)
-                    .send(newPostition);
+                    .send(newPosition);
                 expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
             });
             it('should return ' + httpStatus.BAD_REQUEST + ' error if title field smaller than 3 character', async () => {
-                newPostition.title = 'a'
+                newPosition.title = 'a'
                 const response = await request(baseURL)
                     .post("/positions")
                     .set('Authorization', token)
-                    .send(newPostition);
+                    .send(newPosition);
                 expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
             });
-            it('should return ' + httpStatus.BAD_REQUEST + ' error if title field grather than 50 character', async () => {
-                newPostition.title = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
+            it('should return ' + httpStatus.BAD_REQUEST + ' error if title field greater than 50 character', async () => {
+                newPosition.title = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
                 const response = await request(baseURL)
                     .post("/positions")
                     .set('Authorization', token)
-                    .send(newPostition);
+                    .send(newPosition);
                 expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
             });
             it('should return ' + httpStatus.FORBIDDEN + ' error if title is already saved for this project', async () => {
-                newPostition.title = positionOne.title
+                newPosition.title = positionSample.title
                 const response = await request(baseURL)
                     .post("/positions")
                     .set('Authorization', token)
-                    .send(newPostition);
+                    .send(newPosition);
                 expect(response.statusCode).toBe(httpStatus.FORBIDDEN);
             });
 
@@ -241,20 +241,20 @@ describe('Postition routes', () => {
 
         describe('level check', () => {
 
-            it('should return ' + httpStatus.BAD_REQUEST + ' error if level field dont send', async () => {
-                delete newPostition.level
+            it('should return ' + httpStatus.BAD_REQUEST + ' error if level field do not send', async () => {
+                delete newPosition.level
                 const response = await request(baseURL)
                     .post("/positions")
                     .set('Authorization', token)
-                    .send(newPostition);
+                    .send(newPosition);
                 expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
             });
             it('should return ' + httpStatus.BAD_REQUEST + ' error if level field none of enums positions list', async () => {
-                newPostition.level = 'wrong level'
+                newPosition.level = 'wrong level'
                 const response = await request(baseURL)
                     .post("/positions")
                     .set('Authorization', token)
-                    .send(newPostition);
+                    .send(newPosition);
                 expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
             });
 
@@ -263,21 +263,21 @@ describe('Postition routes', () => {
         describe('is_active check', () => {
 
             it('should return ' + httpStatus.BAD_REQUEST + ' error if is_active is not valid', async () => {
-                newPostition.is_active = 'wrong is_active'
+                newPosition.is_active = 'wrong is_active'
                 const response = await request(baseURL)
                     .post("/positions")
                     .set('Authorization', token)
-                    .send(newPostition);
+                    .send(newPosition);
                 expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
             });
 
         })
 
-        it('should return ' + httpStatus.CREATED + ' success if all feild is correct', async () => {
+        it('should return ' + httpStatus.CREATED + ' success if all field is correct', async () => {
             const response = await request(baseURL)
                 .post("/positions")
                 .set('Authorization', token)
-                .send(newPostition);
+                .send(newPosition);
             expect(response.statusCode).toBe(httpStatus.CREATED);
         });
 
@@ -288,19 +288,19 @@ describe('Postition routes', () => {
         describe('project check', () => {
 
             it('should return ' + httpStatus.BAD_REQUEST + ' error if project_id is not valid', async () => {
-                newPostition.project_id = 'invalid project id'
+                newPosition.project_id = 'invalid project id'
                 const response = await request(baseURL)
-                    .patch("/positions/" + positionOne._id)
+                    .patch("/positions/" + positionSample._id)
                     .set('Authorization', token)
-                    .send(newPostition);
+                    .send(newPosition);
                 expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
             });
             it('should return ' + httpStatus.NOT_FOUND + ' error if project is not found', async () => {
-                newPostition.project_id = Types.ObjectId()
+                newPosition.project_id = Types.ObjectId()
                 const response = await request(baseURL)
-                    .patch("/positions/" + positionOne._id)
+                    .patch("/positions/" + positionSample._id)
                     .set('Authorization', token)
-                    .send(newPostition);
+                    .send(newPosition);
                 expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
             });
 
@@ -309,19 +309,19 @@ describe('Postition routes', () => {
         describe('company check', () => {
 
             it('should return ' + httpStatus.BAD_REQUEST + ' error if company_id is not valid', async () => {
-                newPostition.company_id = 'invalid company id'
+                newPosition.company_id = 'invalid company id'
                 const response = await request(baseURL)
-                    .patch("/positions/" + positionOne._id)
+                    .patch("/positions/" + positionSample._id)
                     .set('Authorization', token)
-                    .send(newPostition);
+                    .send(newPosition);
                 expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
             });
             it('should return ' + httpStatus.NOT_FOUND + ' error if company is not found', async () => {
-                newPostition.company_id = Types.ObjectId()
+                newPosition.company_id = Types.ObjectId()
                 const response = await request(baseURL)
-                    .patch("/positions/" + positionOne._id)
+                    .patch("/positions/" + positionSample._id)
                     .set('Authorization', token)
-                    .send(newPostition);
+                    .send(newPosition);
                 expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
             });
 
@@ -330,27 +330,27 @@ describe('Postition routes', () => {
         describe('title check', () => {
 
             it('should return ' + httpStatus.BAD_REQUEST + ' error if title field smaller than 3 character', async () => {
-                newPostition.title = 'a'
+                newPosition.title = 'a'
                 const response = await request(baseURL)
-                    .patch("/positions/" + positionOne._id)
+                    .patch("/positions/" + positionSample._id)
                     .set('Authorization', token)
-                    .send(newPostition);
+                    .send(newPosition);
                 expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
             });
-            it('should return ' + httpStatus.BAD_REQUEST + ' error if title field grather than 50 character', async () => {
-                newPostition.title = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
+            it('should return ' + httpStatus.BAD_REQUEST + ' error if title field greater than 50 character', async () => {
+                newPosition.title = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
                 const response = await request(baseURL)
-                    .patch("/positions/" + positionOne._id)
+                    .patch("/positions/" + positionSample._id)
                     .set('Authorization', token)
-                    .send(newPostition);
+                    .send(newPosition);
                 expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
             });
             it('should return ' + httpStatus.FORBIDDEN + ' error if title is already saved for this project', async () => {
-                newPostition.title = positionOne.title
+                newPosition.title = positionSample.title
                 const response = await request(baseURL)
-                    .patch("/positions/" + positionOne._id)
+                    .patch("/positions/" + positionSample._id)
                     .set('Authorization', token)
-                    .send(newPostition);
+                    .send(newPosition);
                 expect(response.statusCode).toBe(httpStatus.FORBIDDEN);
             });
 
@@ -359,11 +359,11 @@ describe('Postition routes', () => {
         describe('level check', () => {
 
             it('should return ' + httpStatus.BAD_REQUEST + ' error if level field none of enums positions list', async () => {
-                newPostition.level = 'wrong level'
+                newPosition.level = 'wrong level'
                 const response = await request(baseURL)
-                    .patch("/positions/" + positionOne._id)
+                    .patch("/positions/" + positionSample._id)
                     .set('Authorization', token)
-                    .send(newPostition);
+                    .send(newPosition);
                 expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
             });
 
@@ -372,11 +372,11 @@ describe('Postition routes', () => {
         describe('is_active check', () => {
 
             it('should return ' + httpStatus.BAD_REQUEST + ' error if is_active is not valid', async () => {
-                newPostition.is_active = 'wrong is_active'
+                newPosition.is_active = 'wrong is_active'
                 const response = await request(baseURL)
-                    .patch("/positions/" + positionOne._id)
+                    .patch("/positions/" + positionSample._id)
                     .set('Authorization', token)
-                    .send(newPostition);
+                    .send(newPosition);
                 expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
             });
 
@@ -386,15 +386,15 @@ describe('Postition routes', () => {
             const response = await request(baseURL)
                 .patch("/positions/" + Types.ObjectId())
                 .set('Authorization', token)
-                .send(newPostition);
+                .send(newPosition);
             expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
         });
 
-        it('should return ' + httpStatus.OK + ' success if all feild is correct', async () => {
+        it('should return ' + httpStatus.OK + ' success if all field is correct', async () => {
             const response = await request(baseURL)
-                .patch("/positions/" + positionOne._id)
+                .patch("/positions/" + positionSample._id)
                 .set('Authorization', token)
-                .send(newPostition);
+                .send(newPosition);
             expect(response.statusCode).toBe(httpStatus.OK);
         });
 
@@ -418,7 +418,7 @@ describe('Postition routes', () => {
         });
         it('should return ' + httpStatus.OK + ' if position delete', async () => {
             const response = await request(baseURL)
-                .delete("/positions/" + positionOne._id)
+                .delete("/positions/" + positionSample._id)
                 .set('Authorization', token)
                 .send();
             expect(response.statusCode).toBe(httpStatus.OK);

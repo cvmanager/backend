@@ -44,7 +44,8 @@ class ProjectValidation {
     remove() {
         return [
             param('id')
-                .notEmpty().isMongoId().withMessage('project.validations.project_id_invalid').trim(),
+                .notEmpty().isMongoId()
+                .withMessage('project.validations.project_id_invalid').trim(),
             generalValidator
         ];
     }
@@ -52,17 +53,12 @@ class ProjectValidation {
     manager() {
         return [
             param('id')
-                .notEmpty()
-                .withMessage('project.validations.project_id_required')
-                .isMongoId()
+                .notEmpty().isMongoId()
                 .withMessage('project.validations.project_id_invalid')
                 .trim(),
             body('manager_id')
-                .notEmpty()
-                .withMessage('company.validations.manager_id_required')
-                .isMongoId()
-                .withMessage('company.validations.manager_id_invalid')
-                .trim(),
+                .notEmpty().isMongoId()
+                .withMessage('company.validations.manager_id_invalid').trim(),
             generalValidator
         ]
     }

@@ -1,6 +1,6 @@
 import httpStatus from 'http-status'
 import request from 'supertest'
-import { userOne, insertUsers, accessToken } from './fixtures/user.fixture.js'
+import { userSample, insertUsers, accessToken } from './fixtures/user.fixture.js'
 import setupTestDB from './utils/setupTestDB.js';
 import env from '../helper/env.js';
 
@@ -11,8 +11,8 @@ describe('Constant routes', () => {
 
     let token;
     beforeEach(async () => {
-        await insertUsers([userOne]);
-        token = 'Bearer ' + await accessToken(userOne);
+        await insertUsers([userSample]);
+        token = 'Bearer ' + await accessToken(userSample);
     })
 
     describe('GET /', () => {

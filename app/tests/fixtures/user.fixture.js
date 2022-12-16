@@ -9,7 +9,7 @@ const password = 'password1';
 const salt = bcrypt.genSaltSync(10);
 const hashedPassword = bcrypt.hashSync(password, salt);
 
-export const userOne = {
+export const userSample = {
   _id: Types.ObjectId(),
   firstname: "user",
   lastname: "test",
