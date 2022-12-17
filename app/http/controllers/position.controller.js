@@ -174,7 +174,7 @@ class PositionController extends Controller {
     }
 
     /**
-    * POST /positions/:id/manager
+    * POST /positions/{id}/manager
     * 
     * @summary set manager for position 
     * @tags Position
@@ -184,7 +184,11 @@ class PositionController extends Controller {
     * @param { position.manager } request.body - position info - application/json
     *    
     * @return { manager.success }           201 - success response
-
+    * @return { message.badrequest_error } 400 - bad request respone
+    * @return { message.badrequest_error } 404 - not found respone
+    * @return { message.unauthorized_error }     401 - UnauthorizedError
+    * @return { message.server_error  }    500 - Server Error
+    *
     */
     async manager(req, res, next) {
 
