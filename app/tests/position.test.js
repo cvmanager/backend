@@ -434,8 +434,9 @@ describe('Position routes', () => {
         beforeEach(async () => {
             setManager = {
                 "user_id": userSample._id,
-                "entity": "position",
-                "entity_id": positionSample._id
+                "entity": "positions",
+                "entity_id": positionSample._id,
+                "created_by": userSample._id,
             }
         })
 
@@ -487,12 +488,15 @@ describe('Position routes', () => {
             });
         });
 
-        it('should return ' + httpStatus.CONFLICT + ' error if this manager set for this position already', async () => {
-            const response = await request(baseURL)
-                .post(`/positions/${positionSample._id}/manager`)
-                .set('Authorization', token)
-                .send(setManager);
-            expect(response.statusCode).toBe(httpStatus.CONFLICT);
+
+        describe('duplicate check', () => {
+            it('should return ' + httpStatus.CONFLICT + ' error if this manager set for this position already', async () => {
+                const response = await request(baseURL)
+                    .post(`/positions/${positionSample._id}/manager`)
+                    .set('Authorization', token)
+                    .send(setManager);
+                expect(response.statusCode).toBe(httpStatus.CONFLICT);
+            });
         });
 
         it('should return ' + httpStatus.CREATED + ' successfuly added manager for position', async () => {
@@ -512,7 +516,6 @@ describe('Position routes', () => {
                 .send(setManager);
             expect(response.statusCode).toBe(httpStatus.CREATED);
         });
-
     })
 })
 

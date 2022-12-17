@@ -173,6 +173,19 @@ class PositionController extends Controller {
         }
     }
 
+    /**
+    * POST /positions/:id/manager
+    * 
+    * @summary set manager for position 
+    * @tags Position
+    * @security BearerAuth
+    * 
+    * @param  { string } id.path.required - position id
+    * @param { position.manager } request.body - position info - application/json
+    *    
+    * @return { manager.success }           201 - success response
+
+    */
     async manager(req, res, next) {
 
         try {
@@ -183,14 +196,13 @@ class PositionController extends Controller {
             let user = await User.findById(userId);
             if (!user) throw new NotFoundError('user.errors.user_notfound');
 
-            const duplicateManager = await Manager.findOne({ 'user_id': userId, 'entity_id': req.params.id, 'entity': 'position' })
+            const duplicateManager = await Manager.findOne({ 'user_id': userId, 'entity_id': req.params.id, 'entity': 'positions' })
             if (duplicateManager) {
                 throw new AlreadyExists('manager.errors.duplicate');
             }
 
             const manager = await Manager.create({ 'user_id': userId, 'entity_id': req.params.id, 'entity': 'positions', 'created_by': req.user_id })
-            AppResponse.builder(res).status(201).message('manager.messages.manager_successfuly_created').data(manager).send()
-            .catch(err => next(err));
+            AppResponse.builder(res).status(201).message('manager.messages.manager_successfuly_created').data(manager).send();
         } catch (err) {
             next(err);
         }

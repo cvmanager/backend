@@ -4,7 +4,7 @@ import Manager from '../../models/manager.model';
 import { userSample } from './user.fixture';
 import { positionSample } from './position.fixture';
 
-export const managerOne = {
+export const managerSample = {
   _id: Types.ObjectId(),
   user_id: userSample._id,
   entity: 'positions',
