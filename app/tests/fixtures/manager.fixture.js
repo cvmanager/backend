@@ -1,15 +1,15 @@
 import { Types } from 'mongoose';
 
 import Manager from '../../models/manager.model';
-import { userOne } from './user.fixture';
-import { positionOne } from './position.fixture';
+import { userSample } from './user.fixture';
+import { positionSample } from './position.fixture';
 
 export const managerOne = {
   _id: Types.ObjectId(),
-  user_id: userOne._id,
-  entity: 'position',
-  entity_id: positionOne._id,
-  created_by : userOne._id
+  user_id: userSample._id,
+  entity: 'positions',
+  entity_id: positionSample._id,
+  created_by : userSample._id
 };
 
 export const insertManagers = async (managers) => {

@@ -188,7 +188,7 @@ class PositionController extends Controller {
                 throw new AlreadyExists('manager.errors.duplicate');
             }
 
-            const manager = await Manager.create({ 'user_id': userId, 'entity_id': req.params.id, 'entity': 'position', 'created_by': req.user_id })
+            const manager = await Manager.create({ 'user_id': userId, 'entity_id': req.params.id, 'entity': 'positions', 'created_by': req.user_id })
             AppResponse.builder(res).status(201).message('manager.messages.manager_successfuly_created').data(manager).send()
             .catch(err => next(err));
         } catch (err) {
