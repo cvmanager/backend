@@ -5,7 +5,7 @@ import Company from '../../models/company.model.js';
 import Project from '../../models/project.model.js';
 import Position from '../../models/position.model.js'
 import User from '../../models/user.model.js';
-import Manager from '../../models/manager.js';
+import Manager from '../../models/manager.model.js';
 import AppResponse from '../../helper/response.js';
 import Controller from './controller.js';
 
@@ -174,23 +174,23 @@ class PositionController extends Controller {
     }
 
     async manager(req, res, next) {
-        res.send(req.body)
+
         try {
-            const {user_id:userId} = req.body
+            const { user_id: userId } = req.body
             let position = await Position.findById(req.params.id);
             if (!position) throw new NotFoundError('position.errors.position_notfound');
 
             let user = await User.findById(userId);
             if (!user) throw new NotFoundError('user.errors.user_notfound');
 
-            // if (req.body.title !== undefined) {
-            //     let position = await Position.findOne({ 'title': req.body.title, 'project_id': req.body.project_id !== undefined ? req.body.project_id : req.params.id });
-            //     if (position) throw new AlreadyExists('position.errors.position_already_exists');
-            // }
+            const duplicateManager = await Manager.findOne({ 'user_id': userId, 'entity_id': req.params.id, 'entity': 'position' })
+            if (duplicateManager) {
+                throw new AlreadyExists('manager.errors.duplicate');
+            }
 
-            const duplicateManager = await Manager.findOne({ 'user_id': userId , 'entity_id' : req.body.id ,'entity' : 'position'})
-                .then(position => AppResponse.builder(res).message("position.messages.position_successfuly_create").data(position).send())
-                .catch(err => next(err));
+            const manager = await Manager.create({ 'user_id': userId, 'entity_id': req.params.id, 'entity': 'position', 'created_by': req.user_id })
+            AppResponse.builder(res).status(201).message('manager.messages.manager_successfuly_created').data(manager).send()
+            .catch(err => next(err));
         } catch (err) {
             next(err);
         }

@@ -38,7 +38,7 @@ class PositionValidation {
 
     manager() {
         return [
-            param('id').notEmpty().isMongoId().withMessage('position.validations.position_id_invalid').trim(),
+            param('id').isMongoId().withMessage('position.validations.position_id_invalid').trim(),
             body('user_id')
                 .notEmpty().isMongoId().withMessage('position.validations.user_id_invalid').trim(),
             generalValidator

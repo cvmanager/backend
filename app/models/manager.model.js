@@ -9,12 +9,12 @@ const schema = new mongoose.Schema(
             ref: 'users'
         },
         entity: {
-            type: string,
+            type: String,
             required: true,
             enum: ['company', 'project', 'position']
         },
         entity_id: {
-            type: string,
+            type: String,
             required: true,
             ref: 'positions'
         },

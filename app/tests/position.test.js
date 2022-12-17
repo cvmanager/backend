@@ -7,6 +7,7 @@ import setupTestDB from './utils/setupTestDB.js';
 import env from '../helper/env.js';
 import { Types } from 'mongoose';
 import { positionOne, insertPositions } from './fixtures/position.fixture.js'
+import { managerOne, insertManagers } from './fixtures/manager.fixture.js'
 
 let baseURL = env("TEST_BASE_URL")
 setupTestDB();
@@ -20,7 +21,7 @@ describe('Postition routes', () => {
         await insertCompanies([companyOne]);
         await insertProjects([projectOne]);
         await insertPositions(positionOne);
-
+        await insertManagers(managerOne);
         token = 'Bearer ' + await accessToken(userOne);
 
         newPostition = {
@@ -422,6 +423,93 @@ describe('Postition routes', () => {
                 .set('Authorization', token)
                 .send();
             expect(response.statusCode).toBe(httpStatus.OK);
+        });
+
+    })
+
+    describe('POST /:id/manager', () => {
+
+        let setManager;
+        beforeEach(async () => {
+            setManager = {
+                "user_id": userOne._id,
+                "entity": "position",
+                "entity_id": positionOne._id
+            }
+        })
+
+        describe('user check', () => {
+            it('should return ' + httpStatus.BAD_REQUEST + ' error if user_id field dose not send', async () => {
+                delete setManager.user_id
+                const response = await request(baseURL)
+                    .post(`/positions/${positionOne._id}/manager`)
+                    .set('Authorization', token)
+                    .send(setManager);
+                expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+            });
+
+            it('should return ' + httpStatus.BAD_REQUEST + ' error if user_id is invalid', async () => {
+                setManager.user_id = 'invalid user id'
+                const response = await request(baseURL)
+                    .post(`/positions/${positionOne._id}/manager`)
+                    .set('Authorization', token)
+                    .send(setManager);
+                expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+            });
+
+            it('should return ' + httpStatus.NOT_FOUND + ' error if user not found', async () => {
+                setManager.user_id = Types.ObjectId();
+
+                const response = await request(baseURL)
+                    .post(`/positions/${positionOne._id}/manager`)
+                    .set('Authorization', token)
+                    .send(setManager);
+                expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+            });
+        });
+
+        describe('position check', () => {
+            it('should return ' + httpStatus.BAD_REQUEST + ' error if position is invalid', async () => {
+                const response = await request(baseURL)
+                    .post(`/positions/invalid position id/manager`)
+                    .set('Authorization', token)
+                    .send(setManager);
+                expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+            });
+
+            it('should return ' + httpStatus.NOT_FOUND + ' error if position not found', async () => {
+                const response = await request(baseURL)
+                    .post(`/positions/${Types.ObjectId()}/manager`)
+                    .set('Authorization', token)
+                    .send(setManager);
+                expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+            });
+        });
+
+        it('should return ' + httpStatus.CONFLICT + ' error if this manager set for this position already', async () => {
+            const response = await request(baseURL)
+                .post(`/positions/${positionOne._id}/manager`)
+                .set('Authorization', token)
+                .send(setManager);
+            expect(response.statusCode).toBe(httpStatus.CONFLICT);
+        });
+
+        it('should return ' + httpStatus.CREATED + ' successfuly added manager for position', async () => {
+            const userTwo = {
+                _id: Types.ObjectId(),
+                firstname: "mani",
+                lastname: "mohamadi",
+                mobile: "989191930406",
+                password: '123',
+                is_banned: false
+            };
+            await insertUsers([userTwo]);
+            setManager.user_id = userTwo._id
+            const response = await request(baseURL)
+                .post(`/positions/${positionOne._id}/manager`)
+                .set('Authorization', token)
+                .send(setManager);
+            expect(response.statusCode).toBe(httpStatus.CREATED);
         });
 
     })
