@@ -6,8 +6,8 @@
   "type": "module",
   "scripts": {
     "test": "jest",
-    "start": "node server.js",
-    "dev": "nodemon server.js",
+    "start": "node bootstrap.js",
+    "dev": "nodemon bootstrap.js",
     "db:seed": "node app/db/index.js"
   },
   "keywords": [],
