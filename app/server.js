@@ -10,7 +10,7 @@ import errorHandler from './exceptions/ErrorHandler.js';
 import i18n from './middlewares/lang.middleware.js'
 import swaggerOptions from './docs/swaggerSpecs.js'
 import route from './routes/route.js'
-import rateLimiter from '../app/middlewares/rate-limiter.js'
+import rateLimiter from './middlewares/rate-limiter.js'
 import env from './helper/env.js'
 const app = express();
 class App {
