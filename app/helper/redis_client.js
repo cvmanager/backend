@@ -1,20 +1,20 @@
-// import redis from 'redis';
-// import env from './env.js';
+import redis from 'redis';
+import env from './env.js';
 
-// let redisClient;
-// const salam = async () => {
-//      redisClient = redis.createClient({
-//         socket: {
-//             host: env('REDIS_HOST'),
-//             port: env('REDIS_PORT'),
-//         },
-//     });
+let redisClient;
+const salam = async () => {
+     redisClient = redis.createClient({
+        socket: {
+            host: env('REDIS_HOST'),
+            port: env('REDIS_PORT'),
+        },
+    });
 
-//     redisClient.on("error", (err) => {
-//         console.log('error running redis')
-//     })
-//     await redisClient.connect();
-// }
-// salam();
+    redisClient.on("error", (err) => {
+        console.log('error running redis')
+    })
+    await redisClient.connect();
+}
+salam();
 
-// export default redisClient
+export default redisClient
