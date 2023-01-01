@@ -43,6 +43,8 @@ class CompanyValidation {
         return [
             param('id')
                 .notEmpty().isMongoId().withMessage('company.validations.company_id_invalid').trim(),
+            body('manager_id')
+                .notEmpty().isMongoId().withMessage('company.validations.manager_id_invalid').trim(),
             generalValidator
         ]
     }
