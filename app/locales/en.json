@@ -78,7 +78,8 @@
 			"company_manager_successfully_created": "company manager successfully created"
 		},
 		"errors": {
-			"the_user_is_currently_an_manager_for_company": "The user is currently an manager for company"
+			"the_user_is_currently_an_manager_for_company": "The user is currently an manager for company",
+			"the_user_is_not_manager_for_this_company": "This user is not  manager for this company"
 		}
 	},
 	"position":{
