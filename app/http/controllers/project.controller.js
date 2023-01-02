@@ -37,7 +37,10 @@ class ProjectController extends Controller {
                 page: (page) || 1,
                 limit: size,
                 sort: { createdAt: -1 },
-                populate: [{ path: 'company_id', select: 'name' }],
+                populate: [
+                    { path: 'company_id', select: 'name' },
+                    { path: 'managers', populate: { path: 'user_id', select: ['firstname', 'lastname', 'avatar'] }, select: 'user_id' }
+                ],
             });
             AppResponse.builder(res).message("project.messages.project_found").data(projectList).send();
         } catch (err) {
@@ -170,7 +173,7 @@ class ProjectController extends Controller {
             let manager = await Manager.findOne({ 'entity': "projects", 'entity_id': project.id, 'user_id': user.id });
             if (manager) throw new BadRequestError("project.errors.the_user_is_currently_an_manager_for_position");
 
-            await Manager.create({ user_id: user._id, entity: "projects", entity_id: project._id, created_by: req.body.user_id });
+            await Manager.create({ user_id: user._id, entity: "projects", entity_id: project._id, created_by: req.user_id });
             AppResponse.builder(res).status(201).message("project.messages.project_manager_successfully_updated").data(project).send();
         } catch (err) {
             next(err);
