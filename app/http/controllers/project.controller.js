@@ -37,7 +37,10 @@ class ProjectController extends Controller {
                 page: (page) || 1,
                 limit: size,
                 sort: { createdAt: -1 },
-                populate: [{ path: 'company_id', select: 'name' }],
+                populate: [
+                    { path: 'company_id', select: 'name' },
+                    { path: 'managers', populate: { path: 'user_id', select: ['firstname', 'lastname', 'avatar'] }, select: 'user_id' }
+                ],
             });
             AppResponse.builder(res).message("project.messages.project_found").data(projectList).send();
         } catch (err) {

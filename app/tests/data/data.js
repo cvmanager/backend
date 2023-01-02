@@ -1,99 +1,84 @@
 import { Types } from 'mongoose';
+import { faker } from '@faker-js/faker';
 
-const users = [
-    {
-        "_id": Types.ObjectId(),
-        "firstname": "test first name 1",
-        "lastname": "test last name 1",
-        "mobile": "989121112233",
-        "email": "testemail1@gmail.com",
-        "password": "12345678",
-    },
-    {
-        "_id": Types.ObjectId(),
-        "firstname": "test first name 2",
-        "lastname": "test last name 2",
-        "mobile": "989121112244",
-        "email": "testemail2@gmail.com",
-        "password": "12345678",
-    },
-    {
-        "_id": Types.ObjectId(),
-        "firstname": "test first name 3",
-        "lastname": "test last name 3",
-        "mobile": "989121112255",
-        "email": "testemail3@gmail.com",
-        "password": "12345678",
-    }
-];
+const numberRowInsert = 3;
+let i = 0;
 
-const companies = [
-    {
+let users = [];
+for (i = 0; i < numberRowInsert; i++) {
+    users.push({
         "_id": Types.ObjectId(),
-        "name": "test company name 1",
-        "created_by": users[0]._id
-    },
-    {
-        "_id": Types.ObjectId(),
-        "name": "test company name 2",
-        "created_by": users[1]._id
-    },
-    {
-        "_id": Types.ObjectId(),
-        "name": "test company name 3",
-        "created_by": users[2]._id
-    }
-]
+        "firstname": faker.name.firstName(),
+        "lastname": faker.name.lastName(),
+        "mobile": faker.phone.number('989#########'),
+        "email": faker.internet.email(),
+        "password": faker.internet.password()
+    })
+}
 
-const projects = [
-    {
+let companies = [];
+for (i = 0; i < numberRowInsert; i++) {
+    companies.push({
         "_id": Types.ObjectId(),
-        "company_id": companies[0]._id,
-        "name": "test project name 1",
-        "description": "test project description",
-        "created_by": users[0]._id
-    },
-    {
-        "_id": Types.ObjectId(),
-        "company_id": companies[1]._id,
-        "name": "test project name 1",
-        "description": "test project description",
-        "created_by": users[1]._id
-    },
-    {
-        "_id": Types.ObjectId(),
-        "company_id": companies[2]._id,
-        "name": "test project name 1",
-        "description": "test project description",
-        "created_by": users[2]._id
-    }
-]
+        "name": faker.company.name(),
+        "created_by": users[i]._id
+    })
+}
 
-
-const managers = [
-    {
+let projects = [];
+for (i = 0; i < numberRowInsert; i++) {
+    projects.push({
         "_id": Types.ObjectId(),
-        "user_id": users[0]._id,
+        "company_id": companies[i]._id,
+        "name": faker.commerce.productName(),
+        "description": faker.commerce.productDescription(),
+        "created_by": users[i]._id
+    })
+}
+
+let positions = [];
+for (i = 0; i < numberRowInsert; i++) {
+    positions.push({
+        "_id": Types.ObjectId(),
+        "company_id": companies[i]._id,
+        "project_id": projects[i]._id,
+        "title": faker.name.jobTitle(),
+        "level": "mid",
+        "created_by": users[i]._id
+    })
+}
+
+let resumes = [];
+for (i = 0; i < numberRowInsert; i++) {
+    resumes.push({
+        "_id": Types.ObjectId(),
+        "company_id": companies[i]._id,
+        "project_id": projects[i]._id,
+        "position_id": positions[i]._id,
+        "firstname": faker.name.firstName(),
+        "lastname": faker.name.lastName(),
+        "gender": "men",
+        "email": faker.internet.email(),
+        "birth_year": "1370",
+        "marital_status": "married",
+        "military_status": "included",
+        "mobile": faker.phone.number('989#########'),
+        "residence_city": Types.ObjectId(),
+        "work_city": Types.ObjectId(),
+        "education": "diploma",
+        "created_by": users[i]._id
+    })
+}
+
+let managers = [];
+for (i = 0; i < numberRowInsert; i++) {
+    managers.push({
+        "_id": Types.ObjectId(),
+        "user_id": users[i]._id,
         "entity": "projects",
-        "entity_id": projects[0]._id,
-        "created_by": users[0]._id
-    },
-    {
-        "_id": Types.ObjectId(),
-        "user_id": users[0]._id,
-        "entity": "companies",
-        "entity_id": companies[0]._id,
-        "created_by": users[0]._id
-    },
-    {
-        "_id": Types.ObjectId(),
-        "user_id": users[0]._id,
-        "entity": "companies",
-        "entity_id": projects[0]._id,
-        "created_by": users[0]._id
-    }
-]
+        "entity_id": projects[i]._id,
+        "created_by": users[i]._id
+    })
+}
 
-
-
-export { users, companies, projects, managers };
+export { users, companies, projects, positions, managers, resumes };

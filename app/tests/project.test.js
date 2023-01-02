@@ -1,30 +1,21 @@
 import httpStatus from 'http-status'
 import request from 'supertest'
-import env from '../helper/env.js';
 import app from '../app.js'
-import AllInit from './init/all.init';
-
 import UserData from './data/user.data';
 import ProjectData from './data/project.data';
 import ManagerData from './data/manager.data';
-
-import setupTestDB from './utils/setupTestDB'
+import prepareDB from './utils/prepareDB'
 import { Types } from 'mongoose';
 
-let server;
 let token;
 let project;
 let manager;
 let users;
 
-setupTestDB();
+prepareDB();
 describe("Project Routes", () => {
 
-    beforeEach(() => {
-        server = app.listen(env('PORT'));
-        let allInit = new AllInit();
-        allInit.setData();
-
+    beforeEach(async () => {
         let userData = new UserData();
         token = userData.getAccessToken();
         users = userData.getUsers();
@@ -35,10 +26,6 @@ describe("Project Routes", () => {
         let managerData = new ManagerData();
         manager = managerData.getManager();
         
-    })
-
-    afterEach(async () => {
-        server.close();
     })
 
     describe("PATCH /projects/{id}/manager", () => {
