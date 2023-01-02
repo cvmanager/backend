@@ -195,7 +195,7 @@ class CompanyController extends Controller {
    * @return { message.unauthorized_error }     401 - UnauthorizedError
    * @return { message.badrequest_error }       404 - NotFoundError
    * @return { message.server_error }           500 - Server Error
-   * @return { company.success }                201 - success respons
+   * @return { company.success }                200 - success respons
    */
     async deleteManager(req, res, next) {
         try {
