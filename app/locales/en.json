@@ -76,11 +76,7 @@
 		},
 		"errors": {}
 	},
-<<<<<<< HEAD
 	"position": {
-=======
-	"position":{
->>>>>>> develop
 		"enums": {
 			"level": [
 				"senior",
@@ -90,7 +86,6 @@
 		},
 		"validations": {},
 		"messages": {
-<<<<<<< HEAD
 			"position_list_found": "position list",
 			"position_found" : "position found"
 		},
@@ -99,12 +94,9 @@
 			"position_already_exists" : "position already exists",
 			"position_successfuly_created" : "position successfuly created",
 			"position_successfuly_updated" : "position successfuly updated",
-			"position_successfuly_deleted" : "position successfuly deleted"
-=======
-		},
-		"errors": {
+			"position_successfuly_deleted" : "position successfuly deleted",
 			"position_not_found":"position not found"
->>>>>>> develop
+
 		}
 	},
 	"project": {
