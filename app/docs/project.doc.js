@@ -43,4 +43,10 @@
  * @property { string } manager_id - user id
 */
 
+/**
+* project delete manager response
+* @typedef  { object } project.delete_manager
+ * @property { string } manager_id - user id
+*/
+
 

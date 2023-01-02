@@ -62,6 +62,19 @@ class ProjectValidation {
             generalValidator
         ]
     }
+
+    deleteManager() {
+        return [
+            param('id')
+                .notEmpty().isMongoId()
+                .withMessage('project.validations.project_id_invalid')
+                .trim(),
+            body('manager_id')
+                .notEmpty().isMongoId()
+                .withMessage('company.validations.manager_id_invalid').trim(),
+            generalValidator
+        ]
+    }
 }
 
 export default new ProjectValidation();

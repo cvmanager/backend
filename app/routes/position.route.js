@@ -9,6 +9,7 @@ positionRouter
     .get('/:id', PositionValidation.find(), PositionController.find)
     .post('/', PositionValidation.create(), PositionController.create)
     .patch('/:id', PositionValidation.update(), PositionController.update)
+    .post('/:id/manager', PositionValidation.manager(), PositionController.manager)
     .delete('/:id', PositionValidation.remove(), PositionController.delete)
 
 export default positionRouter;

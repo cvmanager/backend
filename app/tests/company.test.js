@@ -107,5 +107,147 @@ describe("Company Routes", () => {
         })
 
     })
- 
+
+    describe("PATCH /companies/{id}/manager", () => {
+
+        it(`should get ${httpStatus.NOT_FOUND} company id is not valid`, async () => {
+            const response = await request(app)
+                .patch("/api/V1/companies/639c7ecfdb3ccff4925a6fa5/manager")
+                .set('Authorization', token)
+                .send({ 'manager_id': Types.ObjectId() });
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} company id is not a mongo id`, async () => {
+            const response = await request(app)
+                .patch("/api/V1/companies/fakeID/manager")
+                .set('Authorization', token)
+                .send();
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} manager id is not sended`, async () => {
+            console.log(company)
+            const response = await request(app)
+                .patch(`/api/V1/companies/${company._id}/manager`)
+                .set('Authorization', token)
+                .send();
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} manager id is not a mongo id`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/companies/${company._id}/manager`)
+                .set('Authorization', token)
+                .send({ 'manager_id': 'fake' });
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.NOT_FOUND} manager id is not valid`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/companies/${company._id}/manager`)
+                .set('Authorization', token)
+                .send({ 'manager_id': "639c7ecfdb3ccff4925a6fa5" });
+
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} user is currently manager`, async () => {
+            let newManager = {
+                "id": Types.ObjectId(),
+                "manager_id": manager.user_id,
+                "user_id": manager._id,
+            };
+
+            const response = await request(app)
+                .patch(`/api/V1/companies/${company._id}/manager`)
+                .set('Authorization', token)
+                .send(newManager);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.CREATED} user successfully assign as manager`, async () => {
+            let newManager = {
+                "id": Types.ObjectId(),
+                "manager_id": users[1]._id,
+                "user_id": users[1]._id,
+            };
+
+            const response = await request(app)
+                .patch(`/api/V1/companies/${company._id}/manager`)
+                .set('Authorization', token)
+                .send(newManager);
+
+            expect(response.statusCode).toBe(httpStatus.CREATED);
+        })
+
+    })
+
+    describe("DELETE /companies/{id}/manager", () => {
+
+        it(`should get ${httpStatus.NOT_FOUND} company id is not valid`, async () => {
+            const response = await request(app)
+                .delete("/api/V1/companies/639c7ecfdb3ccff4925a6fa5/manager")
+                .set('Authorization', token)
+                .send({ 'manager_id': Types.ObjectId() });
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} company id is not a mongo id`, async () => {
+            const response = await request(app)
+                .delete("/api/V1/companies/fakeID/manager")
+                .set('Authorization', token)
+                .send();
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} manager id is not sended`, async () => {
+            console.log(company)
+            const response = await request(app)
+                .delete(`/api/V1/companies/${company._id}/manager`)
+                .set('Authorization', token)
+                .send();
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} manager id is not a mongo id`, async () => {
+            const response = await request(app)
+                .delete(`/api/V1/companies/${company._id}/manager`)
+                .set('Authorization', token)
+                .send({ 'manager_id': 'fake' });
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.NOT_FOUND} manager id is not valid`, async () => {
+            const response = await request(app)
+                .delete(`/api/V1/companies/${company._id}/manager`)
+                .set('Authorization', token)
+                .send({ 'manager_id': "639c7ecfdb3ccff4925a6fa5" });
+
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+
+        it(`should get ${httpStatus.NOT_FOUND} this user is not manager for this company`, async () => {
+          
+            const response = await request(app)
+                .delete(`/api/V1/companies/${company._id}/manager`)
+                .set('Authorization', token)
+                .send({ 'manager_id': "639c7ecfdb3ccff4925a6fa5" });
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+
+        it(`should get ${httpStatus.OK} manager successfully deleted`, async () => {
+            let newManager = {
+                "manager_id": users[0]._id,
+            };
+            
+            const response = await request(app)
+                .delete(`/api/V1/companies/${company._id}/manager`)
+                .set('Authorization', token)
+                .send(newManager);
+            expect(response.statusCode).toBe(httpStatus.OK);
+        })
+
+    })
+
 })

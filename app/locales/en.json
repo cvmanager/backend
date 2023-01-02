@@ -74,9 +74,13 @@
 			"company_list_found": "Company list found",
 			"company_successfuly_created": "Company successfuly created",
 			"company_found" : "Company Successfuly founded",
-			"company_successfuly_updated":"Company successfuly updated"
+			"company_successfuly_updated":"Company successfuly updated",
+			"company_manager_successfully_created": "company manager successfully created"
 		},
-		"errors": {}
+		"errors": {
+			"the_user_is_currently_an_manager_for_company": "The user is currently an manager for company",
+			"the_user_is_not_manager_for_this_company": "This user is not  manager for this company"
+		}
 	},
 	"position":{
 		"enums": {
@@ -105,10 +109,12 @@
 			"project_successfully_created": "Project successfully Created",
 			"project_successfully_updated": "Project successfully updated",
 			"project_manager_successfully_updated": "Project manager successfully updated",
+			"project_manager_successfully_deleted": "Project manager successfully deleted",
 			"project_successfully_deleted":"project successfully deleted"
 		},
 		"errors": {
-			"the_user_is_currently_an_manager_for_position":"The user is currently an manager for position"
+			"the_user_is_currently_an_manager_for_project":"The user is currently an manager for project",
+			"the_user_is_not_an_manager_for_project":"This user is not defined for the project"
 		}
 	},
 	"resume": {
@@ -167,6 +173,16 @@
 		},
 		"errors": {
 			"user_notfound": "The desired user was not found"
+		}
+	},
+	"manager": {
+		"enums": {},
+		"validations": {},
+		"messages": {
+			"manager_successfuly_created": "manager successfuly set for position"
+		},
+		"errors": {
+			"duplicate": "This manager set for this position already"
 		}
 	}
 }
