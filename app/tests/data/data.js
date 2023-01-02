@@ -2,21 +2,22 @@ import { Types } from 'mongoose';
 import { faker } from '@faker-js/faker';
 
 const numberRowInsert = 3;
+let i = 0;
 
 let users = [];
-for (let i = 0; i < numberRowInsert; i++) {
+for (i = 0; i < numberRowInsert; i++) {
     users.push({
         "_id": Types.ObjectId(),
         "firstname": faker.name.firstName(),
         "lastname": faker.name.lastName(),
-        "mobile": `98912111223${i}`,
+        "mobile": faker.phone.number('989#########'),
         "email": faker.internet.email(),
         "password": faker.internet.password()
     })
 }
 
 let companies = [];
-for (let i = 0; i < numberRowInsert; i++) {
+for (i = 0; i < numberRowInsert; i++) {
     companies.push({
         "_id": Types.ObjectId(),
         "name": faker.company.name(),
@@ -25,7 +26,7 @@ for (let i = 0; i < numberRowInsert; i++) {
 }
 
 let projects = [];
-for (let i = 0; i < numberRowInsert; i++) {
+for (i = 0; i < numberRowInsert; i++) {
     projects.push({
         "_id": Types.ObjectId(),
         "company_id": companies[i]._id,
@@ -36,7 +37,7 @@ for (let i = 0; i < numberRowInsert; i++) {
 }
 
 let positions = [];
-for (let i = 0; i < numberRowInsert; i++) {
+for (i = 0; i < numberRowInsert; i++) {
     positions.push({
         "_id": Types.ObjectId(),
         "company_id": companies[i]._id,
@@ -48,7 +49,7 @@ for (let i = 0; i < numberRowInsert; i++) {
 }
 
 let resumes = [];
-for (let i = 0; i < numberRowInsert; i++) {
+for (i = 0; i < numberRowInsert; i++) {
     resumes.push({
         "_id": Types.ObjectId(),
         "company_id": companies[i]._id,
@@ -61,7 +62,7 @@ for (let i = 0; i < numberRowInsert; i++) {
         "birth_year": "1370",
         "marital_status": "married",
         "military_status": "included",
-        "mobile": `98912111225${i}`,
+        "mobile": faker.phone.number('989#########'),
         "residence_city": Types.ObjectId(),
         "work_city": Types.ObjectId(),
         "education": "diploma",
@@ -70,7 +71,7 @@ for (let i = 0; i < numberRowInsert; i++) {
 }
 
 let managers = [];
-for (let i = 0; i < numberRowInsert; i++) {
+for (i = 0; i < numberRowInsert; i++) {
     managers.push({
         "_id": Types.ObjectId(),
         "user_id": users[i]._id,
