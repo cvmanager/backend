@@ -168,5 +168,15 @@
 		"errors": {
 			"user_notfound": "The desired user was not found"
 		}
+	},
+	"manager": {
+		"enums": {},
+		"validations": {},
+		"messages": {
+			"manager_successfuly_created": "manager successfuly set for position"
+		},
+		"errors": {
+			"duplicate": "This manager set for this position already"
+		}
 	}
 }

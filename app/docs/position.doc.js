@@ -22,6 +22,13 @@
 */
 
 /**
+* set manager for position
+* @typedef { object } position.manager
+* @property { string } user_id.required - manager user_id
+
+*/
+
+/**
 * position success response
 * @typedef { object } position.success
 * @property { string }         message
