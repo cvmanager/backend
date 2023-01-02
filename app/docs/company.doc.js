@@ -23,3 +23,9 @@
 * @property { array<Company> } data
 * @property { array<> }        errors
 */
+
+/**
+* company success response
+* @typedef  { object } company.set_manager
+ * @property { string } manager_id - user id
+*/
