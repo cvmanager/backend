@@ -160,8 +160,9 @@ class CompanyController extends Controller {
     * @param  { Company.set_manager } request.body - company info - application/json
     *
     * @return { message.unauthorized_error }     401 - UnauthorizedError
-    * @return { message.unauthorized_error }     404 - NotFoundError
+    * @return { message.badrequest_error }       404 - NotFoundError
     * @return { message.server_error }           500 - Server Error
+    * @return { company.success }                201 - success respons
     */
     async manager(req, res, next) {
         try {
@@ -181,20 +182,21 @@ class CompanyController extends Controller {
         }
     }
 
-     /**
-    * DELETE /companies/{id}/manager
-    *
-    * @summary delete manager from company
-    * @tags Company
-    * @security BearerAuth
-    *
-    * @param  { string } id.path - company id - application/json
-    * @param  { Company.set_manager } request.body - company info - application/json
-    *
-    * @return { message.unauthorized_error }     401 - UnauthorizedError
-    * @return { message.unauthorized_error }     404 - NotFoundError
-    * @return { message.server_error }           500 - Server Error
-    */
+    /**
+   * DELETE /companies/{id}/manager
+   *
+   * @summary delete manager from company
+   * @tags Company
+   * @security BearerAuth
+   *
+   * @param  { string } id.path - company id - application/json
+   * @param  { Company.set_manager } request.body - company info - application/json
+   *
+   * @return { message.unauthorized_error }     401 - UnauthorizedError
+   * @return { message.badrequest_error }       404 - NotFoundError
+   * @return { message.server_error }           500 - Server Error
+   * @return { company.success }                201 - success respons
+   */
     async deleteManager(req, res, next) {
         try {
             let company = await Company.findById(req.params.id);
@@ -205,7 +207,7 @@ class CompanyController extends Controller {
 
             let manager = await Manager.findOne({ 'entity': "companies", 'entity_id': company.id, 'user_id': user.id, deleted: false });
             if (!manager) throw new BadRequestError("company.errors.the_user_is_not_manager_for_this_company");
-            
+
             await manager.delete(req.user_id);
 
             AppResponse.builder(res).message("company.messages.company_id_successfuly_updated").data(company).send()
