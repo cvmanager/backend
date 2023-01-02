@@ -32,7 +32,14 @@ class CompanyController extends Controller {
                 page: (page) || 1,
                 limit: size,
                 sort: { createdAt: -1 },
-                populate: [{ path: 'projects' }]
+                populate: [
+                    { path: 'projects' },
+                    {
+                        path: 'managers',
+                        populate: { path: 'user_id', select: ['firstname', 'lastname', 'avatar'] },
+                        select: ['user_id']
+                    }
+                ]
             });
             AppResponse.builder(res).message("company.messages.company_list_found").data(companyList).send();
         } catch (err) {
