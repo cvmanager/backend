@@ -160,8 +160,9 @@ class CompanyController extends Controller {
     * @param  { project.set_manager } request.body - company info - application/json
     *
     * @return { message.unauthorized_error }     401 - UnauthorizedError
-    * @return { message.unauthorized_error }     404 - NotFoundError
+    * @return { message.badrequest_error }       404 - NotFoundError
     * @return { message.server_error }           500 - Server Error
+    * @return { company.success }                201 - success response
     */
     async manager(req, res, next) {
         try {
