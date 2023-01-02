@@ -11,5 +11,6 @@ projectRouter
     .patch('/:id', ProjectValidation.update(), ProjectController.update)
     .delete('/:id', ProjectValidation.remove(), ProjectController.delete)
     .patch('/:id/manager', ProjectValidation.manager(), ProjectController.manager)
+    .delete('/:id/manager', ProjectValidation.deleteManager(), ProjectController.deleteManager)
 
 export default projectRouter
