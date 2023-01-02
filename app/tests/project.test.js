@@ -4,7 +4,7 @@ import app from '../app.js'
 import UserData from './data/user.data';
 import ProjectData from './data/project.data';
 import ManagerData from './data/manager.data';
-import setupTestDB from './utils/setupTestDB'
+import prepareDB from './utils/prepareDB'
 import { Types } from 'mongoose';
 
 let token;
@@ -12,7 +12,7 @@ let project;
 let manager;
 let users;
 
-setupTestDB();
+prepareDB();
 describe("Project Routes", () => {
 
     beforeEach(async () => {

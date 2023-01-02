@@ -2,11 +2,11 @@ import httpStatus from 'http-status'
 import request from 'supertest'
 import app from '../app.js'
 import UserData from './data/user.data';
-import setupTestDB from './utils/setupTestDB'
+import prepareDB from './utils/prepareDB'
 
 let token;
 
-setupTestDB();
+prepareDB();
 describe(`Position Routes`, () => {
 
     beforeEach(async () => {
