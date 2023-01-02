@@ -37,7 +37,10 @@ class ProjectController extends Controller {
                 page: (page) || 1,
                 limit: size,
                 sort: { createdAt: -1 },
-                populate: [{ path: 'company_id', select: 'name' }],
+                populate: [
+                    { path: 'company_id', select: 'name' },
+                    { path: 'managers', populate: { path: 'user_id', select: ['firstname', 'lastname', 'avatar'] }, select: 'user_id' }
+                ],
             });
             AppResponse.builder(res).message("project.messages.project_found").data(projectList).send();
         } catch (err) {
@@ -168,10 +171,42 @@ class ProjectController extends Controller {
             if (!user) throw new NotFoundError("user.errors.user_notfound");
 
             let manager = await Manager.findOne({ 'entity': "projects", 'entity_id': project.id, 'user_id': user.id });
-            if (manager) throw new BadRequestError("project.errors.the_user_is_currently_an_manager_for_position");
+            if (manager) throw new BadRequestError("project.errors.the_user_is_currently_an_manager_for_project");
 
-            await Manager.create({ user_id: user._id, entity: "projects", entity_id: project._id, created_by: req.body.user_id });
+            await Manager.create({ user_id: user._id, entity: "projects", entity_id: project._id, created_by: req.user_id });
             AppResponse.builder(res).status(201).message("project.messages.project_manager_successfully_updated").data(project).send();
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
+    * DELETE /projects/{id}/manager
+    *
+    * @summary delete manager for special project
+    * @tags Project
+    * @security BearerAuth
+    *
+    * @param  { string } id.path - project id - application/json
+    * @param  { project.delete_manager } request.body - project info - application/json
+    *
+    * @return { message.unauthorized_error }     401 - UnauthorizedError
+    * @return { message.unauthorized_error }     404 - NotFoundError
+    * @return { message.server_error }           500 - Server Error
+    */
+    async deleteManager(req, res, next) {
+        try {
+            let project = await Project.findById(req.params.id);
+            if (!project) throw new NotFoundError("project.errors.project_notfound");
+
+            let user = await User.findById(req.body.manager_id);
+            if (!user) throw new NotFoundError("user.errors.user_notfound");
+
+            let manager = await Manager.findOne({ 'entity': "projects", 'entity_id': project.id, 'user_id': user.id });
+            if (!manager) throw new BadRequestError("project.errors.the_user_is_not_an_manager_for_project");
+
+            await manager.delete(req.user_id);
+            AppResponse.builder(res).status(200).message("project.messages.project_manager_successfully_deleted").data(project).send();
         } catch (err) {
             next(err);
         }

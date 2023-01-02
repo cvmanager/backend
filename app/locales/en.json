@@ -109,10 +109,12 @@
 			"project_successfully_created": "Project successfully Created",
 			"project_successfully_updated": "Project successfully updated",
 			"project_manager_successfully_updated": "Project manager successfully updated",
+			"project_manager_successfully_deleted": "Project manager successfully deleted",
 			"project_successfully_deleted":"project successfully deleted"
 		},
 		"errors": {
-			"the_user_is_currently_an_manager_for_position":"The user is currently an manager for position"
+			"the_user_is_currently_an_manager_for_project":"The user is currently an manager for project",
+			"the_user_is_not_an_manager_for_project":"This user is not defined for the project"
 		}
 	},
 	"resume": {
@@ -171,6 +173,16 @@
 		},
 		"errors": {
 			"user_notfound": "The desired user was not found"
+		}
+	},
+	"manager": {
+		"enums": {},
+		"validations": {},
+		"messages": {
+			"manager_successfuly_created": "manager successfuly set for position"
+		},
+		"errors": {
+			"duplicate": "This manager set for this position already"
 		}
 	}
 }
