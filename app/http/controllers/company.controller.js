@@ -4,7 +4,6 @@ import Company from '../../models/company.model.js';
 import User from '../../models/user.model.js'
 import AppResponse from '../../helper/response.js';
 import Controller from './controller.js';
-import { Console } from 'console';
 
 class CompanyController extends Controller {
 
