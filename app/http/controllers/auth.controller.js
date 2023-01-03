@@ -8,6 +8,8 @@ import AppResponse from '../../helper/response.js';
 import User from '../../models/user.model.js';
 import Controller from './controller.js';
 import env from '../../helper/env.js';
+import EventEmitter from '../../events/emitter.js';
+import { events } from '../../events/subscribers/user.subscriber.js';
 
 class AuthController extends Controller {
 
@@ -38,6 +40,7 @@ class AuthController extends Controller {
             const access_token = await generateJwtToken(user._id)
             const refresh_token = await generateJwtRefeshToken(user._id);
 
+            EventEmitter.emit(events.LOGIN, user);
             AppResponse.builder(res).message('auth.messages.success_login').data({ access_token, refresh_token }).send();
         } catch (err) {
             next(err);
@@ -74,6 +77,7 @@ class AuthController extends Controller {
             const access_token = await generateJwtToken({ _id: user._id, role: user.role })
             const refresh_token = await generateJwtRefeshToken(user._id);
 
+            EventEmitter.emit(events.SINGUP, user);
             AppResponse.builder(res).status(201).message("auth.messages.user_successfuly_created").data({ access_token, refresh_token }).send();
         } catch (err) {
             next(err);

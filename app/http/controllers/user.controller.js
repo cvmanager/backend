@@ -1,8 +1,10 @@
+import EventEmitter from '../../events/emitter.js';
 import BadRequestError from '../../exceptions/BadRequestError.js';
 import UserNotFoundError from '../../exceptions/UserNotFoundError.js';
 import AppResponse from '../../helper/response.js';
 import User from '../../models/user.model.js';
 import Controller from './controller.js';
+import { events } from '../../events/subscribers/user.subscriber.js';
 
 class UserController extends Controller {
 
@@ -113,12 +115,14 @@ class UserController extends Controller {
             user.banned_at = new Date().toISOString();
             await user.save();
 
+            EventEmitter.emit(events.BANNED, user)
             AppResponse.builder(res).message('user.messages.user_successfully_blocked').data(user).send();
 
         } catch (err) {
             next(err);
         }
     }
+
     /**
      * GET /users/getMe
      * @summary Get authenticated user information
