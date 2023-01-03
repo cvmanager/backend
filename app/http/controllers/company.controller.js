@@ -7,7 +7,7 @@ import Manager from '../../models/manager.model.js'
 import AppResponse from '../../helper/response.js';
 import Controller from './controller.js';
 import EventEmitter from '../../events/emitter.js';
-import { companyEvents } from '../../events/subscribers/companies.subscriber.js';
+import { events } from '../../events/subscribers/companies.subscriber.js';
 
 
 class CompanyController extends Controller {
@@ -92,7 +92,7 @@ class CompanyController extends Controller {
             req.body.created_by = req.user_id;
             company = await Company.create(req.body);
 
-            EventEmitter.emit(companyEvents.CREATE, company);
+            EventEmitter.emit(events.CREATE, company);
 
             AppResponse.builder(res).status(201).message('company.messages.company_successfuly_created').data(company).send();
         } catch (err) {
@@ -120,7 +120,7 @@ class CompanyController extends Controller {
         try {
             await Company.findByIdAndUpdate(req.params.id, req.body, { new: true })
                 .then(company => {
-                    EventEmitter.emit(companyEvents.UPDATE, company);
+                    EventEmitter.emit(events.UPDATE, company);
                     AppResponse.builder(res).message("company.messages.company_successfuly_updated").data(company).send()
                 })
                 .catch(err => next(err));
@@ -150,7 +150,7 @@ class CompanyController extends Controller {
             if (!company) throw new NotFoundError('company.errors.company_notfound');
             await company.delete(req.user_id);
 
-            EventEmitter.emit(companyEvents.DELETE, company);
+            EventEmitter.emit(events.DELETE, company);
             AppResponse.builder(res).message("company.messages.company_successfuly_deleted").data(company).send();
         } catch (err) {
             next(err);
@@ -185,7 +185,7 @@ class CompanyController extends Controller {
 
             await Manager.create({ user_id: user._id, entity: "companies", entity_id: company._id, created_by: req.user_id });
 
-            EventEmitter.emit(companyEvents.SET_MANAGER, company);
+            EventEmitter.emit(events.SET_MANAGER, company);
 
             AppResponse.builder(res).status(201).message("company.messages.company_manager_successfully_created").data(company).send();
         } catch (err) {
@@ -221,7 +221,7 @@ class CompanyController extends Controller {
 
             await manager.delete(req.user_id);
 
-            EventEmitter.emit(companyEvents.UNSET_MANAGER, company);
+            EventEmitter.emit(events.UNSET_MANAGER, company);
 
             AppResponse.builder(res).message("company.messages.company_id_successfuly_updated").data(company).send()
         } catch (err) {

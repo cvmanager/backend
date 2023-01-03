@@ -1,4 +1,4 @@
-import { resumeEvents } from '../../events/subscribers/resumes.subscriber.js';
+import { events } from '../../events/subscribers/resumes.subscriber.js';
 import NotFoundError from '../../exceptions/NotFoundError.js';
 import Position from '../../models/position.model.js';
 import EventEmitter from '../../events/emitter.js';
@@ -108,7 +108,7 @@ class ResumeController extends Controller {
 
             let resume = await Resume.create(req.body)
 
-            EventEmitter.emit(resumeEvents.NEW_RESUME, resume)
+            EventEmitter.emit(events.NEW_RESUME, resume)
 
             AppResponse.builder(res).status(201).message("resume.messages.resume_successfuly_created").data(resume).send();
         } catch (err) {
@@ -136,7 +136,7 @@ class ResumeController extends Controller {
         try {
             await Resume.findByIdAndUpdate(req.params.id, req.body, { new: true })
                 .then(resume => {
-                    EventEmitter.emit(resumeEvents.UPDATE, resume)
+                    EventEmitter.emit(events.UPDATE, resume)
                     AppResponse.builder(res).message("resume.messages.resume_successfuly_updated").data(resume).send()
                 })
                 .catch(err => next(err));
@@ -170,7 +170,7 @@ class ResumeController extends Controller {
 
             await resume.save();
 
-            EventEmitter.emit(resumeEvents.DELETE_RESUME, resume)
+            EventEmitter.emit(events.DELETE_RESUME, resume)
 
 
             AppResponse.builder(res).message("resume.messages.resume_successfuly_deleted").data(resume).send();
@@ -212,7 +212,7 @@ class ResumeController extends Controller {
             resume.status = req.body.status;
             await resume.save();
 
-            EventEmitter.emit(resumeEvents.UPDATE_STATUS, resume)
+            EventEmitter.emit(events.UPDATE_STATUS, resume)
 
             AppResponse.builder(res).message("resume.messages.resume_status_successfuly_updated").data(resume).send();
         } catch (err) {

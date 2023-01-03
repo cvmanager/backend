@@ -1,13 +1,13 @@
-import BadRequestError from '../../exceptions/BadRequestError.js';
 import NotFoundError from '../../exceptions/NotFoundError.js';
 import AlreadyExists from '../../exceptions/AlreadyExists.js';
-import Company from '../../models/company.model.js';
 import Project from '../../models/project.model.js';
 import Position from '../../models/position.model.js'
 import User from '../../models/user.model.js';
 import Manager from '../../models/manager.model.js';
 import AppResponse from '../../helper/response.js';
 import Controller from './controller.js';
+import EventEmitter from '../../events/emitter.js';
+import { events } from '../../events/subscribers/positions.subscriber.js'
 
 class PositionController extends Controller {
 
@@ -95,6 +95,7 @@ class PositionController extends Controller {
             req.body.company_id = project.company_id;
             position = await Position.create(req.body);
 
+            EventEmitter.emit(events.CREATE, position);
             AppResponse.builder(res).status(201).message('position.messages.position_successfuly_created').data(position).send();
         } catch (err) {
             next(err)
@@ -129,7 +130,11 @@ class PositionController extends Controller {
             }
 
             await Position.findByIdAndUpdate(req.params.id, req.body, { new: true })
-                .then(position => AppResponse.builder(res).message("position.messages.position_successfuly_updated").data(position).send())
+                .then(position => {
+
+                    EventEmitter.emit(events.UPDATE, position);
+                    AppResponse.builder(res).message("position.messages.position_successfuly_updated").data(position).send()
+                })
                 .catch(err => next(err));
         } catch (err) {
             next(err);
@@ -157,6 +162,8 @@ class PositionController extends Controller {
             if (!position) throw new NotFoundError('position.errors.position_notfound');
 
             await position.delete(req.user_id);
+            EventEmitter.emit(events.DELETE, position);
+
             AppResponse.builder(res).message("position.messages.position_successfuly_deleted").data(position).send();
         } catch (err) {
             next(err);
@@ -194,7 +201,9 @@ class PositionController extends Controller {
                 throw new AlreadyExists('manager.errors.duplicate');
             }
 
-            const manager = await Manager.create({ 'user_id': user._id, 'entity_id': position._id, 'entity': 'positions', 'created_by': req.user_id })
+            const manager = await Manager.create({ 'user_id': user._id, 'entity_id': position._id, 'entity': 'positions', 'created_by': req.user_id });
+            EventEmitter.emit(events.SET_MANAGER, position);
+
             AppResponse.builder(res).status(201).message('manager.messages.manager_successfuly_created').data(manager).send();
         } catch (err) {
             next(err);
