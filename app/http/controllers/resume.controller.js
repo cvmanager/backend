@@ -17,6 +17,8 @@ class ResumeController extends Controller {
     * @tags Resume
     * @security BearerAuth
     * 
+    * @param  { string } query.path - search for special fields - application/json
+    * 
     * @return { resume.success } 200 - success response
     * @return { message.badrequest_error } 400 - bad request respone
     * @return { message.badrequest_error } 404 - not found respone
@@ -25,7 +27,8 @@ class ResumeController extends Controller {
     */
     async index(req, res, next) {
         try {
-            const { page = 1, size = 10, q: query = '' } = req.query
+            const { page = 1, size = 10, query = '' } = req.query
+
             let searchQuery = {}
             if (query.length > 0) {
                 searchQuery = {
@@ -34,8 +37,6 @@ class ResumeController extends Controller {
                         { lastname: { '$regex': query } },
                         { email: { '$regex': query } },
                         { mobile: { '$regex': query } },
-                        { residence_city: { '$regex': query } },
-                        { work_city: { '$regex': query } },
                         { education: { '$regex': query } },
                         { major: { '$regex': query } },
                         { phone: { '$regex': query } },
@@ -56,7 +57,7 @@ class ResumeController extends Controller {
     }
 
     /**
-    * GET /resumes/:id
+    * GET /resumes/{id}
     * 
     * @summary gets a resume by id
     * @tags Resume
@@ -117,7 +118,7 @@ class ResumeController extends Controller {
     }
 
     /**
-    * PATCH /resumes/:id
+    * PATCH /resumes/{id}
     * 
     * @summary updates a resume
     * @tags Resume
@@ -143,7 +144,7 @@ class ResumeController extends Controller {
     }
 
     /**
-    * DELETE /resumes/:id
+    * DELETE /resumes/{id}
     * 
     * @summary deletes a resume by id
     * @tags Resume
@@ -173,7 +174,7 @@ class ResumeController extends Controller {
     }
 
     /**
-    * DELETE /resumes/:id/status
+    * DELETE /resumes/{id}/status
     * 
     * @summary update status a resume by id
     * @tags Resume
