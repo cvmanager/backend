@@ -9,25 +9,25 @@ export const resumeEvents = {
 
 EventEmitter.on(resumeEvents.CREATE, create)
 EventEmitter.on(resumeEvents.DELETE, softdelet)
-EventEmitter.on(resumeEvents.UPDATE, UpdateStatus)
-EventEmitter.on(resumeEvents.UPDATE_STATUS, UpdateStatus)
+EventEmitter.on(resumeEvents.UPDATE, update)
+EventEmitter.on(resumeEvents.UPDATE_STATUS, updateStatus)
 
 
-function create(resume) {
-    console.log(resumeEvents.DELETE + " event called", resume)
+function create(Resume) {
+    console.log(resumeEvents.DELETE + " event called", Resume)
 }
 
 
 
-function softdelet(resume) {
-    console.log(resumeEvents.DELETE + " event called", resume)
+function softdelet(Resume) {
+    console.log(resumeEvents.DELETE + " event called", Resume)
 }
 
 
-function update(resume) {
-    console.log(resumeEvents.UPDATE + " event called", resume)
+function update(Resume) {
+    console.log(resumeEvents.UPDATE + " event called", Resume)
 }
 
-function UpdateStatus(resume) {
-    console.log(resumeEvents.UPDATE_STATUS + " event called", resume)
+function updateStatus(Resume) {
+    console.log(resumeEvents.UPDATE_STATUS + " event called", Resume)
 }
