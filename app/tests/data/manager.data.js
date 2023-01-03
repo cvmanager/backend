@@ -8,6 +8,14 @@ class ManagerData {
     getManagers() {
         return managers;
     }
+
+    getManagerByEntity(entity) {
+        return managers.find(manager => manager.entity == entity);
+    }
+
+    getManagerByEntityId(entityId) {
+        return managers.find(manager => manager.entity_id == entityId);
+    }
 }
 
 export default ManagerData

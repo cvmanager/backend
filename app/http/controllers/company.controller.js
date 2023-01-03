@@ -171,7 +171,7 @@ class CompanyController extends Controller {
             let user = await User.findById(req.body.manager_id);
             if (!user) throw new NotFoundError('user.errors.user_notfound');
 
-            let manager = await Manager.findOne({ 'entity': "companies", 'entity_id': company.id, 'user_id': user.id, deleted: false });
+            let manager = await Manager.findOne({ 'entity': "companies", 'entity_id': company.id, 'user_id': user.id });
             if (manager) throw new BadRequestError("company.errors.the_user_is_currently_an_manager_for_company");
 
             await Manager.create({ user_id: user._id, entity: "companies", entity_id: company._id, created_by: req.user_id });
@@ -204,7 +204,7 @@ class CompanyController extends Controller {
             let user = await User.findById(req.body.manager_id);
             if (!user) throw new NotFoundError('user.errors.user_notfound');
 
-            let manager = await Manager.findOne({ 'entity': "companies", 'entity_id': company.id, 'user_id': user.id, deleted: false });
+            let manager = await Manager.findOne({ 'entity': "companies", 'entity_id': company.id, 'user_id': user.id });
             if (!manager) throw new BadRequestError("company.errors.the_user_is_not_manager_for_this_company");
 
             await manager.delete(req.user_id);

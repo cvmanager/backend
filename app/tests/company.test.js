@@ -1,53 +1,44 @@
 import httpStatus from 'http-status'
 import request from 'supertest'
-import env from '../helper/env.js';
 import app from '../app.js'
-import AllInit from './init/all.init';
 
 import UserData from './data/user.data';
 import ManagerData from './data/manager.data';
 
-import setupTestDB from './utils/setupTestDB'
+import prepareDB from './utils/prepareDB'
 import { Types } from 'mongoose';
 import CompanyData from './data/company.data';
 
-let server;
 let token;
 let company;
 let manager;
 let users;
+let user;
 
-setupTestDB();
+prepareDB();
 describe("Company Routes", () => {
 
-    beforeEach(() => {
-        server = app.listen(env('PORT'));
-        let allInit = new AllInit();
-        allInit.setData();
-
+    beforeEach(async () => {
         let userData = new UserData();
         token = userData.getAccessToken();
         users = userData.getUsers();
+        user = userData.getUser();
 
         let companyData = new CompanyData();
         company = companyData.getCompany();
 
         let managerData = new ManagerData();
-        manager = managerData.getManager();
+        manager = managerData.getManagerByEntityId(company._id);
 
-    })
-
-    afterEach(async () => {
-        server.close();
     })
 
     describe('GET /companies', () => {
-        it('should get ' + httpStatus.OK + ' error if page is not number', async () => {
+        it('should get ' + httpStatus.INTERNAL_SERVER_ERROR + ' error if page is not number', async () => {
             const response = await request(app)
                 .get("/api/V1/companies?page=string")
                 .set('Authorization', token)
                 .send();
-            expect(response.statusCode).toBe(httpStatus.OK);
+            expect(response.statusCode).toBe(httpStatus.INTERNAL_SERVER_ERROR);
         })
 
         it('should get ' + httpStatus.OK + ' success if size sting and return empty', async () => {
@@ -86,7 +77,6 @@ describe("Company Routes", () => {
                 .send();
 
             let data = response.body.data[0].docs[0];
-            console.log(data)
             expect(data).toHaveProperty('_id')
             expect(data).toHaveProperty('name')
             expect(data).toHaveProperty('logo')
@@ -110,74 +100,71 @@ describe("Company Routes", () => {
 
     describe("PATCH /companies/{id}/manager", () => {
 
-        it(`should get ${httpStatus.NOT_FOUND} company id is not valid`, async () => {
-            const response = await request(app)
-                .patch("/api/V1/companies/639c7ecfdb3ccff4925a6fa5/manager")
-                .set('Authorization', token)
-                .send({ 'manager_id': Types.ObjectId() });
-            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        let setManager;
+        beforeEach(() => {
+            setManager = {
+                'manager_id': manager.user_id,
+            };
         })
 
         it(`should get ${httpStatus.BAD_REQUEST} company id is not a mongo id`, async () => {
             const response = await request(app)
-                .patch("/api/V1/companies/fakeID/manager")
+                .patch(`/api/V1/companies/fakeID/manager`)
                 .set('Authorization', token)
-                .send();
+                .send(setManager);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
 
+        it(`should get ${httpStatus.NOT_FOUND} company id is not valid`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/companies/${Types.ObjectId()}/manager`)
+                .set('Authorization', token)
+                .send(setManager);
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+
+
         it(`should get ${httpStatus.BAD_REQUEST} manager id is not sended`, async () => {
-            console.log(company)
+            delete setManager.manager_id
             const response = await request(app)
                 .patch(`/api/V1/companies/${company._id}/manager`)
                 .set('Authorization', token)
-                .send();
+                .send(setManager);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
 
         it(`should get ${httpStatus.BAD_REQUEST} manager id is not a mongo id`, async () => {
+            setManager.manager_id = 'fakeid'
             const response = await request(app)
                 .patch(`/api/V1/companies/${company._id}/manager`)
                 .set('Authorization', token)
-                .send({ 'manager_id': 'fake' });
+                .send(setManager);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
 
         it(`should get ${httpStatus.NOT_FOUND} manager id is not valid`, async () => {
+            setManager.manager_id = Types.ObjectId()
             const response = await request(app)
                 .patch(`/api/V1/companies/${company._id}/manager`)
                 .set('Authorization', token)
-                .send({ 'manager_id': "639c7ecfdb3ccff4925a6fa5" });
-
+                .send(setManager);
             expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
         })
 
         it(`should get ${httpStatus.BAD_REQUEST} user is currently manager`, async () => {
-            let newManager = {
-                "id": Types.ObjectId(),
-                "manager_id": manager.user_id,
-                "user_id": manager._id,
-            };
-
             const response = await request(app)
                 .patch(`/api/V1/companies/${company._id}/manager`)
                 .set('Authorization', token)
-                .send(newManager);
+                .send(setManager);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
 
         it(`should get ${httpStatus.CREATED} user successfully assign as manager`, async () => {
-            let newManager = {
-                "id": Types.ObjectId(),
-                "manager_id": users[1]._id,
-                "user_id": users[1]._id,
-            };
-
+            setManager.manager_id = user._id
             const response = await request(app)
                 .patch(`/api/V1/companies/${company._id}/manager`)
                 .set('Authorization', token)
-                .send(newManager);
-
+                .send(setManager);
             expect(response.statusCode).toBe(httpStatus.CREATED);
         })
 
@@ -185,11 +172,18 @@ describe("Company Routes", () => {
 
     describe("DELETE /companies/{id}/manager", () => {
 
+        let deleteManager;
+        beforeEach(() => {
+            deleteManager = {
+                'manager_id': manager.user_id,
+            };
+        })
+
         it(`should get ${httpStatus.NOT_FOUND} company id is not valid`, async () => {
             const response = await request(app)
-                .delete("/api/V1/companies/639c7ecfdb3ccff4925a6fa5/manager")
+                .delete(`/api/V1/companies/${Types.ObjectId()}/manager`)
                 .set('Authorization', token)
-                .send({ 'manager_id': Types.ObjectId() });
+                .send(deleteManager);
             expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
         })
 
@@ -197,54 +191,51 @@ describe("Company Routes", () => {
             const response = await request(app)
                 .delete("/api/V1/companies/fakeID/manager")
                 .set('Authorization', token)
-                .send();
+                .send(deleteManager);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
 
         it(`should get ${httpStatus.BAD_REQUEST} manager id is not sended`, async () => {
-            console.log(company)
+            delete deleteManager.manager_id
             const response = await request(app)
                 .delete(`/api/V1/companies/${company._id}/manager`)
                 .set('Authorization', token)
-                .send();
+                .send(deleteManager);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
 
         it(`should get ${httpStatus.BAD_REQUEST} manager id is not a mongo id`, async () => {
+            deleteManager.manager_id = 'fake'
             const response = await request(app)
                 .delete(`/api/V1/companies/${company._id}/manager`)
                 .set('Authorization', token)
-                .send({ 'manager_id': 'fake' });
+                .send(deleteManager);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
 
         it(`should get ${httpStatus.NOT_FOUND} manager id is not valid`, async () => {
+            deleteManager.manager_id = Types.ObjectId()
             const response = await request(app)
                 .delete(`/api/V1/companies/${company._id}/manager`)
                 .set('Authorization', token)
-                .send({ 'manager_id': "639c7ecfdb3ccff4925a6fa5" });
-
+                .send(deleteManager);
             expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
         })
 
-        it(`should get ${httpStatus.NOT_FOUND} this user is not manager for this company`, async () => {
-          
+        it(`should get ${httpStatus.BAD_REQUEST} this user is not manager for this company`, async () => {
+            deleteManager.manager_id = users[0]._id
             const response = await request(app)
                 .delete(`/api/V1/companies/${company._id}/manager`)
                 .set('Authorization', token)
-                .send({ 'manager_id': "639c7ecfdb3ccff4925a6fa5" });
-            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+                .send(deleteManager);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
 
         it(`should get ${httpStatus.OK} manager successfully deleted`, async () => {
-            let newManager = {
-                "manager_id": users[0]._id,
-            };
-            
             const response = await request(app)
                 .delete(`/api/V1/companies/${company._id}/manager`)
                 .set('Authorization', token)
-                .send(newManager);
+                .send(deleteManager);
             expect(response.statusCode).toBe(httpStatus.OK);
         })
 

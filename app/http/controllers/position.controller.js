@@ -123,19 +123,9 @@ class PositionController extends Controller {
             let position = await Position.findById(req.params.id);
             if (!position) throw new NotFoundError('position.errors.position_notfound');
 
-            if (req.body.project_id !== undefined) {
-                let project = await Project.findById(req.body.project_id);
-                if (!project) throw new NotFoundError('project.errors.project_notfound');
-            }
-
-            if (req.body.company_id !== undefined) {
-                let company = await Company.findById(req.body.company_id);
-                if (!company) throw new NotFoundError('company.errors.company_notfound');
-            }
-
             if (req.body.title !== undefined) {
-                let position = await Position.findOne({ 'title': req.body.title, 'project_id': req.body.project_id !== undefined ? req.body.project_id : req.params.id });
-                if (position) throw new AlreadyExists('position.errors.position_already_exists');
+                let dupplicatePosition = await Position.findOne({ 'title': req.body.title, 'project_id': position.project_id });
+                if (dupplicatePosition) throw new AlreadyExists('position.errors.position_already_exists');
             }
 
             await Position.findByIdAndUpdate(req.params.id, req.body, { new: true })
@@ -193,19 +183,18 @@ class PositionController extends Controller {
     async manager(req, res, next) {
 
         try {
-            const { user_id: userId } = req.body
             let position = await Position.findById(req.params.id);
             if (!position) throw new NotFoundError('position.errors.position_notfound');
 
-            let user = await User.findById(userId);
+            let user = await User.findById(req.body.manager_id);
             if (!user) throw new NotFoundError('user.errors.user_notfound');
 
-            const duplicateManager = await Manager.findOne({ 'user_id': userId, 'entity_id': req.params.id, 'entity': 'positions' })
+            const duplicateManager = await Manager.findOne({ 'user_id': user._id, 'entity_id': position._id, 'entity': 'positions' })
             if (duplicateManager) {
                 throw new AlreadyExists('manager.errors.duplicate');
             }
 
-            const manager = await Manager.create({ 'user_id': userId, 'entity_id': req.params.id, 'entity': 'positions', 'created_by': req.user_id })
+            const manager = await Manager.create({ 'user_id': user._id, 'entity_id': position._id, 'entity': 'positions', 'created_by': req.user_id })
             AppResponse.builder(res).status(201).message('manager.messages.manager_successfuly_created').data(manager).send();
         } catch (err) {
             next(err);
