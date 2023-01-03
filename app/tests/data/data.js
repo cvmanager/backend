@@ -75,10 +75,54 @@ for (i = 0; i < numberRowInsert; i++) {
     managers.push({
         "_id": Types.ObjectId(),
         "user_id": users[i]._id,
+        "entity": "companies",
+        "entity_id": projects[i]._id,
+        "created_by": users[i]._id,
+        "type": "owner"
+    })
+    managers.push({
+        "_id": Types.ObjectId(),
+        "user_id": users[numberRowInsert - 1]._id,
+        "entity": "companies",
+        "entity_id": companies[i]._id,
+        "created_by": users[numberRowInsert - 1]._id,
+        "type": "moderator"
+    })
+    
+    managers.push({
+        "_id": Types.ObjectId(),
+        "user_id": users[i]._id,
         "entity": "projects",
         "entity_id": projects[i]._id,
-        "created_by": users[i]._id
+        "created_by": users[i]._id,
+        "type": "owner"
     })
+    managers.push({
+        "_id": Types.ObjectId(),
+        "user_id": users[numberRowInsert - 1]._id,
+        "entity": "projects",
+        "entity_id": projects[i]._id,
+        "created_by": users[numberRowInsert - 1]._id,
+        "type": "moderator"
+    })
+
+    managers.push({
+        "_id": Types.ObjectId(),
+        "user_id": users[i]._id,
+        "entity": "positions",
+        "entity_id": projects[i]._id,
+        "created_by": users[i]._id,
+        "type": "owner"
+    })
+    managers.push({
+        "_id": Types.ObjectId(),
+        "user_id": users[numberRowInsert - 1]._id,
+        "entity": "positions",
+        "entity_id": positions[i]._id,
+        "created_by": users[numberRowInsert - 1]._id,
+        "type": "moderator"
+    })
+
 }
 
 export { users, companies, projects, positions, managers, resumes };

@@ -17,6 +17,12 @@ const schema = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             required: true,
         },
+        type : {
+            type: String,
+            required: true,
+            enum: ['owner', 'moderator'],
+            default: 'moderator'
+        },
         created_by: {
             type: mongoose.Schema.Types.ObjectId,
             required: true,
