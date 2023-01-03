@@ -1,6 +1,5 @@
 import { resumeEvents } from '../../events/subscribers/resumes.subscriber.js';
 import NotFoundError from '../../exceptions/NotFoundError.js';
-import Project from '../../models/project.model.js';
 import Position from '../../models/position.model.js';
 import EventEmitter from '../../events/emitter.js';
 import AppResponse from '../../helper/response.js';
