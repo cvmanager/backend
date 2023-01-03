@@ -35,6 +35,11 @@ class PositionController extends Controller {
                 page: (page) || 1,
                 limit: size,
                 sort: { createdAt: -1 },
+                populate: {
+                    path: 'managers',
+                    populate: { path: 'user_id', select: ['firstname', 'lastname', 'avatar'] },
+                    select: ['user_id']
+                }
             });
             AppResponse.builder(res).message("position.messages.position_list_found").data(positionList).send();
         } catch (err) {
