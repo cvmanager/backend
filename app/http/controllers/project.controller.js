@@ -6,6 +6,8 @@ import User from '../../models/user.model.js';
 import AppResponse from '../../helper/response.js';
 import Controller from './controller.js';
 import Manager from '../../models/manager.model.js'
+import EventEmitter from '../../events/emitter.js';
+import { projectEvents } from '../../events/subscribers/projects.subscriber.js';
 
 class ProjectController extends Controller {
     /**
@@ -39,7 +41,7 @@ class ProjectController extends Controller {
                 sort: { createdAt: -1 },
                 populate: [
                     { path: 'company_id', select: 'name' },
-                    { path: 'managers', populate: { path: 'user_id', select: ['firstname', 'lastname', 'avatar'] }, select: 'user_id' }
+                    { path: 'managers', populate: { path: 'user_id', select: ['firstname', 'lastname', 'avatar'] }, select: ['user_id','type'] }
                 ],
             });
             AppResponse.builder(res).message("project.messages.project_found").data(projectList).send();
@@ -92,6 +94,8 @@ class ProjectController extends Controller {
 
             req.body.created_by = req.user_id;
             project = await Project.create(req.body);
+            EventEmitter.emit(projectEvents.NEW_PROJECT, project)
+
             AppResponse.builder(res).status(201).message("project.messages.project_successfully_created").data(project).send();
         } catch (err) {
             next(err);
@@ -142,6 +146,8 @@ class ProjectController extends Controller {
             if (!project) throw new NotFoundError('project.errors.project_notfound');
 
             await project.delete(req.user_id);
+            EventEmitter.emit(projectEvents.DELETE_PROJECT, project)
+
             AppResponse.builder(res).message("project.messages.project_successfully_deleted").data(project).send();
         } catch (err) {
             next(err);
@@ -204,6 +210,7 @@ class ProjectController extends Controller {
 
             let manager = await Manager.findOne({ 'entity': "projects", 'entity_id': project.id, 'user_id': user.id });
             if (!manager) throw new BadRequestError("project.errors.the_user_is_not_an_manager_for_project");
+            if (manager.type === 'owner') throw new BadRequestError("project.errors.the_owner_manager_cannot_be_deleted"); 
 
             await manager.delete(req.user_id);
             AppResponse.builder(res).status(200).message("project.messages.project_manager_successfully_deleted").data(project).send();

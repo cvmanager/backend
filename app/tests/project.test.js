@@ -25,7 +25,7 @@ describe("Project Routes", () => {
 
         let managerData = new ManagerData();
         manager = managerData.getManager();
-        
+
     })
 
     describe("PATCH /projects/{id}/manager", () => {
@@ -147,9 +147,7 @@ describe("Project Routes", () => {
 
         it(`should get ${httpStatus.BAD_REQUEST} user is not manager for this project`, async () => {
             let newManager = {
-                "id": Types.ObjectId(),
                 "manager_id": users[1]._id,
-                "user_id": users[1]._id,
             };
 
             const response = await request(app)
@@ -159,11 +157,21 @@ describe("Project Routes", () => {
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
 
+        it(`should get ${httpStatus.BAD_REQUEST} user is owner manager for this project`, async () => {
+            let newManager = {
+                "manager_id": manager.user_id,
+            };
+
+            const response = await request(app)
+                .delete(`/api/V1/projects/${manager.entity_id}/manager`)
+                .set('Authorization', token)
+                .send(newManager);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
         it(`should get ${httpStatus.OK} user successfully assign as manager`, async () => {
             let newManager = {
-                "id": Types.ObjectId(),
-                "manager_id": manager.user_id,
-                "user_id": manager._id,
+                "manager_id": users[users.length - 1]._id,
             };
 
             const response = await request(app)
