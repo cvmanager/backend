@@ -9,13 +9,11 @@ class AuthValidator {
         return [
             body('firstname')
                 .notEmpty()
-                .withMessage('auth.validations.firstname_required')
                 .isLength({ min: 3, max: 80 })
                 .withMessage('auth.validations.firstname_length')
                 .trim(),
             body('lastname')
                 .notEmpty()
-                .withMessage('auth.validations.lastname_required')
                 .isLength({ min: 3, max: 80 })
                 .withMessage('auth.validations.lastname_length')
                 .trim(),
@@ -25,12 +23,17 @@ class AuthValidator {
                 .matches(mobileFormat)
                 .withMessage('auth.validations.mobile_pattern')
                 .trim(),
+            body('username')
+                .notEmpty()
+                .isLength({ min: 5, max: 10 })
+                .withMessage('auth.validations.mobile_required')
+                .trim(),
             body('password')
                 .notEmpty()
-                .withMessage('auth.validations.password_required')
                 .isLength({ min: 8, max: 10 })
                 .withMessage('auth.validations.password_length')
                 .trim(),
+            generalValidator
         ]
     }
 

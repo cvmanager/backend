@@ -23,7 +23,7 @@ const options = {
   // Glob pattern to find your jsdoc files (multiple patterns can be added in an array)
   filesPattern: [
     './http/controllers/*.controller.js',
-    // './docs/*.doc.js'
+    './docs/*.doc.js'
   ],
   // URL where SwaggerUI will be rendered
   swaggerUIPath: '/api/v1/docs',

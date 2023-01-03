@@ -27,6 +27,7 @@
  * @typedef { object } auth.signup
  * @property { string } firstname.required
  * @property { string } lastname.required
+ * @property { string } username.required
  * @property { string } mobile.required
  * @property { string } password.required
  */

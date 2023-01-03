@@ -12,9 +12,15 @@ const schema = new mongoose.Schema(
             type: String,
             default: null,
         },
+        username: {
+            type: String,
+            required: true,
+            unique: true,
+        },
         mobile: {
             type: String,
             required: true,
+            unique: true,
         },
         email : {type: String, trim: true, index: true, unique: true, sparse: true},
         password: {

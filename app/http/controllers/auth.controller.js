@@ -71,6 +71,7 @@ class AuthController extends Controller {
                 firstname: req.body.firstname,
                 lastname: req.body.lastname,
                 mobile: req.body.mobile,
+                username: req.body.username,
                 password: hash_password,
             });
 
