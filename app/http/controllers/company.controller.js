@@ -6,6 +6,9 @@ import User from '../../models/user.model.js'
 import Manager from '../../models/manager.model.js'
 import AppResponse from '../../helper/response.js';
 import Controller from './controller.js';
+import EventEmitter from '../../events/emitter.js';
+import { companyEvents } from '../../events/subscribers/companies.subscriber.js';
+
 
 class CompanyController extends Controller {
 
@@ -66,7 +69,6 @@ class CompanyController extends Controller {
         }
     }
 
-
     /**
     * POST /companies
     * 
@@ -89,6 +91,8 @@ class CompanyController extends Controller {
 
             req.body.created_by = req.user_id;
             company = await Company.create(req.body);
+
+            EventEmitter.emit(companyEvents.CREATE, company);
 
             AppResponse.builder(res).status(201).message('company.messages.company_successfuly_created').data(company).send();
         } catch (err) {
@@ -115,7 +119,10 @@ class CompanyController extends Controller {
     async update(req, res, next) {
         try {
             await Company.findByIdAndUpdate(req.params.id, req.body, { new: true })
-                .then(company => AppResponse.builder(res).message("company.messages.company_successfuly_updated").data(company).send())
+                .then(company => {
+                    EventEmitter.emit(companyEvents.UPDATE, company);
+                    AppResponse.builder(res).message("company.messages.company_successfuly_updated").data(company).send()
+                })
                 .catch(err => next(err));
         } catch (err) {
             next(err);
@@ -142,6 +149,8 @@ class CompanyController extends Controller {
             let company = await Company.findById(req.params.id);
             if (!company) throw new NotFoundError('company.errors.company_notfound');
             await company.delete(req.user_id);
+
+            EventEmitter.emit(companyEvents.DELETE, company);
             AppResponse.builder(res).message("company.messages.company_successfuly_deleted").data(company).send();
         } catch (err) {
             next(err);
@@ -175,6 +184,9 @@ class CompanyController extends Controller {
             if (manager) throw new BadRequestError("company.errors.the_user_is_currently_an_manager_for_company");
 
             await Manager.create({ user_id: user._id, entity: "companies", entity_id: company._id, created_by: req.user_id });
+
+            EventEmitter.emit(companyEvents.SET_MANAGER, company);
+
             AppResponse.builder(res).status(201).message("company.messages.company_manager_successfully_created").data(company).send();
         } catch (err) {
             next(err);
@@ -208,6 +220,8 @@ class CompanyController extends Controller {
             if (!manager) throw new BadRequestError("company.errors.the_user_is_not_manager_for_this_company");
 
             await manager.delete(req.user_id);
+
+            EventEmitter.emit(companyEvents.UNSET_MANAGER, company);
 
             AppResponse.builder(res).message("company.messages.company_id_successfuly_updated").data(company).send()
         } catch (err) {
