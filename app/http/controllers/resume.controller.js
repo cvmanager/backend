@@ -136,7 +136,10 @@ class ResumeController extends Controller {
     async update(req, res, next) {
         try {
             await Resume.findByIdAndUpdate(req.params.id, req.body, { new: true })
-                .then(resume => AppResponse.builder(res).message("resume.messages.resume_successfuly_updated").data(resume).send())
+                .then(resume => {
+                    EventEmitter.emit(resumeEvents.UPDATE, resume)
+                    AppResponse.builder(res).message("resume.messages.resume_successfuly_updated").data(resume).send()
+                })
                 .catch(err => next(err));
         } catch (err) {
             next(err);
@@ -167,6 +170,10 @@ class ResumeController extends Controller {
             resume.deleted_by = req.user_id;
 
             await resume.save();
+
+            EventEmitter.emit(resumeEvents.DELETE_RESUME, resume)
+
+
             AppResponse.builder(res).message("resume.messages.resume_successfuly_deleted").data(resume).send();
         } catch (err) {
             next(err);
@@ -206,6 +213,7 @@ class ResumeController extends Controller {
             resume.status = req.body.status;
             await resume.save();
 
+            EventEmitter.emit(resumeEvents.UPDATE_STATUS, resume)
 
             AppResponse.builder(res).message("resume.messages.resume_status_successfuly_updated").data(resume).send();
         } catch (err) {
