@@ -1,31 +1,21 @@
 import httpStatus from "http-status";
 import request from "supertest";
-import env from "../helper/env.js";
 import app from "../app.js";
-import AllInit from "./init/all.init";
 import UserData from "./data/user.data";
-import setupTestDB from "./utils/setupTestDB";
+import prepareDB from "./utils/prepareDB";
 
-let server;
 let token;
 let users;
 
-setupTestDB();
+prepareDB();
 describe("User Routes", () => {
-  beforeEach(() => {
-    server = app.listen(env("PORT"));
 
-    let allInit = new AllInit();
-    allInit.setData();
-
+  beforeEach(async () => {
     let userData = new UserData();
     token = userData.getAccessToken();
     users = userData.getUsers();
   });
 
-  afterEach(async () => {
-    server.close();
-  });
 
   describe("GET /users", () => {
     it(`should get ${httpStatus.OK} list returned`, async () => {
