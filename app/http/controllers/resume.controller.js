@@ -1,6 +1,7 @@
 import { events } from '../../events/subscribers/resumes.subscriber.js';
 import NotFoundError from '../../exceptions/NotFoundError.js';
 import Position from '../../models/position.model.js';
+import ResumeComments from '../../models/resumeComment.model.js';
 import EventEmitter from '../../events/emitter.js';
 import AppResponse from '../../helper/response.js';
 import Resume from '../../models/resume.model.js';
@@ -191,14 +192,13 @@ class ResumeController extends Controller {
     * 
     * @return { resume.success } 200 - success response
     * @return { message.badrequest_error }  400 - bad request respone
-    * @return { message.badrequest_error }  404 - not found respone
-    * @return { message.badrequest_error }       401 - UnauthorizedError
+    * @return { message.NotFoundError }     404 - not found respone
+    * @return { message.badrequest_error }  401 - UnauthorizedError
     * @return { message.server_error  }     500 - Server Error
     */
     async updateStatus(req, res, next) {
         try {
             let resume = await Resume.findById(req.params.id);
-
             if (!resume) throw new NotFoundError('resume.errors.resume_notfound');
 
             if (resume.status == req.body.status) throw new BadRequestError('resume.errors.can_not_update_status_to_current')
@@ -213,13 +213,74 @@ class ResumeController extends Controller {
             await resume.save();
 
             EventEmitter.emit(events.UPDATE_STATUS, resume)
-
+            
             AppResponse.builder(res).message("resume.messages.resume_status_successfuly_updated").data(resume).send();
         } catch (err) {
             next(err);
         }
     }
 
+    /**
+    * GET /resumes/{id}/comments
+    * 
+    * @summary get resume comments list
+    * @tags ResumeComments
+    * @security BearerAuth
+    * 
+    * @param  { string } id.path.required - resume id
+    * 
+    * @return { resumeComment.success }            200 - success response
+    * @return { message.badrequest_error }  400 - bad request respone
+    * @return { message.badrequest_error }  401 - UnauthorizedError
+    * @return { message.NotFoundError }     404 - not found respone
+    * @return { message.server_error  }     500 - Server Error
+    */
+    async comments(req, res, next) {
+        try {
+            let resume = await Resume.findById(req.params.id);
+            if (!resume) throw new NotFoundError('resume.errors.resume_notfound');
+
+            let resumeComments = await ResumeComments.find({ 'resume_id':resume._id });
+            if (!resumeComments.length >0) throw new NotFoundError('resume.errors.resume_comments_notfound');
+
+            AppResponse.builder(res).message("resume.messages.resume_list_found").data(resumeComments).send();
+        } catch (err) {
+            next(err);
+        }
+    }
+
+      /**
+    * POST /resumes/{id}/comments
+    * 
+    * @summary add  comments for resume in table
+    * @tags ResumeComments
+    * @security BearerAuth
+    * 
+    * @param  { string } id.path.required - resume id
+    * @param { resumeComment.create} request.body - resume info - application/json
+    * 
+    * @return { resumeComment.success }     201 - success response
+    * @return { message.badrequest_error }  400 - bad request respone
+    * @return { message.badrequest_error }  401 - UnauthorizedError
+    * @return { message.NotFoundError }     404 - not found respone
+    * @return { message.server_error  }     500 - Server Error
+    */
+    async addComments(req, res, next) {
+        try {
+            let resume = await Resume.findById(req.params.id);
+            if (!resume) throw new NotFoundError('resume.errors.resume_notfound');
+
+            req.body.body = req.body.body
+            req.body.resume_id = req.params.id
+            req.body.createdAt = new Date()
+            req.body.created_by = req.user_id
+
+            let resumeCommentsRes = await ResumeComments.create(req.body)
+            AppResponse.builder(res).status(201).message("resume.messages.resume_comment_successfuly_created").data(resumeCommentsRes).send();
+        } catch (err) {
+            next(err);
+        }
+    }
 }
 
 export default new ResumeController;
