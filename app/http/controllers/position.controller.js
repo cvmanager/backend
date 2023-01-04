@@ -131,7 +131,7 @@ class PositionController extends Controller {
 
             if (req.body.title !== undefined) {
                 let dupplicatePosition = await Position.findOne({ 'title': req.body.title, 'project_id': position.project_id });
-                if (dupplicatePosition) throw new AlreadyExists('position.errors.position_already_exists');
+                if (dupplicatePosition && dupplicatePosition._id !== position._id) throw new AlreadyExists('position.errors.position_already_exists');
             }
 
             await Position.findByIdAndUpdate(req.params.id, req.body, { new: true })
