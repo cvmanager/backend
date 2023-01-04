@@ -1,8 +1,20 @@
-import { body, param } from 'express-validator';
+import { body, param, query } from 'express-validator';
 
 import generalValidator from '../helper/validator.js';
 
 class ProjectValidation {
+    index() {
+        return [
+            query('page')
+                .optional({ nullable: true, checkFalsy: true })
+                .isNumeric().withMessage('project.validations.project_page_number').trim(),
+            query('size')
+                .optional({ nullable: true, checkFalsy: true })
+                .isNumeric().withMessage('project.validations.project_size_number').trim(),
+            generalValidator
+        ];
+    }
+
     create() {
         return [
             body('company_id')
@@ -22,10 +34,7 @@ class ProjectValidation {
                 .notEmpty().isMongoId().withMessage('project.validations.project_id_invalid').trim(),
             body('name')
                 .optional({ nullable: true, checkFalsy: true })
-                .isLength({ min: 1, max: 50 }).withMessage('project.validations.project_name_length').trim(),
-            body('company_id')
-                .optional({ nullable: true, checkFalsy: true })
-                .isMongoId().withMessage('company.validations.company_id_invalid').trim(),
+                .isLength({ min: 3, max: 50 }).withMessage('project.validations.project_name_length').trim(),
             body('description')
                 .optional({ nullable: true, checkFalsy: true })
                 .isLength({ min: 10, max: 100 }).withMessage('project.validations.project_description_length').trim(),

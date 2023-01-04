@@ -1,6 +1,7 @@
 import NotFoundError from '../../exceptions/NotFoundError.js';
 import AlreadyExists from '../../exceptions/AlreadyExists.js';
 import BadRequestError from '../../exceptions/BadRequestError.js';
+import Company from '../../models/company.model.js';
 import Project from '../../models/project.model.js';
 import User from '../../models/user.model.js';
 import AppResponse from '../../helper/response.js';
@@ -89,7 +90,10 @@ class ProjectController extends Controller {
      */
     async create(req, res, next) {
         try {
-            let project = await Project.findOne({ 'name': req.body.name, 'company_id': req.body.company_id });
+            let company = await Company.findOne({ '_id': req.body.company_id });
+            if (!company) throw new NotFoundError('company.errors.company_notfound');
+
+            let project = await Project.findOne({ 'name': req.body.name, 'company_id': company._id });
             if (project) throw new AlreadyExists('project.errors.project_already_attached_company');
 
             req.body.created_by = req.user_id;
@@ -117,8 +121,13 @@ class ProjectController extends Controller {
      */
     async update(req, res, next) {
         try {
-            let project = await Project.findOne({ 'name': req.body.name, 'company_id': req.body.company_id });
-            if (project) throw new AlreadyExists('project.errors.project_already_attached_company');
+            let project = await Project.findById(req.params.id);
+            if (!project) throw new NotFoundError('project.errors.project_notfound');
+
+            if(req.body.name !== undefined){
+                let duplicateProject = await Project.findOne({'name':req.body.name,'company_id':project.company_id});
+                if(duplicateProject && duplicateProject._id !== project._id) throw new AlreadyExists('project.errors.project_already_attached_company');
+            }
 
             await Project.findByIdAndUpdate(req.params.id, req.body, { new: true })
                 .then(project => {
