@@ -68,7 +68,9 @@
 		"enums": {},
 		"validations": {
 			"company_id_require": "company is required",
-			"company_id_invalid": "company invalid"
+			"company_id_invalid": "company invalid",
+			"company_page_number": "company page must by number",
+			"company_size_number": "company size must by number"
 		},
 		"messages": {
 			"company_list_found": "Company list found",
@@ -90,7 +92,10 @@
 				"junior"
 			]
 		},
-		"validations": {},
+		"validations": {
+			"position_page_number": "position page must by number",
+			"position_size_number": "position size must by number"
+		},
 		"messages": {
 			"position_successfuly_created":"Position successfuly created"
 		},

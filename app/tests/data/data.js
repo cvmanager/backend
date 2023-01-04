@@ -10,6 +10,7 @@ for (i = 0; i < numberRowInsert; i++) {
         "_id": Types.ObjectId(),
         "firstname": faker.name.firstName(),
         "lastname": faker.name.lastName(),
+        "username": faker.internet.userName(),
         "mobile": faker.phone.number('989#########'),
         "email": faker.internet.email(),
         "password": faker.internet.password()

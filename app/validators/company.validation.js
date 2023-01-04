@@ -1,9 +1,22 @@
-import { body, param } from 'express-validator'
+import { body, param, query } from 'express-validator'
 
 import generalValidator from '../helper/validator.js';
 
 
 class CompanyValidation {
+
+    index() {
+        return [
+            query('page')
+                .optional({ nullable: true, checkFalsy: true })
+                .isNumeric().withMessage('company.validations.company_page_number').trim(),
+            query('size')
+                .optional({ nullable: true, checkFalsy: true })
+                .isNumeric().withMessage('company.validations.company_size_number').trim(),
+            generalValidator
+        ];
+    }
+
     create() {
         return [
             body('name')
@@ -26,7 +39,7 @@ class CompanyValidation {
                 .notEmpty().isMongoId().withMessage('company.validations.company_id_invalid').trim(),
             body('name')
                 .optional({ nullable: true, checkFalsy: true })
-                .isLength({ min: 1, max: 50 }).withMessage('company.validations.company_name_length').trim(),
+                .isLength({ min: 3, max: 50 }).withMessage('company.validations.company_name_length').trim(),
             generalValidator
         ];
     }

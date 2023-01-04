@@ -37,23 +37,20 @@ describe(`Position Routes`, () => {
 
     describe(`GET /`, () => {
 
-        it(`should get ${httpStatus.INTERNAL_SERVER_ERROR} error if page is not number`, async () => {
+        it(`should get ${httpStatus.BAD_REQUEST} page is not number`, async () => {
             const response = await request(app)
-                .get(`/api/V1/positions?page=string`)
-                .set(`Authorization`, token)
+                .get("/api/V1/positions?page=string")
+                .set('Authorization', token)
                 .send();
-            expect(response.statusCode).toBe(httpStatus.INTERNAL_SERVER_ERROR);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
 
-        it(`should get ${httpStatus.OK} success if size sting and return empty`, async () => {
+        it(`should get ${httpStatus.BAD_REQUEST} size is not number`, async () => {
             const response = await request(app)
-                .get(`/api/V1/positions?page=1&size=string`)
-                .set(`Authorization`, token)
+                .get("/api/V1/positions?page=1&size=string")
+                .set('Authorization', token)
                 .send();
-            let data = response.body.data[0].docs;
-
-            expect(data.length).toBe(0);
-            expect(response.statusCode).toBe(httpStatus.OK);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
 
         it(`should get no item if name is not find`, async () => {
