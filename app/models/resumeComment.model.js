@@ -4,7 +4,7 @@ import basePlugin from '../helper/mongoose/base.plugin.js';
 const schema = new mongoose.Schema(
     {
         resume_id: {
-            type: String,
+            type: mongoose.Schema.Types.ObjectId,
             required: true,
         },
         body: {
@@ -15,11 +15,7 @@ const schema = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             required: true,
             ref: 'users'
-        },
-        createdAt: {
-            type: mongoose.Schema.Types.Date,
-            required: true
-        },
+        }
     }
 )
 

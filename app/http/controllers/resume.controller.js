@@ -272,7 +272,6 @@ class ResumeController extends Controller {
 
             req.body.body = req.body.body
             req.body.resume_id = req.params.id
-            req.body.createdAt = new Date()
             req.body.created_by = req.user_id
 
             let resumeCommentsRes = await ResumeComments.create(req.body)

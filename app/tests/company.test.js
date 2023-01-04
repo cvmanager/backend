@@ -108,7 +108,7 @@ describe("Company Routes", () => {
 
         it(`should get ${httpStatus.NOT_FOUND} company id is not valid`, async () => {
             const response = await request(app)
-                .patch(`/api/V1/companies/63b52a531f2b2b8a2997ba24`)
+                .patch(`/api/V1/companies/${Types.ObjectId()}`)
                 .set(`Authorization`, token)
                 .send();
             expect(response.statusCode).toBe(httpStatus.NOT_FOUND);

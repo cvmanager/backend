@@ -5,7 +5,6 @@
 * @property { string }  resume_id
 * @property { string }  body
 * @property { string }  created_by
-* @property { data }  createdAt
 */
 
 /**
