@@ -1,8 +1,20 @@
-import { body, param } from 'express-validator'
+import { body, param, query } from 'express-validator'
 import generalValidator from '../helper/validator.js';
 import i18n from '../middlewares/lang.middleware.js'
 
 class PositionValidation {
+    index() {
+        return [
+            query('page')
+                .optional({ nullable: true, checkFalsy: true })
+                .isNumeric().withMessage('position.validations.position_page_number').trim(),
+            query('size')
+                .optional({ nullable: true, checkFalsy: true })
+                .isNumeric().withMessage('position.validations.position_size_number').trim(),
+            generalValidator
+        ];
+    }
+
     create() {
         return [
             body('project_id').notEmpty().isMongoId().withMessage('position.validations.project_id_invalid').trim(),

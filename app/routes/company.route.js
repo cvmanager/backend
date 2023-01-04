@@ -6,7 +6,7 @@ const companyRouter = express.Router();
 
 
 companyRouter
-    .get('/', CompanyController.index)
+    .get('/', CompanyValidation.index(), CompanyController.index)
     .get('/:id', CompanyValidation.find(), CompanyController.find)
     .post('/', CompanyValidation.create(), CompanyController.create)
     .patch('/:id', CompanyValidation.update(), CompanyController.update)

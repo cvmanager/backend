@@ -8,6 +8,7 @@ import ManagerData from './data/manager.data';
 import prepareDB from './utils/prepareDB'
 import { Types } from 'mongoose';
 import CompanyData from './data/company.data';
+import { faker } from '@faker-js/faker';
 
 let token;
 let company;
@@ -32,24 +33,21 @@ describe("Company Routes", () => {
 
     })
 
-    describe('GET /companies', () => {
-        it('should get ' + httpStatus.INTERNAL_SERVER_ERROR + ' error if page is not number', async () => {
+    describe('GET /', () => {
+        it(`should get ${httpStatus.BAD_REQUEST} page is not number`, async () => {
             const response = await request(app)
                 .get("/api/V1/companies?page=string")
                 .set('Authorization', token)
                 .send();
-            expect(response.statusCode).toBe(httpStatus.INTERNAL_SERVER_ERROR);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
 
-        it('should get ' + httpStatus.OK + ' success if size sting and return empty', async () => {
+        it(`should get ${httpStatus.BAD_REQUEST} size is not number`, async () => {
             const response = await request(app)
                 .get("/api/V1/companies?page=1&size=string")
                 .set('Authorization', token)
                 .send();
-            let data = response.body.data[0].docs;
-
-            expect(data.length).toBe(0);
-            expect(response.statusCode).toBe(httpStatus.OK);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
 
         it('should get no item if name is not find', async () => {
@@ -98,7 +96,178 @@ describe("Company Routes", () => {
 
     })
 
+    describe(`GET /:id`, () => {
+
+        it(`should get ${httpStatus.BAD_REQUEST} company id is not a mongo id`, async () => {
+            const response = await request(app)
+                .get(`/api/V1/companies/fakeID`)
+                .set(`Authorization`, token)
+                .send();
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.NOT_FOUND} company id is not valid`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/companies/63b52a531f2b2b8a2997ba24`)
+                .set(`Authorization`, token)
+                .send();
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+
+        it(`should get ${httpStatus.OK} success if correct`, async () => {
+            const response = await request(app)
+                .get(`/api/V1/companies/${company._id}`)
+                .set(`Authorization`, token)
+                .send();
+
+            let data = response.body.data[0];
+            expect(data).toHaveProperty(`_id`)
+            expect(data).toHaveProperty(`name`)
+            expect(data).toHaveProperty(`logo`)
+            expect(data).toHaveProperty(`is_active`)
+            expect(data).toHaveProperty(`created_by`)
+            expect(data).toHaveProperty(`deleted`)
+            expect(data).toHaveProperty(`createdAt`)
+            expect(data).toHaveProperty(`updatedAt`)
+            expect(response.statusCode).toBe(httpStatus.OK)
+        })
+    })
+
+    describe(`POST /`, () => {
+
+        let newCompany;
+        beforeEach(async () => {
+            newCompany = {
+                '_id': Types.ObjectId(),
+                'name': faker.name.jobTitle(),
+                'created_by': user._id
+            }
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} if name is not send`, async () => {
+            delete newCompany.name;
+            const response = await request(app)
+                .post(`/api/V1/companies`)
+                .set(`Authorization`, token)
+                .send(newCompany);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if name is less than 3 character`, async () => {
+            newCompany.name = faker.random.alpha(2);
+            const response = await request(app)
+                .post(`/api/V1/companies`)
+                .set(`Authorization`, token)
+                .send(newCompany);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if name is grather than 50 character`, async () => {
+            newCompany.name = faker.random.alpha(51);
+            const response = await request(app)
+                .post(`/api/V1/companies`)
+                .set(`Authorization`, token)
+                .send(newCompany);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.CONFLICT} if company already exists `, async () => {
+            newCompany.name = company.name;
+            const response = await request(app)
+                .post(`/api/V1/companies`)
+                .set(`Authorization`, token)
+                .send(newCompany);
+            expect(response.statusCode).toBe(httpStatus.CONFLICT);
+        })
+        it(`should get ${httpStatus.CREATED} if all data correct `, async () => {
+            const response = await request(app)
+                .post(`/api/V1/companies`)
+                .set(`Authorization`, token)
+                .send(newCompany);
+            expect(response.statusCode).toBe(httpStatus.CREATED);
+        })
+    })
+
+    describe(`PATCH /:id`, () => {
+
+        let updateCompany;
+        beforeEach(async () => {
+            updateCompany = {
+                'name': faker.name.jobTitle(),
+                'level': 'mid',
+            }
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} if company id is not valid`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/companies/fakeId`)
+                .set(`Authorization`, token)
+                .send(updateCompany);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if name is less than 3 character`, async () => {
+            updateCompany.name = faker.random.alpha(2);
+            const response = await request(app)
+                .patch(`/api/V1/companies/${company._id}`)
+                .set(`Authorization`, token)
+                .send(updateCompany);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if name is grather than 50 character`, async () => {
+            updateCompany.name = faker.random.alpha(51);
+            const response = await request(app)
+                .patch(`/api/V1/companies/${company._id}`)
+                .set(`Authorization`, token)
+                .send(updateCompany);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.NOT_FOUND} if company is not exists`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/companies/${Types.ObjectId()}`)
+                .set(`Authorization`, token)
+                .send(updateCompany);
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+        it(`should get ${httpStatus.CONFLICT} if company already exists `, async () => {
+            updateCompany.name = company.name;
+            const response = await request(app)
+                .patch(`/api/V1/companies/${company._id}`)
+                .set(`Authorization`, token)
+                .send(updateCompany);
+            expect(response.statusCode).toBe(httpStatus.CONFLICT);
+        })
+        it(`should get ${httpStatus.OK} if all data correct `, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/companies/${company._id}`)
+                .set(`Authorization`, token)
+                .send(updateCompany);
+            expect(response.statusCode).toBe(httpStatus.OK);
+        })
+    })
+
+    describe(`DELETE /:id`, () => {
+        it(`should get ${httpStatus.BAD_REQUEST} if company id is not valid`, async () => {
+            const response = await request(app)
+                .delete(`/api/V1/companies/fakeId`)
+                .set(`Authorization`, token)
+                .send();
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.NOT_FOUND} if company not found `, async () => {
+            const response = await request(app)
+                .delete(`/api/V1/companies/${Types.ObjectId()}`)
+                .set(`Authorization`, token)
+                .send();
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+        it(`should get ${httpStatus.OK} if all data correct `, async () => {
+            const response = await request(app)
+                .delete(`/api/V1/companies/${company._id}`)
+                .set(`Authorization`, token)
+                .send();
+            expect(response.statusCode).toBe(httpStatus.OK);
+        })
+    })
+
     describe("PATCH /companies/{id}/manager", () => {
+        0
 
         let setManager;
         beforeEach(() => {
