@@ -7,6 +7,7 @@ import UserData from './data/user.data';
 import prepareDB from './utils/prepareDB'
 import { Types } from 'mongoose';
 import ResumeData from './data/resume.data';
+import { faker } from '@faker-js/faker';
 
 
 let token;
@@ -58,10 +59,83 @@ describe("Company Routes", () => {
             expect(data).toHaveProperty(`createdAt`)
             expect(data).toHaveProperty(`updatedAt`)
         })
-
-
     })
 
+    describe("POST /resumes/{id}/commments", () => {
+        let data = {
+            'body': faker.random.alpha(50),
+        }
 
+        it(`should get ${httpStatus.BAD_REQUEST} resume id is not a mongo id`, async () => {
+            data.body = 'test text';
+            const response = await request(app)
+                .post(`/api/V1/resumes/fakeID/comments`,)
+                .set('Authorization', token)
+                .send(data);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} resume is not exist `, async () => {
+            const response = await request(app)
+                .post(`/api/V1/resumes/${Types.ObjectId()}/comments`)
+                .set('Authorization', token)
+                .send(data);
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} body text is empty `, async () => {
+            data.body = '';
+            const response = await request(app)
+                .post(`/api/V1/resumes/${resume._id}/comments`)
+                .set('Authorization', token)
+                .send(data);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} body text is not send `, async () => {
+            delete data.body;
+            const response = await request(app)
+                .post(`/api/V1/resumes/${resume._id}/comments`)
+                .set('Authorization', token)
+                .send(data);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} body text is less than 5 character `, async () => {
+            data.body = faker.random.alpha(4);
+            const response = await request(app)
+                .post(`/api/V1/resumes/${resume._id}/comments`)
+                .set('Authorization', token)
+                .send(data);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST}body text is more than 1000 character `, async () => {
+            data.body = faker.random.alpha(1001);
+            const response = await request(app)
+                .post(`/api/V1/resumes/${resume._id}/comments`)
+                .set('Authorization', token)
+                .send(data);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should check field of object returned`, async () => {
+            data.body = faker.random.alpha(50);
+            const response = await request(app)
+                .post(`/api/V1/resumes/${resume._id}/comments`)
+                .set(`Authorization`, token)
+                .send(data);
+
+            let dataResponce = response.body.data[0];
+            expect(dataResponce).toHaveProperty(`_id`)
+            expect(dataResponce).toHaveProperty(`resume_id`)
+            expect(dataResponce).toHaveProperty(`body`)
+            expect(dataResponce).toHaveProperty(`created_by`)
+            expect(dataResponce).toHaveProperty(`createdAt`)
+            expect(dataResponce).toHaveProperty(`deleted`)
+            expect(dataResponce).toHaveProperty(`createdAt`)
+            expect(dataResponce).toHaveProperty(`updatedAt`)
+        })
+    })
 
 })

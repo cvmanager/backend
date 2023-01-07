@@ -273,7 +273,7 @@ class ResumeValidation {
                 .withMessage('resume.validations.resume_id_invalid')
                 .trim(),
             body('body')
-                .isLength({ min: 5, max: 2000 })
+                .isLength({ min: 5, max: 1000 })
                 .withMessage('resume.validations.max_comment_length')
                 .trim(),
             generalValidator
