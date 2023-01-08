@@ -39,6 +39,7 @@
 			"password_required": "The password field is required",
 			"password_length": "The password field has a character limit",
 			"firstname_required": "The firstname field is required",
+			"username_required": "The username field is required",
 			"firstname_length": "The firstname field has a character limit",
 			"lastname_required": "The lastname field is required",
 			"lastname_length": "The lastname field has a character limit",

@@ -9,7 +9,7 @@ let token;
 let users;
 
 prepareDB();
-describe("User Routes", () => {
+describe("Auth Routes", () => {
 
   beforeEach(async () => {
     let userData = new UserData();
@@ -18,7 +18,7 @@ describe("User Routes", () => {
   });
 
 
-  describe("POST /auth", () => {
+  describe("POST /auth/check-username", () => {
 
     let authData;
     beforeEach(() => {
@@ -47,14 +47,14 @@ describe("User Routes", () => {
       expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
     });
 
-    it(`should get ${httpStatus.NOT_FOUND} username not send`, async () => {
+    it(`should get ${httpStatus.BAD_REQUEST} username not send`, async () => {
       delete authData.username
       const response = await request(app)
         .post("/api/V1/auth/check-username")
         .set("Authorization", token)
         .send(authData);
 
-      expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+      expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
     });
 
   });

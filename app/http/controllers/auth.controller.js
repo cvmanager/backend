@@ -171,7 +171,7 @@ class AuthController extends Controller {
      */
     async checkusername(req, res, next) {
         try {
-            let user = await User.findOne({ username: req.body.username, deleted_at: null });
+            let user = await User.findOne({ username: req.body.username });
             if (!user) throw new NotFoundError('auth.errors.username_notfound');
 
             AppResponse.builder(res).message("auth.messages.username_exist").send();
