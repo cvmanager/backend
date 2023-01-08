@@ -12,6 +12,7 @@ import { faker } from '@faker-js/faker';
 
 let token;
 let company;
+let companies;
 let manager;
 let users;
 let user;
@@ -27,6 +28,7 @@ describe("Company Routes", () => {
 
         let companyData = new CompanyData();
         company = companyData.getCompany();
+        companies = companyData.getCompanies();
 
         let managerData = new ManagerData();
         manager = managerData.getManagerByEntityId(company._id);
@@ -108,7 +110,7 @@ describe("Company Routes", () => {
 
         it(`should get ${httpStatus.NOT_FOUND} company id is not valid`, async () => {
             const response = await request(app)
-                .patch(`/api/V1/companies/${Types.ObjectId()}`)
+                .get(`/api/V1/companies/${Types.ObjectId()}`)
                 .set(`Authorization`, token)
                 .send();
             expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
@@ -139,7 +141,7 @@ describe("Company Routes", () => {
         beforeEach(async () => {
             newCompany = {
                 '_id': Types.ObjectId(),
-                'name': faker.name.jobTitle(),
+                'name': faker.random.alpha(10),
                 'created_by': user._id
             }
         })
@@ -190,8 +192,7 @@ describe("Company Routes", () => {
         let updateCompany;
         beforeEach(async () => {
             updateCompany = {
-                'name': faker.name.jobTitle(),
-                'level': 'mid',
+                'name': faker.random.alpha(8),
             }
         })
 
@@ -226,7 +227,7 @@ describe("Company Routes", () => {
             expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
         })
         it(`should get ${httpStatus.CONFLICT} if company already exists `, async () => {
-            updateCompany.name = company.name;
+            updateCompany.name = companies[1].name;
             const response = await request(app)
                 .patch(`/api/V1/companies/${company._id}`)
                 .set(`Authorization`, token)

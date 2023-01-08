@@ -15,6 +15,7 @@ let user;
 let project;
 let position;
 let manager;
+let positionData;
 
 prepareDB();
 describe(`Position Routes`, () => {
@@ -27,7 +28,7 @@ describe(`Position Routes`, () => {
         let projectData = new ProjectData();
         project = projectData.getProject();
 
-        let positionData = new PositionData();
+        positionData = new PositionData();
         position = positionData.getPosition();
 
         let managerData = new ManagerData();
@@ -110,7 +111,7 @@ describe(`Position Routes`, () => {
 
         it(`should get ${httpStatus.NOT_FOUND} position id is not valid`, async () => {
             const response = await request(app)
-                .patch(`/api/V1/positions/${Types.ObjectId()}`)
+                .get(`/api/V1/positions/${Types.ObjectId()}`)
                 .set(`Authorization`, token)
                 .send();
             expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
@@ -144,7 +145,7 @@ describe(`Position Routes`, () => {
             newPosition = {
                 '_id': Types.ObjectId(),
                 'project_id': project._id,
-                'title': faker.name.jobTitle(),
+                'title': faker.random.alpha(10),
                 'level': 'mid',
                 'created_by': user._id
             }
@@ -228,7 +229,7 @@ describe(`Position Routes`, () => {
         let updatePosition;
         beforeEach(async () => {
             updatePosition = {
-                'title': faker.name.jobTitle(),
+                'title': faker.random.alpha(10),
                 'level': 'mid',
             }
         })
@@ -272,7 +273,17 @@ describe(`Position Routes`, () => {
             expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
         })
         it(`should get ${httpStatus.CONFLICT} if position already exists `, async () => {
-            updatePosition.title = position.title;
+            let duplicatePosition = {
+                "_id": Types.ObjectId(),
+                "company_id": position.company_id,
+                "project_id": position.project_id,
+                "title": 'duplicate title',
+                "level": "mid",
+                "created_by": position.created_by
+            };
+            await positionData.setPositions([duplicatePosition]);
+
+            updatePosition.title = duplicatePosition.title;
             const response = await request(app)
                 .patch(`/api/V1/positions/${position._id}`)
                 .set(`Authorization`, token)

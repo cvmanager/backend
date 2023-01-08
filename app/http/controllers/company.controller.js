@@ -68,7 +68,7 @@ class CompanyController extends Controller {
     async find(req, res, next) {
         try {
             const company = await Company.findById(req.params.id).populate('created_by');
-            if (!company) throw new BadRequestError('company.errors.company_notfound');
+            if (!company) throw new NotFoundError('company.errors.company_notfound');
 
             AppResponse.builder(res).message('company.messages.company_found').data(company).send();
         } catch (err) {
@@ -98,7 +98,7 @@ class CompanyController extends Controller {
 
             req.body.created_by = req.user_id;
             company = await Company.create(req.body);
-            
+
             EventEmitter.emit(events.CREATE, company);
 
             AppResponse.builder(res).status(201).message('company.messages.company_successfuly_created').data(company).send();
@@ -127,7 +127,11 @@ class CompanyController extends Controller {
         try {
             let company = await Company.findById(req.params.id);
             if (!company) throw new NotFoundError('company.errors.company_notfound');
-            if(req.body.name !== undefined & company.name === req.body.name) throw new AlreadyExists('company.errors.company_already_exists');
+
+            if (req.body.name !== undefined) {
+                let duplicateCompany = await Company.findOne({ 'name': req.body.name });
+                if (duplicateCompany && duplicateCompany._id !== company._id) throw new AlreadyExists('company.errors.company_already_exists');
+            }
 
             await Company.findByIdAndUpdate(req.params.id, req.body, { new: true })
                 .then(company => {

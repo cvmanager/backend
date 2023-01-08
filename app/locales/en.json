@@ -107,7 +107,9 @@
 	"project": {
 		"enums": {},
 		"validations": {
-			"project_id_invalid": "project id invalid"
+			"project_id_invalid": "project id invalid",
+			"project_page_number": "project page must by number",
+			"project_size_number": "project size must by number"
 		},
 		"messages": {
 			"project_found": "Project Found",
