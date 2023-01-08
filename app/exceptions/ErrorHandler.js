@@ -6,6 +6,7 @@ import UnauthorizedError from './UnauthorizedError.js';
 import UserNotFoundError from './UserNotFoundError.js';
 import BadRequestError from './BadRequestError.js'
 import NotFoundError from './NotFoundError.js';
+import NoContentError from './NoContentError.js';
 import AlreadyExists from './AlreadyExists.js';
 import ManyRequestsError from './ManyRequestsError.js';
 
@@ -17,6 +18,14 @@ async function errorHandler(err, req, res, next) {
 
     if (err instanceof NotFoundError) {
         return res.status(404).json({
+            message: res.__(err.message),
+            errors: err.errors ? err.errors : [],
+            data: []
+        });
+    }
+
+    if (err instanceof NoContentError) {
+        return res.status(204).json({
             message: res.__(err.message),
             errors: err.errors ? err.errors : [],
             data: []

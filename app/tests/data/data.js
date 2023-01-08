@@ -71,6 +71,16 @@ for (i = 0; i < numberRowInsert; i++) {
     })
 }
 
+let resumeComments = [];
+for (i = 0; i < numberRowInsert; i++) {
+    resumeComments.push({
+        "_id": Types.ObjectId(),
+        "resume_id": resumes[i]._id,
+        "body": faker.random.alpha(50),
+        "created_by": users[i]._id,
+    })
+}
+
 let managers = [];
 for (i = 0; i < numberRowInsert; i++) {
     managers.push({
@@ -89,7 +99,7 @@ for (i = 0; i < numberRowInsert; i++) {
         "created_by": users[numberRowInsert - 1]._id,
         "type": "moderator"
     })
-    
+
     managers.push({
         "_id": Types.ObjectId(),
         "user_id": users[i]._id,
@@ -126,4 +136,4 @@ for (i = 0; i < numberRowInsert; i++) {
 
 }
 
-export { users, companies, projects, positions, managers, resumes };
+export { users, companies, projects, positions, managers, resumes, resumeComments };

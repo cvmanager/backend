@@ -75,8 +75,8 @@
 		"messages": {
 			"company_list_found": "Company list found",
 			"company_successfuly_created": "Company successfuly created",
-			"company_found" : "Company Successfuly founded",
-			"company_successfuly_updated":"Company successfuly updated",
+			"company_found": "Company Successfuly founded",
+			"company_successfuly_updated": "Company successfuly updated",
 			"company_manager_successfully_created": "company manager successfully created"
 		},
 		"errors": {
@@ -84,7 +84,7 @@
 			"the_user_is_not_manager_for_this_company": "This user is not  manager for this company"
 		}
 	},
-	"position":{
+	"position": {
 		"enums": {
 			"level": [
 				"senior",
@@ -97,10 +97,10 @@
 			"position_size_number": "position size must by number"
 		},
 		"messages": {
-			"position_successfuly_created":"Position successfuly created"
+			"position_successfuly_created": "Position successfuly created"
 		},
 		"errors": {
-			"position_not_found":"position not found",
+			"position_not_found": "position not found",
 			"position_already_exists": "position already exists"
 		}
 	},
@@ -117,12 +117,12 @@
 			"project_successfully_updated": "Project successfully updated",
 			"project_manager_successfully_updated": "Project manager successfully updated",
 			"project_manager_successfully_deleted": "Project manager successfully deleted",
-			"project_successfully_deleted":"project successfully deleted"
+			"project_successfully_deleted": "project successfully deleted"
 		},
 		"errors": {
-			"the_user_is_currently_an_manager_for_project":"The user is currently an manager for project",
-			"the_user_is_not_an_manager_for_project":"This user is not defined for the project",
-			"the_owner_manager_cannot_be_deleted":"The owner manager cannot be deleted"
+			"the_user_is_currently_an_manager_for_project": "The user is currently an manager for project",
+			"the_user_is_not_an_manager_for_project": "This user is not defined for the project",
+			"the_owner_manager_cannot_be_deleted": "The owner manager cannot be deleted"
 		}
 	},
 	"resume": {
@@ -162,13 +162,18 @@
 			"education_required": "resume.validation.education_required",
 			"education_incorrect": "resume.validation.education_incorrect",
 			"major_required": "resume.validation.major_required",
-			"major_length": "resume.validation.major_length"
+			"major_length": "resume.validation.major_length",
+			"max_comment_length": "Comment has be between 5 and 1000 character"
 		},
 		"messages": {
-			"resume_successfuly_created":"resume successfuly created"
+			"resume_successfuly_created": "resume successfuly created",
+			"resume_comment_successfuly_created": "resume comment successfuly created",
+			"resume_comments_list_found": "resume comment list found"
 		},
 		"errors": {
 			"resume_notfound": "Sorry, Resume not found",
+			"resume_comments_no_content": "Sorry, This resume  dont have any comment",
+			"resume_comments_notfound": "Sorry, Resume not have any comment",
 			"can_not_update_status_to_current": "It is not possible to update the status to the current status"
 		}
 	},
@@ -177,7 +182,7 @@
 		"validations": {},
 		"messages": {
 			"user_founded": "user successfuly found",
-			"list_found" : "the list of users"
+			"list_found": "the list of users"
 		},
 		"errors": {
 			"user_notfound": "The desired user was not found"
