@@ -166,10 +166,11 @@
 		"messages": {
 			"resume_successfuly_created": "resume successfuly created",
 			"resume_comment_successfuly_created": "resume comment successfuly created",
-			"resume_list_found": "resume comment list found"
+			"resume_comments_list_found": "resume comment list found"
 		},
 		"errors": {
 			"resume_notfound": "Sorry, Resume not found",
+			"resume_comments_no_content": "Sorry, This resume  dont have any comment",
 			"resume_comments_notfound": "Sorry, Resume not have any comment",
 			"can_not_update_status_to_current": "It is not possible to update the status to the current status"
 		}

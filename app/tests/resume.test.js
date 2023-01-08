@@ -34,7 +34,7 @@ describe("Company Routes", () => {
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
 
-        it(`should get ${httpStatus.BAD_REQUEST} resume is not exist `, async () => {
+        it(`should get ${httpStatus.NOT_FOUND} resume is not exist `, async () => {
             const response = await request(app)
                 .get(`/api/V1/resumes/${Types.ObjectId()}/comments`)
                 .set('Authorization', token)
@@ -42,6 +42,13 @@ describe("Company Routes", () => {
             expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
         })
 
+        it(`should get ${httpStatus.OK} resume dont have any comment `, async () => {
+            const response = await request(app)
+                .get(`/api/V1/resumes/${resume._id}/comments`)
+                .set('Authorization', token)
+                .send();
+            expect(response.statusCode).toBe(httpStatus.OK);
+        })
 
         it(`should check field of object returned`, async () => {
             const response = await request(app)
@@ -75,7 +82,7 @@ describe("Company Routes", () => {
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
 
-        it(`should get ${httpStatus.BAD_REQUEST} resume is not exist `, async () => {
+        it(`should get ${httpStatus.NOT_FOUND} resume is not exist `, async () => {
             const response = await request(app)
                 .post(`/api/V1/resumes/${Types.ObjectId()}/comments`)
                 .set('Authorization', token)

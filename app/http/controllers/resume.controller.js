@@ -213,7 +213,7 @@ class ResumeController extends Controller {
             await resume.save();
 
             EventEmitter.emit(events.UPDATE_STATUS, resume)
-            
+
             AppResponse.builder(res).message("resume.messages.resume_status_successfuly_updated").data(resume).send();
         } catch (err) {
             next(err);
@@ -224,12 +224,12 @@ class ResumeController extends Controller {
     * GET /resumes/{id}/comments
     * 
     * @summary get resume comments list
-    * @tags ResumeComments
+    * @tags Resume
     * @security BearerAuth
     * 
     * @param  { string } id.path.required - resume id
     * 
-    * @return { resumeComment.success }            200 - success response
+    * @return { resumeComment.success }     200 - success response
     * @return { message.badrequest_error }  400 - bad request respone
     * @return { message.badrequest_error }  401 - UnauthorizedError
     * @return { message.NotFoundError }     404 - not found respone
@@ -240,20 +240,19 @@ class ResumeController extends Controller {
             let resume = await Resume.findById(req.params.id);
             if (!resume) throw new NotFoundError('resume.errors.resume_notfound');
 
-            let resumeComments = await ResumeComments.find({ 'resume_id':resume._id });
-            if (!resumeComments.length >0) throw new NotFoundError('resume.errors.resume_comments_notfound');
+            let resumeComments = await ResumeComments.find({ 'resume_id': resume._id });
 
-            AppResponse.builder(res).message("resume.messages.resume_list_found").data(resumeComments).send();
+            AppResponse.builder(res).message("resume.messages.resume_comments_list_found").data(resumeComments).send();
         } catch (err) {
             next(err);
         }
     }
 
-      /**
+    /**
     * POST /resumes/{id}/comments
     * 
     * @summary add  comments for resume in table
-    * @tags ResumeComments
+    * @tags Resume
     * @security BearerAuth
     * 
     * @param  { string } id.path.required - resume id
@@ -271,7 +270,7 @@ class ResumeController extends Controller {
             if (!resume) throw new NotFoundError('resume.errors.resume_notfound');
 
             req.body.body = req.body.body
-            req.body.resume_id = req.params.id
+            req.body.resume_id = resume._id
             req.body.created_by = req.user_id
 
             let resumeCommentsRes = await ResumeComments.create(req.body)
