@@ -49,11 +49,14 @@
 			"user_successfuly_created": "The account was created successfully",
 			"success_login": "You have successfully logged into your account",
 			"success_logout": "You have successfully logged out",
-			"token_verified": "Token Verified"
+			"token_verified": "Token Verified",
+			"username_exist": "The username already exists"
 		},
 		"errors": {
 			"user_already_exists": "There is already a user with this information",
 			"invalid_credentials": "The username or password is incorrect",
+			"username_notfound": "The username not found",
+			"username_notsend": "The username not send",
 			"token_not_same": "Token not same",
 			"token_not_sended": "Authentication key not sent",
 			"token_not_stored": "Authentication key not stored"
