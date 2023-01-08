@@ -1,4 +1,5 @@
 import { resumes } from './data';
+import Resume from '../../models/resume.model.js';
 
 class ResumeData {
     getResume() {
@@ -7,6 +8,10 @@ class ResumeData {
 
     getResumes() {
         return resumes;
+    }
+
+    addResume(resumes) {
+        Resume.insertMany(resumes);
     }
 }
 

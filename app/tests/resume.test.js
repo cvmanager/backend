@@ -9,19 +9,46 @@ import { Types } from 'mongoose';
 import ResumeData from './data/resume.data';
 import { faker } from '@faker-js/faker';
 
+import CompanyData from './data/company.data';
+import ProjectData from './data/project.data';
+import PositionData from './data/position.data';
+import UsersData from './data/user.data';
+
 
 let token;
+let resumeItem;
 let resume;
+let position;
+let company;
+let project;
+let resumeData;
+let companyData;
+let projectData;
+let positionData;
+let user;
+let usersData;
 
 prepareDB();
-describe("Company Routes", () => {
+describe("Resumes Routes", () => {
 
     beforeEach(async () => {
         let userData = new UserData();
         token = userData.getAccessToken();
 
-        let resumeData = new ResumeData();
+        resumeData = new ResumeData();
         resume = resumeData.getResume();
+
+        companyData = new CompanyData();
+        company = companyData.getCompany();
+
+        projectData = new ProjectData();
+        project = projectData.getProject();
+
+        positionData = new PositionData();
+        position = positionData.getPosition();
+
+        usersData = new UsersData();
+        user = usersData.getUser();
     })
 
     describe("GET /resumes/{id}/commments", () => {
@@ -43,8 +70,27 @@ describe("Company Routes", () => {
         })
 
         it(`should get ${httpStatus.OK} resume dont have any comment `, async () => {
+            resumeItem = {
+                "_id": Types.ObjectId(),
+                "company_id": company._id,
+                "project_id": project._id,
+                "position_id": position._id,
+                "firstname": faker.name.firstName(),
+                "lastname": faker.name.lastName(),
+                "gender": "men",
+                "email": faker.internet.email(),
+                "birth_year": "1370",
+                "marital_status": "married",
+                "military_status": "included",
+                "mobile": faker.phone.number('989#########'),
+                "residence_city": Types.ObjectId(),
+                "work_city": Types.ObjectId(),
+                "education": "diploma",
+                "created_by": user._id
+            }
+            resumeData.addResume([resumeItem])
             const response = await request(app)
-                .get(`/api/V1/resumes/${resume._id}/comments`)
+                .get(`/api/V1/resumes/${resumeItem._id}/comments`)
                 .set('Authorization', token)
                 .send();
             expect(response.statusCode).toBe(httpStatus.OK);
