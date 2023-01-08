@@ -17,34 +17,16 @@ const schema = new mongoose.Schema(
         refresh_token: {
             type: String,
         },
-        login_time: {
-            type: Date,
-        },
-        platform: {
+        os: {
             type: String,
         },
-        platform_distro: {
+        cpu: {
             type: String,
         },
-        platform_release: {
+        browser: {
             type: String,
         },
-        CPU: {
-            type: String,
-        },
-        CPU_brand: {
-            type: String,
-        },
-        browser_name: {
-            type: String,
-        },
-        browser_version: {
-            type: String,
-        },
-        browser_type: {
-            type: String,
-        },
-        memory_total: {
+        memory: {
             type: String,
         },
         ip4: {
