@@ -151,6 +151,7 @@
 			"email_required": "resume.validation.email_required",
 			"email_invalid": "resume.validation.email_invalid",
 			"birth_year_required": "resume.validation.birth_year_required",
+			"birth_year_number": "resume.validation.birth_year_number",
 			"birth_year_length": "resume.validation.birth_year_length",
 			"marital_status_required": "resume.validation.marital_status_required",
 			"marital_status_incorrect": "resume.validation.marital_status_incorrect",
@@ -163,7 +164,9 @@
 			"education_incorrect": "resume.validation.education_incorrect",
 			"major_required": "resume.validation.major_required",
 			"major_length": "resume.validation.major_length",
-			"max_comment_length": "Comment has be between 5 and 1000 character"
+			"max_comment_length": "Comment has be between 5 and 1000 character",
+			"resume_page_number": "resume page must by number",
+			"resume_size_number": "resume size must by number"
 		},
 		"messages": {
 			"resume_successfuly_created": "resume successfuly created",
