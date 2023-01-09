@@ -3,46 +3,61 @@ import request from "supertest";
 import app from "../app.js";
 import UserData from "./data/user.data";
 import prepareDB from "./utils/prepareDB";
+import { Types } from 'mongoose';
+import { faker } from '@faker-js/faker';
+import * as path from 'path';
 
 let token;
 let users;
+let user;
+let userData;
 
 prepareDB();
 describe("User Routes", () => {
 
   beforeEach(async () => {
-    let userData = new UserData();
+    userData = new UserData();
     token = userData.getAccessToken();
     users = userData.getUsers();
+    user = userData.getUser();
   });
 
 
-  describe("GET /users", () => {
-    it(`should get ${httpStatus.OK} list returned`, async () => {
-      const response = await request(app)
-        .get("/api/V1/users")
-        .set("Authorization", token)
-        .send();
-      expect(response.statusCode).toBe(httpStatus.OK);
-    });
+  describe("GET /", () => {
 
-    it(`should return no item`, async () => {
+    it(`should get ${httpStatus.BAD_REQUEST} page is not number`, async () => {
       const response = await request(app)
-        .get("/api/V1/users?q=therisnoitem")
-        .set("Authorization", token)
+        .get("/api/V1/users?page=string")
+        .set('Authorization', token)
         .send();
-      const data = response.body.data[0].docs;
+      expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+    })
+
+    it(`should get ${httpStatus.BAD_REQUEST} size is not number`, async () => {
+      const response = await request(app)
+        .get("/api/V1/users?page=1&size=string")
+        .set('Authorization', token)
+        .send();
+      expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+    })
+
+    it('should get no item if item is not find', async () => {
+      const response = await request(app)
+        .get("/api/V1/users?page=1&size=1&query=no item")
+        .set('Authorization', token)
+        .send();
+      let data = response.body.data[0].docs;
       expect(data.length).toBe(0);
-    });
+    })
 
-    it(`should return just one item`, async () => {
+    it('should get one item if page = 1 and size = 1', async () => {
       const response = await request(app)
         .get("/api/V1/users?page=1&size=1")
-        .set("Authorization", token)
+        .set('Authorization', token)
         .send();
-      const data = response.body.data[0].docs;
+      let data = response.body.data[0].docs;
       expect(data.length).toBe(1);
-    });
+    })
 
     it(`will check properties and should return results with expected properties`, async () => {
       const response = await request(app)
@@ -66,5 +81,173 @@ describe("User Routes", () => {
       expect(data).toHaveProperty('updatedAt')
       expect(data).toHaveProperty('id')
     });
+
+    it(`should get ${httpStatus.OK} list returned`, async () => {
+      const response = await request(app)
+        .get("/api/V1/users")
+        .set("Authorization", token)
+        .send();
+      expect(response.statusCode).toBe(httpStatus.OK);
+    });
   });
+
+  describe(`GET /:id`, () => {
+
+    it(`should get ${httpStatus.BAD_REQUEST} user id is not a mongo id`, async () => {
+      const response = await request(app)
+        .get(`/api/V1/users/fakeID`)
+        .set(`Authorization`, token)
+        .send();
+      expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+    })
+
+    it(`should get ${httpStatus.NOT_FOUND} user id is not valid`, async () => {
+      const response = await request(app)
+        .get(`/api/V1/users/${Types.ObjectId()}`)
+        .set(`Authorization`, token)
+        .send();
+      expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+    })
+
+    it(`should get ${httpStatus.OK} success if correct`, async () => {
+      const response = await request(app)
+        .get(`/api/V1/users/${user._id}`)
+        .set(`Authorization`, token)
+        .send();
+
+      let data = response.body.data[0];
+      expect(data).toHaveProperty('_id')
+      expect(data).toHaveProperty('firstname')
+      expect(data).toHaveProperty('lastname')
+      expect(data).toHaveProperty('mobile')
+      expect(data).toHaveProperty('email')
+      expect(data).toHaveProperty('mobile_verified_at')
+      expect(data).toHaveProperty('avatar')
+      expect(data).toHaveProperty('is_banned')
+      expect(data).toHaveProperty('banned_by')
+      expect(data).toHaveProperty('banned_at')
+      expect(data).toHaveProperty('deleted')
+      expect(data).toHaveProperty('createdAt')
+      expect(data).toHaveProperty('updatedAt')
+      expect(data).toHaveProperty('id')
+      expect(response.statusCode).toBe(httpStatus.OK)
+    })
+  })
+
+  describe(`GET /getMe`, () => {
+    it(`should get ${httpStatus.NOT_FOUND} user id is not valid`, async () => {
+      let fakeToken = userData.getFakeAccessToken(Types.ObjectId());
+      const response = await request(app)
+        .get(`/api/V1/users/getMe`)
+        .set(`Authorization`, fakeToken)
+        .send();
+      expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+    })
+    it(`should get ${httpStatus.OK} success if correct`, async () => {
+      const response = await request(app)
+        .get(`/api/V1/users/getMe`)
+        .set(`Authorization`, token)
+        .send();
+
+      let data = response.body.data[0];
+      expect(data).toHaveProperty('_id')
+      expect(data).toHaveProperty('firstname')
+      expect(data).toHaveProperty('lastname')
+      expect(data).toHaveProperty('mobile')
+      expect(data).toHaveProperty('email')
+      expect(data).toHaveProperty('mobile_verified_at')
+      expect(data).toHaveProperty('avatar')
+      expect(data).toHaveProperty('is_banned')
+      expect(data).toHaveProperty('banned_by')
+      expect(data).toHaveProperty('banned_at')
+      expect(data).toHaveProperty('deleted')
+      expect(data).toHaveProperty('createdAt')
+      expect(data).toHaveProperty('updatedAt')
+      expect(data).toHaveProperty('id')
+      expect(response.statusCode).toBe(httpStatus.OK)
+    })
+  })
+
+  describe(`post /avatar`, () => {
+    let avatar;
+    beforeEach(async () => {
+      avatar = path.join(__dirname, '/data/file/avatar.png');
+    })
+    it('should return ' + httpStatus.BAD_REQUEST + ' error if avatar empty', async () => {
+      const response = await request(app)
+        .post(`/api/V1/users/avatar`)
+        .set('Authorization', token)
+        .attach('avatar', '');
+      expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+    });
+    it(`should get ${httpStatus.NOT_FOUND} user not found`, async () => {
+      let fakeToken = userData.getFakeAccessToken(Types.ObjectId());
+      const response = await request(app)
+        .post(`/api/V1/users/avatar`)
+        .set(`Authorization`, fakeToken)
+        .attach('avatar', avatar);
+      expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+    })
+    it(`should get ${httpStatus.BAD_REQUEST} avatar is wrong`, async () => {
+      const response = await request(app)
+        .post(`/api/V1/users/avatar`)
+        .set(`Authorization`, token)
+        .attach('avatar', path.join(__dirname, '/data/file/avatar.zip'));
+      expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+    })
+    it(`should get ${httpStatus.OK} user avatar changed`, async () => {
+      const response = await request(app)
+        .post(`/api/V1/users/avatar`)
+        .set(`Authorization`, token)
+        .attach('avatar', avatar);
+      expect(response.statusCode).toBe(httpStatus.OK);
+    })
+  })
+
+  describe(`POST /:id/ban`, () => {
+    it(`should get ${httpStatus.BAD_REQUEST} user id is not a mongo id`, async () => {
+      const response = await request(app)
+        .post(`/api/V1/users/fakeID/ban`)
+        .set(`Authorization`, token)
+        .send();
+      expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+    })
+
+    it(`should get ${httpStatus.NOT_FOUND} user id is not valid`, async () => {
+      const response = await request(app)
+        .post(`/api/V1/users/${Types.ObjectId()}/ban`)
+        .set(`Authorization`, token)
+        .send();
+      expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+    })
+
+    it(`should get ${httpStatus.BAD_REQUEST} user is already banned`, async () => {
+      let newBannedUser = {
+        "_id": Types.ObjectId(),
+        "firstname": faker.name.firstName(),
+        "lastname": faker.name.lastName(),
+        "username": faker.internet.userName(),
+        "mobile": faker.phone.number('989#########'),
+        "is_banned": true,
+        "email": faker.internet.email(),
+        "password": faker.internet.password()
+      };
+      userData.setUsers([newBannedUser]);
+
+      const response = await request(app)
+        .post(`/api/V1/users/${newBannedUser._id}/ban`)
+        .set(`Authorization`, token)
+        .send();
+      expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+    })
+
+    it(`should get ${httpStatus.OK} if user banned `, async () => {
+      const response = await request(app)
+        .post(`/api/V1/users/${user._id}/ban`)
+        .set(`Authorization`, token)
+        .send();
+      expect(response.statusCode).toBe(httpStatus.OK);
+    })
+  })
+
 });
