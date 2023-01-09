@@ -1,11 +1,15 @@
-FROM node
+FROM node:19.4.0-alpine
 
-WORKDIR /usr/src/app
+WORKDIR /app/backend
 
 COPY package.json .
 
-RUN npm i
+ARG NODE_ENV
+RUN if [ "$NODE_ENV" = "development" ] ; \
+        then npm i ; \
+        else npm i --only=production; \
+        fi
 
 COPY . .
 
-CMD ["npm","start"]
+CMD ["npm","run","dev"]

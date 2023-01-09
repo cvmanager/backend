@@ -3,3 +3,5 @@
 package-lock.json
 public/profile/*
 logs
+mongo_db
+redis_db
