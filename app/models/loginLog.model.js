@@ -4,9 +4,6 @@ import basePlugin from '../helper/mongoose/base.plugin.js';
 
 const schema = new mongoose.Schema(
     {
-        id: {
-            type: mongoose.Schema.Types.ObjectId
-        },
         user_id: {
             type: mongoose.Schema.Types.ObjectId,
             required: true,
