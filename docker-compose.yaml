@@ -21,17 +21,23 @@ services:
     container_name: cvmanager_mongo
     restart: always
     image: mongo:4.2.23
+    command: mongod --port 27018
+    ports:
+      - "27018:27018"
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
     volumes:
-      - mongo_db:/data/db
+      - ./mongo_db:/data/db
   cv_redis:
     container_name: cvmanager_redis
     image: redis:7.0-alpine
     restart: always
+    command: --port 6380
+    ports:
+      - "6380:6380"
     volumes:
-      - redis_db:/data/myredis
+      - ./redis_db:/data/myredis
 volumes:
   mongo_db: {}
   redis_db: {}

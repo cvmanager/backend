@@ -7,12 +7,13 @@ class App {
     }
 
     start() {
-        mongoose.connect(`mongodb://${env('DB_USER_NAME')}:${env('DB_PASSWORD')}@${env('DB_HOST')}:${env('DB_PORT')}/${env('DB_NAME')}`, { useNewUrlParser: true, useUnifiedTopology: true })
+        mongoose.set('strictQuery', true);
+        mongoose.connect(`mongodb://${env('DB_USER_NAME')}:${env('DB_PASSWORD')}@${env('DB_HOST')}:${env('DB_PORT')}`, { useNewUrlParser: true, useUnifiedTopology: true })
             .then(data => {
-                console.log('successfuly connect to database ...');
+                console.log('successfully connect to database ...');
                 this.serve();
             })
-            .catch(err => console.error('failed to connect to database ...'))
+            .catch(err => console.error('failed to connect to database ...' + err))
     }
 
 

@@ -11,7 +11,7 @@ const salam = async () => {
     });
 
     redisClient.on("error", (err) => {
-        console.log('error running redis')
+        console.log(err)
     })
     await redisClient.connect();
 }
