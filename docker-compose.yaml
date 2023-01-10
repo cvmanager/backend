@@ -44,3 +44,4 @@ services:
 volumes:
   mongo_db: {}
   redis_db: {}
+ 

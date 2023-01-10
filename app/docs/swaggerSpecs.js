@@ -16,6 +16,10 @@ const options = {
     {
       "url": `http://127.0.0.1:${env('PORT')}/api/v1`,
       "description": "Development server"
+    },
+    {
+      "url" : "https://api.cvmanager.ir/api/v1",
+      "description": "Production server",
     }
   ],
   // Base directory which we use to locate your JSDOC files
