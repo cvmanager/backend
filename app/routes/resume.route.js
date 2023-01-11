@@ -5,7 +5,7 @@ import ResumeValidation from '../validators/resume.validation.js';
 const resumeRouter = express.Router();
 
 resumeRouter
-    .get('/', ResumeController.index)
+    .get('/', ResumeValidation.index(), ResumeController.index)
     .get('/:id', ResumeValidation.find(), ResumeController.find)
     .post('/', ResumeValidation.create(), ResumeController.create)
     .patch('/:id', ResumeValidation.update(), ResumeController.update)
