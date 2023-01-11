@@ -8,7 +8,8 @@ class App {
 
     start() {
         mongoose.set('strictQuery', true);
-        mongoose.connect(`mongodb://${env('DB_USER_NAME')}:${env('DB_PASSWORD')}@${env('DB_HOST')}:${env('DB_PORT')}`, { useNewUrlParser: true, useUnifiedTopology: true })
+        const mongoUrl = `mongodb://${env('DB_USER_NAME')}:${env('DB_PASSWORD')}@${env('DB_HOST')}:${env('DB_PORT')}/${env('DB_NAME')}`;
+        mongoose.connect(mongoUrl, { useNewUrlParser: true, useUnifiedTopology: true })
             .then(data => {
                 console.log('successfully connect to database ...');
                 this.serve();
