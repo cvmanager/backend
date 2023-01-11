@@ -13,7 +13,7 @@ for (i = 0; i < numberRowInsert; i++) {
         "username": faker.internet.userName(),
         "mobile": faker.phone.number('989#########'),
         "email": faker.internet.email(),
-        "password": faker.internet.password()
+        "password": '12345678'
     })
 }
 

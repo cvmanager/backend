@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt'
 
 import { generateJwtToken, generateJwtRefeshToken } from '../../helper/jwt.js'
-import UserNotFoundError from '../../exceptions/UserNotFoundError.js';
+import NotFoundError from '../../exceptions/NotFoundError.js';
 import BadRequestError from '../../exceptions/BadRequestError.js';
 import redisClient from '../../helper/redis_client.js';
 import AppResponse from '../../helper/response.js';
@@ -28,13 +28,13 @@ class AuthController extends Controller {
     async login(req, res, next) {
         try {
             let user = await User.findOne({ mobile: req.body.mobile, deleted_at: null });
-            if (!user) throw new UserNotFoundError();
+            if (!user) throw new NotFoundError('auth.errors.user_not_found');
 
 
             let validPassword = await bcrypt.compare(req.body.password, user.password)
             if (!validPassword) throw new BadRequestError('auth.errors.invalid_credentials');
 
-            if (user.is_banded) throw new BadRequestError('auth.errors.user_is_banned');
+            if (user.is_banned) throw new BadRequestError('auth.errors.user_is_banned');
 
 
             const access_token = await generateJwtToken(user._id)

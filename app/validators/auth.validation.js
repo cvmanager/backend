@@ -26,7 +26,7 @@ class AuthValidator {
             body('username')
                 .notEmpty()
                 .isLength({ min: 5, max: 10 })
-                .withMessage('auth.validations.mobile_required')
+                .withMessage('auth.validations.username_required')
                 .trim(),
             body('password')
                 .notEmpty()
