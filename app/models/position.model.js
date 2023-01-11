@@ -27,6 +27,14 @@ const schema = new mongoose.Schema(
             type: Boolean,
             default: 1
         },
+        logo: {
+            type: String,
+            default: null
+        },
+        description: {
+            type: String,
+            default: null
+        },
         created_by: {
             type: mongoose.Schema.Types.ObjectId,
             required: true,

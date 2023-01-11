@@ -45,6 +45,7 @@ for (i = 0; i < numberRowInsert; i++) {
         "project_id": projects[i]._id,
         "title": faker.name.jobTitle(),
         "level": "mid",
+        "description": faker.random.alpha(50),
         "created_by": users[i]._id
     })
 }
