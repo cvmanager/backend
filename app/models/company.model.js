@@ -30,6 +30,12 @@ schema.virtual("projects", {
     foreignField: "company_id"
 });
 
+schema.virtual("managers", {
+    ref: 'managers',
+    localField: "_id",
+    foreignField: "entity_id"
+});
+
 schema.plugin(basePlugin)
 
 const Company = mongoose.model('companies', schema);

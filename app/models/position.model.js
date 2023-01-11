@@ -35,6 +35,12 @@ const schema = new mongoose.Schema(
     }
 )
 
+schema.virtual("managers" , {
+    ref : 'managers',
+    localField : '_id',
+    foreignField : 'entity_id',
+})
+
 schema.plugin(basePlugin)
 
 const Position = mongoose.model('positions', schema);

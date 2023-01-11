@@ -3,15 +3,13 @@ import basePlugin from '../helper/mongoose/base.plugin.js';
 
 const schema = new mongoose.Schema(
     {
-        user_id: {
+        resume_id: {
             type: mongoose.Schema.Types.ObjectId,
             required: true,
-            ref: 'users'
         },
-        entury: {
-            type: string,
-            required: true,
-            enum: ['company', 'project', 'position']
+        body: {
+            type: String,
+            default: null
         },
         created_by: {
             type: mongoose.Schema.Types.ObjectId,
@@ -22,7 +20,5 @@ const schema = new mongoose.Schema(
 )
 
 schema.plugin(basePlugin)
-
-const Manager = mongoose.model('managers', schema);
-
-export default Manager;
+const resumeComment = mongoose.model('resumeComments', schema);
+export default resumeComment;
