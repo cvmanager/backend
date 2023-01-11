@@ -411,4 +411,32 @@ describe("Company Routes", () => {
 
     })
 
+
+    describe("GET /companies/{id}/projects", () => {
+        it(`should get ${httpStatus.BAD_REQUEST} company id is not a mongo id`, async () => {
+            const response = await request(app)
+                .get(`/api/V1/companies/fakeID/projects`)
+                .set('Authorization', token)
+                .send();
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.NOT_FOUND} company id is not valid`, async () => {
+            const response = await request(app)
+                .get(`/api/V1/companies/${Types.ObjectId()}/projects`)
+                .set('Authorization', token)
+                .send();
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+
+
+        it(`should get ${httpStatus.OK} company projects list `, async () => {
+            const response = await request(app)
+                .get(`/api/V1/companies/${company._id}/projects`)
+                .set('Authorization', token)
+                .send();
+            expect(response.statusCode).toBe(httpStatus.OK);
+        })
+    })
+
 })
