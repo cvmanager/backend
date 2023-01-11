@@ -70,7 +70,12 @@
 			"company_id_require": "company is required",
 			"company_id_invalid": "company invalid",
 			"company_page_number": "company page must by number",
-			"company_size_number": "company size must by number"
+			"company_size_number": "company size must by number",
+			"company_name_length": "company name lenght must grather than 3 character and less than 50 character",
+			"company_description_length": "company description lenght must grather than 3 character and less than 100 character",
+			"company_phone_length": "company description lenght must grather than 9 character and less than 12 character",
+			"company_phone_number": "company phone should number",
+			"company_address_length": "company address lenght must grather than 10 character and less than 200 character"
 		},
 		"messages": {
 			"company_list_found": "Company list found",
