@@ -13,5 +13,6 @@ companyRouter
     .delete('/:id', CompanyValidation.remove(), CompanyController.delete)
     .patch('/:id/manager', CompanyValidation.manager(), CompanyController.manager)
     .delete('/:id/manager', CompanyValidation.deleteManager(), CompanyController.deleteManager)
-
+    .get('/:id/resumes', CompanyValidation.find(), CompanyController.getResumes)
+    
 export default companyRouter;

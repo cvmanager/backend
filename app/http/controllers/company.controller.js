@@ -8,6 +8,7 @@ import AppResponse from '../../helper/response.js';
 import Controller from './controller.js';
 import EventEmitter from '../../events/emitter.js';
 import { events } from '../../events/subscribers/companies.subscriber.js';
+import Resume from '../../models/resume.model.js';
 
 
 class CompanyController extends Controller {
@@ -243,6 +244,35 @@ class CompanyController extends Controller {
             next(err);
         }
     }
+
+    /**
+    * GET /companies/{id}/resumes
+    * 
+    * @summary gets  companies resumes list by company id
+    * @tags Company
+    * @security BearerAuth
+    * 
+    * @param  { string } id.path.required - company id
+    * 
+    * @return { company.success }               200 - success response
+    * @return { message.badrequest_error }      400 - bad request respone
+    * @return { message.badrequest_error }      404 - not found respone
+    * @return { message.unauthorized_error }    401 - UnauthorizedError
+    * @return { message.server_error  }         500 - Server Error
+    */
+    async getResumes(req, res, next) {
+        try {
+            const company = await Company.findById(req.params.id).populate('created_by');
+            if (!company) throw new NotFoundError('company.errors.company_notfound');
+
+            let resumes = await Resume.find({ 'company_id': company.id }).populate('project_id').populate('position_id');
+
+            AppResponse.builder(res).message('company.messages.company_resumes_found').data(resumes).send();
+        } catch (err) {
+            next(err);
+        }
+    }
+
 }
 
 export default new CompanyController
