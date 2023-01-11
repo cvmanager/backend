@@ -270,6 +270,8 @@ class ResumeValidation {
             body('file')
                 .notEmpty()
                 .withMessage('resume.validation.file_required')
+                .trim(),
+            generalValidator
         ];
     }
 
