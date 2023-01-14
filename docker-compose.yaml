@@ -33,6 +33,8 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: 'yP6tZ3LwD7VrB'
+      MONGO_INITDB_DATABASE: cvmanager
+
     volumes:
       - ./mongo_db:/data/db
   cv_redis:
