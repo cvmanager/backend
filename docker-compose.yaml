@@ -25,7 +25,7 @@ services:
   cv_mongo:
     restart: always
     image: mongo:4.2.23
-    command: mongod --port 27018 && mongod --serviceExecutor adaptive
+    command: mongod --port 27018 && [--auth]
     ports:
       - "27018:27018"
     environment:
