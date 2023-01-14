@@ -3,6 +3,7 @@ import { body, param } from 'express-validator';
 import generalValidator from '../helper/validator.js';
 import i18n from '../middlewares/lang.middleware.js';
 import { mobileFormat } from '../helper/helper.js';
+import { json } from 'express';
 class ResumeValidation {
     create() {
         return [
@@ -227,6 +228,44 @@ class ResumeValidation {
         ];
     }
 
+    call_history() {
+        return [
+            param('id')
+                .notEmpty()
+                .withMessage('resume.validations.resume_id_required')
+                .isMongoId()
+                .withMessage('resume.validations.resume_id_invalid')
+                .trim(),
+            body('result')
+                .notEmpty()
+                .withMessage('resume.validations.result_required')
+                .isIn(i18n.__('resume.enums.call_history_status'))
+                .withMessage('resume.validations.result_incorrect')
+                .trim(),
+            body('calling_date')
+                .notEmpty()
+                .withMessage('resume.validations.calling_date_required')
+                .isISO8601()
+                .toDate()
+                .withMessage('resume.validations.calling_date_must_be_date')
+                .trim(),
+            body('description')
+                .optional({ nullable: true, checkFalsy: true })
+                .isLength({ min: 0, max: 1000 })
+                .withMessage('resume.validations.description_length')
+                .trim(),
+            body('recall_at')
+                .if(body('result').isIn('recall', i18n.__('resume.enums.call_history_status')))
+                .notEmpty()
+                .withMessage('recall_at is required')
+                .isISO8601()
+                .toDate()
+                .withMessage('recall_at must be date')
+                .trim(),
+            generalValidator
+        ];
+    }
+
     remove() {
         return [
             param('id')
@@ -251,6 +290,8 @@ class ResumeValidation {
             generalValidator
         ];
     }
+
+
 }
 
 export default new ResumeValidation();

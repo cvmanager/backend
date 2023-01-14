@@ -11,5 +11,6 @@ resumeRouter
     .patch('/:id', ResumeValidation.update(), ResumeController.update)
     .delete('/:id', ResumeValidation.remove(), ResumeController.delete)
     .patch('/:id/status', ResumeValidation.update_status(), ResumeController.updateStatus)
+    .post('/:id/call-history', ResumeValidation.call_history(), ResumeController.callHistory)
 
 export default resumeRouter
