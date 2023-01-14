@@ -16,7 +16,7 @@ import env from './helper/env.js'
 const app = express();
 
 dotenv.config();
-app.use('trust proxy');
+app.enable('trust proxy');
 app.use(cors());
 app.use(i18n.init);
 app.use(rateLimiter);
