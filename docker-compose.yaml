@@ -24,7 +24,7 @@ services:
       - cv_redis
   cv_mongo:
     restart: always
-    image: mongo:4.2.23
+    image: mongo:latest
     command: mongod --port 27018 
     ports:
       - "27018:27018"
