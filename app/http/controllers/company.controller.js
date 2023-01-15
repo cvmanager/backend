@@ -274,6 +274,35 @@ class CompanyController extends Controller {
         }
     }
 
+
+       /**
+    * GET /companies/{id}/managers
+    * 
+    * @summary gets  companies managers list by company id
+    * @tags Company
+    * @security BearerAuth
+    * 
+    * @param  { string } id.path.required - company id
+    * 
+    * @return { company.success }               200 - success response
+    * @return { message.badrequest_error }      400 - bad request respone
+    * @return { message.badrequest_error }      404 - not found respone
+    * @return { message.unauthorized_error }    401 - UnauthorizedError
+    * @return { message.server_error  }         500 - Server Error
+    */
+       async getManagers(req, res, next) {
+        try {
+            const company = await Company.findById(req.params.id).populate('created_by');
+            if (!company) throw new NotFoundError('company.errors.company_notfound');
+
+            let managers = await Manager.find({ 'entity': "companies", 'entity_id': company.id }).populate('user_id');
+
+            AppResponse.builder(res).message('company.messages.company_managers_found').data(managers).send();
+        } catch (err) {
+            next(err);
+        }
+    }
+
 }
 
 export default new CompanyController
