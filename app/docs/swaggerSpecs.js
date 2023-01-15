@@ -1,4 +1,5 @@
 import env from "../helper/env.js";
+import swaggerServer from "./swagger-server.js";
 const options = {
   info: {
     version: '1.0.0',
@@ -12,16 +13,7 @@ const options = {
       scheme: 'bearer',
     },
   },
-  servers: [
-    {
-      "url": `http://127.0.0.1:${env('PORT')}/api/v1`,
-      "description": "Development server"
-    },
-    {
-      "url" : "https://api.cvmanager.ir/api/v1",
-      "description": "Production server",
-    }
-  ],
+  servers: swaggerServer,
   // Base directory which we use to locate your JSDOC files
   baseDir: "./app",
   // Glob pattern to find your jsdoc files (multiple patterns can be added in an array)
