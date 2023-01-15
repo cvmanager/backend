@@ -39,7 +39,17 @@ class PositionValidation {
 
     update() {
         return [
-            param('id').notEmpty().isMongoId().withMessage('position.validations.position_id_invalid').trim(),
+            param('id')
+                .notEmpty()
+                .withMessage('position.validations.position_id_required')
+                .isMongoId()
+                .withMessage('position.validations.position_id_invalid')
+                .trim(),
+            body('project_id')
+                .optional({ nullable: true, checkFalsy: true })
+                .isMongoId()
+                .withMessage('position.validations.project_id_invalid')
+                .trim(),
             body('title')
                 .optional({ nullable: true, checkFalsy: true }).isLength({ min: 3, max: 50 })
                 .withMessage('position.validations.position_title_length').trim(),
@@ -50,6 +60,11 @@ class PositionValidation {
             body('description')
                 .optional({ nullable: true, checkFalsy: true })
                 .isLength({ min: 10, max: 100 }).withMessage('position.validations.position_description_length').trim(),
+            body('is_active')
+                .optional({ nullable: true, checkFalsy: true })
+                .isBoolean()
+                .withMessage('position.validations.position_is_active_invalid')
+                .trim(),
             generalValidator
         ];
     }

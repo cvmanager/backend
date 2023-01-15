@@ -39,6 +39,7 @@
 			"password_required": "The password field is required",
 			"password_length": "The password field has a character limit",
 			"firstname_required": "The firstname field is required",
+			"username_required": "The username field is required",
 			"firstname_length": "The firstname field has a character limit",
 			"lastname_required": "The lastname field is required",
 			"lastname_length": "The lastname field has a character limit",
@@ -49,11 +50,14 @@
 			"user_successfuly_created": "The account was created successfully",
 			"success_login": "You have successfully logged into your account",
 			"success_logout": "You have successfully logged out",
-			"token_verified": "Token Verified"
+			"token_verified": "Token Verified",
+			"username_exist": "The username already exists"
 		},
 		"errors": {
 			"user_already_exists": "There is already a user with this information",
 			"invalid_credentials": "The username or password is incorrect",
+			"username_notfound": "The username not found",
+			"username_notsend": "The username not send",
 			"token_not_same": "Token not same",
 			"token_not_sended": "Authentication key not sent",
 			"token_not_stored": "Authentication key not stored"
@@ -75,7 +79,9 @@
 		"messages": {
 			"company_list_found": "Company list found",
 			"company_successfuly_created": "Company successfuly created",
+			"company_managers_found": "Company managers successfuly founded",
 			"company_found": "Company Successfuly founded",
+			"company_projects_found": "Company projects successfuly founded",
 			"company_successfuly_updated": "Company successfuly updated",
 			"company_manager_successfully_created": "company manager successfully created"
 		},
@@ -98,11 +104,17 @@
 			"position_description_length": "position description must grather than 10 character and less than 100 character"
 		},
 		"messages": {
-			"position_successfuly_created": "Position successfuly created"
+			"position_list_found": "position list",
+			"position_found" : "position found"
 		},
 		"errors": {
-			"position_not_found": "position not found",
-			"position_already_exists": "position already exists"
+			"position_notfound" : "position not found",
+			"position_already_exists" : "position already exists",
+			"position_successfuly_created" : "position successfuly created",
+			"position_successfuly_updated" : "position successfuly updated",
+			"position_successfuly_deleted" : "position successfuly deleted",
+			"position_not_found":"position not found"
+
 		}
 	},
 	"project": {
