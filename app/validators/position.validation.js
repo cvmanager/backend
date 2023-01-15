@@ -23,6 +23,9 @@ class PositionValidation {
                 .optional({ nullable: true, checkFalsy: true })
                 .notEmpty().isIn(i18n.__("position.enums.level"))
                 .withMessage('position.validations.position_level_incorrect').trim(),
+            body('description')
+                .optional({ nullable: true, checkFalsy: true })
+                .isLength({ min: 10, max: 100 }).withMessage('position.validations.position_description_length').trim(),
             generalValidator
         ];
     }
@@ -54,6 +57,9 @@ class PositionValidation {
                 .optional({ nullable: true, checkFalsy: true }).isIn(i18n.__("position.enums.level"))
                 .withMessage('position.validations.position_level_incorrect')
                 .trim(),
+            body('description')
+                .optional({ nullable: true, checkFalsy: true })
+                .isLength({ min: 10, max: 100 }).withMessage('position.validations.position_description_length').trim(),
             body('is_active')
                 .optional({ nullable: true, checkFalsy: true })
                 .isBoolean()

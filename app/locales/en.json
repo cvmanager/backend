@@ -100,7 +100,8 @@
 		},
 		"validations": {
 			"position_page_number": "position page must by number",
-			"position_size_number": "position size must by number"
+			"position_size_number": "position size must by number",
+			"position_description_length": "position description must grather than 10 character and less than 100 character"
 		},
 		"messages": {
 			"position_list_found": "position list",

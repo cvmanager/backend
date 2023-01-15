@@ -85,6 +85,7 @@ describe(`Position Routes`, () => {
             expect(data).toHaveProperty(`level`)
             expect(data).toHaveProperty(`is_active`)
             expect(data).toHaveProperty(`deleted`)
+            expect(data).toHaveProperty(`description`)
             expect(data).toHaveProperty(`createdAt`)
             expect(data).toHaveProperty(`updatedAt`)
         })
@@ -132,6 +133,7 @@ describe(`Position Routes`, () => {
             expect(data).toHaveProperty(`is_active`)
             expect(data).toHaveProperty(`created_by`)
             expect(data).toHaveProperty(`deleted`)
+            expect(data).toHaveProperty(`description`)
             expect(data).toHaveProperty(`createdAt`)
             expect(data).toHaveProperty(`updatedAt`)
             expect(response.statusCode).toBe(httpStatus.OK)
@@ -147,6 +149,7 @@ describe(`Position Routes`, () => {
                 'project_id': project._id,
                 'title': faker.random.alpha(10),
                 'level': 'mid',
+                "description": faker.random.alpha(50),
                 'created_by': user._id
             }
         })
@@ -185,6 +188,22 @@ describe(`Position Routes`, () => {
         })
         it(`should get ${httpStatus.BAD_REQUEST} if title is grather than 50 character`, async () => {
             newPosition.title = faker.random.alpha(51);
+            const response = await request(app)
+                .post(`/api/V1/positions`)
+                .set(`Authorization`, token)
+                .send(newPosition);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if description is less than 10 character`, async () => {
+            newPosition.description = faker.random.alpha(9);
+            const response = await request(app)
+                .post(`/api/V1/positions`)
+                .set(`Authorization`, token)
+                .send(newPosition);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if description is grather than 100 character`, async () => {
+            newPosition.description = faker.random.alpha(101);
             const response = await request(app)
                 .post(`/api/V1/positions`)
                 .set(`Authorization`, token)
@@ -230,6 +249,7 @@ describe(`Position Routes`, () => {
         beforeEach(async () => {
             updatePosition = {
                 'title': faker.random.alpha(10),
+                "description": faker.random.alpha(50),
                 'level': 'mid',
             }
         })
@@ -251,6 +271,22 @@ describe(`Position Routes`, () => {
         })
         it(`should get ${httpStatus.BAD_REQUEST} if title is grather than 50 character`, async () => {
             updatePosition.title = faker.random.alpha(51);
+            const response = await request(app)
+                .patch(`/api/V1/positions/${position._id}`)
+                .set(`Authorization`, token)
+                .send(updatePosition);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if description is less than 10 character`, async () => {
+            updatePosition.description = faker.random.alpha(9);
+            const response = await request(app)
+                .patch(`/api/V1/positions/${position._id}`)
+                .set(`Authorization`, token)
+                .send(updatePosition);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if description is grather than 100 character`, async () => {
+            updatePosition.description = faker.random.alpha(101);
             const response = await request(app)
                 .patch(`/api/V1/positions/${position._id}`)
                 .set(`Authorization`, token)
