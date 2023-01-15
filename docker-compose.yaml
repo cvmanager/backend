@@ -13,7 +13,7 @@ services:
     build:
       context: .
       args:
-        - NODE_ENV=development
+        - NODE_ENV=production
     restart: always
     env_file:
       - ./.env
