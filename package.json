@@ -16,9 +16,11 @@
   "dependencies": {
     "@sentry/node": "^7.14.2",
     "@types/jest": "^29.2.0",
+    "address": "^1.2.2",
     "auto-bind": "^5.0.1",
     "bcrypt": "^5.0.1",
     "cors": "^2.8.5",
+    "detect-browser": "^5.3.0",
     "dotenv": "^16.0.1",
     "express": "^4.18.1",
     "express-jsdoc-swagger": "^1.8.0",
@@ -35,6 +37,7 @@
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
     "redis": "^4.3.1",
+    "systeminformation": "^5.17.1",
     "winston": "^3.8.2"
   },
   "devDependencies": {
