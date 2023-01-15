@@ -6,6 +6,7 @@ import UnauthorizedError from './UnauthorizedError.js';
 import UserNotFoundError from './UserNotFoundError.js';
 import BadRequestError from './BadRequestError.js'
 import NotFoundError from './NotFoundError.js';
+import NoContentError from './NoContentError.js';
 import AlreadyExists from './AlreadyExists.js';
 import ManyRequestsError from './ManyRequestsError.js';
 
@@ -23,6 +24,14 @@ async function errorHandler(err, req, res, next) {
         });
     }
 
+    if (err instanceof NoContentError) {
+        return res.status(204).json({
+            message: res.__(err.message),
+            errors: err.errors ? err.errors : [],
+            data: []
+        });
+    }
+
     if (err instanceof BadRequestError) {
         return res.status(400).json({
             message: res.__(err.message),
@@ -33,7 +42,7 @@ async function errorHandler(err, req, res, next) {
 
     if (err instanceof UnauthorizedError || err instanceof jsonwebtoken.JsonWebTokenError) {
         return res.status(401).json({
-            message: err.message ? res.__(err.message) : res.__("auth.error.no_authentication"),
+            message: err.message ? res.__(err.message) : res.__("auth.errors.no_authentication"),
             errors: err.errors ? err.errors : [],
             data: []
         });
@@ -48,7 +57,7 @@ async function errorHandler(err, req, res, next) {
     }
 
     if (err instanceof AlreadyExists) {
-        return res.status(403).json({
+        return res.status(409).json({
             message: res.__(err.message),
             errors: err.errors ? err.errors : [],
             data: []
@@ -66,7 +75,7 @@ async function errorHandler(err, req, res, next) {
     if (env('NODE_ENV') == 'development') console.log(err);
 
     return res.status(500).json({
-        message: res.__("error.server_error"),
+        message: res.__("system.errors.server_error"),
         errors: [],
         data: []
     });

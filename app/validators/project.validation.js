@@ -1,33 +1,29 @@
-import { body, param } from 'express-validator';
+import { body, param, query } from 'express-validator';
 
 import generalValidator from '../helper/validator.js';
 
 class ProjectValidation {
+    index() {
+        return [
+            query('page')
+                .optional({ nullable: true, checkFalsy: true })
+                .isNumeric().withMessage('project.validations.project_page_number').trim(),
+            query('size')
+                .optional({ nullable: true, checkFalsy: true })
+                .isNumeric().withMessage('project.validations.project_size_number').trim(),
+            generalValidator
+        ];
+    }
+
     create() {
         return [
             body('company_id')
-                .notEmpty()
-                .withMessage('company.validation.company_id_required')
-                .isMongoId()
-                .withMessage('company.validation.company_id_invalid')
-                .trim(),
-            body('manager_id')
-                .notEmpty()
-                .withMessage('company.validation.manager_id_required')
-                .isMongoId()
-                .withMessage('company.validation.manager_id_invalid')
-                .trim(),
+                .notEmpty().isMongoId().withMessage('company.validations.company_id_invalid').trim(),
             body('name')
-                .notEmpty()
-                .withMessage('project.validation.project_name_required')
-                .isLength({ min: 3, max: 50 })
-                .withMessage('project.validation.project_name_length')
-                .trim(),
+                .notEmpty().isLength({ min: 3, max: 50 }).withMessage('project.validations.project_name_length').trim(),
             body('description')
-                .isLength({ min: 10, max: 100 })
-                .withMessage('project.validation.project_description_length')
                 .optional({ nullable: true, checkFalsy: true })
-                .trim(),
+                .isLength({ min: 10, max: 100 }).withMessage('project.validations.project_description_length').trim(),
             generalValidator
         ];
     }
@@ -35,31 +31,13 @@ class ProjectValidation {
     update() {
         return [
             param('id')
-                .notEmpty()
-                .withMessage('project.validation.project_id_required')
-                .isMongoId()
-                .withMessage('project.validation.project_id_invalid')
-                .trim(),
+                .notEmpty().isMongoId().withMessage('project.validations.project_id_invalid').trim(),
             body('name')
-                .isLength({ min: 1, max: 50 })
-                .withMessage('project.validation.project_name_length')
                 .optional({ nullable: true, checkFalsy: true })
-                .trim(),
-            body('company_id')
-                .isMongoId()
-                .withMessage('company.validation.company_id_invalid')
-                .optional({ nullable: true, checkFalsy: true })
-                .trim(),
-            body('manager_id')
-                .isMongoId()
-                .withMessage('company.validation.manager_id_invalid')
-                .optional({ nullable: true, checkFalsy: true })
-                .trim(),
+                .isLength({ min: 3, max: 50 }).withMessage('project.validations.project_name_length').trim(),
             body('description')
-                .isLength({ min: 10, max: 100 })
-                .withMessage('project.validation.project_description_length')
                 .optional({ nullable: true, checkFalsy: true })
-                .trim(),
+                .isLength({ min: 10, max: 100 }).withMessage('project.validations.project_description_length').trim(),
             generalValidator
         ];
     }
@@ -67,11 +45,7 @@ class ProjectValidation {
     find() {
         return [
             param('id')
-                .notEmpty()
-                .withMessage('project.validation.project_id_required')
-                .isMongoId()
-                .withMessage('project.validation.project_id_invalid')
-                .trim(),
+                .notEmpty().isMongoId().withMessage('project.validations.project_id_invalid').trim(),
             generalValidator
         ];
     }
@@ -79,11 +53,8 @@ class ProjectValidation {
     remove() {
         return [
             param('id')
-                .notEmpty()
-                .withMessage('project.validation.project_id_required')
-                .isMongoId()
-                .withMessage('project.validation.project_id_invalid')
-                .trim(),
+                .notEmpty().isMongoId()
+                .withMessage('project.validations.project_id_invalid').trim(),
             generalValidator
         ];
     }
@@ -91,17 +62,25 @@ class ProjectValidation {
     manager() {
         return [
             param('id')
-                .notEmpty()
-                .withMessage('project.validation.project_id_required')
-                .isMongoId()
-                .withMessage('project.validation.project_id_invalid')
+                .notEmpty().isMongoId()
+                .withMessage('project.validations.project_id_invalid')
                 .trim(),
             body('manager_id')
-                .notEmpty()
-                .withMessage('company.validation.manager_id_required')
-                .isMongoId()
-                .withMessage('company.validation.manager_id_invalid')
+                .notEmpty().isMongoId()
+                .withMessage('company.validations.manager_id_invalid').trim(),
+            generalValidator
+        ]
+    }
+
+    deleteManager() {
+        return [
+            param('id')
+                .notEmpty().isMongoId()
+                .withMessage('project.validations.project_id_invalid')
                 .trim(),
+            body('manager_id')
+                .notEmpty().isMongoId()
+                .withMessage('company.validations.manager_id_invalid').trim(),
             generalValidator
         ]
     }

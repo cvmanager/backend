@@ -7,29 +7,12 @@ const schema = new mongoose.Schema(
         name: {
             type: String,
             required: true,
-        },
-        cities: {
-            type: [{
-                id: mongoose.Schema.Types.ObjectId,
-                name: {
-                    type: String,
-                    required: true,
-                },
-                latitude: {
-                    type: Number,
-                    required: true,
-                },
-                longitude: {
-                    type: Number,
-                    required: true,
-                }
-            }]
         }
     }
 )
 
 schema.plugin(basePlugin)
 
-const Company = mongoose.model('provinces', schema);
+const Province = mongoose.model('provinces', schema);
 
-export default Company;
+export default Province;

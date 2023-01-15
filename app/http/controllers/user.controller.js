@@ -1,8 +1,10 @@
+import EventEmitter from '../../events/emitter.js';
 import BadRequestError from '../../exceptions/BadRequestError.js';
-import UserNotFoundError from '../../exceptions/UserNotFoundError.js';
+import NotFoundError from '../../exceptions/NotFoundError.js';
 import AppResponse from '../../helper/response.js';
 import User from '../../models/user.model.js';
 import Controller from './controller.js';
+import { events } from '../../events/subscribers/user.subscriber.js';
 
 class UserController extends Controller {
 
@@ -19,7 +21,7 @@ class UserController extends Controller {
      */
     async index(req, res, next) {
         try {
-            const { page = 1, size = 10, q: query = '' } = req.query
+            const { page = 1, size = 10, query = '' } = req.query
             let searchQuery = {}
             if (query.length > 0) {
                 searchQuery = {
@@ -35,7 +37,7 @@ class UserController extends Controller {
                 sort: { createdAt: -1 },
                 // populate: 'likes'
             });
-            AppResponse.builder(res).message("user.message.list_found").data(users).send();
+            AppResponse.builder(res).message("user.messages.list_found").data(users).send();
         } catch (err) {
             next(err);
         }
@@ -57,9 +59,9 @@ class UserController extends Controller {
     async find(req, res, next) {
         try {
             let user = await User.findById(req.params.id);
-            if (!user) throw new UserNotFoundError('user.error.user_notfound');
+            if (!user) throw new NotFoundError('user.errors.user_notfound');
 
-            AppResponse.builder(res).message("user.message.user_founded").data(user).send();
+            AppResponse.builder(res).message("user.messages.user_founded").data(user).send();
         } catch (err) {
             next(err);
         }
@@ -79,10 +81,13 @@ class UserController extends Controller {
      * @return { message.server_error}      500 - Server Error
      */
     async uploadProfileImage(req, res, next) {
-
+        
         try {
-            let user = await User.findOneAndUpdate({ _id: req.user_id }, { avatar: req.body.avatar }, { new: true });
-            AppResponse.builder(res).message("user.message.profile_image_successfuly_updated").data(user).send();
+            let user = await User.findById(req.user_id);
+            if (!user) throw new NotFoundError('user.errors.user_notfound');
+
+            user = await User.findOneAndUpdate({ _id: req.user_id }, { avatar: req.body.avatar }, { new: true });
+            AppResponse.builder(res).message("user.messages.profile_image_successfuly_updated").data(user).send();
         } catch (err) {
             next(err);
         }
@@ -104,21 +109,23 @@ class UserController extends Controller {
     async banned(req, res, next) {
         try {
             let user = await User.findById(req.params.id);
-            if (!user) throw new UserNotFoundError();
+            if (!user) throw new NotFoundError('user.errors.user_notfound');
 
-            if (user.is_banned) throw new BadRequestError('user.error.user_is_currently_blocked')
+            if (user.is_banned) throw new BadRequestError('user.errors.user_is_currently_blocked')
 
             user.is_banned = 1;
             user.banned_by = req.user_id;
             user.banned_at = new Date().toISOString();
             await user.save();
 
-            AppResponse.builder(res).message('user.message.user_successfully_blocked').data(user).send();
+            EventEmitter.emit(events.BANNED, user)
+            AppResponse.builder(res).message('user.messages.user_successfully_blocked').data(user).send();
 
         } catch (err) {
             next(err);
         }
     }
+
     /**
      * GET /users/getMe
      * @summary Get authenticated user information
@@ -133,9 +140,9 @@ class UserController extends Controller {
     async getMe(req, res, next) {
         try {
             let user = await User.findById(req.user_id);
-            if (!user) throw new UserNotFoundError();
+            if (!user) throw new NotFoundError('user.errors.user_notfound');
 
-            AppResponse.builder(res).data(user).message('user.message.user_founded').send();
+            AppResponse.builder(res).data(user).message('user.messages.user_founded').send();
         } catch (err) {
             next(err);
         }

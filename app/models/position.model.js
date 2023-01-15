@@ -1,20 +1,18 @@
 import mongoose from 'mongoose';
-
+import i18n from '../middlewares/lang.middleware.js'
 import basePlugin from '../helper/mongoose/base.plugin.js';
-import Project from './project.model.js';
-import Company from './conpany.model.js';
 
 const schema = new mongoose.Schema(
     {
-        project_id: {
-            type: mongoose.Schema.Types.ObjectId,
-            required: true,
-            ref: Project
-        },
         company_id: {
             type: mongoose.Schema.Types.ObjectId,
             required: true,
-            ref: Company
+            ref: 'companies'
+        },
+        project_id: {
+            type: mongoose.Schema.Types.ObjectId,
+            required: true,
+            ref: 'projects'
         },
         title: {
             type: String,
@@ -22,15 +20,34 @@ const schema = new mongoose.Schema(
         },
         level: {
             type: String,
-            required: true,
-            enum: i18n.__("enums.positions")
+            default: null,
+            enum: i18n.__("position.enums.level")
         },
         is_active: {
             type: Boolean,
             default: 1
+        },
+        logo: {
+            type: String,
+            default: null
+        },
+        description: {
+            type: String,
+            default: null
+        },
+        created_by: {
+            type: mongoose.Schema.Types.ObjectId,
+            required: true,
+            ref: 'users'
         }
     }
 )
+
+schema.virtual("managers" , {
+    ref : 'managers',
+    localField : '_id',
+    foreignField : 'entity_id',
+})
 
 schema.plugin(basePlugin)
 

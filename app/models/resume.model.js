@@ -14,6 +14,11 @@ const schema = new mongoose.Schema(
             required: true,
             ref: 'projects',
         },
+        position_id: {
+            type: mongoose.Schema.Types.ObjectId,
+            required: true,
+            ref: 'positions',
+        },
         firstname: {
             type: String,
             required: true
@@ -25,7 +30,7 @@ const schema = new mongoose.Schema(
         gender: {
             type: String,
             required: true,
-            enum: i18n.__("enums.gender")
+            enum: i18n.__("system.enums.gender")
         },
         email: {
             type: String,
@@ -38,31 +43,30 @@ const schema = new mongoose.Schema(
         marital_status: {
             type: String,
             required: true,
-            enum: i18n.__("enums.marital_status")
+            enum: i18n.__("system.enums.marital_status")
         },
         status: {
             type: String,
-            required: true
+            required: true,
+            default: 'pending',
+            enum: i18n.__("resume.enums.status")
         },
         mobile: {
             type: String,
             required: true
         },
         residence_city: {
-            type: String,
+            type: mongoose.Schema.Types.ObjectId,
             required: true
         },
         work_city: {
-            type: String,
+            type: mongoose.Schema.Types.ObjectId,
             required: true
         },
         education: {
             type: String,
-            required: true
-        },
-        major: {
-            type: String,
-            required: true
+            required: true,
+            enum: i18n.__("system.enums.education")
         },
         phone: {
             type: String,
@@ -70,11 +74,15 @@ const schema = new mongoose.Schema(
         },
         min_salary: {
             type: Number,
-            default: null
+            default: null,
+            minlength: 0,
+            maxlength: 1000000000
         },
         max_salary: {
             type: Number,
-            default: null
+            default: null,
+            minlength: 0,
+            maxlength: 1000000000
         },
         work_experience: {
             type: Number,
@@ -82,10 +90,37 @@ const schema = new mongoose.Schema(
         },
         military_status: {
             type: String,
-            default: null
+            default: null,
+            enum: i18n.__("system.enums.military_status")
         },
         status_updated_at: {
             type: Date,
+            default: null
+        },
+        status_history: {
+            type: [
+                {
+                    old_status: {
+                        type: String,
+                        required: true,
+                        enum: i18n.__("resume.enums.status")
+                    },
+                    new_status: {
+                        type: String,
+                        required: true,
+                        enum: i18n.__("resume.enums.status")
+                    },
+                    created_by: {
+                        type: mongoose.Schema.Types.ObjectId,
+                        required: true,
+                        ref: 'users'
+                    },
+                    createdAt: {
+                        type: mongoose.Schema.Types.Date,
+                        required: true
+                    },
+                }
+            ],
             default: null
         },
         created_by: {

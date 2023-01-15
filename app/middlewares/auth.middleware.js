@@ -7,7 +7,7 @@ import env from '../helper/env.js';
 async function verifyToken(req, res, next) {
     try {
         if (!req.headers.authorization) {
-            throw new BadRequestError('auth.error.token_not_sended');
+            throw new BadRequestError('auth.errors.token_not_sended');
         }
         let token = req.headers.authorization.split(' ')[1];
         let payload = await jsonwebtoken.verify(token, env('JWT_SECRET_TOKEN'));
@@ -21,7 +21,7 @@ async function verifyToken(req, res, next) {
 async function verifyRefrshToken(req, res, next) {
     try {
         const token = req.body.token;
-        if (token === null) throw new BadRequestError('auth.error.token_not_sended');
+        if (token === null) throw new BadRequestError('auth.errors.token_not_sended');
 
         let payload = await jsonwebtoken.verify(token, env('JWT_SECRET_REFRESH_TOKEN'));
         req.user_id = payload.sub;
@@ -29,7 +29,7 @@ async function verifyRefrshToken(req, res, next) {
         const redisKey = payload.sub.toString() + env("REDIS_KEY_REF_TOKENS")
         const tokenExist = await redisClient.sIsMember(redisKey, token)
 
-        if (!tokenExist) throw new BadRequestError('auth.error.token_not_stored');
+        if (!tokenExist) throw new BadRequestError('auth.errors.token_not_stored');
 
         next();
     } catch (err) {

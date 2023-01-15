@@ -12,14 +12,21 @@ const schema = new mongoose.Schema(
             type: String,
             default: null
         },
-        manager_id: {
-            type: mongoose.Schema.Types.ObjectId,
-            required: true,
-            ref: 'users'
-        },
         is_active: {
             type: Boolean,
             default: 1
+        },
+        description: {
+            type: String,
+            default: null
+        },
+        phone: {
+            type: String,
+            default: null
+        },
+        address: {
+            type: String,
+            default: null
         },
         created_by: {
             type: mongoose.Schema.Types.ObjectId,
@@ -33,6 +40,12 @@ schema.virtual("projects", {
     ref: 'projects',
     localField: "_id",
     foreignField: "company_id"
+});
+
+schema.virtual("managers", {
+    ref: 'managers',
+    localField: "_id",
+    foreignField: "entity_id"
 });
 
 schema.plugin(basePlugin)

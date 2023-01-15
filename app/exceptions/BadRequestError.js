@@ -1,5 +1,5 @@
 class BadRequestError extends Error {
-    message = "error.bad_request";
+    message = "system.errors.bad_request";
     // status = 404;
     constructor(message, validationErr = []) {
         super(message);

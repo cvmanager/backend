@@ -1,8 +1,7 @@
 import mongoose from 'mongoose';
 
 import basePlugin from '../helper/mongoose/base.plugin.js';
-import Company from './company.model.js';
-import User from './user.model.js';
+
 
 const schema = new mongoose.Schema(
     {
@@ -10,11 +9,6 @@ const schema = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             required: true,
             ref: 'companies'
-        },
-        manager_id: {
-            type: mongoose.Schema.Types.ObjectId,
-            required: true,
-            ref: 'users'
         },
         name: {
             type: String,
@@ -28,6 +22,10 @@ const schema = new mongoose.Schema(
             type: Boolean,
             default: 1
         },
+        logo: {
+            type: String,
+            default: null
+        },
         created_by: {
             type: mongoose.Schema.Types.ObjectId,
             required: true,
@@ -35,6 +33,13 @@ const schema = new mongoose.Schema(
         }
     }
 );
+
+
+schema.virtual("managers", {
+    ref: 'managers',
+    localField: "_id",
+    foreignField: "entity_id"
+});
 
 schema.plugin(basePlugin)
 

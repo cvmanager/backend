@@ -6,6 +6,7 @@
  * @property { string }     name
  * @property { string }     description
  * @property { boolean }    is_active
+ * @property { string }     logo
  * @property { Date }       created_by
  * @property { string }     createdAt
  * @property { string }     updatedAt
@@ -35,4 +36,18 @@
 * @property { array<Project> } data
 * @property { array<> }        errors
 */
+
+
+/**
+* project success response
+* @typedef  { object } project.set_manager
+ * @property { string } manager_id - user id
+*/
+
+/**
+* project delete manager response
+* @typedef  { object } project.delete_manager
+ * @property { string } manager_id - user id
+*/
+
 

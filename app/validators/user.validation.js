@@ -1,14 +1,25 @@
-import { param, body } from 'express-validator';
+import { param, body, query } from 'express-validator';
 
 import generalValidator from '../helper/validator.js';
 class UserValidation {
+    index() {
+        return [
+            query('page')
+                .optional({ nullable: true, checkFalsy: true })
+                .isNumeric().withMessage('company.validations.company_page_number').trim(),
+            query('size')
+                .optional({ nullable: true, checkFalsy: true })
+                .isNumeric().withMessage('company.validations.company_size_number').trim(),
+            generalValidator
+        ];
+    }
     find() {
         return [
             param('id')
                 .notEmpty()
-                .withMessage('user.validator.user_id_required')
+                .withMessage('user.validations.user_id_required')
                 .isMongoId()
-                .withMessage('user.validator.user_id_invalid')
+                .withMessage('user.validations.user_id_invalid')
                 .trim(),
             generalValidator
         ];
@@ -18,7 +29,7 @@ class UserValidation {
         return [
             body('avatar')
                 .notEmpty()
-                .withMessage('user.validator.avatar_required')
+                .withMessage('user.validations.avatar_required')
                 .trim(),
             generalValidator
         ];
@@ -28,9 +39,9 @@ class UserValidation {
         return [
             param('id')
                 .notEmpty()
-                .withMessage('user.validator.user_id_required')
+                .withMessage('user.validations.user_id_required')
                 .isMongoId()
-                .withMessage('user.validator.user_id_invalid')
+                .withMessage('user.validations.user_id_invalid')
                 .trim(),
             generalValidator
         ];

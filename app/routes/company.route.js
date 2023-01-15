@@ -6,11 +6,13 @@ const companyRouter = express.Router();
 
 
 companyRouter
-    .get('/', CompanyController.index)
+    .get('/', CompanyValidation.index(), CompanyController.index)
     .get('/:id', CompanyValidation.find(), CompanyController.find)
     .post('/', CompanyValidation.create(), CompanyController.create)
     .patch('/:id', CompanyValidation.update(), CompanyController.update)
     .delete('/:id', CompanyValidation.remove(), CompanyController.delete)
     .patch('/:id/manager', CompanyValidation.manager(), CompanyController.manager)
-
+    .delete('/:id/manager', CompanyValidation.deleteManager(), CompanyController.deleteManager)
+    .get('/:id/managers', CompanyValidation.find(), CompanyController.getManagers)
+    .get('/:id/projects', CompanyValidation.find(), CompanyController.getProjects)
 export default companyRouter;
