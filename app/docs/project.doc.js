@@ -6,6 +6,7 @@
  * @property { string }     name
  * @property { string }     description
  * @property { boolean }    is_active
+ * @property { string }     logo
  * @property { Date }       created_by
  * @property { string }     createdAt
  * @property { string }     updatedAt
