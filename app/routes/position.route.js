@@ -5,10 +5,11 @@ import PositionController from '../http/controllers/position.controller.js'
 const positionRouter = express.Router();
 
 positionRouter
-    .get('/', PositionController.index)
+    .get('/', PositionValidation.index(), PositionController.index)
     .get('/:id', PositionValidation.find(), PositionController.find)
     .post('/', PositionValidation.create(), PositionController.create)
     .patch('/:id', PositionValidation.update(), PositionController.update)
+    .patch('/:id/manager', PositionValidation.manager(), PositionController.manager)
     .delete('/:id', PositionValidation.remove(), PositionController.delete)
 
 export default positionRouter;

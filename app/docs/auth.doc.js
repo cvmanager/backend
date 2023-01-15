@@ -8,6 +8,7 @@
  * @property { string } password
  * @property { string } mobile_verified_at
  * @property { string } avatar
+ * @property { string } username
  * @property { string } is_banned
  * @property { Date }   created_by
  * @property { Date }   createdAt
@@ -27,6 +28,7 @@
  * @typedef { object } auth.signup
  * @property { string } firstname.required
  * @property { string } lastname.required
+ * @property { string } username.required
  * @property { string } mobile.required
  * @property { string } password.required
  */
@@ -35,6 +37,12 @@
  * refresh
  * @typedef { object } auth.refresh
  * @property { string } token.required
+ */
+
+/**
+ * check username
+ * @typedef { object } auth.checkUsername
+ * @property { string } username.required
  */
 
 /**

@@ -39,6 +39,7 @@
 			"password_required": "The password field is required",
 			"password_length": "The password field has a character limit",
 			"firstname_required": "The firstname field is required",
+			"username_required": "The username field is required",
 			"firstname_length": "The firstname field has a character limit",
 			"lastname_required": "The lastname field is required",
 			"lastname_length": "The lastname field has a character limit",
@@ -49,12 +50,15 @@
 			"user_successfuly_created": "The account was created successfully",
 			"success_login": "You have successfully logged into your account",
 			"success_logout": "You have successfully logged out",
-			"token_verified": "Token Verified"
+			"token_verified": "Token Verified",
+			"username_exist": "The username already exists"
 		},
 		"errors": {
 			"user_already_exists": "There is already a user with this information",
 			"invalid_credentials": "The username or password is incorrect",
-			"token_not_same": "auth.error.token_not_same",
+			"username_notfound": "The username not found",
+			"username_notsend": "The username not send",
+			"token_not_same": "Token not same",
 			"token_not_sended": "Authentication key not sent",
 			"token_not_stored": "Authentication key not stored"
 		}
@@ -68,13 +72,23 @@
 		"enums": {},
 		"validations": {
 			"company_id_require": "company is required",
-			"company_id_invalid": "company invalid"
+			"company_id_invalid": "company invalid",
+			"company_page_number": "company page must by number",
+			"company_size_number": "company size must by number"
 		},
 		"messages": {
-			"company_list_found": "company list found",
-			"company_successfuly_created": "Company successfuly created"
+			"company_list_found": "Company list found",
+			"company_successfuly_created": "Company successfuly created",
+			"company_managers_found": "Company managers successfuly founded",
+			"company_found": "Company Successfuly founded",
+			"company_projects_found": "Company projects successfuly founded",
+			"company_successfuly_updated": "Company successfuly updated",
+			"company_manager_successfully_created": "company manager successfully created"
 		},
-		"errors": {}
+		"errors": {
+			"the_user_is_currently_an_manager_for_company": "The user is currently an manager for company",
+			"the_user_is_not_manager_for_this_company": "This user is not  manager for this company"
+		}
 	},
 	"position": {
 		"enums": {
@@ -84,7 +98,10 @@
 				"junior"
 			]
 		},
-		"validations": {},
+		"validations": {
+			"position_page_number": "position page must by number",
+			"position_size_number": "position size must by number"
+		},
 		"messages": {
 			"position_list_found": "position list",
 			"position_found" : "position found"
@@ -102,13 +119,23 @@
 	"project": {
 		"enums": {},
 		"validations": {
-			"project_id_invalid": "project id invalid"
+			"project_id_invalid": "project id invalid",
+			"project_page_number": "project page must by number",
+			"project_size_number": "project size must by number"
 		},
 		"messages": {
 			"project_found": "Project Found",
-			"project_successfuly_created": "Project Successfuly Created"
+			"project_successfully_created": "Project successfully Created",
+			"project_successfully_updated": "Project successfully updated",
+			"project_manager_successfully_updated": "Project manager successfully updated",
+			"project_manager_successfully_deleted": "Project manager successfully deleted",
+			"project_successfully_deleted": "project successfully deleted"
 		},
-		"errors": {}
+		"errors": {
+			"the_user_is_currently_an_manager_for_project": "The user is currently an manager for project",
+			"the_user_is_not_an_manager_for_project": "This user is not defined for the project",
+			"the_owner_manager_cannot_be_deleted": "The owner manager cannot be deleted"
+		}
 	},
 	"resume": {
 		"enums": {
@@ -136,6 +163,7 @@
 			"email_required": "resume.validation.email_required",
 			"email_invalid": "resume.validation.email_invalid",
 			"birth_year_required": "resume.validation.birth_year_required",
+			"birth_year_number": "resume.validation.birth_year_number",
 			"birth_year_length": "resume.validation.birth_year_length",
 			"marital_status_required": "resume.validation.marital_status_required",
 			"marital_status_incorrect": "resume.validation.marital_status_incorrect",
@@ -147,11 +175,20 @@
 			"education_required": "resume.validation.education_required",
 			"education_incorrect": "resume.validation.education_incorrect",
 			"major_required": "resume.validation.major_required",
-			"major_length": "resume.validation.major_length"
+			"major_length": "resume.validation.major_length",
+			"max_comment_length": "Comment has be between 5 and 1000 character",
+			"resume_page_number": "resume page must by number",
+			"resume_size_number": "resume size must by number"
 		},
-		"messages": {},
+		"messages": {
+			"resume_successfuly_created": "resume successfuly created",
+			"resume_comment_successfuly_created": "resume comment successfuly created",
+			"resume_comments_list_found": "resume comment list found"
+		},
 		"errors": {
 			"resume_notfound": "Sorry, Resume not found",
+			"resume_comments_no_content": "Sorry, This resume  dont have any comment",
+			"resume_comments_notfound": "Sorry, Resume not have any comment",
 			"can_not_update_status_to_current": "It is not possible to update the status to the current status"
 		}
 	},
@@ -164,6 +201,16 @@
 		},
 		"errors": {
 			"user_notfound": "The desired user was not found"
+		}
+	},
+	"manager": {
+		"enums": {},
+		"validations": {},
+		"messages": {
+			"manager_successfuly_created": "manager successfuly set for position"
+		},
+		"errors": {
+			"duplicate": "This manager set for this position already"
 		}
 	}
 }

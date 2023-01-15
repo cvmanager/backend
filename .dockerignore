@@ -2,3 +2,6 @@
 .dockerignore
 docker-compose.yaml
 Dokcerfile
+mongo_db
+redis_db
+package-lock.json

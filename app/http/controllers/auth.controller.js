@@ -2,12 +2,15 @@ import bcrypt from 'bcrypt'
 
 import { generateJwtToken, generateJwtRefeshToken } from '../../helper/jwt.js'
 import UserNotFoundError from '../../exceptions/UserNotFoundError.js';
+import NotFoundError from '../../exceptions/NotFoundError.js';
 import BadRequestError from '../../exceptions/BadRequestError.js';
 import redisClient from '../../helper/redis_client.js';
 import AppResponse from '../../helper/response.js';
 import User from '../../models/user.model.js';
 import Controller from './controller.js';
 import env from '../../helper/env.js';
+import EventEmitter from '../../events/emitter.js';
+import { events } from '../../events/subscribers/user.subscriber.js';
 
 class AuthController extends Controller {
 
@@ -38,6 +41,7 @@ class AuthController extends Controller {
             const access_token = await generateJwtToken(user._id)
             const refresh_token = await generateJwtRefeshToken(user._id);
 
+            EventEmitter.emit(events.LOGIN, user);
             AppResponse.builder(res).message('auth.messages.success_login').data({ access_token, refresh_token }).send();
         } catch (err) {
             next(err);
@@ -68,12 +72,14 @@ class AuthController extends Controller {
                 firstname: req.body.firstname,
                 lastname: req.body.lastname,
                 mobile: req.body.mobile,
+                username: req.body.username,
                 password: hash_password,
             });
 
             const access_token = await generateJwtToken({ _id: user._id, role: user.role })
             const refresh_token = await generateJwtRefeshToken(user._id);
 
+            EventEmitter.emit(events.SINGUP, user);
             AppResponse.builder(res).status(201).message("auth.messages.user_successfuly_created").data({ access_token, refresh_token }).send();
         } catch (err) {
             next(err);
@@ -148,6 +154,30 @@ class AuthController extends Controller {
      */
     async verifyToken(req, res, next) {
         AppResponse.builder(res).message("auth.messages.token_verified").send();
+    }
+
+    /**
+     * POST /auth/check-username
+     * 
+     * @summary Check and confirm username
+     * @tags Auth 
+     * @security BearerAuth
+     *
+     * @param { auth.checkUsername }                request.body - refresh info - application/json
+     * 
+     * @return { auth.success }                     200 - found successfuly 
+     * @return { message.UserNotFoundError }        404 - not found 
+     * @return { message.server_error  }            500 - Server Error
+     */
+    async checkusername(req, res, next) {
+        try {
+            let user = await User.findOne({ username: req.body.username });
+            if (!user) throw new NotFoundError('auth.errors.username_notfound');
+
+            AppResponse.builder(res).message("auth.messages.username_exist").send();
+        } catch (err) {
+            next(err);
+        }
     }
 }
 
