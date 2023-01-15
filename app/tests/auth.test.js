@@ -143,12 +143,12 @@ describe("Auth Routes", () => {
                 .send(newUser);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
-        // it(`should get ${httpStatus.CREATED} if all data is correct`, async () => {
-        //     const response = await request(app)
-        //         .post(`/api/V1/auth/signup`)
-        //         .send(newUser);
-        //     expect(response.statusCode).toBe(httpStatus.CREATED);
-        // })
+        it(`should get ${httpStatus.CREATED} if all data is correct`, async () => {
+            const response = await request(app)
+                .post(`/api/V1/auth/signup`)
+                .send(newUser);
+            expect(response.statusCode).toBe(httpStatus.CREATED);
+        })
     })
 
     describe(`POST /login`, () => {
@@ -225,12 +225,35 @@ describe("Auth Routes", () => {
                 .send(newUserIsBanned);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
-        // it(`should get ${httpStatus.OK} if user is loged in`, async () => {
-        //     const response = await request(app)
-        //         .post(`/api/V1/auth/login`)
-        //         .send(loginUser);
-        //     expect(response.statusCode).toBe(httpStatus.OK);
-        // })
+        it(`should get ${httpStatus.OK} if user is loged in`, async () => {
+            const response = await request(app)
+                .post(`/api/V1/auth/login`)
+                .send(loginUser);
+            expect(response.statusCode).toBe(httpStatus.OK);
+        })
+    })
+
+    describe(`POST /verify-token`, () => {
+        let loginUser;
+        beforeEach(async () => {
+            loginUser = {
+                "mobile": user.mobile,
+                "password": '12345678'
+            }
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if token is not send`, async () => {
+            const response = await request(app)
+                .post(`/api/V1/auth/verify-token`)
+                .send(loginUser);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.OK} if token is verified`, async () => {
+            const response = await request(app)
+                .post(`/api/V1/auth/verify-token`)
+                .set('Authorization', token)
+                .send(loginUser);
+            expect(response.statusCode).toBe(httpStatus.OK);
+        })
     })
 
 })
