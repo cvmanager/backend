@@ -103,11 +103,17 @@
 			"position_size_number": "position size must by number"
 		},
 		"messages": {
-			"position_successfuly_created": "Position successfuly created"
+			"position_list_found": "position list",
+			"position_found" : "position found"
 		},
 		"errors": {
-			"position_not_found": "position not found",
-			"position_already_exists": "position already exists"
+			"position_notfound" : "position not found",
+			"position_already_exists" : "position already exists",
+			"position_successfuly_created" : "position successfuly created",
+			"position_successfuly_updated" : "position successfuly updated",
+			"position_successfuly_deleted" : "position successfuly deleted",
+			"position_not_found":"position not found"
+
 		}
 	},
 	"project": {
