@@ -247,6 +247,35 @@ class CompanyController extends Controller {
     }
 
     /**
+    * GET /companies/{id}/projects
+    * 
+    * @summary gets  companies projects list by company id
+    * @tags Company
+    * @security BearerAuth
+    * 
+    * @param  { string } id.path.required - company id
+    * 
+    * @return { company.success }               200 - success response
+    * @return { message.badrequest_error }      400 - bad request respone
+    * @return { message.badrequest_error }      404 - not found respone
+    * @return { message.unauthorized_error }    401 - UnauthorizedError
+    * @return { message.server_error  }         500 - Server Error
+    */
+    async getProjects(req, res, next) {
+        try {
+            const company = await Company.findById(req.params.id).populate('created_by');
+            if (!company) throw new NotFoundError('company.errors.company_notfound');
+
+            let projects = await Project.find({ 'company_id': company.id });
+
+            AppResponse.builder(res).message('company.messages.company_projects_found').data(projects).send();
+        } catch (err) {
+            next(err);
+        }
+    }
+
+
+       /**
     * GET /companies/{id}/managers
     * 
     * @summary gets  companies managers list by company id
@@ -261,7 +290,7 @@ class CompanyController extends Controller {
     * @return { message.unauthorized_error }    401 - UnauthorizedError
     * @return { message.server_error  }         500 - Server Error
     */
-    async getManagers(req, res, next) {
+       async getManagers(req, res, next) {
         try {
             const company = await Company.findById(req.params.id).populate('created_by');
             if (!company) throw new NotFoundError('company.errors.company_notfound');
