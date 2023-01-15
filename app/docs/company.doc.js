@@ -3,6 +3,9 @@
 * @typedef { object } Company
 * @property { string }  name
 * @property { string }  logo
+* @property { string }  description
+* @property { string }  phone
+* @property { string }  address
 * @property { boolean } is_active
 * @property { string }  created_by
 * @property { string }  _id
@@ -14,6 +17,9 @@
 * create company
 * @typedef { object } company.create
 * @property { string } name.required - company name
+* @property { string } description - company name
+* @property { string } phone - company name
+* @property { string } address - company name
 */
 
 /**

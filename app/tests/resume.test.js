@@ -206,7 +206,7 @@ describe("Resumes Routes", () => {
                 "mobile": faker.phone.number('989#########'),
                 "residence_city": Types.ObjectId(),
                 "work_city": Types.ObjectId(),
-                "phone": 1324567891,
+                "phone": faker.phone.number('989#########'),
                 "min_salary": 100000,
                 "max_salary": 100000,
                 "work_experience": 4,
@@ -424,7 +424,7 @@ describe("Resumes Routes", () => {
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
         it(`should get ${httpStatus.BAD_REQUEST} if phone is less than 9 character`, async () => {
-            newResume.phone = 12346578;
+            newResume.phone = faker.phone.number('98######');
             const response = await request(app)
                 .post(`/api/V1/resumes`)
                 .set(`Authorization`, token)
@@ -432,7 +432,7 @@ describe("Resumes Routes", () => {
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
         it(`should get ${httpStatus.BAD_REQUEST} if phone is grather than 12 character`, async () => {
-            newResume.phone = 123456789101112;
+            newResume.phone = faker.phone.number('98###########');
             const response = await request(app)
                 .post(`/api/V1/resumes`)
                 .set(`Authorization`, token)
@@ -527,7 +527,7 @@ describe("Resumes Routes", () => {
                 "mobile": faker.phone.number('989#########'),
                 "residence_city": Types.ObjectId(),
                 "work_city": Types.ObjectId(),
-                "phone": 1324567891,
+                "phone": faker.phone.number('989#########'),
                 "min_salary": 100000,
                 "max_salary": 100000,
                 "work_experience": 4,
@@ -654,7 +654,7 @@ describe("Resumes Routes", () => {
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
         it(`should get ${httpStatus.BAD_REQUEST} if phone is less than 9 character`, async () => {
-            updateResume.phone = 12346578;
+            updateResume.phone = faker.phone.number('98######');
             const response = await request(app)
                 .patch(`/api/V1/resumes/${resume._id}`)
                 .set(`Authorization`, token)
@@ -662,7 +662,7 @@ describe("Resumes Routes", () => {
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
         it(`should get ${httpStatus.BAD_REQUEST} if phone is grather than 12 character`, async () => {
-            updateResume.phone = 123456789101112;
+            updateResume.phone = faker.phone.number('98###########');
             const response = await request(app)
                 .patch(`/api/V1/resumes/${resume._id}`)
                 .set(`Authorization`, token)
