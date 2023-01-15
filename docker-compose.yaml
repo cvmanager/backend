@@ -35,7 +35,6 @@ services:
       MONGO_INITDB_DATABASE: cvmanager
     volumes:
       - ./mongo_db:/data/db
-      - ./init-mongo.sh:/docker-entrypoint-initdb.d/init-mongo.sh:ro
   cv_redis:
     image: redis:7.0-alpine
     restart: always
