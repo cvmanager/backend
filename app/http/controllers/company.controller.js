@@ -43,7 +43,8 @@ class CompanyController extends Controller {
                         path: 'managers',
                         populate: { path: 'user_id', select: ['firstname', 'lastname', 'avatar'] },
                         select: ['user_id']
-                    }
+                    },
+                    { path: 'created_by', select: ['firstname', 'lastname'] }
                 ]
             });
             AppResponse.builder(res).message("company.messages.company_list_found").data(companyList).send();
