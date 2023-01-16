@@ -431,4 +431,30 @@ describe(`Position Routes`, () => {
         })
 
     })
+
+    describe(`GET /positions/{id}/managers`, () => {
+        it(`should get ${httpStatus.BAD_REQUEST} position id is not a mongo id`, async () => {
+            const response = await request(app)
+                .get(`/api/V1/positions/fakeID/managers`)
+                .set('Authorization', token)
+                .send();
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.NOT_FOUND} positions id is not valid`, async () => {
+            const response = await request(app)
+                .get(`/api/V1/positions/${Types.ObjectId()}/managers`)
+                .set('Authorization', token)
+                .send();
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+
+        it(`should get ${httpStatus.OK} positions managers list `, async () => {
+            const response = await request(app)
+                .get(`/api/V1/positions/${position._id}/managers`)
+                .set('Authorization', token)
+                .send();
+            expect(response.statusCode).toBe(httpStatus.OK);
+        })
+    })
 })

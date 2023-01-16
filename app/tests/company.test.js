@@ -255,7 +255,7 @@ describe("Company Routes", () => {
                 "address": faker.random.alpha(100)
             }
         })
-        
+
         it(`should get ${httpStatus.BAD_REQUEST} if company id is not valid`, async () => {
             const response = await request(app)
                 .patch(`/api/V1/companies/fakeId`)
@@ -551,30 +551,32 @@ describe("Company Routes", () => {
 
 
 
-    it(`should get ${httpStatus.BAD_REQUEST} company id is not a mongo id`, async () => {
-        const response = await request(app)
-            .get(`/api/V1/companies/fakeID/managers`)
-            .set('Authorization', token)
-            .send();
-        expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
-    })
+    describe("GET /companies/{id}/managers", () => {
 
-    it(`should get ${httpStatus.NOT_FOUND} company id is not valid`, async () => {
-        const response = await request(app)
-            .get(`/api/V1/companies/${Types.ObjectId()}/managers`)
-            .set('Authorization', token)
-            .send();
-        expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
-    })
+        it(`should get ${httpStatus.BAD_REQUEST} company id is not a mongo id`, async () => {
+            const response = await request(app)
+                .get(`/api/V1/companies/fakeID/managers`)
+                .set('Authorization', token)
+                .send();
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.NOT_FOUND} company id is not valid`, async () => {
+            const response = await request(app)
+                .get(`/api/V1/companies/${Types.ObjectId()}/managers`)
+                .set('Authorization', token)
+                .send();
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
 
 
-    it(`should get ${httpStatus.OK} company managers list `, async () => {
-        const response = await request(app)
-            .get(`/api/V1/companies/${company._id}/managers`)
-            .set('Authorization', token)
-            .send();
-        expect(response.statusCode).toBe(httpStatus.OK);
+        it(`should get ${httpStatus.OK} company managers list `, async () => {
+            const response = await request(app)
+                .get(`/api/V1/companies/${company._id}/managers`)
+                .set('Authorization', token)
+                .send();
+            expect(response.statusCode).toBe(httpStatus.OK);
+        })
     })
-})
 
 })

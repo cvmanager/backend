@@ -11,5 +11,6 @@ positionRouter
     .patch('/:id', PositionValidation.update(), PositionController.update)
     .patch('/:id/manager', PositionValidation.manager(), PositionController.manager)
     .delete('/:id', PositionValidation.remove(), PositionController.delete)
+    .get('/:id/managers', PositionValidation.find(), PositionController.getManagers)
 
 export default positionRouter;

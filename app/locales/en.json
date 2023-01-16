@@ -110,7 +110,8 @@
 		},
 		"messages": {
 			"position_list_found": "position list",
-			"position_found" : "position found"
+			"position_found" : "position found",
+			"position_managers_found" : "position managers successfuly founded"
 		},
 		"errors": {
 			"position_notfound" : "position not found",
