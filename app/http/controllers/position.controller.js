@@ -219,13 +219,13 @@ class PositionController extends Controller {
     /**
     * GET /positions/{id}/managers
     * 
-    * @summary gets  companies managers list by company id
-    * @tags Company
+    * @summary gets  position managers list by position id
+    * @tags Position
     * @security BearerAuth
     * 
-    * @param  { string } id.path.required - company id
+    * @param  { string } id.path.required - position id
     * 
-    * @return { company.success }               200 - success response
+    * @return { position.success }              200 - success response
     * @return { message.badrequest_error }      400 - bad request respone
     * @return { message.badrequest_error }      404 - not found respone
     * @return { message.unauthorized_error }    401 - UnauthorizedError
