@@ -255,7 +255,7 @@ describe("Company Routes", () => {
                 "address": faker.random.alpha(100)
             }
         })
-        
+
         it(`should get ${httpStatus.BAD_REQUEST} if company id is not valid`, async () => {
             const response = await request(app)
                 .patch(`/api/V1/companies/fakeId`)

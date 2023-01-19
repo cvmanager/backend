@@ -245,6 +245,35 @@ class PositionController extends Controller {
         }
     }
 
+
+       /**
+    * GET /positions/{id}/managers
+    * 
+    * @summary gets  position managers list by position id
+    * @tags Position
+    * @security BearerAuth
+    * 
+    * @param  { string } id.path.required - position id
+    * 
+    * @return { position.success }              200 - success response
+    * @return { message.badrequest_error }      400 - bad request respone
+    * @return { message.badrequest_error }      404 - not found respone
+    * @return { message.unauthorized_error }    401 - UnauthorizedError
+    * @return { message.server_error  }         500 - Server Error
+    */
+       async getManagers(req, res, next) {
+        try {
+            const position = await Position.findById(req.params.id).populate('created_by');
+            if (!position) throw new NotFoundError('position.errors.position_notfound');
+
+            let managers = await Manager.find({ 'entity': "positions", 'entity_id': position.id }).populate('user_id');
+
+            AppResponse.builder(res).message('position.messages.position_managers_found').data(managers).send();
+        } catch (err) {
+            next(err);
+        }
+    }
+
 }
 
 export default new PositionController
