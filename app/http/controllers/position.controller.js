@@ -8,6 +8,7 @@ import AppResponse from '../../helper/response.js';
 import Controller from './controller.js';
 import EventEmitter from '../../events/emitter.js';
 import { events } from '../../events/subscribers/positions.subscriber.js'
+import Resume from '../../models/resume.model.js';
 
 class PositionController extends Controller {
 
@@ -217,6 +218,35 @@ class PositionController extends Controller {
     }
 
     /**
+     * GET /positions/{id}/resumes
+     * 
+     * @summary gets  positions resumes list by position id
+     * @tags Position
+     * @security BearerAuth
+     * 
+     * @param  { string } id.path.required - company id
+     * 
+     * @return { position.success }              200 - success response
+     * @return { message.badrequest_error }      400 - bad request respone
+     * @return { message.badrequest_error }      404 - not found respone
+     * @return { message.unauthorized_error }    401 - UnauthorizedError
+     * @return { message.server_error  }         500 - Server Error
+     */
+    async getResumes(req, res, next) {
+        try {
+            const position = await Position.findById(req.params.id).populate('created_by');
+            if (!position) throw new NotFoundError('position.errors.position_notfound');
+
+            let resumes = await Resume.find({ 'position_id': position.id }).populate('project_id').populate('company_id');
+
+            AppResponse.builder(res).message('company.messages.company_resumes_found').data(resumes).send();
+        } catch (err) {
+            next(err);
+        }
+    }
+
+
+       /**
     * GET /positions/{id}/managers
     * 
     * @summary gets  position managers list by position id
@@ -231,7 +261,7 @@ class PositionController extends Controller {
     * @return { message.unauthorized_error }    401 - UnauthorizedError
     * @return { message.server_error  }         500 - Server Error
     */
-    async getManagers(req, res, next) {
+       async getManagers(req, res, next) {
         try {
             const position = await Position.findById(req.params.id).populate('created_by');
             if (!position) throw new NotFoundError('position.errors.position_notfound');
