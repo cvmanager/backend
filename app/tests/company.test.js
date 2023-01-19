@@ -80,6 +80,9 @@ describe("Company Routes", () => {
             expect(data).toHaveProperty('_id')
             expect(data).toHaveProperty('name')
             expect(data).toHaveProperty('logo')
+            expect(data).toHaveProperty('description')
+            expect(data).toHaveProperty('phone')
+            expect(data).toHaveProperty('address')
             expect(data).toHaveProperty('is_active')
             expect(data).toHaveProperty('created_by')
             expect(data).toHaveProperty('deleted')
@@ -126,6 +129,9 @@ describe("Company Routes", () => {
             expect(data).toHaveProperty(`_id`)
             expect(data).toHaveProperty(`name`)
             expect(data).toHaveProperty(`logo`)
+            expect(data).toHaveProperty('description')
+            expect(data).toHaveProperty('phone')
+            expect(data).toHaveProperty('address')
             expect(data).toHaveProperty(`is_active`)
             expect(data).toHaveProperty(`created_by`)
             expect(data).toHaveProperty(`deleted`)
@@ -142,6 +148,9 @@ describe("Company Routes", () => {
             newCompany = {
                 '_id': Types.ObjectId(),
                 'name': faker.random.alpha(10),
+                "description": faker.random.alpha(50),
+                "phone": faker.phone.number('989#########'),
+                "address": faker.random.alpha(100),
                 'created_by': user._id
             }
         })
@@ -164,6 +173,54 @@ describe("Company Routes", () => {
         })
         it(`should get ${httpStatus.BAD_REQUEST} if name is grather than 50 character`, async () => {
             newCompany.name = faker.random.alpha(51);
+            const response = await request(app)
+                .post(`/api/V1/companies`)
+                .set(`Authorization`, token)
+                .send(newCompany);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if description is less than 10 character`, async () => {
+            newCompany.description = faker.random.alpha(9);
+            const response = await request(app)
+                .post(`/api/V1/companies`)
+                .set(`Authorization`, token)
+                .send(newCompany);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if description is grather than 100 character`, async () => {
+            newCompany.description = faker.random.alpha(101);
+            const response = await request(app)
+                .post(`/api/V1/companies`)
+                .set(`Authorization`, token)
+                .send(newCompany);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if phone is less than 9 character`, async () => {
+            newCompany.phone = faker.phone.number('98######');
+            const response = await request(app)
+                .post(`/api/V1/companies`)
+                .set(`Authorization`, token)
+                .send(newCompany);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if phone is grather than 12 character`, async () => {
+            newCompany.phone = faker.phone.number('98###########');
+            const response = await request(app)
+                .post(`/api/V1/companies`)
+                .set(`Authorization`, token)
+                .send(newCompany);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if address is less than 10 character`, async () => {
+            newCompany.address = faker.random.alpha(9);
+            const response = await request(app)
+                .post(`/api/V1/companies`)
+                .set(`Authorization`, token)
+                .send(newCompany);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if address is grather than 200 character`, async () => {
+            newCompany.address = faker.random.alpha(201);
             const response = await request(app)
                 .post(`/api/V1/companies`)
                 .set(`Authorization`, token)
@@ -193,6 +250,9 @@ describe("Company Routes", () => {
         beforeEach(async () => {
             updateCompany = {
                 'name': faker.random.alpha(8),
+                "description": faker.random.alpha(50),
+                "phone": faker.phone.number('989#########'),
+                "address": faker.random.alpha(100)
             }
         })
 
@@ -213,6 +273,56 @@ describe("Company Routes", () => {
         })
         it(`should get ${httpStatus.BAD_REQUEST} if name is grather than 50 character`, async () => {
             updateCompany.name = faker.random.alpha(51);
+            const response = await request(app)
+                .patch(`/api/V1/companies/${company._id}`)
+                .set(`Authorization`, token)
+                .send(updateCompany);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if description is less than 10 character`, async () => {
+            updateCompany.description = faker.random.alpha(9);
+            const response = await request(app)
+                .patch(`/api/V1/companies/${company._id}`)
+                .set(`Authorization`, token)
+                .send(updateCompany);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if description is grather than 100 character`, async () => {
+            updateCompany.description = faker.random.alpha(101);
+            const response = await request(app)
+                .patch(`/api/V1/companies/${company._id}`)
+                .set(`Authorization`, token)
+                .send(updateCompany);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} if phone is less than 9 character`, async () => {
+            updateCompany.phone = faker.phone.number('98######');
+            const response = await request(app)
+                .patch(`/api/V1/companies/${company._id}`)
+                .set(`Authorization`, token)
+                .send(updateCompany);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if phone is grather than 12 character`, async () => {
+            updateCompany.phone = faker.phone.number('98###########');
+            const response = await request(app)
+                .patch(`/api/V1/companies/${company._id}`)
+                .set(`Authorization`, token)
+                .send(updateCompany);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} if address is less than 10 character`, async () => {
+            updateCompany.address = faker.random.alpha(9);
+            const response = await request(app)
+                .patch(`/api/V1/companies/${company._id}`)
+                .set(`Authorization`, token)
+                .send(updateCompany);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if address is grather than 200 character`, async () => {
+            updateCompany.address = faker.random.alpha(201);
             const response = await request(app)
                 .patch(`/api/V1/companies/${company._id}`)
                 .set(`Authorization`, token)
@@ -410,6 +520,65 @@ describe("Company Routes", () => {
         })
 
     })
+
+
+    describe("GET /companies/{id}/projects", () => {
+        it(`should get ${httpStatus.BAD_REQUEST} company id is not a mongo id`, async () => {
+            const response = await request(app)
+                .get(`/api/V1/companies/fakeID/projects`)
+                .set('Authorization', token)
+                .send();
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.NOT_FOUND} company id is not valid`, async () => {
+            const response = await request(app)
+                .get(`/api/V1/companies/${Types.ObjectId()}/projects`)
+                .set('Authorization', token)
+                .send();
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+
+
+        it(`should get ${httpStatus.OK} company projects list `, async () => {
+            const response = await request(app)
+                .get(`/api/V1/companies/${company._id}/projects`)
+                .set('Authorization', token)
+                .send();
+            expect(response.statusCode).toBe(httpStatus.OK);
+        })
+    })
+
+
+
+    describe("GET /companies/{id}/managers", () => {
+
+        it(`should get ${httpStatus.BAD_REQUEST} company id is not a mongo id`, async () => {
+            const response = await request(app)
+                .get(`/api/V1/companies/fakeID/managers`)
+                .set('Authorization', token)
+                .send();
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.NOT_FOUND} company id is not valid`, async () => {
+            const response = await request(app)
+                .get(`/api/V1/companies/${Types.ObjectId()}/managers`)
+                .set('Authorization', token)
+                .send();
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+
+
+        it(`should get ${httpStatus.OK} company managers list `, async () => {
+            const response = await request(app)
+                .get(`/api/V1/companies/${company._id}/managers`)
+                .set('Authorization', token)
+                .send();
+            expect(response.statusCode).toBe(httpStatus.OK);
+        })
+    })
+
 
     describe("GET /companies/{id}/resumes", () => {
         it(`should get ${httpStatus.BAD_REQUEST} company id is not a mongo id`, async () => {

@@ -13,7 +13,8 @@ services:
     build:
       context: .
       args:
-        - NODE_ENV=development
+        - NODE_ENV=production
+    restart: always
     env_file:
       - ./.env
     volumes:
@@ -25,12 +26,13 @@ services:
   cv_mongo:
     restart: always
     image: mongo:4.2.23
-    command: mongod --port 27018
+    command: mongod --port 27018 
     ports:
       - "27018:27018"
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_ROOT_PASSWORD: 'yP6tZ3LwD7VrB'
+      MONGO_INITDB_DATABASE: cvmanager
     volumes:
       - ./mongo_db:/data/db
   cv_redis:

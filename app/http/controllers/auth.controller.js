@@ -2,6 +2,7 @@ import bcrypt from 'bcrypt'
 
 import { generateJwtToken, generateJwtRefeshToken } from '../../helper/jwt.js'
 import UserNotFoundError from '../../exceptions/UserNotFoundError.js';
+import NotFoundError from '../../exceptions/NotFoundError.js';
 import BadRequestError from '../../exceptions/BadRequestError.js';
 import redisClient from '../../helper/redis_client.js';
 import AppResponse from '../../helper/response.js';
@@ -40,7 +41,7 @@ class AuthController extends Controller {
             const access_token = await generateJwtToken(user._id)
             const refresh_token = await generateJwtRefeshToken(user._id);
 
-            EventEmitter.emit(events.LOGIN, user);
+            EventEmitter.emit(events.LOGIN, user, access_token, refresh_token);
             AppResponse.builder(res).message('auth.messages.success_login').data({ access_token, refresh_token }).send();
         } catch (err) {
             next(err);
@@ -153,6 +154,30 @@ class AuthController extends Controller {
      */
     async verifyToken(req, res, next) {
         AppResponse.builder(res).message("auth.messages.token_verified").send();
+    }
+
+    /**
+     * POST /auth/check-username
+     * 
+     * @summary Check and confirm username
+     * @tags Auth 
+     * @security BearerAuth
+     *
+     * @param { auth.checkUsername }                request.body - refresh info - application/json
+     * 
+     * @return { auth.success }                     200 - found successfuly 
+     * @return { message.UserNotFoundError }        404 - not found 
+     * @return { message.server_error  }            500 - Server Error
+     */
+    async checkusername(req, res, next) {
+        try {
+            let user = await User.findOne({ username: req.body.username });
+            if (!user) throw new NotFoundError('auth.errors.username_notfound');
+
+            AppResponse.builder(res).message("auth.messages.username_exist").send();
+        } catch (err) {
+            next(err);
+        }
     }
 }
 

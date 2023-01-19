@@ -16,6 +16,18 @@ const schema = new mongoose.Schema(
             type: Boolean,
             default: 1
         },
+        description: {
+            type: String,
+            default: null
+        },
+        phone: {
+            type: String,
+            default: null
+        },
+        address: {
+            type: String,
+            default: null
+        },
         created_by: {
             type: mongoose.Schema.Types.ObjectId,
             required: true,

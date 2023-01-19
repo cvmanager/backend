@@ -38,7 +38,6 @@ class ResumeController extends Controller {
                         { email: { '$regex': query } },
                         { mobile: { '$regex': query } },
                         { education: { '$regex': query } },
-                        { major: { '$regex': query } },
                         { phone: { '$regex': query } },
                     ]
                 }
@@ -135,6 +134,10 @@ class ResumeController extends Controller {
     */
     async update(req, res, next) {
         try {
+            let resume = await Resume.findById(req.params.id);
+            if (!resume) throw new NotFoundError('resume.errors.resume_notfound');
+
+
             await Resume.findByIdAndUpdate(req.params.id, req.body, { new: true })
                 .then(resume => {
                     EventEmitter.emit(events.UPDATE, resume)
