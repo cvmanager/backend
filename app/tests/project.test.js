@@ -469,4 +469,30 @@ describe("Project Routes", () => {
         })
 
     })
+
+    describe(`GET /projects/{id}/managers`, () => {
+        it(`should get ${httpStatus.BAD_REQUEST} project id is not a mongo id`, async () => {
+            const response = await request(app)
+                .get(`/api/V1/projects/fakeID/managers`)
+                .set('Authorization', token)
+                .send();
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.NOT_FOUND} project id is not valid`, async () => {
+            const response = await request(app)
+                .get(`/api/V1/projects/${Types.ObjectId()}/managers`)
+                .set('Authorization', token)
+                .send();
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+
+        it(`should get ${httpStatus.OK} projecta managers list `, async () => {
+            const response = await request(app)
+                .get(`/api/V1/projects/${project._id}/managers`)
+                .set('Authorization', token)
+                .send();
+            expect(response.statusCode).toBe(httpStatus.OK);
+        })
+    })
 })
