@@ -224,7 +224,6 @@ class PositionController extends Controller {
      * @tags Position
      * @security BearerAuth
      * 
-     * @param  { string } id.path.required - company id
      * 
      * @return { position.success }              200 - success response
      * @return { message.badrequest_error }      400 - bad request respone
