@@ -242,6 +242,7 @@ class ProjectController extends Controller {
      * @tags Project
      * @security BearerAuth
      * 
+     * @param  { string } id.path.required - project id
      * 
      * @return { project.success }               200 - success response
      * @return { message.badrequest_error }      400 - bad request respone
@@ -256,7 +257,7 @@ class ProjectController extends Controller {
 
             let resumes = await Resume.find({ 'project_id': project.id }).populate('position_id').populate('company_id');
 
-            AppResponse.builder(res).message('company.messages.company_resumes_found').data(resumes).send();
+            AppResponse.builder(res).message('project.messages.project_resumes_found').data(resumes).send();
         } catch (err) {
             next(err);
         }
