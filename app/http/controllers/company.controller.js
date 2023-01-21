@@ -236,6 +236,7 @@ class CompanyController extends Controller {
 
             let manager = await Manager.findOne({ 'entity': "companies", 'entity_id': company.id, 'user_id': user.id });
             if (!manager) throw new BadRequestError("company.errors.the_user_is_not_manager_for_this_company");
+            if (manager.type === 'owner') throw new BadRequestError("company.errors.the_owner_manager_cannot_be_deleted");
 
             await manager.delete(req.user_id);
 

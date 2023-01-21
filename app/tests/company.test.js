@@ -16,6 +16,7 @@ let companies;
 let manager;
 let users;
 let user;
+let managerData;
 
 prepareDB();
 describe("Company Routes", () => {
@@ -30,7 +31,7 @@ describe("Company Routes", () => {
         company = companyData.getCompany();
         companies = companyData.getCompanies();
 
-        let managerData = new ManagerData();
+        managerData = new ManagerData();
         manager = managerData.getManagerByEntityId(company._id);
 
     })
@@ -378,7 +379,7 @@ describe("Company Routes", () => {
     })
 
     describe("PATCH /companies/{id}/manager", () => {
-        0
+
 
         let setManager;
         beforeEach(() => {
@@ -511,6 +512,16 @@ describe("Company Routes", () => {
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
 
+        it(`should get ${httpStatus.BAD_REQUEST} user is owner manager for this company`, async () => {
+            manager = managerData.getManagerByEntityIdAndType(company._id,'owner');
+            deleteManager.manager_id = users[0]._id
+            const response = await request(app)
+                .delete(`/api/V1/companies/${company._id}/manager`)
+                .set('Authorization', token)
+                .send(deleteManager);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
         it(`should get ${httpStatus.OK} manager successfully deleted`, async () => {
             const response = await request(app)
                 .delete(`/api/V1/companies/${company._id}/manager`)
@@ -520,7 +531,6 @@ describe("Company Routes", () => {
         })
 
     })
-
 
     describe("GET /companies/{id}/projects", () => {
         it(`should get ${httpStatus.BAD_REQUEST} company id is not a mongo id`, async () => {
@@ -549,8 +559,6 @@ describe("Company Routes", () => {
         })
     })
 
-
-
     describe("GET /companies/{id}/managers", () => {
 
         it(`should get ${httpStatus.BAD_REQUEST} company id is not a mongo id`, async () => {
@@ -578,7 +586,6 @@ describe("Company Routes", () => {
             expect(response.statusCode).toBe(httpStatus.OK);
         })
     })
-
 
     describe("GET /companies/{id}/resumes", () => {
         it(`should get ${httpStatus.BAD_REQUEST} company id is not a mongo id`, async () => {
