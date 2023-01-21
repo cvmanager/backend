@@ -521,7 +521,6 @@ describe("Company Routes", () => {
 
     })
 
-
     describe("GET /companies/{id}/projects", () => {
         it(`should get ${httpStatus.BAD_REQUEST} company id is not a mongo id`, async () => {
             const response = await request(app)
@@ -539,17 +538,25 @@ describe("Company Routes", () => {
             expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
         })
 
-
         it(`should get ${httpStatus.OK} company projects list `, async () => {
             const response = await request(app)
                 .get(`/api/V1/companies/${company._id}/projects`)
                 .set('Authorization', token)
                 .send();
+            let data = response.body.data[0];
+            expect(data).toHaveProperty('_id')
+            expect(data).toHaveProperty('company_id')
+            expect(data).toHaveProperty('name')
+            expect(data).toHaveProperty('is_active')
+            expect(data).toHaveProperty('created_by')
+            expect(data).toHaveProperty('deleted')
+            expect(data).toHaveProperty('createdAt')
+            expect(data).toHaveProperty('updatedAt')
+            expect(data).toHaveProperty('managers')
+            expect(data).toHaveProperty('id')
             expect(response.statusCode).toBe(httpStatus.OK);
         })
     })
-
-
 
     describe("GET /companies/{id}/managers", () => {
 
@@ -575,6 +582,17 @@ describe("Company Routes", () => {
                 .get(`/api/V1/companies/${company._id}/managers`)
                 .set('Authorization', token)
                 .send();
+            let data = response.body.data[0];
+            expect(data).toHaveProperty('_id')
+            expect(data).toHaveProperty('user_id')
+            expect(data).toHaveProperty('entity')
+            expect(data).toHaveProperty('entity_id')
+            expect(data).toHaveProperty('type')
+            expect(data).toHaveProperty('created_by')
+            expect(data).toHaveProperty('deleted')
+            expect(data).toHaveProperty('createdAt')
+            expect(data).toHaveProperty('updatedAt')
+            expect(data).toHaveProperty('id')
             expect(response.statusCode).toBe(httpStatus.OK);
         })
     })
@@ -602,6 +620,34 @@ describe("Company Routes", () => {
                 .get(`/api/V1/companies/${company._id}/resumes`)
                 .set('Authorization', token)
                 .send();
+            let data = response.body.data[0];
+            expect(data).toHaveProperty('_id')
+            expect(data).toHaveProperty('company_id')
+            expect(data).toHaveProperty('project_id')
+            expect(data).toHaveProperty('position_id')
+            expect(data).toHaveProperty('firstname')
+            expect(data).toHaveProperty('lastname')
+            expect(data).toHaveProperty('gender')
+            expect(data).toHaveProperty('email')
+            expect(data).toHaveProperty('birth_year')
+            expect(data).toHaveProperty('marital_status')
+            expect(data).toHaveProperty('status')
+            expect(data).toHaveProperty('mobile')
+            expect(data).toHaveProperty('residence_city')
+            expect(data).toHaveProperty('work_city')
+            expect(data).toHaveProperty('education')
+            expect(data).toHaveProperty('phone')
+            expect(data).toHaveProperty('min_salary')
+            expect(data).toHaveProperty('max_salary')
+            expect(data).toHaveProperty('work_experience')
+            expect(data).toHaveProperty('military_status')
+            expect(data).toHaveProperty('status_updated_at')
+            expect(data).toHaveProperty('created_by')
+            expect(data).toHaveProperty('deleted')
+            expect(data).toHaveProperty('status_history')
+            expect(data).toHaveProperty('createdAt')
+            expect(data).toHaveProperty('updatedAt')
+            expect(data).toHaveProperty('id')
             expect(response.statusCode).toBe(httpStatus.OK);
         })
     })
