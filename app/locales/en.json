@@ -138,7 +138,8 @@
 			"project_successfully_updated": "Project successfully updated",
 			"project_manager_successfully_updated": "Project manager successfully updated",
 			"project_manager_successfully_deleted": "Project manager successfully deleted",
-			"project_successfully_deleted": "project successfully deleted"
+			"project_successfully_deleted": "project successfully deleted",
+			"project_positions_found": "project positions successfully found"
 		},
 		"errors": {
 			"the_user_is_currently_an_manager_for_project": "The user is currently an manager for project",

@@ -124,9 +124,9 @@ class ProjectController extends Controller {
             let project = await Project.findById(req.params.id);
             if (!project) throw new NotFoundError('project.errors.project_notfound');
 
-            if(req.body.name !== undefined){
-                let duplicateProject = await Project.findOne({'name':req.body.name,'company_id':project.company_id});
-                if(duplicateProject && duplicateProject._id !== project._id) throw new AlreadyExists('project.errors.project_already_attached_company');
+            if (req.body.name !== undefined) {
+                let duplicateProject = await Project.findOne({ 'name': req.body.name, 'company_id': project.company_id });
+                if (duplicateProject && duplicateProject._id !== project._id) throw new AlreadyExists('project.errors.project_already_attached_company');
             }
 
             await Project.findByIdAndUpdate(req.params.id, req.body, { new: true })
@@ -225,7 +225,7 @@ class ProjectController extends Controller {
             let manager = await Manager.findOne({ 'entity': "projects", 'entity_id': project.id, 'user_id': user.id });
             if (!manager) throw new BadRequestError("project.errors.the_user_is_not_an_manager_for_project");
             if (manager.type === 'owner') throw new BadRequestError("project.errors.the_owner_manager_cannot_be_deleted");
-            
+
             EventEmitter.emit(events.UNSET_MANAGER, project)
             await manager.delete(req.user_id);
             AppResponse.builder(res).status(200).message("project.messages.project_manager_successfully_deleted").data(project).send();
@@ -233,6 +233,35 @@ class ProjectController extends Controller {
             next(err);
         }
     }
+
+    /**
+    * GET /projects/{id}/positions
+    * 
+    * @summary gets  project positions list by project id
+    * @tags Project
+    * @security BearerAuth
+    * 
+    * @param  { string } id.path.required - project id
+    * 
+    * @return { project.success }               200 - success response
+    * @return { message.badrequest_error }      400 - bad request respone
+    * @return { message.badrequest_error }      404 - not found respone
+    * @return { message.unauthorized_error }    401 - UnauthorizedError
+    * @return { message.server_error  }         500 - Server Error
+    */
+    async getPositions(req, res, next) {
+        try {
+            const project = await Project.findById(req.params.id).populate('created_by');
+            if (!project) throw new NotFoundError('project.errors.project_not_found');
+
+            let managers = await Manager.find({ 'entity': "projects", 'entity_id': project.id }).populate('user_id');
+
+            AppResponse.builder(res).message('project.messages.project_positions_found').data(managers).send();
+        } catch (err) {
+            next(err);
+        }
+    }
+
 }
 
 export default new ProjectController;
