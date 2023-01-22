@@ -93,7 +93,8 @@
 		},
 		"errors": {
 			"the_user_is_currently_an_manager_for_company": "The user is currently an manager for company",
-			"the_user_is_not_manager_for_this_company": "This user is not  manager for this company"
+			"the_user_is_not_manager_for_this_company": "This user is not  manager for this company",
+			"company_already_exists" : "company name is duplicated, already exists"
 		}
 	},
 	"position": {
@@ -139,7 +140,9 @@
 			"project_manager_successfully_updated": "Project manager successfully updated",
 			"project_manager_successfully_deleted": "Project manager successfully deleted",
 			"project_successfully_deleted": "project successfully deleted",
-			"project_resumes_found": "Project resumes successfuly founded"
+			"project_resumes_found": "Project resumes successfuly founded",
+			"project_managers_found" : "Project managers successfuly founded",
+			"project_positions_found": "project positions successfully found"
 		},
 		"errors": {
 			"the_user_is_currently_an_manager_for_project": "The user is currently an manager for project",

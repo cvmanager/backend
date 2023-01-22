@@ -13,5 +13,7 @@ projectRouter
     .patch('/:id/manager', ProjectValidation.manager(), ProjectController.manager)
     .delete('/:id/manager', ProjectValidation.deleteManager(), ProjectController.deleteManager)
     .get('/:id/resumes', ProjectValidation.find(), ProjectController.getResumes)
+    .get('/:id/managers', ProjectValidation.find(), ProjectController.getManagers)
+    .get('/:id/positions', ProjectValidation.find(), ProjectController.getPositions)
 
 export default projectRouter

@@ -132,7 +132,7 @@ class CompanyController extends Controller {
             if (!company) throw new NotFoundError('company.errors.company_notfound');
 
             if (req.body.name !== undefined) {
-                let duplicateCompany = await Company.findOne({ 'name': req.body.name });
+                let duplicateCompany = await Company.findOne({ '_id': { $ne: company._id }, 'name': req.body.name });
                 if (duplicateCompany && duplicateCompany._id !== company._id) throw new AlreadyExists('company.errors.company_already_exists');
             }
 
@@ -304,21 +304,21 @@ class CompanyController extends Controller {
         }
     }
 
-/**
-* GET /companies/{id}/resumes
-* 
-* @summary gets  companies resumes list by company id
-* @tags Company
-* @security BearerAuth
-* 
-* @param  { string } id.path.required - company id
-* 
-* @return { company.success }               200 - success response
-* @return { message.badrequest_error }      400 - bad request respone
-* @return { message.badrequest_error }      404 - not found respone
-* @return { message.unauthorized_error }    401 - UnauthorizedError
-* @return { message.server_error  }         500 - Server Error
-*/
+    /**
+    * GET /companies/{id}/resumes
+    * 
+    * @summary gets  companies resumes list by company id
+    * @tags Company
+    * @security BearerAuth
+    * 
+    * @param  { string } id.path.required - company id
+    * 
+    * @return { company.success }               200 - success response
+    * @return { message.badrequest_error }      400 - bad request respone
+    * @return { message.badrequest_error }      404 - not found respone
+    * @return { message.unauthorized_error }    401 - UnauthorizedError
+    * @return { message.server_error  }         500 - Server Error
+    */
     async getResumes(req, res, next) {
         try {
             const company = await Company.findById(req.params.id).populate('created_by');
