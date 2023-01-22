@@ -31,7 +31,7 @@ class CompanyController extends Controller {
         try {
             const { page = 1, size = 10, query = '' } = req.query
 
-            let searchQuery = (query.length > 0 ? { $or: [{ name: { '$regex': query } }] } : null);
+            let searchQuery = (query.length > 0 ? { $or: [{ name: { '$regex': new RegExp(query, "i") } }] } : null);
 
             const companyList = await Company.paginate(searchQuery, {
                 page: (page) || 1,
