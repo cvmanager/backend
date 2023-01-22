@@ -16,6 +16,10 @@ class ManagerData {
     getManagerByEntityId(entityId) {
         return managers.find(manager => manager.entity_id == entityId);
     }
+
+    getManagerByEntityIdAndType(entityId,type) {
+        return managers.find(manager => (manager.entity_id == entityId && type == type));
+    }
 }
 
 export default ManagerData

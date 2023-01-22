@@ -31,7 +31,7 @@ class CompanyController extends Controller {
         try {
             const { page = 1, size = 10, query = '' } = req.query
 
-            let searchQuery = (query.length > 0 ? { $or: [{ name: { '$regex': query } }] } : null);
+            let searchQuery = (query.length > 0 ? { $or: [{ name: { '$regex': new RegExp(query, "i") } }] } : null);
 
             const companyList = await Company.paginate(searchQuery, {
                 page: (page) || 1,
@@ -132,7 +132,7 @@ class CompanyController extends Controller {
             if (!company) throw new NotFoundError('company.errors.company_notfound');
 
             if (req.body.name !== undefined) {
-                let duplicateCompany = await Company.findOne({ 'name': req.body.name });
+                let duplicateCompany = await Company.findOne({ '_id': { $ne: company._id }, 'name': req.body.name });
                 if (duplicateCompany && duplicateCompany._id !== company._id) throw new AlreadyExists('company.errors.company_already_exists');
             }
 
@@ -236,6 +236,7 @@ class CompanyController extends Controller {
 
             let manager = await Manager.findOne({ 'entity': "companies", 'entity_id': company.id, 'user_id': user.id });
             if (!manager) throw new BadRequestError("company.errors.the_user_is_not_manager_for_this_company");
+            if (manager.type === 'owner') throw new BadRequestError("company.errors.the_owner_manager_cannot_be_deleted");
 
             await manager.delete(req.user_id);
 
@@ -264,17 +265,22 @@ class CompanyController extends Controller {
     */
     async getProjects(req, res, next) {
         try {
-            const company = await Company.findById(req.params.id).populate('created_by');
+            const company = await Company.findById(req.params.id);
             if (!company) throw new NotFoundError('company.errors.company_notfound');
 
-            let projects = await Project.find({ 'company_id': company.id });
+            let projects = await Project.find({ 'company_id': company.id })
+                .populate({ path: 'created_by', select: ['firstname', 'lastname'] })
+                .populate({
+                    path: 'managers',
+                    populate: { path: 'user_id', select: ['firstname', 'lastname', 'avatar'] },
+                    select: ['user_id']
+                });
 
             AppResponse.builder(res).message('company.messages.company_projects_found').data(projects).send();
         } catch (err) {
             next(err);
         }
     }
-
 
     /**
  * GET /companies/{id}/managers
@@ -293,10 +299,12 @@ class CompanyController extends Controller {
  */
     async getManagers(req, res, next) {
         try {
-            const company = await Company.findById(req.params.id).populate('created_by');
+            const company = await Company.findById(req.params.id);
             if (!company) throw new NotFoundError('company.errors.company_notfound');
 
-            let managers = await Manager.find({ 'entity': "companies", 'entity_id': company.id }).populate('user_id');
+            let managers = await Manager.find({ 'entity': "companies", 'entity_id': company.id })
+                .populate({ path: 'created_by', select: ['firstname', 'lastname'] })
+                .populate('user_id');
 
             AppResponse.builder(res).message('company.messages.company_managers_found').data(managers).send();
         } catch (err) {
@@ -304,27 +312,30 @@ class CompanyController extends Controller {
         }
     }
 
-/**
-* GET /companies/{id}/resumes
-* 
-* @summary gets  companies resumes list by company id
-* @tags Company
-* @security BearerAuth
-* 
-* @param  { string } id.path.required - company id
-* 
-* @return { company.success }               200 - success response
-* @return { message.badrequest_error }      400 - bad request respone
-* @return { message.badrequest_error }      404 - not found respone
-* @return { message.unauthorized_error }    401 - UnauthorizedError
-* @return { message.server_error  }         500 - Server Error
-*/
+    /**
+    * GET /companies/{id}/resumes
+    * 
+    * @summary gets  companies resumes list by company id
+    * @tags Company
+    * @security BearerAuth
+    * 
+    * @param  { string } id.path.required - company id
+    * 
+    * @return { company.success }               200 - success response
+    * @return { message.badrequest_error }      400 - bad request respone
+    * @return { message.badrequest_error }      404 - not found respone
+    * @return { message.unauthorized_error }    401 - UnauthorizedError
+    * @return { message.server_error  }         500 - Server Error
+    */
     async getResumes(req, res, next) {
         try {
-            const company = await Company.findById(req.params.id).populate('created_by');
+            const company = await Company.findById(req.params.id);
             if (!company) throw new NotFoundError('company.errors.company_notfound');
 
-            let resumes = await Resume.find({ 'company_id': company.id }).populate('project_id').populate('position_id');
+            let resumes = await Resume.find({ 'company_id': company.id })
+                .populate({ path: 'created_by', select: ['firstname', 'lastname'] })
+                .populate('project_id')
+                .populate('position_id');
 
             AppResponse.builder(res).message('company.messages.company_resumes_found').data(resumes).send();
         } catch (err) {

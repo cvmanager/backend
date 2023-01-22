@@ -17,6 +17,7 @@ let companies;
 let manager;
 let users;
 let user;
+let managerData;
 
 prepareDB();
 describe("Company Routes", () => {
@@ -31,7 +32,7 @@ describe("Company Routes", () => {
         company = companyData.getCompany();
         companies = companyData.getCompanies();
 
-        let managerData = new ManagerData();
+        managerData = new ManagerData();
         manager = managerData.getManagerByEntityId(company._id);
 
     })
