@@ -265,17 +265,22 @@ class CompanyController extends Controller {
     */
     async getProjects(req, res, next) {
         try {
-            const company = await Company.findById(req.params.id).populate('created_by');
+            const company = await Company.findById(req.params.id);
             if (!company) throw new NotFoundError('company.errors.company_notfound');
 
-            let projects = await Project.find({ 'company_id': company.id });
+            let projects = await Project.find({ 'company_id': company.id })
+                .populate({ path: 'created_by', select: ['firstname', 'lastname'] })
+                .populate({
+                    path: 'managers',
+                    populate: { path: 'user_id', select: ['firstname', 'lastname', 'avatar'] },
+                    select: ['user_id']
+                });
 
             AppResponse.builder(res).message('company.messages.company_projects_found').data(projects).send();
         } catch (err) {
             next(err);
         }
     }
-
 
     /**
  * GET /companies/{id}/managers
@@ -294,10 +299,12 @@ class CompanyController extends Controller {
  */
     async getManagers(req, res, next) {
         try {
-            const company = await Company.findById(req.params.id).populate('created_by');
+            const company = await Company.findById(req.params.id);
             if (!company) throw new NotFoundError('company.errors.company_notfound');
 
-            let managers = await Manager.find({ 'entity': "companies", 'entity_id': company.id }).populate('user_id');
+            let managers = await Manager.find({ 'entity': "companies", 'entity_id': company.id })
+                .populate({ path: 'created_by', select: ['firstname', 'lastname'] })
+                .populate('user_id');
 
             AppResponse.builder(res).message('company.messages.company_managers_found').data(managers).send();
         } catch (err) {
@@ -322,10 +329,13 @@ class CompanyController extends Controller {
     */
     async getResumes(req, res, next) {
         try {
-            const company = await Company.findById(req.params.id).populate('created_by');
+            const company = await Company.findById(req.params.id);
             if (!company) throw new NotFoundError('company.errors.company_notfound');
 
-            let resumes = await Resume.find({ 'company_id': company.id }).populate('project_id').populate('position_id');
+            let resumes = await Resume.find({ 'company_id': company.id })
+                .populate({ path: 'created_by', select: ['firstname', 'lastname'] })
+                .populate('project_id')
+                .populate('position_id');
 
             AppResponse.builder(res).message('company.messages.company_resumes_found').data(resumes).send();
         } catch (err) {
