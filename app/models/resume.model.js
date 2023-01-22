@@ -127,6 +127,10 @@ const schema = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             required: true,
             ref: 'users'
+        },
+        file: {
+            type: Array,
+            default: null
         }
     }
 );

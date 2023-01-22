@@ -344,6 +344,36 @@ class CompanyController extends Controller {
     }
 
 
+    /**
+    * PATCH /companies/:id/logo
+    * @summary upload company logo
+    * @tags Company
+    * @security BearerAuth
+    * 
+    * @param { string } id.path.required - company id
+    * @param { company.upload_logo } request.body - company info - multipart/form-data
+    * 
+    * @return { company.success }              200 - update resume profile
+    * @return { message.badrequest_error }      400 - resume not found
+    * @return { message.badrequest_error }      401 - UnauthorizedError
+    * @return { message.server_error}      500 - Server Error
+    */
+    async logo(req,res,next){
+        try {
+            let company = await Company.findById(req.params.id);
+            if (!company) throw new NotFoundError('company.errors.company_notfound');
+
+            if(req.body.logo){
+                company.logo = req.body.logo;
+                await company.save();
+            }
+
+            AppResponse.builder(res).message("company.messages.company_successfuly_updated").data(company).send()
+        } catch (err) {
+            next(err);
+        }
+    }
+
 }
 
 export default new CompanyController

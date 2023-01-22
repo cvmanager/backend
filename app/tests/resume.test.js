@@ -14,6 +14,7 @@ import ProjectData from './data/project.data';
 import PositionData from './data/position.data';
 import UsersData from './data/user.data';
 import i18n from '../middlewares/lang.middleware.js';
+import * as path from 'path';
 
 
 let token;
@@ -794,6 +795,57 @@ describe("Resumes Routes", () => {
                 .send(updateResumeStatus);
             expect(response.statusCode).toBe(httpStatus.OK);
         })
+    })
+
+    describe('PATCH /resumes/:id/file', () => {
+
+        let file;
+        beforeEach(async () => {
+            file = path.join(__dirname, 'data/file/resumeFileValid.docx');
+        })
+        it(`should return ${httpStatus.BAD_REQUEST} error if resume id empty`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/resumes//file`)
+                .set('Authorization', token)
+                .attach('file', file);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        });
+        it(`should return ${httpStatus.BAD_REQUEST} error if resume id invalid`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/resumes/fakeid/file`)
+                .set('Authorization', token)
+                .attach('file', file);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        });
+        it(`should return ${httpStatus.NOT_FOUND} error if resume dont find`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${Types.ObjectId()}/file`)
+                .set('Authorization', token)
+                .attach('file', file);
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        });
+        it(`should return ${httpStatus.BAD_REQUEST} error if file empty`, async () => {
+            const response = await request(app)
+                .patch("/api/V1/resumes/" + resume._id + "/file")
+                .set('Authorization', token)
+                .attach('file', '');
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        });
+        it(`should return ${httpStatus.BAD_REQUEST} error if file incorect`, async () => {
+            const response = await request(app)
+                .patch("/api/V1/resumes/" + resume._id + "/file")
+                .set('Authorization', token)
+                .attach('file', path.join(__dirname, 'data/file/resumeFileInValid.zip'));
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        });
+        it(`should return ${httpStatus.OK} success if file corect`, async () => {
+            const response = await request(app)
+                .patch("/api/V1/resumes/" + resume._id + "/file")
+                .set('Authorization', token)
+                .attach('file', file);
+            expect(response.statusCode).toBe(httpStatus.OK);
+        });
+
     })
 
     describe("GET /resumes/{id}/commments", () => {

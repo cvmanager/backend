@@ -80,6 +80,12 @@ class ResumeValidation {
                 .isMongoId()
                 .withMessage('resume.validations.work_city_id_invalid')
                 .trim(),
+            body('education')
+                .notEmpty()
+                .withMessage('resume.validations.education_required')
+                .isIn(i18n.__('enums.education'))
+                .withMessage('resume.validations.education_incorrect')
+                .trim(),
             body('phone')
                 .optional({ nullable: true, checkFalsy: true })
                 .isNumeric()
@@ -248,6 +254,22 @@ class ResumeValidation {
                 .withMessage('resume.validations.resume_id_required')
                 .isMongoId()
                 .withMessage('resume.validations.resume_id_invalid')
+                .trim(),
+            generalValidator
+        ];
+    }
+
+    upload_file() {
+        return [
+            param('id')
+                .notEmpty()
+                .withMessage('resume.validation.resume_id_required')
+                .isMongoId()
+                .withMessage('resume.validation.resume_id_invalid')
+                .trim(),
+            body('file')
+                .notEmpty()
+                .withMessage('resume.validation.file_required')
                 .trim(),
             generalValidator
         ];
