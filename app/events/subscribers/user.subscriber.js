@@ -1,4 +1,5 @@
 import EventEmitter from "../emitter.js";
+import { setLogForLogin } from '../../helper/service/user.service.js';
 
 export const events = {
     "LOGIN": "Login User",
@@ -13,8 +14,8 @@ EventEmitter.on(events.SINGUP, signup);
 EventEmitter.on(events.BANNED, banned);
 
 
-function login(user) {
-    console.log(events.LOGIN + " event called", user)
+function login(user, access_token, refresh_token) {
+    setLogForLogin(user, access_token, refresh_token);
 }
 
 function signup(user) {

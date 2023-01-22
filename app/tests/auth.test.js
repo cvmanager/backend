@@ -1,12 +1,16 @@
 import httpStatus from 'http-status'
 import request from 'supertest'
 import app from '../app.js'
-
 import UserData from './data/user.data';
-
 import prepareDB from './utils/prepareDB'
 import { Types } from 'mongoose';
 import { faker } from '@faker-js/faker';
+import { faker } from "@faker-js/faker";
+import httpStatus from "http-status";
+import request from "supertest";
+import app from "../app.js";
+import UserData from "./data/user.data";
+import prepareDB from "./utils/prepareDB";
 
 let token;
 let users;
@@ -21,8 +25,50 @@ describe("Auth Routes", () => {
         token = userData.getAccessToken();
         users = userData.getUsers();
         user = userData.getUser();
+    });
 
-    })
+
+    describe("POST /auth/check-username", () => {
+
+        let authData;
+        beforeEach(() => {
+            authData = {
+                'username': 'test',
+            };
+        })
+
+        it(`should get ${httpStatus.OK} username exist`, async () => {
+            authData.username = users[0].username
+            const response = await request(app)
+                .post("/api/V1/auth/check-username")
+                .set("Authorization", token)
+                .send(authData);
+
+            expect(response.statusCode).toBe(httpStatus.OK);
+        });
+
+        it(`should get ${httpStatus.NOT_FOUND} username not found`, async () => {
+            authData.username = faker.internet.userName()
+            const response = await request(app)
+                .post("/api/V1/auth/check-username")
+                .set("Authorization", token)
+                .send(authData);
+
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        });
+
+        it(`should get ${httpStatus.BAD_REQUEST} username not send`, async () => {
+            delete authData.username
+            const response = await request(app)
+                .post("/api/V1/auth/check-username")
+                .set("Authorization", token)
+                .send(authData);
+
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        });
+
+    });
+
 
     describe(`POST /signup`, () => {
 
@@ -256,4 +302,5 @@ describe("Auth Routes", () => {
         })
     })
 
-})
+
+});

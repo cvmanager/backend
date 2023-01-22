@@ -54,6 +54,16 @@ class AuthValidator {
             generalValidator
         ]
     }
+
+    checkusername() {
+        return [
+            body('username')
+                .notEmpty()
+                .withMessage('auth.validations.username_required')
+                .trim(),
+            generalValidator
+        ]
+    }
 }
 
 export default new AuthValidator();

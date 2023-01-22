@@ -22,6 +22,9 @@ for (i = 0; i < numberRowInsert; i++) {
     companies.push({
         "_id": Types.ObjectId(),
         "name": faker.company.name(),
+        "description": faker.random.alpha(50),
+        "phone": faker.phone.number('989#########'),
+        "address": faker.random.alpha(100),
         "created_by": users[i]._id
     })
 }
@@ -31,8 +34,8 @@ for (i = 0; i < numberRowInsert; i++) {
     projects.push({
         "_id": Types.ObjectId(),
         "company_id": companies[i]._id,
-        "name": faker.commerce.productName(),
-        "description": faker.commerce.productDescription(),
+        "name": faker.random.alpha(10),
+        "description": faker.random.alpha(50),
         "created_by": users[i]._id
     })
 }
@@ -43,8 +46,9 @@ for (i = 0; i < numberRowInsert; i++) {
         "_id": Types.ObjectId(),
         "company_id": companies[i]._id,
         "project_id": projects[i]._id,
-        "title": faker.name.jobTitle(),
+        "title": faker.random.alpha(15),
         "level": "mid",
+        "description": faker.random.alpha(50),
         "created_by": users[i]._id
     })
 }

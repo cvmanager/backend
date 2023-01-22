@@ -1,6 +1,6 @@
 import EventEmitter from '../../events/emitter.js';
 import BadRequestError from '../../exceptions/BadRequestError.js';
-import UserNotFoundError from '../../exceptions/UserNotFoundError.js';
+import NotFoundError from '../../exceptions/NotFoundError.js';
 import AppResponse from '../../helper/response.js';
 import User from '../../models/user.model.js';
 import Controller from './controller.js';
@@ -21,7 +21,7 @@ class UserController extends Controller {
      */
     async index(req, res, next) {
         try {
-            const { page = 1, size = 10, q: query = '' } = req.query
+            const { page = 1, size = 10, query = '' } = req.query
             let searchQuery = {}
             if (query.length > 0) {
                 searchQuery = {
@@ -59,7 +59,7 @@ class UserController extends Controller {
     async find(req, res, next) {
         try {
             let user = await User.findById(req.params.id);
-            if (!user) throw new UserNotFoundError('user.errors.user_notfound');
+            if (!user) throw new NotFoundError('user.errors.user_notfound');
 
             AppResponse.builder(res).message("user.messages.user_founded").data(user).send();
         } catch (err) {
@@ -81,9 +81,12 @@ class UserController extends Controller {
      * @return { message.server_error}      500 - Server Error
      */
     async uploadProfileImage(req, res, next) {
-
+        
         try {
-            let user = await User.findOneAndUpdate({ _id: req.user_id }, { avatar: req.body.avatar }, { new: true });
+            let user = await User.findById(req.user_id);
+            if (!user) throw new NotFoundError('user.errors.user_notfound');
+
+            user = await User.findOneAndUpdate({ _id: req.user_id }, { avatar: req.body.avatar }, { new: true });
             AppResponse.builder(res).message("user.messages.profile_image_successfuly_updated").data(user).send();
         } catch (err) {
             next(err);
@@ -106,7 +109,7 @@ class UserController extends Controller {
     async banned(req, res, next) {
         try {
             let user = await User.findById(req.params.id);
-            if (!user) throw new UserNotFoundError();
+            if (!user) throw new NotFoundError('user.errors.user_notfound');
 
             if (user.is_banned) throw new BadRequestError('user.errors.user_is_currently_blocked')
 
@@ -137,7 +140,7 @@ class UserController extends Controller {
     async getMe(req, res, next) {
         try {
             let user = await User.findById(req.user_id);
-            if (!user) throw new UserNotFoundError();
+            if (!user) throw new NotFoundError('user.errors.user_notfound');
 
             AppResponse.builder(res).data(user).message('user.messages.user_founded').send();
         } catch (err) {
