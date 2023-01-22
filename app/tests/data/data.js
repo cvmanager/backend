@@ -13,7 +13,7 @@ for (i = 0; i < numberRowInsert; i++) {
         "username": faker.internet.userName(),
         "mobile": faker.phone.number('989#########'),
         "email": faker.internet.email(),
-        "password": faker.internet.password()
+        "password": '12345678'
     })
 }
 
@@ -22,6 +22,9 @@ for (i = 0; i < numberRowInsert; i++) {
     companies.push({
         "_id": Types.ObjectId(),
         "name": faker.company.name(),
+        "description": faker.random.alpha(50),
+        "phone": faker.phone.number('989#########'),
+        "address": faker.random.alpha(100),
         "created_by": users[i]._id
     })
 }
@@ -31,8 +34,8 @@ for (i = 0; i < numberRowInsert; i++) {
     projects.push({
         "_id": Types.ObjectId(),
         "company_id": companies[i]._id,
-        "name": faker.commerce.productName(),
-        "description": faker.commerce.productDescription(),
+        "name": faker.random.alpha(10),
+        "description": faker.random.alpha(50),
         "created_by": users[i]._id
     })
 }
@@ -43,8 +46,9 @@ for (i = 0; i < numberRowInsert; i++) {
         "_id": Types.ObjectId(),
         "company_id": companies[i]._id,
         "project_id": projects[i]._id,
-        "title": faker.name.jobTitle(),
+        "title": faker.random.alpha(15),
         "level": "mid",
+        "description": faker.random.alpha(50),
         "created_by": users[i]._id
     })
 }
@@ -71,6 +75,16 @@ for (i = 0; i < numberRowInsert; i++) {
     })
 }
 
+let resumeComments = [];
+for (i = 0; i < numberRowInsert; i++) {
+    resumeComments.push({
+        "_id": Types.ObjectId(),
+        "resume_id": resumes[i]._id,
+        "body": faker.random.alpha(50),
+        "created_by": users[i]._id,
+    })
+}
+
 let managers = [];
 for (i = 0; i < numberRowInsert; i++) {
     managers.push({
@@ -89,7 +103,7 @@ for (i = 0; i < numberRowInsert; i++) {
         "created_by": users[numberRowInsert - 1]._id,
         "type": "moderator"
     })
-    
+
     managers.push({
         "_id": Types.ObjectId(),
         "user_id": users[i]._id,
@@ -126,4 +140,4 @@ for (i = 0; i < numberRowInsert; i++) {
 
 }
 
-export { users, companies, projects, positions, managers, resumes };
+export { users, companies, projects, positions, managers, resumes, resumeComments };

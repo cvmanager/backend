@@ -23,3 +23,11 @@
 * @property { array<string> } data
 * @property { array<string> } errors
 */
+
+/**
+* not fount content error
+* @typedef { object } message.noContent_error
+* @property { string }     message
+* @property { array<string> } data
+* @property { array<string> } errors
+*/
