@@ -10,6 +10,14 @@ class ResumeData {
         return resumes;
     }
 
+    getResumeByEntity(entity) {
+        return resumes.find(resume => resume.entity == entity);
+    }
+
+    getResumeByEntityId(entityId) {
+        return resumes.find(resume => resume.entity_id == entityId);
+    }
+    
     addResume(resumes) {
         Resume.insertMany(resumes);
     }

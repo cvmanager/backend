@@ -317,6 +317,55 @@ class ResumeController extends Controller {
             next(err);
         }
     }
+
+    /**
+      * POST /resumes/{id}/call-history
+      * 
+      * @summary creates a call history for specific resume
+      * @tags Resume
+      * @security BearerAuth
+      * 
+      * @param  { string } id.path.required - resume id
+      * @param { resume.create } request.body - call history info - application/json
+      * 
+      * @return { resume.success } 200 - success response
+      * @return { message.badrequest_error }  400 - bad request respone
+      * @return { message.badrequest_error }  404 - not found respone
+      * @return { message.badrequest_error }       401 - UnauthorizedError
+      * @return { message.server_error  }     500 - Server Error
+      */
+    async callHistory(req, res, next) {
+        try {
+
+            let resume = await Resume.findById(req.params.id);
+
+            if (!resume) throw new NotFoundError('resume.errors.resume_notfound');
+
+            let calling_date = new Date(req.body.calling_date)
+            let recall_at = new Date(req.body.recall_at)
+            resume.call_history.push({
+                result: req.body.result,
+                calling_date: calling_date,
+                description: req.body.description,
+                recall_at: recall_at,
+                created_by: req.user_id
+            })
+            calling_date = calling_date.getTime()
+            recall_at = recall_at.getTime()
+
+            if (calling_date > recall_at) {
+                throw new BadRequestError('calling_date must be before recall_at');
+            }
+
+            await resume.save()
+
+            EventEmitter.emit(events.UPDATE_STATUS, resume)
+
+            AppResponse.builder(res).message("resume.messages.resume_call_history_successfuly_created").data(resume).send();
+        } catch (err) {
+            next(err);
+        }
+    }
 }
 
 export default new ResumeController;

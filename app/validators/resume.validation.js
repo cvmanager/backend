@@ -3,6 +3,7 @@ import { body, param, query } from 'express-validator';
 import generalValidator from '../helper/validator.js';
 import i18n from '../middlewares/lang.middleware.js';
 import { mobileFormat } from '../helper/helper.js';
+import { json } from 'express';
 class ResumeValidation {
     index() {
         return [
@@ -229,6 +230,44 @@ class ResumeValidation {
                 .withMessage('resume.validations.status_required')
                 .isIn(i18n.__("resume.enums.status"))
                 .withMessage('resume.validations.status_required')
+                .trim(),
+            generalValidator
+        ];
+    }
+
+    call_history() {
+        return [
+            param('id')
+                .notEmpty()
+                .withMessage('resume.validations.resume_id_required')
+                .isMongoId()
+                .withMessage('resume.validations.resume_id_invalid')
+                .trim(),
+            body('result')
+                .notEmpty()
+                .withMessage('resume.validations.result_required')
+                .isIn(i18n.__('resume.enums.call_history_status'))
+                .withMessage('resume.validations.result_incorrect')
+                .trim(),
+            body('calling_date')
+                .notEmpty()
+                .withMessage('resume.validations.calling_date_required')
+                .isISO8601()
+                .toDate()
+                .withMessage('resume.validations.calling_date_must_be_date')
+                .trim(),
+            body('description')
+                .optional({ nullable: true, checkFalsy: true })
+                .isLength({ min: 0, max: 1000 })
+                .withMessage('resume.validations.description_length')
+                .trim(),
+            body('recall_at')
+                .if(body('result').isIn('recall', i18n.__('resume.enums.call_history_status')))
+                .notEmpty()
+                .withMessage('recall_at is required')
+                .isISO8601()
+                .toDate()
+                .withMessage('recall_at must be date')
                 .trim(),
             generalValidator
         ];

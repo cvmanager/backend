@@ -90,3 +90,12 @@
 * @property { array<Resume> } data
 * @property { array<> }        errors
 */
+
+/**
+* create call history
+* @typedef { object } resume.call_history
+* @property { string } result.required - result
+* @property { string } calling_date.required - calling_date
+* @property { string } description - description
+* @property { string } recall_at - recall_at
+*/

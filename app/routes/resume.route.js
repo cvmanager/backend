@@ -12,6 +12,7 @@ resumeRouter
     .patch('/:id', ResumeValidation.update(), ResumeController.update)
     .delete('/:id', ResumeValidation.remove(), ResumeController.delete)
     .patch('/:id/status', ResumeValidation.update_status(), ResumeController.updateStatus)
+    .post('/:id/call-history', ResumeValidation.call_history(), ResumeController.callHistory)
     .patch('/:id/file', UploadFile.single('file'),ResumeValidation.upload_file(), ResumeController.uploadFile)
     .get('/:id/comments', ResumeValidation.comments(), ResumeController.comments)
     .post('/:id/comments', ResumeValidation.addComments(), ResumeController.addComments)

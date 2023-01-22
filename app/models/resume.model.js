@@ -123,6 +123,34 @@ const schema = new mongoose.Schema(
             ],
             default: null
         },
+        call_history: {
+            type: [
+                {
+                    result: {
+                        type: String,
+                        default: null,
+                        enum: i18n.__("resume.enums.call_history_status")
+                    },
+                    calling_date: {
+                        type: Date,
+                        default: null
+                    },
+                    description: {
+                        type: String,
+                    },
+                    recall_at: {
+                        type: Date,
+                        default: null
+                    },
+                    created_by: {
+                        type: mongoose.Schema.Types.ObjectId,
+                        required: true,
+                        ref: 'users'
+                    },
+                }
+            ],
+            default: null
+        },
         created_by: {
             type: mongoose.Schema.Types.ObjectId,
             required: true,

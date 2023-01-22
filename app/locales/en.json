@@ -112,10 +112,7 @@
 			"position_description_length": "position description must grather than 10 character and less than 100 character"
 		},
 		"messages": {
-			"position_list_found": "position list",
-			"position_found" : "position found",
-			"position_managers_found" : "position managers successfuly founded",
-			"position_resumes_found": "Position resumes successfuly founded"
+			"position_successfuly_created": "Position successfuly created"
 		},
 		"errors": {
 			"position_notfound" : "position not found",
@@ -123,8 +120,10 @@
 			"position_successfuly_created" : "position successfuly created",
 			"position_successfuly_updated" : "position successfuly updated",
 			"position_successfuly_deleted" : "position successfuly deleted",
-			"position_not_found":"position not found"
-
+			"position_list_found": "position list",
+			"position_found" : "position found",
+			"position_managers_found" : "position managers successfuly founded",
+			"position_resumes_found": "Position resumes successfuly founded"
 		}
 	},
 	"project": {
@@ -139,7 +138,7 @@
 			"project_successfully_created": "Project successfully Created",
 			"project_successfully_updated": "Project successfully updated",
 			"project_manager_successfully_updated": "Project manager successfully updated",
-			"project_manager_successfully_deleted": "Project manager successfully deleted",
+			"project_manager_successfully_deleted": "Project manager successfully deleted",		
 			"project_successfully_deleted": "project successfully deleted",
 			"project_resumes_found": "Project resumes successfuly founded",
 			"project_managers_found" : "Project managers successfuly founded",
@@ -162,6 +161,13 @@
 				"rejected",
 				"hired",
 				"wait_hire"
+			],
+			"call_history_status": [
+				"rejected",
+				"answered",
+				"busy",
+				"wrong-number",
+				"recall"
 			]
 		},
 		"validations": {
@@ -191,14 +197,21 @@
 			"education_incorrect": "resume.validation.education_incorrect",
 			"major_required": "resume.validation.major_required",
 			"major_length": "resume.validation.major_length",
-			"max_comment_length": "Comment has be between 5 and 1000 character",
-			"resume_page_number": "resume page must by number",
-			"resume_size_number": "resume size must by number"
+			"result_required": "result is required",
+			"result_incorrect": "result is incorrect",
+			"calling_date_required": "calling_date is required",
+			"calling_date_must_be_date": "calling_date must be date",
+			"description_length": "description length must be between 0 and 1000",
+			"call_history_recall_at_required": "recall_at is required",
+			"call_history_recall_at_invalid": "recall_at must be date"
 		},
 		"messages": {
 			"resume_successfuly_created": "resume successfuly created",
-			"resume_comment_successfuly_created": "resume comment successfuly created",
-			"resume_comments_list_found": "resume comment list found"
+			"resume_status_successfuly_updated": "resume successfuly updated",
+			"resume_call_history_successfuly_created": "resume call history successfuly created",
+			"max_comment_length": "Comment has be between 5 and 1000 character",
+			"resume_page_number": "resume page must by number",
+			"resume_size_number": "resume size must by number"
 		},
 		"errors": {
 			"resume_notfound": "Sorry, Resume not found",

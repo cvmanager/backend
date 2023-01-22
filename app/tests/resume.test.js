@@ -16,7 +16,6 @@ import UsersData from './data/user.data';
 import i18n from '../middlewares/lang.middleware.js';
 import * as path from 'path';
 
-
 let token;
 let resumeItem;
 let resume;
@@ -29,6 +28,8 @@ let projectData;
 let positionData;
 let user;
 let usersData;
+let users;
+
 
 prepareDB();
 describe("Resumes Routes", () => {
@@ -51,7 +52,10 @@ describe("Resumes Routes", () => {
 
         usersData = new UsersData();
         user = usersData.getUser();
+        users = userData.getUsers();
+
     })
+
 
     describe('GET /', () => {
         it(`should get ${httpStatus.BAD_REQUEST} page is not number`, async () => {
@@ -989,4 +993,114 @@ describe("Resumes Routes", () => {
         })
     })
 
+    describe(`POST /:id/call-history`, () => {
+
+        let callHistory;
+        beforeEach(async () => {
+            callHistory = {
+                '_id': Types.ObjectId(),
+                'result': 'answered',
+                'calling_date': faker.date.recent(),
+                'description': faker.random.alpha(10),
+                'created_by': user._id,
+                'recall_at': faker.date.future(1)
+            }
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} if resume id is not MongoId`, async () => {
+            const response = await request(app)
+                .post(`/api/V1/resumes/fakeId/call-history`)
+                .set(`Authorization`, token)
+                .send(callHistory);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.NOT_FOUND} if resume id is not valid`, async () => {
+            let invalidResumeId = Types.ObjectId();
+            const response = await request(app)
+                .post(`/api/V1/resumes/${invalidResumeId}/call-history`)
+                .set(`Authorization`, token)
+                .send(callHistory);
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if result is not send`, async () => {
+            delete callHistory.result
+            const response = await request(app)
+                .post(`/api/V1/resumes/${resume._id}/call-history`)
+                .set(`Authorization`, token)
+                .send(callHistory);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if result is not enum`, async () => {
+            callHistory.result = 'fakeResult'
+            const response = await request(app)
+                .post(`/api/V1/resumes/${resume._id}/call-history`)
+                .set(`Authorization`, token)
+                .send(callHistory);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if calling_date is not send`, async () => {
+            delete callHistory.calling_date
+            const response = await request(app)
+                .post(`/api/V1/resumes/${resume._id}/call-history`)
+                .set(`Authorization`, token)
+                .send(callHistory);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if calling_date is not date`, async () => {
+            callHistory.calling_date = 'fakeDate';
+            const response = await request(app)
+                .post(`/api/V1/resumes/${resume._id}/call-history`)
+                .set(`Authorization`, token)
+                .send(callHistory);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if description is grather than 1000 character`, async () => {
+            callHistory.description = faker.random.alpha(1001);
+            const response = await request(app)
+                .post(`/api/V1/resumes/${resume._id}/call-history`)
+                .set(`Authorization`, token)
+                .send(callHistory);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} if result is recall and recall_at not send`, async () => {
+            callHistory.result = 'recall'
+            delete callHistory.recall_at;
+            const response = await request(app)
+                .post(`/api/V1/resumes/${resume._id}/call-history`)
+                .set(`Authorization`, token)
+                .send(callHistory);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if result is recall and recall_at is not date`, async () => {
+            callHistory.result = 'recall'
+            callHistory.recall_at = 'invalidDate';
+            const response = await request(app)
+                .post(`/api/V1/resumes/${resume._id}/call-history`)
+                .set(`Authorization`, token)
+                .send(callHistory);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if result is recall and recall_at is in the past`, async () => {
+            callHistory.result = 'recall'
+            callHistory.recall_at = faker.date.past(10);
+            const response = await request(app)
+                .post(`/api/V1/resumes/${resume._id}/call-history`)
+                .set(`Authorization`, token)
+                .send(callHistory);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.OK} if all data correct `, async () => {
+            const response = await request(app)
+                .post(`/api/V1/resumes/${resume._id}/call-history`)
+                .set(`Authorization`, token)
+                .send(callHistory);
+            expect(response.statusCode).toBe(httpStatus.OK);
+        })
+    })
+
 })
+
+
+
+
