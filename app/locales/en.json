@@ -140,6 +140,7 @@
 			"project_manager_successfully_updated": "Project manager successfully updated",
 			"project_manager_successfully_deleted": "Project manager successfully deleted",
 			"project_successfully_deleted": "project successfully deleted",
+			"project_managers_found" : "Project managers successfuly founded",
 			"project_positions_found": "project positions successfully found"
 		},
 		"errors": {
