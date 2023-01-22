@@ -23,7 +23,7 @@ const createStorage = (destinationDir, fieldName, dupllicate) => {
             name += '.' + suffix[1];
 
             cb(null, name);
-            req.body[fieldName] = name;
+            req.body[fieldName] = destinationDir + name;
         }
     })
     return storage
@@ -55,4 +55,19 @@ const UploadFile = multer({
     limits: { fileSize: maxFileSize }
 })
 
-export { Upload, UploadFile };
+
+const maxLogoSize = 0.1; //1mb
+const UploadLogo = multer({
+    storage: createStorage('./public/company/logo/', 'logo', false),
+    fileFilter: (req, file, cb) => {
+        if (!['image/jpeg', 'image/jpg', 'image/png'].includes(file.mimetype)) {
+            cb(null, false);
+            return cb(new BadRequestError('exceptions.valid_image_format'));
+        }
+        cb(null, true);
+    },
+    limits: { fileSize: maxLogoSize }
+})
+
+
+export { Upload, UploadFile, UploadLogo };
