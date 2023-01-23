@@ -221,5 +221,51 @@
 		"errors": {
 			"duplicate": "This manager set for this position already"
 		}
+	},
+	"interview": {
+		"enums": {
+			"event_type": [
+				"online",
+				"inperson",
+				"inphone"
+			],
+			"status": [
+				"pending",
+				"done",
+				"canceled"
+			],
+			"type": [
+				"person",
+				"personality"
+			],
+			"result": [
+				"rejected",
+				"accepted"
+			]
+		},
+		"validations": {
+			"interview_id_required": "interview id required",
+			"interview_id_invalid": "interview id invalid",
+			"resume_id_required": "resume id required",
+			"resume_id_invalid": "resume id invalid",
+			"event_time_required": "event time required",
+			"event_time_should_after_today": "event time should after today",
+			"event_time_should_before_next_year": "event time should before next year",
+			"event_type_required": "event_type required",
+			"event_type_invalid": "event_type invalid",
+			"type_required": "type required",
+			"type_invalid": "type invalid",
+			"description_invalid": "description most grather than 2 and less than 512 character",
+			"contribution_invalid": "contribution most array of id",
+			"interview_page_number": "interview page must by number",
+			"interview_size_number": "interview size must by number"
+		},
+		"messages": {
+			"interview_found": "interview found",
+			"interview_successfuly_deleted": "interview successfuly deleted"
+		},
+		"errors": {
+			"interview_notfound": "interview not found"
+		}
 	}
 }
