@@ -17,5 +17,5 @@ companyRouter
     .get('/:id/resumes', CompanyValidation.find(), CompanyController.getResumes)
     .get('/:id/managers', CompanyValidation.find(), CompanyController.getManagers)
     .get('/:id/projects', CompanyValidation.find(), CompanyController.getProjects)
-    .patch('/:id/logo', UploadLogo.single('logo'), CompanyValidation.logo(), CompanyController.logo)
+    .patch('/:id/logo', UploadLogo.single('logo'), CompanyValidation.logo(), CompanyController.updateLogo)
 export default companyRouter;

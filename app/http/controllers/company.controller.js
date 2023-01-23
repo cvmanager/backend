@@ -358,12 +358,12 @@ class CompanyController extends Controller {
     * @return { message.badrequest_error }      401 - UnauthorizedError
     * @return { message.server_error}      500 - Server Error
     */
-    async logo(req,res,next){
+    async updateLogo(req, res, next) {
         try {
             let company = await Company.findById(req.params.id);
             if (!company) throw new NotFoundError('company.errors.company_notfound');
 
-            if(req.body.logo){
+            if (req.body.logo) {
                 company.logo = req.body.logo;
                 await company.save();
             }
