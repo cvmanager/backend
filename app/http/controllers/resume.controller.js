@@ -366,6 +366,41 @@ class ResumeController extends Controller {
             next(err);
         }
     }
+
+    /**
+    * PATCH /resumes/{id}/hire_status
+    * 
+    * @summary update hire status
+    * @tags Resume
+    * @security BearerAuth
+    * 
+    * @param { string } id.path.required - resume id
+    * @param { resume.hire_status } request.body - application/json
+    * 
+    * @return { resume.success }            200 - success response
+    * @return { message.badrequest_error }  400 - bad request respone
+    * @return { message.badrequest_error }  404 - not found respone
+    * @return { message.badrequest_error }  401 - UnauthorizedError
+    * @return { message.server_error  }     500 - Server Error
+    */
+    async hireStatus(req, res, next) {
+        try {
+            let resume = await Resume.findById(req.params.id);
+            if (!resume) throw new NotFoundError('resume.errors.resume_notfound');
+
+            if (req.body.hire_status == 'hired_on' && (req.body.income == '' || req.body.income == undefined)) {
+                throw new BadRequestError('resume.errors.income_cant_be_empty');
+            }
+
+            resume.hire_status = req.body.hire_status;
+            resume.income = req.body.income;
+            await resume.save();
+
+            AppResponse.builder(res).message("resume.messages.hire_status_successfuly_updated").data(resume).send();
+        } catch (err) {
+            next(err);
+        }
+    }
 }
 
 export default new ResumeController;

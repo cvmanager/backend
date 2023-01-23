@@ -342,6 +342,28 @@ class ResumeValidation {
         ];
     }
 
+    hireStatus() {
+        return [
+            param('id')
+                .notEmpty()
+                .withMessage('resume.validations.resume_id_required')
+                .isMongoId()
+                .withMessage('resume.validations.resume_id_invalid')
+                .trim(),
+            body('hire_status')
+                .isIn(['not_employed', 'hired_on', 'leaving_work'])
+                .withMessage('resume.validations.hire_status_value_not_valid')
+                .notEmpty()
+                .withMessage('resume.validations.hire_status_required')
+                .trim(),
+            body('income')
+                .isNumeric()
+                .withMessage('resume.validations.income_is_number')
+                .optional({ nullable: true, checkFalsy: true })
+                .trim(),
+            generalValidator
+        ];
+    }
 }
 
 export default new ResumeValidation();

@@ -159,6 +159,15 @@ const schema = new mongoose.Schema(
         file: {
             type: Array,
             default: null
+        },
+        hire_status: {
+            type: String,
+            default: 'not_employed',
+            enum: ['not_employed', 'hired_on', 'leaving_work']
+        },
+        income: {
+            type: Number,
+            default: null
         }
     }
 );

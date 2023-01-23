@@ -16,5 +16,6 @@ resumeRouter
     .patch('/:id/file', UploadFile.single('file'),ResumeValidation.upload_file(), ResumeController.uploadFile)
     .get('/:id/comments', ResumeValidation.comments(), ResumeController.comments)
     .post('/:id/comments', ResumeValidation.addComments(), ResumeController.addComments)
+    .patch('/:id/hire_status', ResumeValidation.hireStatus(), ResumeController.hireStatus)
 
 export default resumeRouter

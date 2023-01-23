@@ -95,7 +95,7 @@
 			"the_user_is_currently_an_manager_for_company": "The user is currently an manager for company",
 			"the_user_is_not_manager_for_this_company": "This user is not  manager for this company",
 			"the_owner_manager_cannot_be_deleted": "The owner manager cannot be deleted",
-			"company_already_exists" : "company name is duplicated, already exists"
+			"company_already_exists": "company name is duplicated, already exists"
 		}
 	},
 	"position": {
@@ -115,14 +115,14 @@
 			"position_successfuly_created": "Position successfuly created"
 		},
 		"errors": {
-			"position_notfound" : "position not found",
-			"position_already_exists" : "position already exists",
-			"position_successfuly_created" : "position successfuly created",
-			"position_successfuly_updated" : "position successfuly updated",
-			"position_successfuly_deleted" : "position successfuly deleted",
+			"position_notfound": "position not found",
+			"position_already_exists": "position already exists",
+			"position_successfuly_created": "position successfuly created",
+			"position_successfuly_updated": "position successfuly updated",
+			"position_successfuly_deleted": "position successfuly deleted",
 			"position_list_found": "position list",
-			"position_found" : "position found",
-			"position_managers_found" : "position managers successfuly founded",
+			"position_found": "position found",
+			"position_managers_found": "position managers successfuly founded",
 			"position_resumes_found": "Position resumes successfuly founded"
 		}
 	},
@@ -138,17 +138,17 @@
 			"project_successfully_created": "Project successfully Created",
 			"project_successfully_updated": "Project successfully updated",
 			"project_manager_successfully_updated": "Project manager successfully updated",
-			"project_manager_successfully_deleted": "Project manager successfully deleted",		
+			"project_manager_successfully_deleted": "Project manager successfully deleted",
 			"project_successfully_deleted": "project successfully deleted",
 			"project_resumes_found": "Project resumes successfuly founded",
-			"project_managers_found" : "Project managers successfuly founded",
+			"project_managers_found": "Project managers successfuly founded",
 			"project_positions_found": "project positions successfully found"
 		},
 		"errors": {
 			"the_user_is_currently_an_manager_for_project": "The user is currently an manager for project",
 			"the_user_is_not_an_manager_for_project": "This user is not defined for the project",
 			"the_owner_manager_cannot_be_deleted": "The owner manager cannot be deleted",
-			"project_not_found" : "Project not found"
+			"project_not_found": "Project not found"
 		}
 	},
 	"resume": {
@@ -203,7 +203,12 @@
 			"calling_date_must_be_date": "calling_date must be date",
 			"description_length": "description length must be between 0 and 1000",
 			"call_history_recall_at_required": "recall_at is required",
-			"call_history_recall_at_invalid": "recall_at must be date"
+			"call_history_recall_at_invalid": "recall_at must be date",
+			"resume_id_required": "resume id required",
+			"resume_id_invalid": "resume id invalid",
+			"hire_status_required": "hire status is required",
+			"hire_status_value_not_valid": "hire status value is not valid",
+			"income_is_number": "income is number"
 		},
 		"messages": {
 			"resume_successfuly_created": "resume successfuly created",
@@ -211,13 +216,15 @@
 			"resume_call_history_successfuly_created": "resume call history successfuly created",
 			"max_comment_length": "Comment has be between 5 and 1000 character",
 			"resume_page_number": "resume page must by number",
-			"resume_size_number": "resume size must by number"
+			"resume_size_number": "resume size must by number",
+			"hire_status_successfuly_updated": "hire status successfuly updated"
 		},
 		"errors": {
 			"resume_notfound": "Sorry, Resume not found",
 			"resume_comments_no_content": "Sorry, This resume  dont have any comment",
 			"resume_comments_notfound": "Sorry, Resume not have any comment",
-			"can_not_update_status_to_current": "It is not possible to update the status to the current status"
+			"can_not_update_status_to_current": "It is not possible to update the status to the current status",
+			"income_cant_be_empty": "income is required"
 		}
 	},
 	"user": {
