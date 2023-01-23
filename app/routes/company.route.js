@@ -1,7 +1,7 @@
 import express from 'express'
 import CompanyValidation from '../validators/company.validation.js'
 import CompanyController from '../http/controllers/company.controller.js'
-import { UploadLogo } from '../helper/upload.js';
+import { Upload } from '../helper/upload.js';
 
 const companyRouter = express.Router();
 
@@ -17,5 +17,5 @@ companyRouter
     .get('/:id/resumes', CompanyValidation.find(), CompanyController.getResumes)
     .get('/:id/managers', CompanyValidation.find(), CompanyController.getManagers)
     .get('/:id/projects', CompanyValidation.find(), CompanyController.getProjects)
-    .patch('/:id/logo', UploadLogo.single('logo'), CompanyValidation.logo(), CompanyController.updateLogo)
+    .patch('/:id/logo', Upload('companies', 'logo', 'image'), CompanyValidation.logo(), CompanyController.updateLogo)
 export default companyRouter;
