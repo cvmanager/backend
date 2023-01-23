@@ -92,8 +92,8 @@ class ResumeController extends Controller {
     * 
     * @return { resume.success } 200 - success response
     * @return { message.badrequest_error }  400 - bad request respone
-    * @return { message.badrequest_error }  404 - not found respone
-    * @return { message.badrequest_error }       401 - UnauthorizedError
+    * @return { message.NotFoundError }  404 - not found respone
+    * @return { message.badrequest_error }  401 - UnauthorizedError
     * @return { message.server_error  }     500 - Server Error
     */
     async create(req, res, next) {
