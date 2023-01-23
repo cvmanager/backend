@@ -250,4 +250,108 @@ describe("User Routes", () => {
     })
   })
 
+  describe(`PATCH /users/change-password`, () => {
+    let params;
+
+    beforeEach(() => {
+      params = {
+        "password": '11111111',
+        "old_password": '12345678'
+      };
+    })
+
+    it(`should get ${httpStatus.NOT_FOUND} user id is not a mongo id`, async () => {
+      let fakeToken = userData.getFakeAccessToken(Types.ObjectId());
+      const response = await request(app)
+        .patch(`/api/V1/users/change-password`)
+        .set(`Authorization`, fakeToken)
+        .send(params);
+      expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+    })
+
+    it(`should get ${httpStatus.BAD_REQUEST} old_password is empty`, async () => {
+      delete params.old_password;
+      const response = await request(app)
+        .patch(`/api/V1/users/change-password`)
+        .set(`Authorization`, token)
+        .send(params);
+      expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+    })
+
+    it(`should get ${httpStatus.BAD_REQUEST} old_password cant be less than 8 character `, async () => {
+      params.old_password = faker.random.alpha(7);
+      const response = await request(app)
+        .patch(`/api/V1/users/change-password`)
+        .set(`Authorization`, token)
+        .send(params);
+      expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+    })
+
+    it(`should get ${httpStatus.BAD_REQUEST} old_password cant be more than than 10 character `, async () => {
+      params.old_password = faker.random.alpha(11);
+      const response = await request(app)
+        .patch(`/api/V1/users/change-password`)
+        .set(`Authorization`, token)
+        .send(params);
+      expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+    })
+
+    it(`should get ${httpStatus.BAD_REQUEST} password cant be  empty`, async () => {
+      delete params.password;
+      const response = await request(app)
+        .patch(`/api/V1/users/change-password`)
+        .set(`Authorization`, token)
+        .send(params);
+      expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+    })
+
+    it(`should get ${httpStatus.BAD_REQUEST} password cant be less than 8 character `, async () => {
+      params.password = faker.random.alpha(7);
+      const response = await request(app)
+        .patch(`/api/V1/users/change-password`)
+        .set(`Authorization`, token)
+        .send(params);
+      expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+    })
+
+    it(`should get ${httpStatus.BAD_REQUEST} password cant be more than than 10 character `, async () => {
+      params.password = faker.random.alpha(11);
+      const response = await request(app)
+        .patch(`/api/V1/users/change-password`)
+        .set(`Authorization`, token)
+        .send(params);
+      expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+    })
+
+    it(`should get ${httpStatus.BAD_REQUEST} old_password is invalid `, async () => {
+      params.old_password = faker.random.alpha(8);
+      const response = await request(app)
+        .patch(`/api/V1/users/change-password`)
+        .set(`Authorization`, token)
+        .send(params);
+      expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+    })
+
+    it(`should get ${httpStatus.BAD_REQUEST} password and old_password  cant be duplicate `, async () => {
+      let password = '12345678'
+      params.old_password = password;
+      params.password = password;
+      const response = await request(app)
+        .patch(`/api/V1/users/change-password`)
+        .set(`Authorization`, token)
+        .send(params);
+      expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+    })
+
+    it(`should get ${httpStatus.OK} password successfuly changed `, async () => {
+      const response = await request(app)
+        .patch(`/api/V1/users/change-password`)
+        .set(`Authorization`, token)
+        .send(params);
+      console.log(response.body)
+      expect(response.statusCode).toBe(httpStatus.OK);
+    })
+
+  })
+
 });
