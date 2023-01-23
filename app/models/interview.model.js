@@ -30,6 +30,7 @@ const schema = new mongoose.Schema(
         },
         result: {
             type: String,
+            default: null,
             enum: i18n.__("interview.enums.result")
         },
         description: {
