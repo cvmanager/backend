@@ -7,9 +7,9 @@ const userRouter = express.Router();
 
 userRouter
     .get('/getMe', UserController.getMe)
-    .get('/', UserController.index)
+    .get('/', UserValidation.index(), UserController.index)
     .get('/:id', UserValidation.find(), UserController.find)
-    .post('/avatar', Upload.single('avatar'), UserValidation.updateProfileImage(), UserController.uploadProfileImage)
+    .post('/avatar', Upload('users', 'avatar', 'image'), UserValidation.updateProfileImage(), UserController.uploadProfileImage)
     .post('/:id/ban', UserValidation.ban(), UserController.banned)
 
 export default userRouter

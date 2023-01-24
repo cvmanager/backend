@@ -6,6 +6,8 @@
 * @property { string } title
 * @property { string } level
 * @property { boolean } is_active
+* @property { string } logo
+* @property { string } description
 * @property { string }  created_by
 * @property { string }  _id
 * @property { string }  createdAt
@@ -18,6 +20,7 @@
 * @property { string } project_id.required - position project_id
 * @property { string } title.required - position title
 * @property { string } level.required - position level
+* @property { string } description - position description
 */
 
 /**

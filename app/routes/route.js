@@ -6,6 +6,7 @@ import authRouter from './auth.route.js'
 import userRouter from './user.route.js'
 import companyRouter from './company.route.js'
 import constantRouter from './constant.route.js'
+import provinceRouter from './province.route.js'
 import positionRouter from './position.route.js'
 
 const router = express.Router();
@@ -16,6 +17,7 @@ router.use('/companies', verifyToken, companyRouter)
 router.use('/projects', verifyToken, projectRouter)
 router.use('/resumes', verifyToken, resumeRouter)
 router.use('/constant', verifyToken,constantRouter)
+router.use('/provinces', verifyToken,provinceRouter)
 router.use('/positions', verifyToken,positionRouter)
 
 export default router;

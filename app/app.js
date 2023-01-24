@@ -16,12 +16,14 @@ import env from './helper/env.js'
 const app = express();
 
 dotenv.config();
+app.enable('trust proxy');
 app.use(cors());
 app.use(i18n.init);
 app.use(rateLimiter);
 
 app.use(express.json({ strict: false }));
 app.use(express.urlencoded({ extended: false }));
+app.use(express.static('public'));
 
 expressJSDocSwagger(app)(swaggerOptions);
 

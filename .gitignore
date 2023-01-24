@@ -1,5 +1,7 @@
-*node_modules/*
+*node_modules
 .env
 package-lock.json
-public/profile/*
+public/uploads/*
 logs
+mongo_db
+redis_db

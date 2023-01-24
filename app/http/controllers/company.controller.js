@@ -8,6 +8,8 @@ import AppResponse from '../../helper/response.js';
 import Controller from './controller.js';
 import EventEmitter from '../../events/emitter.js';
 import { events } from '../../events/subscribers/companies.subscriber.js';
+import Project from '../../models/project.model.js';
+import Resume from '../../models/resume.model.js';
 
 
 class CompanyController extends Controller {
@@ -29,7 +31,7 @@ class CompanyController extends Controller {
         try {
             const { page = 1, size = 10, query = '' } = req.query
 
-            let searchQuery = (query.length > 0 ? { $or: [{ name: { '$regex': query } }] } : null);
+            let searchQuery = (query.length > 0 ? { $or: [{ name: { '$regex': new RegExp(query, "i") } }] } : null);
 
             const companyList = await Company.paginate(searchQuery, {
                 page: (page) || 1,
@@ -41,7 +43,8 @@ class CompanyController extends Controller {
                         path: 'managers',
                         populate: { path: 'user_id', select: ['firstname', 'lastname', 'avatar'] },
                         select: ['user_id']
-                    }
+                    },
+                    { path: 'created_by', select: ['firstname', 'lastname'] }
                 ]
             });
             AppResponse.builder(res).message("company.messages.company_list_found").data(companyList).send();
@@ -129,7 +132,7 @@ class CompanyController extends Controller {
             if (!company) throw new NotFoundError('company.errors.company_notfound');
 
             if (req.body.name !== undefined) {
-                let duplicateCompany = await Company.findOne({ 'name': req.body.name });
+                let duplicateCompany = await Company.findOne({ '_id': { $ne: company._id }, 'name': req.body.name });
                 if (duplicateCompany && duplicateCompany._id !== company._id) throw new AlreadyExists('company.errors.company_already_exists');
             }
 
@@ -233,6 +236,7 @@ class CompanyController extends Controller {
 
             let manager = await Manager.findOne({ 'entity': "companies", 'entity_id': company.id, 'user_id': user.id });
             if (!manager) throw new BadRequestError("company.errors.the_user_is_not_manager_for_this_company");
+            if (manager.type === 'owner') throw new BadRequestError("company.errors.the_owner_manager_cannot_be_deleted");
 
             await manager.delete(req.user_id);
 
@@ -243,6 +247,133 @@ class CompanyController extends Controller {
             next(err);
         }
     }
+
+    /**
+    * GET /companies/{id}/projects
+    * 
+    * @summary gets  companies projects list by company id
+    * @tags Company
+    * @security BearerAuth
+    * 
+    * @param  { string } id.path.required - company id
+    * 
+    * @return { company.success }               200 - success response
+    * @return { message.badrequest_error }      400 - bad request respone
+    * @return { message.badrequest_error }      404 - not found respone
+    * @return { message.unauthorized_error }    401 - UnauthorizedError
+    * @return { message.server_error  }         500 - Server Error
+    */
+    async getProjects(req, res, next) {
+        try {
+            const company = await Company.findById(req.params.id);
+            if (!company) throw new NotFoundError('company.errors.company_notfound');
+
+            let projects = await Project.find({ 'company_id': company.id })
+                .populate({ path: 'created_by', select: ['firstname', 'lastname'] })
+                .populate({
+                    path: 'managers',
+                    populate: { path: 'user_id', select: ['firstname', 'lastname', 'avatar'] },
+                    select: ['user_id']
+                });
+
+            AppResponse.builder(res).message('company.messages.company_projects_found').data(projects).send();
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
+ * GET /companies/{id}/managers
+ * 
+ * @summary gets  companies managers list by company id
+ * @tags Company
+ * @security BearerAuth
+ * 
+ * @param  { string } id.path.required - company id
+ * 
+ * @return { company.success }               200 - success response
+ * @return { message.badrequest_error }      400 - bad request respone
+ * @return { message.badrequest_error }      404 - not found respone
+ * @return { message.unauthorized_error }    401 - UnauthorizedError
+ * @return { message.server_error  }         500 - Server Error
+ */
+    async getManagers(req, res, next) {
+        try {
+            const company = await Company.findById(req.params.id);
+            if (!company) throw new NotFoundError('company.errors.company_notfound');
+
+            let managers = await Manager.find({ 'entity': "companies", 'entity_id': company.id })
+                .populate({ path: 'created_by', select: ['firstname', 'lastname'] })
+                .populate('user_id');
+
+            AppResponse.builder(res).message('company.messages.company_managers_found').data(managers).send();
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
+    * GET /companies/{id}/resumes
+    * 
+    * @summary gets  companies resumes list by company id
+    * @tags Company
+    * @security BearerAuth
+    * 
+    * @param  { string } id.path.required - company id
+    * 
+    * @return { company.success }               200 - success response
+    * @return { message.badrequest_error }      400 - bad request respone
+    * @return { message.badrequest_error }      404 - not found respone
+    * @return { message.unauthorized_error }    401 - UnauthorizedError
+    * @return { message.server_error  }         500 - Server Error
+    */
+    async getResumes(req, res, next) {
+        try {
+            const company = await Company.findById(req.params.id);
+            if (!company) throw new NotFoundError('company.errors.company_notfound');
+
+            let resumes = await Resume.find({ 'company_id': company.id })
+                .populate({ path: 'created_by', select: ['firstname', 'lastname'] })
+                .populate('project_id')
+                .populate('position_id');
+
+            AppResponse.builder(res).message('company.messages.company_resumes_found').data(resumes).send();
+        } catch (err) {
+            next(err);
+        }
+    }
+
+
+    /**
+    * PATCH /companies/:id/logo
+    * @summary upload company logo
+    * @tags Company
+    * @security BearerAuth
+    * 
+    * @param { string } id.path.required - company id
+    * @param { company.upload_logo } request.body - company info - multipart/form-data
+    * 
+    * @return { company.success }              200 - update resume profile
+    * @return { message.badrequest_error }      400 - resume not found
+    * @return { message.badrequest_error }      401 - UnauthorizedError
+    * @return { message.server_error}      500 - Server Error
+    */
+    async updateLogo(req, res, next) {
+        try {
+            let company = await Company.findById(req.params.id);
+            if (!company) throw new NotFoundError('company.errors.company_notfound');
+
+            if (req.body.logo) {
+                company.logo = req.body.logo;
+                await company.save();
+            }
+
+            AppResponse.builder(res).message("company.messages.company_successfuly_updated").data(company).send()
+        } catch (err) {
+            next(err);
+        }
+    }
+
 }
 
 export default new CompanyController

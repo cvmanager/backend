@@ -1,10 +1,22 @@
-import { body, param } from 'express-validator';
+import { body, param, query } from 'express-validator';
 
 import generalValidator from '../helper/validator.js';
 import i18n from '../middlewares/lang.middleware.js';
 import { mobileFormat } from '../helper/helper.js';
 import { json } from 'express';
 class ResumeValidation {
+    index() {
+        return [
+            query('page')
+                .optional({ nullable: true, checkFalsy: true })
+                .isNumeric().withMessage('resume.validations.resume_page_number').trim(),
+            query('size')
+                .optional({ nullable: true, checkFalsy: true })
+                .isNumeric().withMessage('resume.validations.resume_size_number').trim(),
+            generalValidator
+        ];
+    }
+
     create() {
         return [
             body('position_id')
@@ -40,6 +52,8 @@ class ResumeValidation {
             body('birth_year')
                 .notEmpty()
                 .withMessage('resume.validations.birth_year_required')
+                .isNumeric()
+                .withMessage('resume.validations.birth_year_numeric')
                 .isLength({ min: 4, max: 4 })
                 .withMessage('resume.validations.birth_year_length')
                 .trim(),
@@ -58,14 +72,20 @@ class ResumeValidation {
             body('residence_city')
                 .notEmpty()
                 .withMessage('resume.validations.residence_city_required')
-                .isLength({ min: 2, max: 50 })
-                .withMessage('resume.validations.residence_city_length')
+                .isMongoId()
+                .withMessage('resume.validations.residence_city_id_invalid')
                 .trim(),
             body('work_city')
                 .notEmpty()
                 .withMessage('resume.validations.work_city_required')
-                .isLength({ min: 2, max: 50 })
-                .withMessage('resume.validations.work_city_length')
+                .isMongoId()
+                .withMessage('resume.validations.work_city_id_invalid')
+                .trim(),
+            body('education')
+                .notEmpty()
+                .withMessage('resume.validations.education_required')
+                .isIn(i18n.__('enums.education'))
+                .withMessage('resume.validations.education_incorrect')
                 .trim(),
             body('phone')
                 .optional({ nullable: true, checkFalsy: true })
@@ -78,14 +98,14 @@ class ResumeValidation {
                 .optional({ nullable: true, checkFalsy: true })
                 .isNumeric()
                 .withMessage('resume.validations.min_salary_numeric')
-                .isLength({ min: 0, max: 1000000000 })
+                .isInt({ min: 0, max: 1000000000 })
                 .withMessage('resume.validations.min_salary_length')
                 .trim(),
             body('max_salary')
                 .optional({ nullable: true, checkFalsy: true })
                 .isNumeric()
                 .withMessage('resume.validations.max_salary_numeric')
-                .isLength({ min: 0, max: 1000000000 })
+                .isInt({ min: 0, max: 1000000000 })
                 .withMessage('resume.validations.max_salary_length')
                 .trim(),
             body('work_experience')
@@ -110,16 +130,6 @@ class ResumeValidation {
                 .isMongoId()
                 .withMessage('resume.validations.resume_id_invalid')
                 .trim(),
-            body('company_id')
-                .optional({ nullable: true, checkFalsy: true })
-                .isMongoId()
-                .withMessage('resume.validations.company_invalid')
-                .trim(),
-            body('position_id')
-                .optional({ nullable: true, checkFalsy: true })
-                .isMongoId()
-                .withMessage('resume.validations.porject_invalid')
-                .trim(),
             body('firstname')
                 .optional({ nullable: true, checkFalsy: true })
                 .isLength({ min: 3, max: 50 })
@@ -142,6 +152,8 @@ class ResumeValidation {
                 .trim(),
             body('birth_year')
                 .optional({ nullable: true, checkFalsy: true })
+                .isNumeric()
+                .withMessage('resume.validations.birth_year_numeric')
                 .isLength({ min: 4, max: 4 })
                 .withMessage('resume.validations.birth_year_length')
                 .trim(),
@@ -157,28 +169,23 @@ class ResumeValidation {
                 .trim(),
             body('residence_city')
                 .optional({ nullable: true, checkFalsy: true })
-                .isLength({ min: 2, max: 50 })
-                .withMessage('resume.validations.residence_city_length')
+                .isMongoId()
+                .withMessage('resume.validations.residence_city_id_invalid')
                 .trim(),
             body('work_city')
                 .optional({ nullable: true, checkFalsy: true })
-                .isLength({ min: 2, max: 50 })
-                .withMessage('resume.validations.work_city_length')
+                .isMongoId()
+                .withMessage('resume.validations.work_city_id_invalid')
                 .trim(),
             body('education')
                 .optional({ nullable: true, checkFalsy: true })
                 .isIn(i18n.__("system.enums.education"))
                 .withMessage('resume.validations.education_incorrect')
                 .trim(),
-            body('major')
-                .optional({ nullable: true, checkFalsy: true })
-                .isLength({ min: 3, max: 20 })
-                .withMessage('resume.validations.major_invalid')
-                .trim(),
             body('phone')
                 .optional({ nullable: true, checkFalsy: true })
                 .isNumeric()
-                .withMessage('')
+                .withMessage('resume.validations.phone_numeric')
                 .isLength({ min: 9, max: 12 })
                 .withMessage('resume.validations.phone_length')
                 .trim(),
@@ -186,14 +193,14 @@ class ResumeValidation {
                 .optional({ nullable: true, checkFalsy: true })
                 .isNumeric()
                 .withMessage('resume.validations.min_salary_numeric')
-                .isLength({ min: 0, max: 100000000 })
+                .isInt({ min: 0, max: 1000000000 })
                 .withMessage('resume.validations.min_salary_length')
                 .trim(),
             body('max_salary')
                 .optional({ nullable: true, checkFalsy: true })
                 .isNumeric()
                 .withMessage('resume.validations.max_salary_numeric')
-                .isLength({ min: 0, max: 100000000 })
+                .isInt({ min: 0, max: 1000000000 })
                 .withMessage('resume.validations.max_salary_length')
                 .trim(),
             body('work_experience')
@@ -291,6 +298,49 @@ class ResumeValidation {
         ];
     }
 
+    upload_file() {
+        return [
+            param('id')
+                .notEmpty()
+                .withMessage('resume.validation.resume_id_required')
+                .isMongoId()
+                .withMessage('resume.validation.resume_id_invalid')
+                .trim(),
+            body('file')
+                .notEmpty()
+                .withMessage('resume.validation.file_required')
+                .trim(),
+            generalValidator
+        ];
+    }
+
+    comments() {
+        return [
+            param('id')
+                .notEmpty()
+                .withMessage('resume.validations.resume_id_required')
+                .isMongoId()
+                .withMessage('resume.validations.resume_id_invalid')
+                .trim(),
+            generalValidator
+        ];
+    }
+
+    addComments() {
+        return [
+            param('id')
+                .notEmpty()
+                .withMessage('resume.validations.resume_id_required')
+                .isMongoId()
+                .withMessage('resume.validations.resume_id_invalid')
+                .trim(),
+            body('body')
+                .isLength({ min: 5, max: 1000 })
+                .withMessage('resume.validations.max_comment_length')
+                .trim(),
+            generalValidator
+        ];
+    }
 
 }
 

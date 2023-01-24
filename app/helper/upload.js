@@ -1,34 +1,60 @@
 import multer from 'multer';
 import mkdirp from 'mkdirp';
-
+import fs from 'fs';
 import BadRequestError from '../exceptions/BadRequestError.js';
 
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        mkdirp('./public/profile/')
-            .then((result) => {
-                cb(null, './public/profile/')
-            })
+const config = {
+    'image': {
+        types: ['image/jpeg', 'image/jpg', 'image/png'],
+        maxSize: 0.6, //1mb
     },
-    filename: (req, file, cb) => {
-        let suffix = file.originalname.split('.');
-        const imageName = req.user_id + '.' + suffix[1];
-        cb(null, imageName);
-        req.body.avatar = imageName;
+    'file': {
+        types: ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'],
+        maxSize: 0.1, //1mb
     }
-})
+}
 
-const maxSize = 0.1; //1mb
-const Upload = multer({
-    storage: storage,
-    fileFilter: (req, file, cb) => {
-        if (!['image/jpeg', 'image/jpg', 'image/png'].includes(file.mimetype)) {
-            cb(null, false);
-            return cb(new BadRequestError('exceptions.valid_image_format'));
+const createStorage = (entity, fieldName) => {
+    let basePath = './public';
+    let realPath = `/uploads/${entity}/`;
+    let fullPath = basePath + realPath;
+
+    return multer.diskStorage({
+        destination: function (req, file, cb) {
+            mkdirp(fullPath)
+                .then((result) => {
+                    cb(null, fullPath)
+                })
+        },
+        filename: (req, file, cb) => {
+            let extension = '.' + file.originalname.split('.')[1];
+            let name = req.user_id._id;
+
+            if (fs.existsSync(fullPath + name + extension)) {
+                const date = new Date();
+                name = name + '_' + date.getTime();
+            }
+            name += extension;
+            console.log(name)
+            cb(null, name);
+            req.body[fieldName] = realPath + name;
         }
-        cb(null, true);
-    },
-    limits: { fileSize: maxSize }
-})
+    })
+}
+function Upload(entity, field, type) {
+    let fileConfig = config[type];
+    return multer({
+        storage: createStorage(entity, field),
+        fileFilter: (req, file, cb) => {
+            if (!fileConfig.types.includes(file.mimetype)) {
+                cb(null, false);
+                return cb(new BadRequestError(`exceptions.valid_${type}_format`));
+            }
+            cb(null, true);
+        },
+        limits: { fileSize: fileConfig.maxSize }
+    }).single(field)
+}
+
 
 export { Upload };

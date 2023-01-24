@@ -1,4 +1,5 @@
 import { resumes } from './data';
+import Resume from '../../models/resume.model.js';
 
 class ResumeData {
     getResume() {
@@ -16,6 +17,10 @@ class ResumeData {
     getResumeByEntityId(entityId) {
         return resumes.find(resume => resume.entity_id == entityId);
     }
+    
+    addResume(resumes) {
+        Resume.insertMany(resumes);
+    }
 }
 
-export default ResumeData
+export default ResumeData 

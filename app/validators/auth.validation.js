@@ -26,7 +26,7 @@ class AuthValidator {
             body('username')
                 .notEmpty()
                 .isLength({ min: 5, max: 10 })
-                .withMessage('auth.validations.mobile_required')
+                .withMessage('auth.validations.username_required')
                 .trim(),
             body('password')
                 .notEmpty()
@@ -50,6 +50,16 @@ class AuthValidator {
                 .withMessage('auth.validations.password_required')
                 .isLength({ min: 8, max: 10 })
                 .withMessage('auth.validations.password_length')
+                .trim(),
+            generalValidator
+        ]
+    }
+
+    checkusername() {
+        return [
+            body('username')
+                .notEmpty()
+                .withMessage('auth.validations.username_required')
                 .trim(),
             generalValidator
         ]

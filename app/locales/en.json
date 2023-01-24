@@ -29,7 +29,9 @@
 			"server_error": "Server Error",
 			"bad_request": "Bad Request",
 			"url_not_found": "Url NotFound",
-			"too_many_requests": "Too Many Requests"
+			"too_many_requests": "Too Many Requests",
+			"not_valid_image_format" : "The uploaded file is not an image",
+			"not_valid_file_format" : "The uploaded file format is invalid"
 		}
 	},
 	"auth": {
@@ -39,6 +41,7 @@
 			"password_required": "The password field is required",
 			"password_length": "The password field has a character limit",
 			"firstname_required": "The firstname field is required",
+			"username_required": "The username field is required",
 			"firstname_length": "The firstname field has a character limit",
 			"lastname_required": "The lastname field is required",
 			"lastname_length": "The lastname field has a character limit",
@@ -49,11 +52,14 @@
 			"user_successfuly_created": "The account was created successfully",
 			"success_login": "You have successfully logged into your account",
 			"success_logout": "You have successfully logged out",
-			"token_verified": "Token Verified"
+			"token_verified": "Token Verified",
+			"username_exist": "The username already exists"
 		},
 		"errors": {
 			"user_already_exists": "There is already a user with this information",
 			"invalid_credentials": "The username or password is incorrect",
+			"username_notfound": "The username not found",
+			"username_notsend": "The username not send",
 			"token_not_same": "Token not same",
 			"token_not_sended": "Authentication key not sent",
 			"token_not_stored": "Authentication key not stored"
@@ -70,18 +76,28 @@
 			"company_id_require": "company is required",
 			"company_id_invalid": "company invalid",
 			"company_page_number": "company page must by number",
-			"company_size_number": "company size must by number"
+			"company_size_number": "company size must by number",
+			"company_name_length": "company name lenght must grather than 3 character and less than 50 character",
+			"company_description_length": "company description lenght must grather than 3 character and less than 100 character",
+			"company_phone_length": "company description lenght must grather than 9 character and less than 12 character",
+			"company_phone_number": "company phone should number",
+			"company_address_length": "company address lenght must grather than 10 character and less than 200 character"
 		},
 		"messages": {
 			"company_list_found": "Company list found",
 			"company_successfuly_created": "Company successfuly created",
+			"company_managers_found": "Company managers successfuly founded",
 			"company_found": "Company Successfuly founded",
+			"company_resumes_found": "Company resumes successfuly founded",
+			"company_projects_found": "Company projects successfuly founded",
 			"company_successfuly_updated": "Company successfuly updated",
 			"company_manager_successfully_created": "company manager successfully created"
 		},
 		"errors": {
 			"the_user_is_currently_an_manager_for_company": "The user is currently an manager for company",
-			"the_user_is_not_manager_for_this_company": "This user is not  manager for this company"
+			"the_user_is_not_manager_for_this_company": "This user is not  manager for this company",
+			"the_owner_manager_cannot_be_deleted": "The owner manager cannot be deleted",
+			"company_already_exists" : "company name is duplicated, already exists"
 		}
 	},
 	"position": {
@@ -94,14 +110,22 @@
 		},
 		"validations": {
 			"position_page_number": "position page must by number",
-			"position_size_number": "position size must by number"
+			"position_size_number": "position size must by number",
+			"position_description_length": "position description must grather than 10 character and less than 100 character"
 		},
 		"messages": {
 			"position_successfuly_created": "Position successfuly created"
 		},
 		"errors": {
-			"position_not_found": "position not found",
-			"position_already_exists": "position already exists"
+			"position_notfound" : "position not found",
+			"position_already_exists" : "position already exists",
+			"position_successfuly_created" : "position successfuly created",
+			"position_successfuly_updated" : "position successfuly updated",
+			"position_successfuly_deleted" : "position successfuly deleted",
+			"position_list_found": "position list",
+			"position_found" : "position found",
+			"position_managers_found" : "position managers successfuly founded",
+			"position_resumes_found": "Position resumes successfuly founded"
 		}
 	},
 	"project": {
@@ -116,13 +140,17 @@
 			"project_successfully_created": "Project successfully Created",
 			"project_successfully_updated": "Project successfully updated",
 			"project_manager_successfully_updated": "Project manager successfully updated",
-			"project_manager_successfully_deleted": "Project manager successfully deleted",
-			"project_successfully_deleted": "project successfully deleted"
+			"project_manager_successfully_deleted": "Project manager successfully deleted",		
+			"project_successfully_deleted": "project successfully deleted",
+			"project_resumes_found": "Project resumes successfuly founded",
+			"project_managers_found" : "Project managers successfuly founded",
+			"project_positions_found": "project positions successfully found"
 		},
 		"errors": {
 			"the_user_is_currently_an_manager_for_project": "The user is currently an manager for project",
 			"the_user_is_not_an_manager_for_project": "This user is not defined for the project",
-			"the_owner_manager_cannot_be_deleted": "The owner manager cannot be deleted"
+			"the_owner_manager_cannot_be_deleted": "The owner manager cannot be deleted",
+			"project_not_found" : "Project not found"
 		}
 	},
 	"resume": {
@@ -158,14 +186,15 @@
 			"email_required": "resume.validation.email_required",
 			"email_invalid": "resume.validation.email_invalid",
 			"birth_year_required": "resume.validation.birth_year_required",
+			"birth_year_number": "resume.validation.birth_year_number",
 			"birth_year_length": "resume.validation.birth_year_length",
 			"marital_status_required": "resume.validation.marital_status_required",
 			"marital_status_incorrect": "resume.validation.marital_status_incorrect",
 			"mobile_required": "resume.validation.mobile_required",
 			"residence_city_required": "resume.validation.residence_city_required",
-			"residence_city_length": "resume.validation.residence_city_length",
+			"residence_city_invalid": "resume.validation.residence_city_invalid",
 			"work_city_required": "resume.validation.work_city_required",
-			"work_city_length": "resume.validation.work_city_length",
+			"work_city_invalid": "resume.validation.work_city_invalid",
 			"education_required": "resume.validation.education_required",
 			"education_incorrect": "resume.validation.education_incorrect",
 			"major_required": "resume.validation.major_required",
@@ -181,10 +210,15 @@
 		"messages": {
 			"resume_successfuly_created": "resume successfuly created",
 			"resume_status_successfuly_updated": "resume successfuly updated",
-			"resume_call_history_successfuly_created": "resume call history successfuly created"
+			"resume_call_history_successfuly_created": "resume call history successfuly created",
+			"max_comment_length": "Comment has be between 5 and 1000 character",
+			"resume_page_number": "resume page must by number",
+			"resume_size_number": "resume size must by number"
 		},
 		"errors": {
 			"resume_notfound": "Sorry, Resume not found",
+			"resume_comments_no_content": "Sorry, This resume  dont have any comment",
+			"resume_comments_notfound": "Sorry, Resume not have any comment",
 			"can_not_update_status_to_current": "It is not possible to update the status to the current status"
 		}
 	},

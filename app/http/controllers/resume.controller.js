@@ -1,6 +1,7 @@
 import { events } from '../../events/subscribers/resumes.subscriber.js';
 import NotFoundError from '../../exceptions/NotFoundError.js';
 import Position from '../../models/position.model.js';
+import ResumeComments from '../../models/resumeComment.model.js';
 import EventEmitter from '../../events/emitter.js';
 import AppResponse from '../../helper/response.js';
 import Resume from '../../models/resume.model.js';
@@ -37,7 +38,6 @@ class ResumeController extends Controller {
                         { email: { '$regex': query } },
                         { mobile: { '$regex': query } },
                         { education: { '$regex': query } },
-                        { major: { '$regex': query } },
                         { phone: { '$regex': query } },
                     ]
                 }
@@ -73,7 +73,7 @@ class ResumeController extends Controller {
     async find(req, res, next) {
         try {
             let resume = await Resume.findById(req.params.id).populate('created_by').exec();
-            if (!resume) throw new NotFoundError('resume.errors.project_notfound');
+            if (!resume) throw new NotFoundError('resume.error.resume_notfound');
 
             AppResponse.builder(res).message("resume.messages.project_found").data(resume).send();
         } catch (err) {
@@ -134,6 +134,10 @@ class ResumeController extends Controller {
     */
     async update(req, res, next) {
         try {
+            let resume = await Resume.findById(req.params.id);
+            if (!resume) throw new NotFoundError('resume.errors.resume_notfound');
+
+
             await Resume.findByIdAndUpdate(req.params.id, req.body, { new: true })
                 .then(resume => {
                     EventEmitter.emit(events.UPDATE, resume)
@@ -191,14 +195,13 @@ class ResumeController extends Controller {
     * 
     * @return { resume.success } 200 - success response
     * @return { message.badrequest_error }  400 - bad request respone
-    * @return { message.badrequest_error }  404 - not found respone
-    * @return { message.badrequest_error }       401 - UnauthorizedError
+    * @return { message.NotFoundError }     404 - not found respone
+    * @return { message.badrequest_error }  401 - UnauthorizedError
     * @return { message.server_error  }     500 - Server Error
     */
     async updateStatus(req, res, next) {
         try {
             let resume = await Resume.findById(req.params.id);
-
             if (!resume) throw new NotFoundError('resume.errors.resume_notfound');
 
             if (resume.status == req.body.status) throw new BadRequestError('resume.errors.can_not_update_status_to_current')
@@ -221,9 +224,44 @@ class ResumeController extends Controller {
     }
 
     /**
-    * POST /resumes/{id}/call-history
+    * PATCH /resumes/:id/file
+    * @summary upload resume file
+    * @tags Resume
+    * @security BearerAuth
     * 
-    * @summary creates a call history for specific resume
+    * @param { string } id.path.required - resume id
+    * @param { resume.upload_file } request.body - resume info - multipart/form-data
+    * 
+    * @return { resume.success }              200 - update resume profile
+    * @return { message.badrequest_error }      400 - resume not found
+    * @return { message.badrequest_error }      401 - UnauthorizedError
+    * @return { message.server_error}      500 - Server Error
+    */
+    async uploadFile(req, res, next) {
+        try {
+            let resume = await Resume.findById(req.params.id);
+            if (!resume) throw new NotFoundError('resume.error.resume_notfound');
+
+            let files = [];
+            if (resume.file) {
+                files = resume.file.filter(fileName => {
+                    return fileName != null & fileName != "";
+                })
+            }
+            if (req.body.file) files.push(req.body.file);
+            resume.file = files;
+            await resume.save();
+
+            AppResponse.builder(res).message("resume.message.resume_file_successfuly_upload").data(resume).send()
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
+    * GET /resumes/{ id } /comments
+    * 
+    * @summary get resume comments list
     * @tags Resume
     * @security BearerAuth
     * 
@@ -232,10 +270,71 @@ class ResumeController extends Controller {
     * 
     * @return { resume.call_history_success } 200 - success response
     * @return { message.badrequest_error }  400 - bad request respone
-    * @return { message.badrequest_error }  404 - not found respone
-    * @return { message.badrequest_error }       401 - UnauthorizedError
+    * @return { message.badrequest_error }  401 - UnauthorizedError
+    * @return { message.NotFoundError }     404 - not found respone
+    * @return { message.server_error }     500 - Server Error
+    */
+    async comments(req, res, next) {
+        try {
+            let resume = await Resume.findById(req.params.id);
+            if (!resume) throw new NotFoundError('resume.errors.resume_notfound');
+
+            let resumeComments = await ResumeComments.find({ 'resume_id': resume._id });
+
+            AppResponse.builder(res).message("resume.messages.resume_comments_list_found").data(resumeComments).send();
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
+    * POST /resumes/{id}/comments
+    * 
+    * @summary add  comments for resume in table
+    * @tags Resume
+    * @security BearerAuth
+    * 
+    * @param  { string } id.path.required - resume id
+    * @param { resumeComment.create} request.body - resume info - application/json
+    * 
+    * @return { resumeComment.success }     201 - success response
+    * @return { message.badrequest_error }  400 - bad request respone
+    * @return { message.badrequest_error }  401 - UnauthorizedError
+    * @return { message.NotFoundError }     404 - not found respone
     * @return { message.server_error  }     500 - Server Error
     */
+    async addComments(req, res, next) {
+        try {
+            let resume = await Resume.findById(req.params.id);
+            if (!resume) throw new NotFoundError('resume.errors.resume_notfound');
+
+            req.body.body = req.body.body
+            req.body.resume_id = resume._id
+            req.body.created_by = req.user_id
+
+            let resumeCommentsRes = await ResumeComments.create(req.body)
+            AppResponse.builder(res).status(201).message("resume.messages.resume_comment_successfuly_created").data(resumeCommentsRes).send();
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
+      * POST /resumes/{id}/call-history
+      * 
+      * @summary creates a call history for specific resume
+      * @tags Resume
+      * @security BearerAuth
+      * 
+      * @param  { string } id.path.required - resume id
+      * @param { resume.create } request.body - call history info - application/json
+      * 
+      * @return { resume.success } 200 - success response
+      * @return { message.badrequest_error }  400 - bad request respone
+      * @return { message.badrequest_error }  404 - not found respone
+      * @return { message.badrequest_error }       401 - UnauthorizedError
+      * @return { message.server_error  }     500 - Server Error
+      */
     async callHistory(req, res, next) {
         try {
 
@@ -268,7 +367,6 @@ class ResumeController extends Controller {
             next(err);
         }
     }
-
 }
 
 export default new ResumeController;
