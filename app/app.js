@@ -23,6 +23,7 @@ app.use(rateLimiter);
 
 app.use(express.json({ strict: false }));
 app.use(express.urlencoded({ extended: false }));
+app.use(express.static('public'));
 
 expressJSDocSwagger(app)(swaggerOptions);
 
