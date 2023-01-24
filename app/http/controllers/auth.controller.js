@@ -63,7 +63,7 @@ class AuthController extends Controller {
     async signup(req, res, next) {
         try {
 
-            let user = await User.findOne({ mobile: req.body.mobile });
+            let user = await User.findOne({ $or: [{ mobile: req.body.mobile }, { username: req.body.username }] });
             if (user) throw new BadRequestError('auth.errors.user_already_exists');
 
             let salt = await bcrypt.genSalt(10);
