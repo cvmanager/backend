@@ -228,9 +228,9 @@ class ResumeController extends Controller {
     * @security BearerAuth
     * 
     * @param  { string } id.path.required - resume id
-    * @param { resume.create } request.body - call history info - application/json
+    * @param { resume.call_history } request.body - call history info - application/json
     * 
-    * @return { resume.success } 200 - success response
+    * @return { resume.call_history_success } 200 - success response
     * @return { message.badrequest_error }  400 - bad request respone
     * @return { message.badrequest_error }  404 - not found respone
     * @return { message.badrequest_error }       401 - UnauthorizedError
