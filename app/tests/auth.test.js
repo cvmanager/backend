@@ -182,13 +182,22 @@ describe("Auth Routes", () => {
                 .send(newUser);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
-        it(`should get ${httpStatus.BAD_REQUEST} if user is already exists`, async () => {
+        it(`should get ${httpStatus.BAD_REQUEST} if user mobile is already exists`, async () => {
             newUser.mobile = user.mobile;
             const response = await request(app)
                 .post(`/api/V1/auth/signup`)
                 .send(newUser);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
+
+        it(`should get ${httpStatus.BAD_REQUEST} if username is already exists`, async () => {
+            newUser.username = user.username;
+            const response = await request(app)
+                .post(`/api/V1/auth/signup`)
+                .send(newUser);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
         it(`should get ${httpStatus.CREATED} if all data is correct`, async () => {
             const response = await request(app)
                 .post(`/api/V1/auth/signup`)
