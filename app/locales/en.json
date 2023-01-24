@@ -150,7 +150,8 @@
 			"the_user_is_currently_an_manager_for_project": "The user is currently an manager for project",
 			"the_user_is_not_an_manager_for_project": "This user is not defined for the project",
 			"the_owner_manager_cannot_be_deleted": "The owner manager cannot be deleted",
-			"project_not_found" : "Project not found"
+			"project_not_found" : "Project not found",
+			"project_already_attached_company" : "Project already attached this company"
 		}
 	},
 	"resume": {
