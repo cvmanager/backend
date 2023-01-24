@@ -11,5 +11,6 @@ userRouter
     .get('/:id', UserValidation.find(), UserController.find)
     .post('/avatar', Upload('users', 'avatar', 'image'), UserValidation.updateProfileImage(), UserController.uploadProfileImage)
     .post('/:id/ban', UserValidation.ban(), UserController.banned)
+    .patch('/change-password', UserValidation.changePassword(), UserController.changePassword)
 
 export default userRouter

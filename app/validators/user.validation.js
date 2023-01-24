@@ -47,6 +47,24 @@ class UserValidation {
         ];
     }
 
+    changePassword() {
+        return [
+            body('old_password')
+                .notEmpty()
+                .withMessage('user.errors.old_password_cant_be_empty')
+                .isLength({ min: 8, max: 10 })
+                .withMessage('user.errors.old_password_length_not_confirm')
+                .trim(),
+            body('password')
+                .notEmpty()
+                .withMessage('user.errors.password_cant_be_empty')
+                .isLength({ min: 8, max: 10 })
+                .withMessage('user.errors.password_length_not_confirm')
+                .trim(),
+            generalValidator
+        ]
+    }
+
 }
 
 

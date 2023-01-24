@@ -5,6 +5,7 @@ import AppResponse from '../../helper/response.js';
 import User from '../../models/user.model.js';
 import Controller from './controller.js';
 import { events } from '../../events/subscribers/user.subscriber.js';
+import bcrypt from 'bcrypt'
 
 class UserController extends Controller {
 
@@ -147,6 +148,41 @@ class UserController extends Controller {
             next(err);
         }
     }
+
+    /**
+    * PATCH /users/change-password
+    * @summary change user prifile password
+    * @tags User
+    * @security BearerAuth
+    * 
+    * @param { user.change-password }  request.body   - application/json
+    *  
+    * @return { user.success }                  200 - update user profile
+    * @return { message.badrequest_error }      401 - UnauthorizedError
+    * @return { message.NotFoundError }         404 - user not found
+    * @return { message.server_error}           500 - Server Error
+    */
+    async changePassword(req, res, next) {
+        try {
+            let user = await User.findById(req.user_id);
+            if (!user) throw new NotFoundError('user.errors.user_notfound')
+
+            let validPassword = await bcrypt.compare(req.body.old_password, user.password)
+            if (!validPassword) throw new BadRequestError('user.errors.incorrect_password');
+
+            let duplicatePassword = await bcrypt.compare(req.body.password, user.password)
+            if (duplicatePassword) throw new BadRequestError('user.errors.duplicate_password');
+
+            let salt = await bcrypt.genSalt(10);
+            let hash_password = await bcrypt.hash(req.body.password, salt);
+            user = await User.findOneAndUpdate({ _id: user._id }, { password: hash_password });
+
+            AppResponse.builder(res).data(user).message('user.messages.password_changed').send(req.user_id);
+        } catch (err) {
+            next(err);
+        }
+    }
+
 }
 
 export default new UserController;
