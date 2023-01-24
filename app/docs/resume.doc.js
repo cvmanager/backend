@@ -99,3 +99,11 @@
 * @property { string } description - description
 * @property { string } recall_at - recall_at
 */
+
+/**
+* resume success response
+* @typedef { object } resume.call_history_success
+* @property { string }         message
+* @property { array<resume.call_history> } data
+* @property { array<> }        errors
+*/

@@ -29,7 +29,9 @@
 			"server_error": "Server Error",
 			"bad_request": "Bad Request",
 			"url_not_found": "Url NotFound",
-			"too_many_requests": "Too Many Requests"
+			"too_many_requests": "Too Many Requests",
+			"not_valid_image_format" : "The uploaded file is not an image",
+			"not_valid_file_format" : "The uploaded file format is invalid"
 		}
 	},
 	"auth": {

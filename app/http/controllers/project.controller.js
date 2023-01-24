@@ -127,7 +127,7 @@ class ProjectController extends Controller {
             if (!project) throw new NotFoundError('project.errors.project_notfound');
 
             if (req.body.name !== undefined) {
-                let duplicateProject = await Project.findOne({ 'name': req.body.name, 'company_id': project.company_id });
+                let duplicateProject = await Project.findOne({ '_id': { $ne: project._id }, 'name': req.body.name, 'company_id': project.company_id });
                 if (duplicateProject && duplicateProject._id !== project._id) throw new AlreadyExists('project.errors.project_already_attached_company');
             }
 
