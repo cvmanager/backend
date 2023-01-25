@@ -111,18 +111,17 @@
 		},
 		"messages": {
 			"position_list_found": "position list",
-			"position_found" : "position found",
-			"position_managers_found" : "position managers successfuly founded",
+			"position_found": "position found",
+			"position_managers_found": "position managers successfuly founded",
 			"position_resumes_found": "Position resumes successfuly founded"
 		},
 		"errors": {
-			"position_notfound" : "position not found",
-			"position_already_exists" : "position already exists",
-			"position_successfuly_created" : "position successfuly created",
-			"position_successfuly_updated" : "position successfuly updated",
-			"position_successfuly_deleted" : "position successfuly deleted",
-			"position_not_found":"position not found"
-
+			"position_notfound": "position not found",
+			"position_already_exists": "position already exists",
+			"position_successfuly_created": "position successfuly created",
+			"position_successfuly_updated": "position successfuly updated",
+			"position_successfuly_deleted": "position successfuly deleted",
+			"position_not_found": "position not found"
 		}
 	},
 	"project": {
@@ -249,10 +248,15 @@
 			"resume_id_required": "resume id required",
 			"resume_id_invalid": "resume id invalid",
 			"event_time_required": "event time required",
+			"event_time_invalid": "event time invalid",
 			"event_time_should_after_today": "event time should after today",
 			"event_time_should_before_next_year": "event time should before next year",
 			"event_type_required": "event_type required",
 			"event_type_invalid": "event_type invalid",
+			"status_required": "status required",
+			"status_incorrect": "status incorrect",
+			"result_required": "result required",
+			"result_incorrect": "result incorrect",
 			"type_required": "type required",
 			"type_invalid": "type invalid",
 			"description_invalid": "description most grather than 2 and less than 512 character",
@@ -262,6 +266,7 @@
 		},
 		"messages": {
 			"interview_found": "interview found",
+			"interview_successfuly_updated": "interview successfuly updated",
 			"interview_successfuly_deleted": "interview successfuly deleted"
 		},
 		"errors": {
