@@ -423,19 +423,19 @@ class CompanyController extends Controller {
     * @return { message.badrequest_error }      401 - UnauthorizedError
     * @return { message.server_error}           500 - Server Error
     */
-        async inActive(req, res, next) {
-            try {
-                let company = await Company.findById(req.params.id);
-                if (!company) throw new NotFoundError('company.errors.company_notfound');
-    
-                company.is_active = false;
-                await company.save();
-    
-                AppResponse.builder(res).message("company.messages.company_successfuly_inactivated").data(company).send()
-            } catch (err) {
-                next(err);
-            }
+    async inActive(req, res, next) {
+        try {
+            let company = await Company.findById(req.params.id);
+            if (!company) throw new NotFoundError('company.errors.company_notfound');
+
+            company.is_active = false;
+            await company.save();
+
+            AppResponse.builder(res).message("company.messages.company_successfuly_inactivated").data(company).send()
+        } catch (err) {
+            next(err);
         }
+    }
 
 }
 
