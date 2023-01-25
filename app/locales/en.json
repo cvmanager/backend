@@ -42,11 +42,13 @@
 			"password_length": "The password field has a character limit",
 			"firstname_required": "The firstname field is required",
 			"username_required": "The username field is required",
+			"username_lenght": "The username field should grather than 5 and less than 10 character",
 			"firstname_length": "The firstname field has a character limit",
 			"lastname_required": "The lastname field is required",
 			"lastname_length": "The lastname field has a character limit",
 			"mobile_required": "The mobile field is required",
-			"mobile_pattern": "The mobile number entered is invalid"
+			"mobile_pattern": "The mobile number entered is invalid",
+			"mobile_username_wrong": "The mobile number or username is wrong"
 		},
 		"messages": {
 			"user_successfuly_created": "The account was created successfully",
