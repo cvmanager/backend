@@ -5,8 +5,9 @@ import Manager from '../../models/manager.model.js';
 import Position from '../../models/position.model.js';
 import Resume from '../../models/resume.model.js';
 import ResumeComment from '../../models/resumeComment.model';
-import { users, companies, projects, positions, managers, resumes, resumeComments } from '../data/data';
+import { users, companies, projects, positions, managers, resumes, resumeComments, interviews } from '../data/data';
 import bcrypt from 'bcrypt';
+import Interview from '../../models/interview.model.js';
 
 class AllInit {
     async setData() {
@@ -18,6 +19,7 @@ class AllInit {
         await Resume.insertMany(resumes);
         await ResumeComment.insertMany(resumeComments);
         await Manager.insertMany(managers);
+        await Interview.insertMany(interviews);
     }
 }
 
