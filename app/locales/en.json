@@ -23,6 +23,11 @@
 				"end",
 				"exemption-edu",
 				"exemption-spo"
+			],
+			"hire_status": [
+				"not_employed",
+				"hired_on",
+				"leaving_work"
 			]
 		},
 		"errors": {

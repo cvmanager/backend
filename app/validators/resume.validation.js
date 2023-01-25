@@ -351,7 +351,7 @@ class ResumeValidation {
                 .withMessage('resume.validations.resume_id_invalid')
                 .trim(),
             body('hire_status')
-                .isIn(['not_employed', 'hired_on', 'leaving_work'])
+                .isIn(i18n.__("system.enums.hire_status"))
                 .withMessage('resume.validations.hire_status_value_not_valid')
                 .notEmpty()
                 .withMessage('resume.validations.hire_status_required')

@@ -163,7 +163,7 @@ const schema = new mongoose.Schema(
         hire_status: {
             type: String,
             default: 'not_employed',
-            enum: ['not_employed', 'hired_on', 'leaving_work']
+            enum: i18n.__("system.enums.hire_status")
         },
         income: {
             type: Number,
