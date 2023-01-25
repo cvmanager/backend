@@ -253,5 +253,14 @@
 		"errors": {
 			"duplicate": "This manager set for this position already"
 		}
+	},
+	"province": {
+		"enums": {},
+		"validations": {
+			"province_page_number": "province page must by number",
+			"province_size_number": "province size must by number"
+		},
+		"messages": {},
+		"errors": {}
 	}
 }

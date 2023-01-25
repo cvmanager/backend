@@ -7,6 +7,7 @@ import Resume from '../../models/resume.model.js';
 import ResumeComment from '../../models/resumeComment.model';
 import { users, companies, projects, positions, managers, resumes, resumeComments } from '../data/data';
 import bcrypt from 'bcrypt';
+import { fillProvinceTable } from "../../helper/service/province.service"
 
 class AllInit {
     async setData() {
@@ -18,6 +19,8 @@ class AllInit {
         await Resume.insertMany(resumes);
         await ResumeComment.insertMany(resumeComments);
         await Manager.insertMany(managers);
+        await fillProvinceTable();
+
     }
 }
 
