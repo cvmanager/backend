@@ -294,20 +294,20 @@ class ProjectController extends Controller {
 
 
     /**
-* GET /projects/{id}/resumes
-* 
-* @summary gets  projects resumes list by project id
-* @tags Project
-* @security BearerAuth
-* 
-* @param  { string } id.path.required - project id
-* 
-* @return { project.success }               200 - success response
-* @return { message.badrequest_error }      400 - bad request respone
-* @return { message.badrequest_error }      404 - not found respone
-* @return { message.unauthorized_error }    401 - UnauthorizedError
-* @return { message.server_error  }         500 - Server Error
-*/
+    * GET /projects/{id}/resumes
+    * 
+    * @summary gets  projects resumes list by project id
+    * @tags Project
+    * @security BearerAuth
+    * 
+    * @param  { string } id.path.required - project id
+    * 
+    * @return { project.success }               200 - success response
+    * @return { message.badrequest_error }      400 - bad request respone
+    * @return { message.badrequest_error }      404 - not found respone
+    * @return { message.unauthorized_error }    401 - UnauthorizedError
+    * @return { message.server_error  }         500 - Server Error
+    */
     async getResumes(req, res, next) {
         try {
             const project = await Project.findById(req.params.id).populate('created_by');
@@ -320,6 +320,61 @@ class ProjectController extends Controller {
             next(err);
         }
     }
+
+    /**
+     * PATCH /projects/{id}/active
+     * @summary active projects 
+     * @tags Project
+     * @security BearerAuth
+     * 
+     * @param { string } id.path.required - projects id
+     * 
+     * @return { project.success }               200 - active projects
+     * @return { message.badrequest_error }      400 - projects not found
+     * @return { message.badrequest_error }      401 - UnauthorizedError
+     * @return { message.server_error}           500 - Server Error
+     */
+    async active(req, res, next) {
+        try {
+            let project = await Project.findById(req.params.id);
+            if (!project) throw new NotFoundError('project.errors.project_not_found');
+
+            project.is_active = true;
+            await project.save();
+
+            AppResponse.builder(res).message("project.messages.project_successfuly_activated").data(project).send()
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
+    * PATCH /projects/{id}/inactive
+    * @summary inactive projects 
+    * @tags Project
+    * @security BearerAuth
+    * 
+    * @param { string } id.path.required - projects id
+    * 
+    * @return { project.success }               200 - inactive projects
+    * @return { message.badrequest_error }      400 - projects not found
+    * @return { message.badrequest_error }      401 - UnauthorizedError
+    * @return { message.server_error}           500 - Server Error
+    */
+    async inActive(req, res, next) {
+        try {
+            let project = await Project.findById(req.params.id);
+            if (!project) throw new NotFoundError('project.errors.project_not_found');
+
+            project.is_active = false;
+            await project.save();
+
+            AppResponse.builder(res).message("project.messages.project_successfuly_inactivated").data(project).send()
+        } catch (err) {
+            next(err);
+        }
+    }
+
 }
 
 export default new ProjectController;

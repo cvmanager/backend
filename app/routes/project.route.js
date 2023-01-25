@@ -15,5 +15,7 @@ projectRouter
     .get('/:id/resumes', ProjectValidation.find(), ProjectController.getResumes)
     .get('/:id/managers', ProjectValidation.find(), ProjectController.getManagers)
     .get('/:id/positions', ProjectValidation.find(), ProjectController.getPositions)
+    .patch('/:id/active', ProjectValidation.find(), ProjectController.active)
+    .patch('/:id/inactive', ProjectValidation.find(), ProjectController.inActive)
 
 export default projectRouter

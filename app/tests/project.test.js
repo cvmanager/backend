@@ -547,4 +547,46 @@ describe("Project Routes", () => {
             expect(response.statusCode).toBe(httpStatus.OK);
         })
     })
+
+    describe(`PATCH /:id/active`, () => {
+        it(`should get ${httpStatus.BAD_REQUEST} if project id is not valid`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/projects/fakeId/active`)
+                .set(`Authorization`, token);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.NOT_FOUND} if project not found`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/projects/${Types.ObjectId()}/active`)
+                .set(`Authorization`, token);
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+        it(`should get ${httpStatus.OK} if all data correct and update project status`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/projects/${project._id}/active`)
+                .set(`Authorization`, token);
+            expect(response.statusCode).toBe(httpStatus.OK);
+        })
+    })
+
+    describe(`PATCH /:id/inactive`, () => {
+        it(`should get ${httpStatus.BAD_REQUEST} if project id is not valid`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/projects/fakeId/inactive`)
+                .set(`Authorization`, token);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.NOT_FOUND} if project not found`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/projects/${Types.ObjectId()}/inactive`)
+                .set(`Authorization`, token);
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+        it(`should get ${httpStatus.OK} if all data correct and update project status`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/projects/${project._id}/inactive`)
+                .set(`Authorization`, token);
+            expect(response.statusCode).toBe(httpStatus.OK);
+        })
+    })
 })
