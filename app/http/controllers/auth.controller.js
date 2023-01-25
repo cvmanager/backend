@@ -28,7 +28,12 @@ class AuthController extends Controller {
      */
     async login(req, res, next) {
         try {
-            let user = await User.findOne({ mobile: req.body.mobile});
+            let user = await User.findOne({
+                $or: [
+                    { mobile: req.body.mobile },
+                    { username: req.body.mobile }
+                ]
+            });
             if (!user) throw new NotFoundError('auth.errors.user_not_found');
 
 
