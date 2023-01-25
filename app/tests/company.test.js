@@ -649,4 +649,47 @@ describe("Company Routes", () => {
             expect(response.statusCode).toBe(httpStatus.OK);
         })
     })
+
+    describe(`PATCH /:id/active`, () => {
+        it(`should get ${httpStatus.BAD_REQUEST} if company id is not valid`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/companies/fakeId/active`)
+                .set(`Authorization`, token);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.NOT_FOUND} if company not found`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/companies/${Types.ObjectId()}/active`)
+                .set(`Authorization`, token);
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+        it(`should get ${httpStatus.OK} if all data correct and update company status`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/companies/${company._id}/active`)
+                .set(`Authorization`, token);
+            expect(response.statusCode).toBe(httpStatus.OK);
+        })
+    })
+
+    describe(`PATCH /:id/inactive`, () => {
+        it(`should get ${httpStatus.BAD_REQUEST} if company id is not valid`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/companies/fakeId/inactive`)
+                .set(`Authorization`, token);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.NOT_FOUND} if company not found`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/companies/${Types.ObjectId()}/inactive`)
+                .set(`Authorization`, token);
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+        it(`should get ${httpStatus.OK} if all data correct and update company status`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/companies/${company._id}/inactive`)
+                .set(`Authorization`, token);
+            expect(response.statusCode).toBe(httpStatus.OK);
+        })
+    })
+
 })
