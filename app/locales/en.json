@@ -93,7 +93,7 @@
 			"company_successfuly_updated": "Company successfuly updated",
 			"company_manager_successfully_created": "company manager successfully created",
 			"company_successfuly_activated": "company  successfully activated",
-			"company_successfuly_inactivated": "company  successfully activated"
+			"company_successfuly_deactivated": "company  successfully deactivated"
 		},
 		"errors": {
 			"the_user_is_currently_an_manager_for_company": "The user is currently an manager for company",

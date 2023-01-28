@@ -405,6 +405,7 @@ class CompanyController extends Controller {
             company.is_active = true;
             await company.save();
 
+            EventEmitter.emit(events.ACTIVE_COMPANY, company);
             AppResponse.builder(res).message("company.messages.company_successfuly_activated").data(company).send()
         } catch (err) {
             next(err);
@@ -433,7 +434,8 @@ class CompanyController extends Controller {
             company.is_active = false;
             await company.save();
 
-            AppResponse.builder(res).message("company.messages.company_successfuly_inactivated").data(company).send()
+            EventEmitter.emit(events.DEACTIVE_COMPANY, company);
+            AppResponse.builder(res).message("company.messages.company_successfuly_deactivated").data(company).send()
         } catch (err) {
             next(err);
         }
