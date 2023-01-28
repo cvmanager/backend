@@ -138,6 +138,7 @@ class AuthController extends Controller {
             const redisKey = req.user_id.toString() + env("REDIS_KEY_REF_TOKENS")
             await redisClient.sRem(redisKey, token);
 
+            EventEmitter.emit(events.LOGOUT, token);
             AppResponse.builder(res).message("auth.messages.success_logout").send();
         } catch (err) {
             next(err);
