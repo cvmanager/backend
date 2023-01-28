@@ -401,6 +401,7 @@ class CompanyController extends Controller {
             let company = await Company.findById(req.params.id);
             if (!company) throw new NotFoundError('company.errors.company_notfound');
 
+            if (company.is_active == true) throw new BadRequestError('company.errors.company_activated_alredy');
             company.is_active = true;
             await company.save();
 
@@ -411,23 +412,24 @@ class CompanyController extends Controller {
     }
 
     /**
-    * PATCH /companies/{id}/inactive
-    * @summary inactive company 
+    * PATCH /companies/{id}/deactive
+    * @summary deactive company 
     * @tags Company
     * @security BearerAuth
     * 
     * @param { string } id.path.required - company id
     * 
-    * @return { company.success }               200 - inactive company
+    * @return { company.success }               200 - deactive company
     * @return { message.badrequest_error }      400 - company not found
     * @return { message.badrequest_error }      401 - UnauthorizedError
     * @return { message.server_error}           500 - Server Error
     */
-    async inActive(req, res, next) {
+    async deActive(req, res, next) {
         try {
             let company = await Company.findById(req.params.id);
             if (!company) throw new NotFoundError('company.errors.company_notfound');
 
+            if (company.is_active == false) throw new BadRequestError('company.errors.company_deactivated_alredy');
             company.is_active = false;
             await company.save();
 

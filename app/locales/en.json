@@ -100,7 +100,9 @@
 			"the_user_is_not_manager_for_this_company": "This user is not  manager for this company",
 			"the_owner_manager_cannot_be_deleted": "The owner manager cannot be deleted",
 			"company_already_exists": "company name is duplicated, already exists",
-			"company_notfound": "company not found"
+			"company_notfound": "company not found",
+			"company_deactivated_alredy": "company has deactiveed alredy",
+			"company_activated_alredy": "company has activated alredy"
 		}
 	},
 	"position": {

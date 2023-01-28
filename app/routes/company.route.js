@@ -18,6 +18,6 @@ companyRouter
     .get('/:id/managers', CompanyValidation.find(), CompanyController.getManagers)
     .get('/:id/projects', CompanyValidation.find(), CompanyController.getProjects)
     .patch('/:id/logo', Upload('companies', 'logo', 'image'), CompanyValidation.logo(), CompanyController.updateLogo)
-    .patch('/:id/active', CompanyValidation.find(), CompanyController.active)
-    .patch('/:id/inactive', CompanyValidation.find(), CompanyController.inActive)
+    .patch('/:id/active', CompanyValidation.active(), CompanyController.active)
+    .patch('/:id/deactive', CompanyValidation.deActive(), CompanyController.deActive)
 export default companyRouter;
