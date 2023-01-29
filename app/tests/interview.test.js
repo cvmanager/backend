@@ -195,6 +195,40 @@ describe("Interview Routes", () => {
             }
         })
 
+        it(`should get ${httpStatus.BAD_REQUEST} if resume_id is not send`, async () => {
+            delete newInterview.resume_id;
+            const response = await request(app)
+                .post(`/api/V1/positions`)
+                .set(`Authorization`, token)
+                .send(newInterview);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if resume_id is not valid`, async () => {
+            newInterview.resume_id = 'fakeresume_id';
+            const response = await request(app)
+                .post(`/api/V1/positions`)
+                .set(`Authorization`, token)
+                .send(newInterview);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} if description is short`, async () => {
+            newInterview.description = faker.random.alpha(1);
+            const response = await request(app)
+                .post(`/api/V1/positions`)
+                .set(`Authorization`, token)
+                .send(newInterview);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if description is long`, async () => {
+            newInterview.description = faker.random.alpha(513);
+            const response = await request(app)
+                .post(`/api/V1/positions`)
+                .set(`Authorization`, token)
+                .send(newInterview);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
         it(`should get ${httpStatus.BAD_REQUEST} if event_time is not send`, async () => {
             delete newInterview.event_time;
             const response = await request(app)
