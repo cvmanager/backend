@@ -189,9 +189,9 @@ describe("Interview Routes", () => {
                 "event_type": "online",
                 "status": "pending",
                 "type": "person",
+                'created_by': user._id,
                 "description": faker.random.alpha(50),
                 "contribution": [],
-                'created_by': user._id,
             }
         })
 
@@ -236,7 +236,6 @@ describe("Interview Routes", () => {
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
 
-
         it(`should get ${httpStatus.BAD_REQUEST} if resume_id is not valid`, async () => {
             newInterview.resume_id = 'fakeresume_id';
             const response = await request(app)
@@ -245,24 +244,6 @@ describe("Interview Routes", () => {
                 .send(newInterview);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
-
-        it(`should get ${httpStatus.BAD_REQUEST} if description is short`, async () => {
-            newInterview.description = faker.random.alpha(1);
-            const response = await request(app)
-                .post(`/api/V1/positions`)
-                .set(`Authorization`, token)
-                .send(newInterview);
-            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
-        })
-        it(`should get ${httpStatus.BAD_REQUEST} if description is long`, async () => {
-            newInterview.description = faker.random.alpha(513);
-            const response = await request(app)
-                .post(`/api/V1/positions`)
-                .set(`Authorization`, token)
-                .send(newInterview);
-            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
-        })
-
         it(`should get ${httpStatus.BAD_REQUEST} if event_time is not valid`, async () => {
             newInterview.event_time = '2022-09-50';
             const response = await request(app)
@@ -271,7 +252,6 @@ describe("Interview Routes", () => {
                 .send(newInterview);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
-
         it(`should get ${httpStatus.BAD_REQUEST} if event_type is not valid`, async () => {
             newInterview.event_type = 'fakeeventtime';
             const response = await request(app)
@@ -290,6 +270,22 @@ describe("Interview Routes", () => {
         })
         it(`should get ${httpStatus.BAD_REQUEST} if type is not valid`, async () => {
             newInterview.type = 'faketype';
+            const response = await request(app)
+                .post(`/api/V1/positions`)
+                .set(`Authorization`, token)
+                .send(newInterview);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if description is short`, async () => {
+            newInterview.description = faker.random.alpha(1);
+            const response = await request(app)
+                .post(`/api/V1/positions`)
+                .set(`Authorization`, token)
+                .send(newInterview);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if description is long`, async () => {
+            newInterview.description = faker.random.alpha(513);
             const response = await request(app)
                 .post(`/api/V1/positions`)
                 .set(`Authorization`, token)
