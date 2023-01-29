@@ -85,6 +85,20 @@ class PositionValidation {
             generalValidator
         ];
     }
+
+    active() {
+        return [
+            param('id').notEmpty().isMongoId().withMessage('position.validations.position_id_invalid').trim(),
+            generalValidator
+        ]
+    }
+
+    deActive() {
+        return [
+            param('id').notEmpty().isMongoId().withMessage('position.validations.position_id_invalid').trim(),
+            generalValidator
+        ]
+    }
 }
 
 export default new PositionValidation();

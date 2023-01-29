@@ -124,7 +124,9 @@
 			"position_list_found": "position list",
 			"position_found": "position found",
 			"position_managers_found": "position managers successfuly founded",
-			"position_resumes_found": "Position resumes successfuly founded"
+			"position_resumes_found": "Position resumes successfuly founded",
+			"position_successfuly_deactivated": "position status successfuly deactivated",
+			"position_successfuly_activated": "position status successfuly activated"
 		},
 		"errors": {
 			"position_notfound": "position not found",
@@ -135,7 +137,9 @@
 			"position_list_found": "position list",
 			"position_found": "position found",
 			"position_managers_found": "position managers successfuly founded",
-			"position_resumes_found": "Position resumes successfuly founded"
+			"position_resumes_found": "Position resumes successfuly founded",
+			"position_deactivated_alredy": "position has deactiveed alredy",
+			"position_activated_alredy": "position has activated alredy"
 		}
 	},
 	"project": {

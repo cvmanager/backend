@@ -12,6 +12,10 @@ class PositionData {
     getPositions() {
         return positions;
     }
+
+    addPosition(position) {
+        Position.insertMany(position);
+    }
 }
 
 export default PositionData
