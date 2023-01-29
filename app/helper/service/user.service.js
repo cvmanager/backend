@@ -41,10 +41,12 @@ const setLogForLogin = async (user, access_token, refresh_token) => {
     });
 }
 const setLogForLogout = async (access_token) => {
-    let loginLog = await LoginLog.findOne({'access_token': access_token });
+    let loginLog = await LoginLog.findOne({ 'access_token': access_token });
+    if (loginLog) {
+        loginLog.logout_at = new Date();
+        await loginLog.save();
+    }
 
-    loginLog.logout_at = new Date();
-    await loginLog.save();
 }
 
 export { setLogForLogin, setLogForLogout }

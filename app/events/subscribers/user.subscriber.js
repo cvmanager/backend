@@ -6,8 +6,7 @@ export const events = {
     "SINGUP": "Singup User",
     "REFRESH": "",
     "LOGOUT": "Logout User",
-    "BANNED": "Banned User",
-    "LOGOUT": "Logout User",
+    "BANNED": "Banned User"
 }
 
 EventEmitter.on(events.LOGIN, login);
