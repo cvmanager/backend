@@ -155,6 +155,10 @@
 				"rejected",
 				"hired",
 				"wait_hire"
+			],
+			"result": [
+				"rejected",
+				"accepted"
 			]
 		},
 		"validations": {

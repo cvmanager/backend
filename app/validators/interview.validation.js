@@ -92,12 +92,12 @@ class InterviewValidation {
                 .withMessage('interview.validations.contribution_array')
                 .trim(),
             body('status')
-                .optional({ nullable: true, checkFalsy: true })
+                .notEmpty()
                 .isIn(i18n.__("interview.enums.status"))
                 .withMessage('interview.validations.status_incorrect')
                 .trim(),
             body('result')
-                .optional({ nullable: true, checkFalsy: true })
+                .notEmpty()
                 .isIn(i18n.__("interview.enums.result"))
                 .withMessage('interview.validations.result_incorrect')
                 .trim(),
