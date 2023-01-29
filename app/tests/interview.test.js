@@ -129,8 +129,6 @@ describe("Interview Routes", () => {
 
         it(`should get ${httpStatus.OK} success if correct`, async () => {
 
-            console.log(interview._id)
-
             const response = await request(app)
                 .get(`/api/V1/interviews/${interview._id}`)
                 .set(`Authorization`, token)
@@ -187,7 +185,6 @@ describe("Interview Routes", () => {
                 "resume_id": resume._id,
                 "event_time": "2022-09-21",
                 "event_type": "online",
-                "status": "pending",
                 "type": "person",
                 'created_by': user._id,
                 "description": null,
@@ -213,22 +210,6 @@ describe("Interview Routes", () => {
         })
         it(`should get ${httpStatus.BAD_REQUEST} if event_type is not send`, async () => {
             delete newInterview.event_type;
-            const response = await request(app)
-                .post(`/api/V1/positions`)
-                .set(`Authorization`, token)
-                .send(newInterview);
-            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
-        })
-        it(`should get ${httpStatus.BAD_REQUEST} if status is not send`, async () => {
-            delete newInterview.status;
-            const response = await request(app)
-                .post(`/api/V1/positions`)
-                .set(`Authorization`, token)
-                .send(newInterview);
-            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
-        })
-        it(`should get ${httpStatus.BAD_REQUEST} if type is not send`, async () => {
-            delete newInterview.type;
             const response = await request(app)
                 .post(`/api/V1/positions`)
                 .set(`Authorization`, token)
@@ -311,4 +292,110 @@ describe("Interview Routes", () => {
 
     })
 
+    describe(`PATCH /:id`, () => {
+
+        let updateInterview;
+        beforeEach(async () => {
+            updateInterview = {
+                "_id": Types.ObjectId(),
+                "resume_id": resume._id,
+                "event_time": "2022-09-21",
+                "event_type": "online",
+                "status": "pending",
+                "result": "pending",
+                "type": "person",
+                'created_by': user._id,
+                "description": null,
+                "contribution": [],
+            }
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} if interview id is not valid`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/interviews/fakeId`)
+                .set(`Authorization`, token)
+                .send(updateInterview);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if status is not send`, async () => {
+            delete updateInterview.status;
+            const response = await request(app)
+                .post(`/api/V1/positions`)
+                .set(`Authorization`, token)
+                .send(updateInterview);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if result is not send`, async () => {
+            delete updateInterview.result;
+            const response = await request(app)
+                .post(`/api/V1/positions`)
+                .set(`Authorization`, token)
+                .send(updateInterview);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if resume_id is not valid`, async () => {
+            updateInterview.resume_id = 'fakeresume_id';
+            const response = await request(app)
+                .post(`/api/V1/positions`)
+                .set(`Authorization`, token)
+                .send(updateInterview);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if event_time is not valid`, async () => {
+            updateInterview.event_time = '2022-09-50';
+            const response = await request(app)
+                .post(`/api/V1/positions`)
+                .set(`Authorization`, token)
+                .send(updateInterview);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if event_type is not valid`, async () => {
+            updateInterview.event_type = 'fakeeventtime';
+            const response = await request(app)
+                .post(`/api/V1/positions`)
+                .set(`Authorization`, token)
+                .send(updateInterview);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if status is not valid`, async () => {
+            updateInterview.status = 'fakestatus';
+            const response = await request(app)
+                .post(`/api/V1/positions`)
+                .set(`Authorization`, token)
+                .send(updateInterview);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if type is not valid`, async () => {
+            updateInterview.type = 'faketype';
+            const response = await request(app)
+                .post(`/api/V1/positions`)
+                .set(`Authorization`, token)
+                .send(updateInterview);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if description is short`, async () => {
+            updateInterview.description = faker.random.alpha(1);
+            const response = await request(app)
+                .post(`/api/V1/positions`)
+                .set(`Authorization`, token)
+                .send(updateInterview);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if description is long`, async () => {
+            updateInterview.description = faker.random.alpha(513);
+            const response = await request(app)
+                .post(`/api/V1/positions`)
+                .set(`Authorization`, token)
+                .send(updateInterview);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if contribution is not array`, async () => {
+            updateInterview.contribution = "must be array";
+            const response = await request(app)
+                .post(`/api/V1/positions`)
+                .set(`Authorization`, token)
+                .send(updateInterview);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+    })
 })
