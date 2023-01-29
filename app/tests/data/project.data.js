@@ -5,12 +5,16 @@ class ProjectData {
         return Object.values(projects)[0];
     }
 
-    async setProjects(projects){
+    async setProjects(projects) {
         await Project.insertMany(projects);
     }
 
     getProjects() {
         return projects;
+    }
+
+    addProject(project) {
+        Project.insertMany(project);
     }
 }
 

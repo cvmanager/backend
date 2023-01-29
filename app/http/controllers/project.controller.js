@@ -339,9 +339,12 @@ class ProjectController extends Controller {
             let project = await Project.findById(req.params.id);
             if (!project) throw new NotFoundError('project.errors.project_not_found');
 
+            if (project.is_active == true) throw new BadRequestError('project.errors.project_activated_alredy');
+
             project.is_active = true;
             await project.save();
 
+            EventEmitter.emit(events.ACTIVE, project)
             AppResponse.builder(res).message("project.messages.project_successfuly_activated").data(project).send()
         } catch (err) {
             next(err);
@@ -349,27 +352,30 @@ class ProjectController extends Controller {
     }
 
     /**
-    * PATCH /projects/{id}/inactive
-    * @summary inactive projects 
+    * PATCH /projects/{id}/deactive
+    * @summary deactive projects 
     * @tags Project
     * @security BearerAuth
     * 
     * @param { string } id.path.required - projects id
     * 
-    * @return { project.success }               200 - inactive projects
+    * @return { project.success }               200 - deactive projects
     * @return { message.badrequest_error }      400 - projects not found
     * @return { message.badrequest_error }      401 - UnauthorizedError
     * @return { message.server_error}           500 - Server Error
     */
-    async inActive(req, res, next) {
+    async deActive(req, res, next) {
         try {
             let project = await Project.findById(req.params.id);
             if (!project) throw new NotFoundError('project.errors.project_not_found');
 
+            if (project.is_active == false) throw new BadRequestError('project.errors.project_deactivated_alredy');
+
             project.is_active = false;
             await project.save();
 
-            AppResponse.builder(res).message("project.messages.project_successfuly_inactivated").data(project).send()
+            EventEmitter.emit(events.DEACTIVE, project)
+            AppResponse.builder(res).message("project.messages.project_successfuly_deactivated").data(project).send()
         } catch (err) {
             next(err);
         }

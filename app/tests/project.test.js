@@ -16,6 +16,8 @@ let manager;
 let users;
 let user;
 let projectData;
+let companyData;
+let projectItem;
 
 prepareDB();
 describe("Project Routes", () => {
@@ -26,7 +28,7 @@ describe("Project Routes", () => {
         users = userData.getUsers();
         user = userData.getUser();
 
-        let companyData = new CompanyData();
+        companyData = new CompanyData();
         company = companyData.getCompany();
 
         projectData = new ProjectData();
@@ -561,30 +563,60 @@ describe("Project Routes", () => {
                 .set(`Authorization`, token);
             expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
         })
-        it(`should get ${httpStatus.OK} if all data correct and update project status`, async () => {
+        it(`should get ${httpStatus.BAD_REQUEST} if project status was active befor`, async () => {
             const response = await request(app)
                 .patch(`/api/V1/projects/${project._id}/active`)
+                .set(`Authorization`, token);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.OK} if all data correct and update project status`, async () => {
+            projectItem = {
+                "_id": Types.ObjectId(),
+                "company_id": Types.ObjectId(),
+                "is_active": false,
+                "created_by": Types.ObjectId(),
+                "name": faker.company.name(),
+                "description": faker.random.alpha(50),
+            };
+            projectData.addProject(projectItem)
+            const response = await request(app)
+                .patch(`/api/V1/projects/${projectItem._id}/active`)
                 .set(`Authorization`, token);
             expect(response.statusCode).toBe(httpStatus.OK);
         })
     })
 
-    describe(`PATCH /:id/inactive`, () => {
+    describe(`PATCH /:id/deactive`, () => {
         it(`should get ${httpStatus.BAD_REQUEST} if project id is not valid`, async () => {
             const response = await request(app)
-                .patch(`/api/V1/projects/fakeId/inactive`)
+                .patch(`/api/V1/projects/fakeId/deactive`)
                 .set(`Authorization`, token);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
         it(`should get ${httpStatus.NOT_FOUND} if project not found`, async () => {
             const response = await request(app)
-                .patch(`/api/V1/projects/${Types.ObjectId()}/inactive`)
+                .patch(`/api/V1/projects/${Types.ObjectId()}/deactive`)
                 .set(`Authorization`, token);
             expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
         })
+        it(`should get ${httpStatus.BAD_REQUEST} if project status was deactive befor`, async () => {
+            projectItem = {
+                "_id": Types.ObjectId(),
+                "company_id": Types.ObjectId(),
+                "is_active": false,
+                "created_by": Types.ObjectId(),
+                "name": faker.company.name(),
+                "description": faker.random.alpha(50),
+            };
+            projectData.addProject(projectItem)
+            const response = await request(app)
+                .patch(`/api/V1/projects/${projectItem._id}/deactive`)
+                .set(`Authorization`, token);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
         it(`should get ${httpStatus.OK} if all data correct and update project status`, async () => {
             const response = await request(app)
-                .patch(`/api/V1/projects/${project._id}/inactive`)
+                .patch(`/api/V1/projects/${project._id}/deactive`)
                 .set(`Authorization`, token);
             expect(response.statusCode).toBe(httpStatus.OK);
         })
