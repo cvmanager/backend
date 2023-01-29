@@ -76,7 +76,7 @@
 		"enums": {},
 		"validations": {
 			"company_id_require": "company is required",
-			"company_id_invalid": "company invalid",
+			"company_id_invalid": "company id invalid",
 			"company_page_number": "company page must by number",
 			"company_size_number": "company size must by number",
 			"company_name_length": "company name lenght must grather than 3 character and less than 50 character",
@@ -93,13 +93,18 @@
 			"company_resumes_found": "Company resumes successfuly founded",
 			"company_projects_found": "Company projects successfuly founded",
 			"company_successfuly_updated": "Company successfuly updated",
-			"company_manager_successfully_created": "company manager successfully created"
+			"company_manager_successfully_created": "company manager successfully created",
+			"company_successfuly_activated": "company  successfully activated",
+			"company_successfuly_deactivated": "company  successfully deactivated"
 		},
 		"errors": {
 			"the_user_is_currently_an_manager_for_company": "The user is currently an manager for company",
 			"the_user_is_not_manager_for_this_company": "This user is not  manager for this company",
 			"the_owner_manager_cannot_be_deleted": "The owner manager cannot be deleted",
-			"company_already_exists": "company name is duplicated, already exists"
+			"company_already_exists": "company name is duplicated, already exists",
+			"company_notfound": "company not found",
+			"company_deactivated_alredy": "company has deactiveed alredy",
+			"company_activated_alredy": "company has activated alredy"
 		}
 	},
 	"position": {

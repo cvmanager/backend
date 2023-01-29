@@ -12,6 +12,10 @@ class CompanyData {
     getCompanies() {
         return companies;
     }
+ 
+    addCompany(company) {
+        Company.insertMany(company);
+    }
 }
 
 export default CompanyData

@@ -361,10 +361,10 @@ class CompanyController extends Controller {
     * @param { string } id.path.required - company id
     * @param { company.upload_logo } request.body - company info - multipart/form-data
     * 
-    * @return { company.success }              200 - update resume profile
+    * @return { company.success }               200 - update resume profile
     * @return { message.badrequest_error }      400 - resume not found
     * @return { message.badrequest_error }      401 - UnauthorizedError
-    * @return { message.server_error}      500 - Server Error
+    * @return { message.server_error}           500 - Server Error
     */
     async updateLogo(req, res, next) {
         try {
@@ -377,6 +377,65 @@ class CompanyController extends Controller {
             }
 
             AppResponse.builder(res).message("company.messages.company_successfuly_updated").data(company).send()
+        } catch (err) {
+            next(err);
+        }
+    }
+
+
+    /**
+    * PATCH /companies/{id}/active
+    * @summary active company 
+    * @tags Company
+    * @security BearerAuth
+    * 
+    * @param { string } id.path.required - company id
+    * 
+    * @return { company.success }               200 - active company
+    * @return { message.badrequest_error }      400 - company not found
+    * @return { message.badrequest_error }      401 - UnauthorizedError
+    * @return { message.server_error}           500 - Server Error
+    */
+    async active(req, res, next) {
+        try {
+            let company = await Company.findById(req.params.id);
+            if (!company) throw new NotFoundError('company.errors.company_notfound');
+
+            if (company.is_active == true) throw new BadRequestError('company.errors.company_activated_alredy');
+            company.is_active = true;
+            await company.save();
+
+            EventEmitter.emit(events.ACTIVE_COMPANY, company);
+            AppResponse.builder(res).message("company.messages.company_successfuly_activated").data(company).send()
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
+    * PATCH /companies/{id}/deactive
+    * @summary deactive company 
+    * @tags Company
+    * @security BearerAuth
+    * 
+    * @param { string } id.path.required - company id
+    * 
+    * @return { company.success }               200 - deactive company
+    * @return { message.badrequest_error }      400 - company not found
+    * @return { message.badrequest_error }      401 - UnauthorizedError
+    * @return { message.server_error}           500 - Server Error
+    */
+    async deActive(req, res, next) {
+        try {
+            let company = await Company.findById(req.params.id);
+            if (!company) throw new NotFoundError('company.errors.company_notfound');
+
+            if (company.is_active == false) throw new BadRequestError('company.errors.company_deactivated_alredy');
+            company.is_active = false;
+            await company.save();
+
+            EventEmitter.emit(events.DEACTIVE_COMPANY, company);
+            AppResponse.builder(res).message("company.messages.company_successfuly_deactivated").data(company).send()
         } catch (err) {
             next(err);
         }
