@@ -17,9 +17,11 @@ let token;
 let company;
 let project;
 let manager;
-let users;
+let userData;
 let user;
 let projectData;
+let resumeData;
+let resume;
 let interview;
 let interviewData;
 
@@ -30,11 +32,11 @@ describe("Interview Routes", () => {
         let userData = new UserData();
         token = userData.getAccessToken();
 
-        // resumeData = new ResumeData();
-        // resume = resumeData.getResume();
+        resumeData = new ResumeData();
+        resume = resumeData.getResume();
 
-        // usersData = new UsersData();
-        // user = usersData.getUser();
+        userData = new UserData();
+        user = userData.getUser();
 
         interviewData = new InterviewData();
         interview = interviewData.getInterview();
@@ -175,4 +177,66 @@ describe("Interview Routes", () => {
             expect(response.statusCode).toBe(httpStatus.OK);
         })
     })
+
+    describe(`POST /`, () => {
+
+        let newInterview;
+        beforeEach(async () => {
+            newInterview = {
+                "_id": Types.ObjectId(),
+                "resume_id": resume._id,
+                "event_time": "2022-09-21",
+                "event_type": "online",
+                "status": "pending",
+                "type": "person",
+                "description": faker.random.alpha(50),
+                "contribution": [],
+                'created_by': user._id,
+            }
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} if event_time is not send`, async () => {
+            delete newInterview.event_time;
+            const response = await request(app)
+                .post(`/api/V1/positions`)
+                .set(`Authorization`, token)
+                .send(newInterview);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if event_time is not valid`, async () => {
+            newInterview.event_time = '2022-09-50';
+            const response = await request(app)
+                .post(`/api/V1/positions`)
+                .set(`Authorization`, token)
+                .send(newInterview);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} if event_type is not send`, async () => {
+            delete newInterview.event_type;
+            const response = await request(app)
+                .post(`/api/V1/positions`)
+                .set(`Authorization`, token)
+                .send(newInterview);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if event_type is not valid`, async () => {
+            newInterview.event_type = 'fakeeventtime';
+            const response = await request(app)
+                .post(`/api/V1/positions`)
+                .set(`Authorization`, token)
+                .send(newInterview);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.CREATED} if all data correct `, async () => {
+            const response = await request(app)
+                .post(`/api/V1/interviews`)
+                .set(`Authorization`, token)
+                .send(newInterview);
+            expect(response.statusCode).toBe(httpStatus.CREATED);
+        })
+
+    })
+
 })
