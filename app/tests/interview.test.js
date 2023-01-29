@@ -5,6 +5,7 @@ import UserData from './data/user.data';
 import CompanyData from './data/company.data';
 import ProjectData from './data/project.data';
 import ManagerData from './data/manager.data';
+import InterviewData from './data/interview.data';
 import prepareDB from './utils/prepareDB'
 import { Types } from 'mongoose';
 import { faker } from '@faker-js/faker';
@@ -19,6 +20,8 @@ let manager;
 let users;
 let user;
 let projectData;
+let interview;
+let interviewData;
 
 prepareDB();
 describe("Interview Routes", () => {
@@ -32,6 +35,9 @@ describe("Interview Routes", () => {
 
         // usersData = new UsersData();
         // user = usersData.getUser();
+
+        interviewData = new InterviewData();
+        interview = interviewData.getInterview();
     })
 
     describe('GET /', () => {
@@ -101,4 +107,72 @@ describe("Interview Routes", () => {
 
     })
 
+    describe(`GET /:id`, () => {
+
+        it(`should get ${httpStatus.BAD_REQUEST} interview id is not a mongo id`, async () => {
+            const response = await request(app)
+                .get(`/api/V1/interviews/fakeID`)
+                .set(`Authorization`, token)
+                .send();
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.NOT_FOUND} interview id is not valid`, async () => {
+            const response = await request(app)
+                .get(`/api/V1/interviews/${Types.ObjectId()}`)
+                .set(`Authorization`, token)
+                .send();
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+
+        it(`should get ${httpStatus.OK} success if correct`, async () => {
+
+            console.log(interview._id)
+
+            const response = await request(app)
+                .get(`/api/V1/interviews/${interview._id}`)
+                .set(`Authorization`, token)
+                .send();
+
+            let data = response.body.data[0];
+            expect(data).toHaveProperty("_id");
+            expect(data).toHaveProperty("resume_id");
+            expect(data).toHaveProperty("event_time");
+            expect(data).toHaveProperty("event_type");
+            expect(data).toHaveProperty("status");
+            expect(data).toHaveProperty("type");
+            expect(data).toHaveProperty("description");
+            expect(data).toHaveProperty("contribution");
+            expect(data).toHaveProperty("created_by");
+            expect(data).toHaveProperty("deleted");
+            expect(data).toHaveProperty("createdAt");
+            expect(data).toHaveProperty("updatedAt");
+            expect(data).toHaveProperty("id");
+            expect(response.statusCode).toBe(httpStatus.OK)
+        })
+    })
+
+    describe(`DELETE /:id`, () => {
+        it(`should get ${httpStatus.BAD_REQUEST} if interview id is not valid`, async () => {
+            const response = await request(app)
+                .delete(`/api/V1/interviews/fakeId`)
+                .set(`Authorization`, token)
+                .send();
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.NOT_FOUND} if interview not found `, async () => {
+            const response = await request(app)
+                .delete(`/api/V1/interviews/${Types.ObjectId()}`)
+                .set(`Authorization`, token)
+                .send();
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+        it(`should get ${httpStatus.OK} if all data correct `, async () => {
+            const response = await request(app)
+                .delete(`/api/V1/interviews/${interview._id}`)
+                .set(`Authorization`, token)
+                .send();
+            expect(response.statusCode).toBe(httpStatus.OK);
+        })
+    })
 })
