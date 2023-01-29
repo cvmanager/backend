@@ -42,11 +42,13 @@
 			"password_length": "The password field has a character limit",
 			"firstname_required": "The firstname field is required",
 			"username_required": "The username field is required",
+			"username_lenght": "The username field should grather than 5 and less than 10 character",
 			"firstname_length": "The firstname field has a character limit",
 			"lastname_required": "The lastname field is required",
 			"lastname_length": "The lastname field has a character limit",
 			"mobile_required": "The mobile field is required",
-			"mobile_pattern": "The mobile number entered is invalid"
+			"mobile_pattern": "The mobile number entered is invalid",
+			"mobile_username_wrong": "The mobile number or username is wrong"
 		},
 		"messages": {
 			"user_successfuly_created": "The account was created successfully",
@@ -152,14 +154,18 @@
 			"project_successfully_deleted": "project successfully deleted",
 			"project_resumes_found": "Project resumes successfuly founded",
 			"project_managers_found": "Project managers successfuly founded",
-			"project_positions_found": "project positions successfully found"
+			"project_positions_found": "project positions successfully found",
+			"project_successfuly_deactivated": "project status successfuly deactivated",
+			"project_successfuly_activated": "project status successfuly activated"
 		},
 		"errors": {
 			"the_user_is_currently_an_manager_for_project": "The user is currently an manager for project",
 			"the_user_is_not_an_manager_for_project": "This user is not defined for the project",
 			"the_owner_manager_cannot_be_deleted": "The owner manager cannot be deleted",
 			"project_not_found": "Project not found",
-			"project_already_attached_company": "Project already attached this company"
+			"project_already_attached_company": "Project already attached this company",
+			"project_deactivated_alredy": "project has deactiveed alredy",
+			"project_activated_alredy": "project has activated alredy"
 		}
 	},
 	"resume": {
@@ -258,5 +264,14 @@
 		"errors": {
 			"duplicate": "This manager set for this position already"
 		}
+	},
+	"province": {
+		"enums": {},
+		"validations": {
+			"province_page_number": "province page must by number",
+			"province_size_number": "province size must by number"
+		},
+		"messages": {},
+		"errors": {}
 	}
 }

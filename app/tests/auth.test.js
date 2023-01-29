@@ -5,12 +5,6 @@ import UserData from './data/user.data';
 import prepareDB from './utils/prepareDB'
 import { Types } from 'mongoose';
 import { faker } from '@faker-js/faker';
-import { faker } from "@faker-js/faker";
-import httpStatus from "http-status";
-import request from "supertest";
-import app from "../app.js";
-import UserData from "./data/user.data";
-import prepareDB from "./utils/prepareDB";
 
 let token;
 let users;
@@ -133,7 +127,7 @@ describe("Auth Routes", () => {
                 .send(newUser);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
-        it(`should get ${httpStatus.BAD_REQUEST} if mobile is less than 3 character`, async () => {
+        it(`should get ${httpStatus.BAD_REQUEST} if mobile has wrong format`, async () => {
             newUser.mobile = faker.random.alpha(12);
             const response = await request(app)
                 .post(`/api/V1/auth/signup`)
@@ -147,14 +141,14 @@ describe("Auth Routes", () => {
                 .send(newUser);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
-        it(`should get ${httpStatus.BAD_REQUEST} if username is less than 3 character`, async () => {
+        it(`should get ${httpStatus.BAD_REQUEST} if username is less than 5 character`, async () => {
             newUser.username = faker.random.alpha(4);
             const response = await request(app)
                 .post(`/api/V1/auth/signup`)
                 .send(newUser);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
-        it(`should get ${httpStatus.BAD_REQUEST} if username is grather than 80 character`, async () => {
+        it(`should get ${httpStatus.BAD_REQUEST} if username is grather than 10 character`, async () => {
             newUser.username = faker.random.alpha(11);
             const response = await request(app)
                 .post(`/api/V1/auth/signup`)
@@ -215,15 +209,29 @@ describe("Auth Routes", () => {
                 "password": '12345678'
             }
         })
-        it(`should get ${httpStatus.BAD_REQUEST} if mobile is not send`, async () => {
+        it(`should get ${httpStatus.BAD_REQUEST} if mobile and username is not send`, async () => {
             delete loginUser.mobile;
             const response = await request(app)
                 .post(`/api/V1/auth/login`)
                 .send(loginUser);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
-        it(`should get ${httpStatus.BAD_REQUEST} if mobile is less than 3 character`, async () => {
+        it(`should get ${httpStatus.BAD_REQUEST} if mobile number has wromg format`, async () => {
             loginUser.mobile = faker.random.alpha(12);
+            const response = await request(app)
+                .post(`/api/V1/auth/login`)
+                .send(loginUser);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if username is less than 5 character`, async () => {
+            loginUser.mobile = faker.random.alpha(4);
+            const response = await request(app)
+                .post(`/api/V1/auth/login`)
+                .send(loginUser);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if username is grather than 10 character`, async () => {
+            loginUser.mobile = faker.random.alpha(11);
             const response = await request(app)
                 .post(`/api/V1/auth/login`)
                 .send(loginUser);
@@ -280,7 +288,14 @@ describe("Auth Routes", () => {
                 .send(newUserIsBanned);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
-        it(`should get ${httpStatus.OK} if user is loged in`, async () => {
+        it(`should get ${httpStatus.OK} if user is loged in with mobile`, async () => {
+            const response = await request(app)
+                .post(`/api/V1/auth/login`)
+                .send(loginUser);
+            expect(response.statusCode).toBe(httpStatus.OK);
+        })
+        it(`should get ${httpStatus.OK} if user is loged in with username`, async () => {
+            loginUser.mobile = user.username;
             const response = await request(app)
                 .post(`/api/V1/auth/login`)
                 .send(loginUser);

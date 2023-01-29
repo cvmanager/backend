@@ -6,7 +6,9 @@ export const events = {
     "DELETE": "Delete Project",
     "UPDATE": "Update Project Info",
     "SET_MANAGER": "Set New Manager For Project",
-    "UNSET_MANAGER": "UnSet  Manager For Project"
+    "UNSET_MANAGER": "UnSet  Manager For Project",
+    "ACTIVE": "active project status",
+    "DEACTIVE": "deactive project status",
 }
 
 EventEmitter.on(events.CREATE, create)
@@ -14,18 +16,24 @@ EventEmitter.on(events.DELETE, softdelete)
 EventEmitter.on(events.UPDATE, update)
 EventEmitter.on(events.SET_MANAGER, setManager)
 EventEmitter.on(events.UNSET_MANAGER, unsetManager)
+EventEmitter.on(events.ACTIVE, active)
+EventEmitter.on(events.DEACTIVE, deActive)
 
+function active(project) {
+    console.log(events.ACTIVE + " event called", project)
+}
+
+function deActive(project) {
+    console.log(events.DEACTIVE + " event called", project)
+}
 
 function create(project) {
     addDefaultManagerForProject(project);
 }
 
-
 function softdelete(project) {
     deleteManagersFromProject(project);
 }
-
-
 
 function update(project) {
     console.log(events.UPDATE + " event called", project)
