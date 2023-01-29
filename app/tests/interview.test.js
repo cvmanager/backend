@@ -190,7 +190,7 @@ describe("Interview Routes", () => {
                 "status": "pending",
                 "type": "person",
                 'created_by': user._id,
-                "description": faker.random.alpha(50),
+                "description": null,
                 "contribution": [],
             }
         })
@@ -286,6 +286,14 @@ describe("Interview Routes", () => {
         })
         it(`should get ${httpStatus.BAD_REQUEST} if description is long`, async () => {
             newInterview.description = faker.random.alpha(513);
+            const response = await request(app)
+                .post(`/api/V1/positions`)
+                .set(`Authorization`, token)
+                .send(newInterview);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if contribution is not array`, async () => {
+            newInterview.contribution = "must be array";
             const response = await request(app)
                 .post(`/api/V1/positions`)
                 .set(`Authorization`, token)
