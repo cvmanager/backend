@@ -84,6 +84,24 @@ class ProjectValidation {
             generalValidator
         ]
     }
+
+    active() {
+        return [
+            param('id')
+                .notEmpty().isMongoId().withMessage('project.validations.project_id_invalid').trim(),
+            generalValidator
+        ];
+    }
+
+    deActive() {
+        return [
+            param('id')
+                .notEmpty().isMongoId().withMessage('project.validations.project_id_invalid').trim(),
+            generalValidator
+        ];
+    }
+
+
 }
 
 export default new ProjectValidation();
