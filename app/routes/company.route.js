@@ -19,4 +19,6 @@ companyRouter
     .get('/:id/projects', CompanyValidation.find(), CompanyController.getProjects)
     .patch('/:id/logo', Upload('companies', 'logo', 'image'), CompanyValidation.logo(), CompanyController.updateLogo)
     .get('/:id/statistics/resumes', CompanyValidation.find(), CompanyController.resumeStatistics)
+    .patch('/:id/active', CompanyValidation.active(), CompanyController.active)
+    .patch('/:id/deactive', CompanyValidation.deActive(), CompanyController.deActive)
 export default companyRouter;
