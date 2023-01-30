@@ -725,4 +725,35 @@ describe("Company Routes", () => {
         })
     })
 
+    describe(`GET /:id/statistics/resumes`, () => {
+
+        it(`should get ${httpStatus.BAD_REQUEST} company id is not a mongo id`, async () => {
+            const response = await request(app)
+                .get(`/api/V1/companies/fakeID`)
+                .set(`Authorization`, token)
+                .send();
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.NOT_FOUND} company id is not valid`, async () => {
+            const response = await request(app)
+                .get(`/api/V1/companies/${Types.ObjectId()}`)
+                .set(`Authorization`, token)
+                .send();
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+
+        it(`should get ${httpStatus.OK} success if correct`, async () => {
+            const response = await request(app)
+                .get(`/api/V1/companies/${company._id}`)
+                .set(`Authorization`, token)
+                .send();
+
+            let data = response.body.data[0];
+            expect(data).toHaveProperty(`total_resume_by_states`)
+            expect(data).toHaveProperty(`resume_state_in_last_month`)
+            expect(response.statusCode).toBe(httpStatus.OK)
+        })
+    })
+
 })
