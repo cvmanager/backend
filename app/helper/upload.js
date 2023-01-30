@@ -1,16 +1,17 @@
 import multer from 'multer';
-import mkdirp from 'mkdirp';
+import path from 'path';
 import fs from 'fs';
+
 import BadRequestError from '../exceptions/BadRequestError.js';
 
 const config = {
     'image': {
         types: ['image/jpeg', 'image/jpg', 'image/png'],
-        maxSize: 0.6, //1mb
+        maxSize: 0.6 * 1_000_000, // 1_000_000 Bytes = 1 MB
     },
     'file': {
         types: ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'],
-        maxSize: 0.1, //1mb
+        maxSize: 0.1 * 1_000_000, // 1_000_000 Bytes = 1 MB
     }
 }
 
@@ -20,14 +21,9 @@ const createStorage = (entity, fieldName) => {
     let fullPath = basePath + realPath;
 
     return multer.diskStorage({
-        destination: function (req, file, cb) {
-            mkdirp(fullPath)
-                .then((result) => {
-                    cb(null, fullPath)
-                })
-        },
+        destination: fullPath,
         filename: (req, file, cb) => {
-            let extension = '.' + file.originalname.split('.')[1];
+            let extension = path.extname(file.originalname);
             let name = req.user_id._id;
 
             if (fs.existsSync(fullPath + name + extension)) {
@@ -47,7 +43,6 @@ function Upload(entity, field, type) {
         storage: createStorage(entity, field),
         fileFilter: (req, file, cb) => {
             if (!fileConfig.types.includes(file.mimetype)) {
-                cb(null, false);
                 return cb(new BadRequestError(`exceptions.valid_${type}_format`));
             }
             cb(null, true);
