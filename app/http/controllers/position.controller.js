@@ -9,6 +9,7 @@ import Controller from './controller.js';
 import EventEmitter from '../../events/emitter.js';
 import { events } from '../../events/subscribers/positions.subscriber.js'
 import Resume from '../../models/resume.model.js';
+import BadRequestError from '../../exceptions/BadRequestError.js';
 
 class PositionController extends Controller {
 
@@ -269,6 +270,66 @@ class PositionController extends Controller {
             let managers = await Manager.find({ 'entity': "positions", 'entity_id': position.id }).populate('user_id');
 
             AppResponse.builder(res).message('position.messages.position_managers_found').data(managers).send();
+        } catch (err) {
+            next(err);
+        }
+    }
+
+       /**
+     * PATCH /positions/{id}/active
+     * @summary active positions 
+     * @tags Position
+     * @security BearerAuth
+     * 
+     * @param { string } id.path.required - position id
+     * 
+     * @return { position.success }              200 - active positions
+     * @return { message.badrequest_error }      400 - positions not found
+     * @return { message.badrequest_error }      401 - UnauthorizedError
+     * @return { message.server_error}           500 - Server Error
+     */
+       async active(req, res, next) {
+        try {
+            let position = await Position.findById(req.params.id);
+            if (!position) throw new NotFoundError('position.errors.position_notfound');
+
+            if (position.is_active == true) throw new BadRequestError('position.errors.position_activated_alredy');
+
+            position.is_active = true;
+            await position.save();
+
+            EventEmitter.emit(events.ACTIVE, position)
+            AppResponse.builder(res).message("position.messages.position_successfuly_activated").data(position).send()
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
+    * PATCH /positions/{id}/deactive
+    * @summary deactive positions 
+    * @tags Position
+    * @security BearerAuth
+    * 
+    * @param { string } id.path.required - positions id
+    * 
+    * @return { position.success }              200 - deactive positions
+    * @return { message.badrequest_error }      400 - positions not found
+    * @return { message.badrequest_error }      401 - UnauthorizedError
+    * @return { message.server_error}           500 - Server Error
+    */
+    async deActive(req, res, next) {
+        try {
+            let position = await Position.findById(req.params.id);
+            if (!position) throw new NotFoundError('position.errors.position_notfound');
+
+            if (position.is_active == false) throw new BadRequestError('position.errors.position_deactivated_alredy');
+
+            position.is_active = false;
+            await position.save();
+
+            EventEmitter.emit(events.DEACTIVE, position)
+            AppResponse.builder(res).message("position.messages.position_successfuly_deactivated").data(position).send()
         } catch (err) {
             next(err);
         }
