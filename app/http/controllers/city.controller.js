@@ -1,3 +1,4 @@
+import NotFoundError from '../../exceptions/NotFoundError.js';
 import City from '../../models/city.model.js';
 import AppResponse from '../../helper/response.js';
 import Controller from './controller.js';

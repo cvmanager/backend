@@ -4,8 +4,11 @@ import app from '../app.js'
 
 import prepareDB from './utils/prepareDB'
 import UserData from './data/user.data';
+import CityData from './data/city.data';
+import { Types } from 'mongoose';
 
 let token;
+let city;
 prepareDB();
 
 describe('City routes', () => {
@@ -13,6 +16,9 @@ describe('City routes', () => {
     beforeEach(async () => {
         let userData = new UserData();
         token = userData.getAccessToken();
+
+        let cityData = new CityData();
+        city = await cityData.getCity();
     })
 
     describe('GET /', () => {
@@ -73,6 +79,44 @@ describe('City routes', () => {
             expect(response.statusCode).toBe(httpStatus.OK);
         })
 
+    })
+
+    describe(`GET /:id`, () => {
+
+        it(`should get ${httpStatus.BAD_REQUEST} city id is not a mongo id`, async () => {
+            const response = await request(app)
+                .get(`/api/V1/cities/fakeID`)
+                .set(`Authorization`, token)
+                .send();
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.NOT_FOUND} city id is not valid`, async () => {
+            const response = await request(app)
+                .get(`/api/V1/cities/${Types.ObjectId()}`)
+                .set(`Authorization`, token)
+                .send();
+                console.log(response.body)
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+
+        it(`should get ${httpStatus.OK} success if correct`, async () => {
+            const response = await request(app)
+                .get(`/api/V1/cities/${city._id}`)
+                .set(`Authorization`, token)
+                .send();
+
+            let data = response.body.data[0];
+            expect(data).toHaveProperty(`_id`)
+            expect(data).toHaveProperty(`province_id`)
+            expect(data).toHaveProperty(`name`)
+            expect(data).toHaveProperty(`latitude`)
+            expect(data).toHaveProperty(`longitude`)
+            expect(data).toHaveProperty(`deleted`)
+            expect(data).toHaveProperty(`createdAt`)
+            expect(data).toHaveProperty(`updatedAt`)
+            expect(response.statusCode).toBe(httpStatus.OK)
+        })
     })
 });
 
