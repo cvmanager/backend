@@ -31,7 +31,10 @@
 			"url_not_found": "Url NotFound",
 			"too_many_requests": "Too Many Requests",
 			"not_valid_image_format": "The uploaded file is not an image",
-			"not_valid_file_format": "The uploaded file format is invalid"
+			"not_valid_file_format": "The uploaded file format is invalid",
+			"crop_file": "Error in resizing file",
+			"upload_file": "Error in uploading file",
+			"LIMIT_FILE_SIZE": "file is too large"
 		}
 	},
 	"auth": {
