@@ -239,14 +239,18 @@
 	},
 	"user": {
 		"enums": {},
-		"validations": {},
+		"validations": {
+			"user_page_number": "user page must be number",
+			"user_size_number": "user size must be number"
+		},
 		"messages": {
 			"user_founded": "user successfuly found",
 			"list_found": "the list of users",
-			"password_changed": "User password successfully changed"
+			"password_changed": "User password successfully changed",
+			"user_login_history_list": "user login history list"
 		},
 		"errors": {
-			"user_notfound": "The desired user was not found",
+			"user_notfound": "User not found",
 			"password_length_not_confirm": "password length must be between 8-10",
 			"password_cant_be_empty": "password cant be empty",
 			"old_password_length_not_confirm": "old password length must be between 8-10",
