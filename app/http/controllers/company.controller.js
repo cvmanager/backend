@@ -416,10 +416,20 @@ class CompanyController extends Controller {
 
             for (const status of statusArray) {
                 totalResumeByStates[status] = await Resume.count({ company_id: company._id, status: status });
+            }
 
-                resumeStateInLastMonth[status] = {
-                    'resent_month': await Resume.count({ company_id: company._id, status: status, createdAt: { $gte: date1MonthAgo } }),
-                    'last_month': await Resume.count({ company_id: company._id, status: status, createdAt: { $gte: date2MonthAgo, $lt: date1MonthAgo } })
+            resumeStateInLastMonth = {
+                'received': {
+                    'resent_month': await Resume.count({ company_id: company._id, createdAt: { $gte: date1MonthAgo } }),
+                    'last_month': await Resume.count({ company_id: company._id, createdAt: { $gte: date2MonthAgo, $lt: date1MonthAgo } })
+                },
+                'hired': {
+                    'resent_month': await Resume.count({ company_id: company._id, status: 'hired', createdAt: { $gte: date1MonthAgo } }),
+                    'last_month': await Resume.count({ company_id: company._id, status: 'hired', createdAt: { $gte: date2MonthAgo, $lt: date1MonthAgo } })
+                },
+                'rejected': {
+                    'resent_month': await Resume.count({ company_id: company._id, status: 'rejected', createdAt: { $gte: date1MonthAgo } }),
+                    'last_month': await Resume.count({ company_id: company._id, status: 'rejected', createdAt: { $gte: date2MonthAgo, $lt: date1MonthAgo } })
                 }
             }
 
