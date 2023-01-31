@@ -58,7 +58,8 @@
 			"success_login": "You have successfully logged into your account",
 			"success_logout": "You have successfully logged out",
 			"token_verified": "Token Verified",
-			"username_exist": "The username already exists"
+			"username_exist": "The username already exists",
+			"username_isavailable": "The username is available"
 		},
 		"errors": {
 			"user_already_exists": "There is already a user with this information",

@@ -11,6 +11,6 @@ authRouter
     .post('/logout', verifyToken, AuthController.logout)
     .post('/refresh', verifyRefrshToken, AuthController.refresh)
     .post('/verify-token', verifyToken, AuthController.verifyToken)
-    .post('/check-username', AuthValidator.checkusername() ,AuthController.checkusername)
+    .post('/username-isavailable', AuthValidator.checkusername() ,AuthController.checkusername)
 
 export default authRouter
