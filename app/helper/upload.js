@@ -31,7 +31,7 @@ const createStorage = (path, fieldName) => {
                 name = name + '_' + date.getTime();
             }
             name += extension;
-            console.log(name)
+            
             cb(null, name);
             req.body[fieldName] = realPath + name;
         }
