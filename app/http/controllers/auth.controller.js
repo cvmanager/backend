@@ -163,7 +163,7 @@ class AuthController extends Controller {
     }
 
     /**
-     * POST /auth/check-username
+     * POST /auth/username-isavailable
      * 
      * @summary Check and confirm username
      * @tags Auth 
