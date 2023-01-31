@@ -17,6 +17,22 @@ for (i = 0; i < numberRowInsert; i++) {
     })
 }
 
+let logHistory = [];
+for (i = 0; i < numberRowInsert; i++) {
+    logHistory.push({
+        "_id": Types.ObjectId(),
+        "user_id": users[i]._id,
+        "access_token": faker.random.alpha(50),
+        "refresh_token": faker.random.alpha(50),
+        "os": faker.random.alpha(10),
+        "cpu": faker.random.alpha(10),
+        "browser": faker.random.alpha(10),
+        "memory": faker.random.alpha(10),
+        "ip4": faker.random.alpha(10),
+        "ip6": faker.random.alpha(10),
+    })
+}
+
 let companies = [];
 for (i = 0; i < numberRowInsert; i++) {
     companies.push({
@@ -140,4 +156,4 @@ for (i = 0; i < numberRowInsert; i++) {
 
 }
 
-export { users, companies, projects, positions, managers, resumes, resumeComments };
+export { users, companies, projects, positions, managers, resumes, resumeComments, logHistory };
