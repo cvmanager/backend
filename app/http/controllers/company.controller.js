@@ -11,10 +11,15 @@ import { events } from '../../events/subscribers/companies.subscriber.js';
 import Project from '../../models/project.model.js';
 import Resume from '../../models/resume.model.js';
 import i18n from '../../middlewares/lang.middleware.js';
+import autoBind from 'auto-bind';
 
 
 class CompanyController extends Controller {
 
+    constructor() {
+        super()
+        autoBind(this)
+    }
     /**
     * GET /companies
     * 
@@ -443,9 +448,9 @@ class CompanyController extends Controller {
     }
 
     /**
-   * GET /companies/{id}/statistics/resumes
+   * GET /companies/{id}/statistics/resume-by-states
    * 
-   * @summary gets a company resumes statistics
+   * @summary gets a company resume by states statistics
    * @tags Company
    * @security BearerAuth
    * 
@@ -456,7 +461,190 @@ class CompanyController extends Controller {
    * @return { message.unauthorized_error }     401 - UnauthorizedError
    * @return { message.server_error  }    500 - Server Error
    */
-    async resumeStatistics(req, res, next) {
+    async resumeByStates(req, res, next) {
+        try {
+            let company = await Company.findById(req.params.id);
+            if (!company) throw new NotFoundError('company.errors.company_notfound');
+
+            let statusArray = i18n.__("resume.enums.status");
+            let totalResumeByStates = await Resume.aggregate([
+                {
+                    $match: {
+                        company_id: company._id
+                    }
+                },
+                {
+                    "$group": {
+                        "_id": "$status",
+                        "count": {
+                            $sum: 1
+                        }
+                    }
+                },
+                {
+                    '$project': {
+                        'state': '$_id',
+                        '_id': 0,
+                        'count': 1
+                    }
+                }
+            ])
+
+            AppResponse.builder(res).message("company.messages.company_successfuly_updated").data(totalResumeByStates).send()
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
+   * GET /companies/{id}/statistics/resume-count-by-projects
+   * 
+   * @summary gets a company resume count by projects statistics
+   * @tags Company
+   * @security BearerAuth
+   * 
+   * @param  { string } id.path.required - company id
+   * 
+   * @return { company.success } 200 - success response
+   * @return { message.badrequest_error } 400 - bad request respone
+   * @return { message.unauthorized_error }     401 - UnauthorizedError
+   * @return { message.server_error  }    500 - Server Error
+   */
+    async resumeCountByProjects(req, res, next) {
+        try {
+            let company = await Company.findById(req.params.id);
+            if (!company) throw new NotFoundError('company.errors.company_notfound');
+
+            let resumeCountByProjects = await Resume.aggregate([
+                {
+                    $match: {
+                        company_id: company._id
+                    }
+                },
+                {
+                    "$group": {
+                        "_id": "$project_id",
+                        "count": {
+                            $sum: 1
+                        }
+                    }
+                },
+                {
+                    '$sort': {
+                        'count': -1
+                    }
+                },
+                {
+                    '$limit': 5
+                },
+                {
+                    '$lookup': {
+                        'from': 'projects',
+                        'localField': '_id',
+                        'foreignField': '_id',
+                        'as': 'project'
+                    }
+                },
+                {
+                    '$unwind': {
+                        'path': '$project'
+                    }
+                },
+                {
+                    '$project': {
+                        '_id': 0,
+                        'count': 1,
+                        'project.name': 1,
+                        'project.logo': 1
+                    }
+                },
+            ]);
+
+            AppResponse.builder(res).message("company.messages.company_successfuly_updated").data(resumeCountByProjects).send()
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
+   * GET /companies/{id}/statistics/resume-count-from-month
+   * 
+   * @summary gets a company resume count from month statistics
+   * @tags Company
+   * @security BearerAuth
+   * 
+   * @param  { string } id.path.required - company id
+   * 
+   * @return { company.success } 200 - success response
+   * @return { message.badrequest_error } 400 - bad request respone
+   * @return { message.unauthorized_error }     401 - UnauthorizedError
+   * @return { message.server_error  }    500 - Server Error
+   */
+    async resumeCountFromMonth(req, res, next) {
+        try {
+            let company = await Company.findById(req.params.id);
+            if (!company) throw new NotFoundError('company.errors.company_notfound');
+
+            let date = new Date();
+            let date7MonthAgo = date.setMonth(date.getMonth() - 7)
+            date7MonthAgo = new Date(date7MonthAgo);
+
+            let resumeCountFromMonth = await Resume.aggregate([
+                {
+                    $match: {
+                        company_id: company._id,
+                        createdAt: {
+                            $gte: date7MonthAgo
+                        }
+                    }
+                },
+                {
+                    $group: {
+                        _id: { $month: "$createdAt" },
+                        count: { $sum: 1 }
+                    }
+                },
+                {
+                    '$project': {
+                        '_id': false,
+                        'month': {
+                            '$arrayElemAt': [
+                                [
+                                    '', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'
+                                ], '$_id'
+                            ]
+                        },
+                        'count': true
+                    }
+                },
+                {
+                    '$sort': {
+                        'month': -1
+                    }
+                },
+            ])
+
+            AppResponse.builder(res).message("company.messages.company_successfuly_updated").data(resumeCountFromMonth).send()
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
+   * GET /companies/{id}/statistics/resume-state-in-last-month
+   * 
+   * @summary gets a company resume state in last month statistics
+   * @tags Company
+   * @security BearerAuth
+   * 
+   * @param  { string } id.path.required - company id
+   * 
+   * @return { company.success } 200 - success response
+   * @return { message.badrequest_error } 400 - bad request respone
+   * @return { message.unauthorized_error }     401 - UnauthorizedError
+   * @return { message.server_error  }    500 - Server Error
+   */
+    async resumeStateInLastMonth(req, res, next) {
         try {
             let company = await Company.findById(req.params.id);
             if (!company) throw new NotFoundError('company.errors.company_notfound');
@@ -469,39 +657,146 @@ class CompanyController extends Controller {
             let date2MonthAgo = date.setMonth(date.getMonth() - 2)
             date2MonthAgo = new Date(date2MonthAgo)
 
-            let statusArray = i18n.__("resume.enums.status");
-            let totalResumeByStates = {}
-            let resumeStateInLastMonth = {}
-
-            for (const status of statusArray) {
-                totalResumeByStates[status] = await Resume.count({ company_id: company._id, status: status });
-            }
-
-            resumeStateInLastMonth = {
-                'received': {
-                    'resent_month': await Resume.count({ company_id: company._id, createdAt: { $gte: date1MonthAgo } }),
-                    'last_month': await Resume.count({ company_id: company._id, createdAt: { $gte: date2MonthAgo, $lt: date1MonthAgo } })
+            let receivedResumeInLastMonth = await Resume.aggregate([
+                {
+                    $match: {
+                        company_id: company._id
+                    }
                 },
-                'hired': {
-                    'resent_month': await Resume.count({ company_id: company._id, status: 'hired', createdAt: { $gte: date1MonthAgo } }),
-                    'last_month': await Resume.count({ company_id: company._id, status: 'hired', createdAt: { $gte: date2MonthAgo, $lt: date1MonthAgo } })
-                },
-                'rejected': {
-                    'resent_month': await Resume.count({ company_id: company._id, status: 'rejected', createdAt: { $gte: date1MonthAgo } }),
-                    'last_month': await Resume.count({ company_id: company._id, status: 'rejected', createdAt: { $gte: date2MonthAgo, $lt: date1MonthAgo } })
+                {
+                    $facet: {
+                        'resent_month': [
+                            {
+                                $match: {
+                                    createdAt: {
+                                        $gte: date1MonthAgo
+                                    }
+                                }
+                            },
+                            {
+                                "$group": {
+                                    "_id": "",
+                                    "count": {
+                                        $sum: 1
+                                    }
+                                }
+                            },
+                            {
+                                '$project': {
+                                    '_id': 0,
+                                    'count': 1
+                                }
+                            }
+                        ],
+                        'last_month': [
+                            {
+                                $match: {
+                                    createdAt: {
+                                        $gte: date2MonthAgo,
+                                        $lt: date1MonthAgo
+                                    }
+                                }
+                            },
+                            {
+                                "$group": {
+                                    "_id": "",
+                                    "count": {
+                                        $sum: 1
+                                    }
+                                }
+                            },
+                            {
+                                '$project': {
+                                    '_id': 0,
+                                    'count': 1
+                                }
+                            }
+                        ]
+                    }
                 }
+
+            ])
+            let pendingResumeInLastMonth = await this.resumeCountByStateAndMonth(company, 'pending', date1MonthAgo, date2MonthAgo);
+            let rejectedResumeInLastMonth = await this.resumeCountByStateAndMonth(company, 'rejected', date1MonthAgo, date2MonthAgo);
+
+            let resumeStateInLastMonth = {
+                'received': receivedResumeInLastMonth,
+                'pending': pendingResumeInLastMonth,
+                'rejected': rejectedResumeInLastMonth,
             }
 
-            let resumeStatistics = {
-                'total_resume_by_states': totalResumeByStates,
-                'resume_state_in_last_month': resumeStateInLastMonth,
-            };
-
-            AppResponse.builder(res).message("company.messages.company_successfuly_updated").data(resumeStatistics).send()
+            AppResponse.builder(res).message("company.messages.company_successfuly_updated").data(resumeStateInLastMonth).send()
         } catch (err) {
             next(err);
         }
     }
+
+    async resumeCountByStateAndMonth(company, status, start, end) {
+        let resumeInMonth = await Resume.aggregate([
+            {
+                $match: {
+                    company_id: company._id
+                }
+            },
+            {
+                $facet: {
+                    'resent_month': [
+                        {
+                            $match: {
+                                'status': status,
+                                createdAt: {
+                                    $gte: start
+                                }
+                            }
+                        },
+                        {
+                            "$group": {
+                                "_id": "$status",
+                                "count": {
+                                    $sum: 1
+                                }
+                            }
+                        },
+                        {
+                            '$project': {
+                                '_id': 0,
+                                'count': 1
+                            }
+                        }
+                    ],
+                    'last_month': [
+                        {
+                            $match: {
+                                'status': status,
+                                createdAt: {
+                                    $gte: end,
+                                    $lt: start
+                                }
+                            }
+                        },
+                        {
+                            "$group": {
+                                "_id": "$status",
+                                "count": {
+                                    $sum: 1
+                                }
+                            }
+                        },
+                        {
+                            '$project': {
+                                '_id': 0,
+                                'count': 1
+                            }
+                        }
+                    ]
+                }
+            }
+
+        ])
+        return resumeInMonth;
+    }
+
+
 
 }
 
