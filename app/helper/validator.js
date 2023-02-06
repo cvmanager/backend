@@ -11,6 +11,11 @@ function generalValidator(req, res, next) {
                 let translatedMsg = res.__(error.msg)
 
                 // if field already exist push to array otherwise assign value
+                if (translatedMsg == res.__('auth.validations.mobile_username_wrong')) {
+                    errors['mobile'] = [translatedMsg]
+                    continue;
+                }
+                
                 if (errors[error.param]) {
                     errors[error.param].push(translatedMsg)
                 } else {
