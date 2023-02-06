@@ -67,7 +67,12 @@ class ProjectController extends Controller {
      */
     async find(req, res, next) {
         try {
-            let project = await Project.findById(req.params.id).populate('created_by').exec();
+            let project = await Project.findById(req.params.id)
+                .populate([
+                    { path: 'created_by' },
+                    { path: 'company_id', select: ['_id', 'name'] },
+                ])
+                .exec();
             if (!project) throw new NotFoundError('project.errors.project_notfound');
 
             AppResponse.builder(res).message("project.messages.project_found").data(project).send();
