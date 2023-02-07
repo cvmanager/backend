@@ -15,7 +15,7 @@ function cropImage(file, sizeList) {
             fs.mkdir(croppedFilePath.replace(file.filename, ''), { recursive: true }, async (error) => {
                 if (error) throw error
 
-                await sharp(file.path).resize(size, null, { fit: 'fill' }).toFile(croppedFilePath)
+                await sharp(file.path).resize(size, size, { fit: 'fill' }).toFile(croppedFilePath)
             });
         }
     } catch (error) {
