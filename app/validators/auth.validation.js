@@ -43,12 +43,14 @@ class AuthValidator {
                 body('mobile')
                     .notEmpty()
                     .matches(mobileFormat)
-                    .trim(),
+                    .trim()
+                    .withMessage('auth.validations.mobile_wrong'),
                 body('mobile')
                     .notEmpty()
                     .isLength({ min: 5, max: 10 })
                     .trim()
-            ], 'auth.validations.mobile_username_wrong'),
+                    .withMessage('auth.validations.username_wrong')
+            ]),
             body('password')
                 .notEmpty()
                 .withMessage('auth.validations.password_required')

@@ -6,22 +6,7 @@ function generalValidator(req, res, next) {
     try {
         var errorValidation = validationResult(req);
         if (!errorValidation.isEmpty()) {
-            let errors = {}
-            for (let error of errorValidation.errors) {
-                let translatedMsg = res.__(error.msg)
-
-                // if field already exist push to array otherwise assign value
-                if (translatedMsg == res.__('auth.validations.mobile_username_wrong')) {
-                    errors['mobile'] = [translatedMsg]
-                    continue;
-                }
-                
-                if (errors[error.param]) {
-                    errors[error.param].push(translatedMsg)
-                } else {
-                    errors[error.param] = [translatedMsg]
-                }
-            }
+            let errors = convertErrors(res, errorValidation.errors)
 
             throw new BadRequestError("system.errors.bad_request", [errors]);
         }
@@ -29,6 +14,26 @@ function generalValidator(req, res, next) {
     } catch (err) {
         next(err)
     }
+}
+
+function convertErrors(res, errorList, convertedErrors = {}) {
+    for (let error of errorList) {
+        if (error.nestedErrors && error.nestedErrors.length > 0) {
+            convertedErrors = convertErrors(res, error.nestedErrors, convertedErrors)
+            continue;
+        }
+
+        let translatedMsg = res.__(error.msg)
+
+        // if field already exist push to array otherwise assign value
+        if (convertedErrors[error.param]) {
+            convertedErrors[error.param].push(translatedMsg)
+        } else {
+            convertedErrors[error.param] = [translatedMsg]
+        }
+    }
+
+    return convertedErrors
 }
 
 export default generalValidator
