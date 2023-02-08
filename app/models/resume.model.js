@@ -159,6 +159,10 @@ const schema = new mongoose.Schema(
         file: {
             type: Array,
             default: null
+        },
+        process_duration: {
+            type: Number,
+            default: null
         }
     }
 );
