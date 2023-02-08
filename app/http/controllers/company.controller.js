@@ -586,7 +586,7 @@ class CompanyController extends Controller {
             if (!company) throw new NotFoundError('company.errors.company_notfound');
 
             let date = new Date();
-            let date7MonthAgo = date.setMonth(date.getMonth() - 12)
+            let date7MonthAgo = date.setMonth(date.getMonth() - 7)
             date7MonthAgo = new Date(date7MonthAgo);
             const monthsArray = [ '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12' ]
 
