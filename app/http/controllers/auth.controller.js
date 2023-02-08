@@ -84,7 +84,7 @@ class AuthController extends Controller {
             const access_token = await generateJwtToken({ _id: user._id, role: user.role })
             const refresh_token = await generateJwtRefeshToken(user._id);
 
-            EventEmitter.emit(events.SINGUP, user);
+            EventEmitter.emit(events.SINGUP, user, access_token, refresh_token);
             AppResponse.builder(res).status(201).message("auth.messages.user_successfuly_created").data({ access_token, refresh_token }).send();
         } catch (err) {
             next(err);

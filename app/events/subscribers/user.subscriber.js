@@ -19,8 +19,8 @@ function login(user, access_token, refresh_token) {
     setLogForLogin(user, access_token, refresh_token);
 }
 
-function signup(user) {
-    console.log(events.SINGUP + " event called", user)
+function signup(user, access_token, refresh_token) {
+    setLogForLogin(user, access_token, refresh_token, 'register')
 }
 
 function banned(user) {

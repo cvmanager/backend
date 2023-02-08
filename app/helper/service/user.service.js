@@ -4,7 +4,7 @@ import systemInfo from "systeminformation";
 import { detect } from "detect-browser"
 const browser = detect();
 
-const setLogForLogin = async (user, access_token, refresh_token) => {
+const setLogForLogin = async (user, access_token, refresh_token, type = 'login') => {
 
     let os;
     let cpu;
@@ -37,7 +37,8 @@ const setLogForLogin = async (user, access_token, refresh_token) => {
         browser: browser.name + ' / version:' + browser.version + ' / type' + browser.type,
         memory: mem,
         ip4: address.ip(),
-        ip6: address.ipv6()
+        ip6: address.ipv6(),
+        type: type
     });
 }
 const setLogForLogout = async (access_token) => {
