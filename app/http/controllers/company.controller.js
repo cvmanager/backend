@@ -586,42 +586,52 @@ class CompanyController extends Controller {
             if (!company) throw new NotFoundError('company.errors.company_notfound');
 
             let date = new Date();
-            let date7MonthAgo = date.setMonth(date.getMonth() - 7)
+            let date7MonthAgo = date.setMonth(date.getMonth() - 12)
             date7MonthAgo = new Date(date7MonthAgo);
+            const monthsArray = [ '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12' ]
 
             let resumeCountFromMonth = await Resume.aggregate([
                 {
                     $match: {
                         company_id: company._id,
-                        createdAt: {
-                            $gte: date7MonthAgo
-                        }
+                        // createdAt: { $gte: YEAR_BEFORE, $lte: TODAY }
+                        createdAt: { $gte: date7MonthAgo}
                     }
                 },
                 {
                     $group: {
-                        _id: { $month: "$createdAt" },
+                        _id: { "year_month": { $substrCP: ["$createdAt", 0, 7] } },
                         count: { $sum: 1 }
                     }
                 },
                 {
-                    '$project': {
-                        '_id': false,
-                        'month': {
-                            '$arrayElemAt': [
-                                [
-                                    '', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'
-                                ], '$_id'
-                            ]
-                        },
-                        'count': true
+                    $sort: { "_id.year_month": -1 }
+                },
+                {
+                    $project: { 
+                        _id: 0, 
+                        count: 1, 
+                        month_year: { 
+                            $concat: [ 
+                               { $arrayElemAt: [ monthsArray, { $subtract: [ { $toInt: { $substrCP: [ "$_id.year_month", 5, 2 ] } }, 1 ] } ] },
+                               "-", 
+                               { $substrCP: [ "$_id.year_month", 0, 4 ] }
+                            ] 
+                        }
+                    } 
+                },
+                {
+                    $group: {
+                        _id: null,
+                        data: { $push: { k: "$month_year", v: "$count" } }
                     }
                 },
                 {
-                    '$sort': {
-                        'month': -1
+                    $project: {
+                        data: { $arrayToObject: "$data" },
+                        _id: 0
                     }
-                },
+                }
             ])
 
             AppResponse.builder(res).message("company.messages.company_successfuly_updated").data(resumeCountFromMonth).send()
