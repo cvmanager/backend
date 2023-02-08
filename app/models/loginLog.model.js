@@ -38,6 +38,10 @@ const schema = new mongoose.Schema(
         type: {
             type: String,
             enum: ['register', 'login']
+        },
+        logout_at: {
+            type: Date,
+            default: null
         }
     }
 )

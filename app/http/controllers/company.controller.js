@@ -10,6 +10,7 @@ import EventEmitter from '../../events/emitter.js';
 import { events } from '../../events/subscribers/companies.subscriber.js';
 import Project from '../../models/project.model.js';
 import Resume from '../../models/resume.model.js';
+import i18n from '../../middlewares/lang.middleware.js';
 
 
 class CompanyController extends Controller {
@@ -436,6 +437,67 @@ class CompanyController extends Controller {
 
             EventEmitter.emit(events.DEACTIVE_COMPANY, company);
             AppResponse.builder(res).message("company.messages.company_successfuly_deactivated").data(company).send()
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
+   * GET /companies/{id}/statistics/resumes
+   * 
+   * @summary gets a company resumes statistics
+   * @tags Company
+   * @security BearerAuth
+   * 
+   * @param  { string } id.path.required - company id
+   * 
+   * @return { company.success } 200 - success response
+   * @return { message.badrequest_error } 400 - bad request respone
+   * @return { message.unauthorized_error }     401 - UnauthorizedError
+   * @return { message.server_error  }    500 - Server Error
+   */
+    async resumeStatistics(req, res, next) {
+        try {
+            let company = await Company.findById(req.params.id);
+            if (!company) throw new NotFoundError('company.errors.company_notfound');
+
+            let date = new Date();
+            let date1MonthAgo = date.setMonth(date.getMonth() - 1)
+            date1MonthAgo = new Date(date1MonthAgo)
+
+            date = new Date();
+            let date2MonthAgo = date.setMonth(date.getMonth() - 2)
+            date2MonthAgo = new Date(date2MonthAgo)
+
+            let statusArray = i18n.__("resume.enums.status");
+            let totalResumeByStates = {}
+            let resumeStateInLastMonth = {}
+
+            for (const status of statusArray) {
+                totalResumeByStates[status] = await Resume.count({ company_id: company._id, status: status });
+            }
+
+            resumeStateInLastMonth = {
+                'received': {
+                    'resent_month': await Resume.count({ company_id: company._id, createdAt: { $gte: date1MonthAgo } }),
+                    'last_month': await Resume.count({ company_id: company._id, createdAt: { $gte: date2MonthAgo, $lt: date1MonthAgo } })
+                },
+                'hired': {
+                    'resent_month': await Resume.count({ company_id: company._id, status: 'hired', createdAt: { $gte: date1MonthAgo } }),
+                    'last_month': await Resume.count({ company_id: company._id, status: 'hired', createdAt: { $gte: date2MonthAgo, $lt: date1MonthAgo } })
+                },
+                'rejected': {
+                    'resent_month': await Resume.count({ company_id: company._id, status: 'rejected', createdAt: { $gte: date1MonthAgo } }),
+                    'last_month': await Resume.count({ company_id: company._id, status: 'rejected', createdAt: { $gte: date2MonthAgo, $lt: date1MonthAgo } })
+                }
+            }
+
+            let resumeStatistics = {
+                'total_resume_by_states': totalResumeByStates,
+                'resume_state_in_last_month': resumeStateInLastMonth,
+            };
+
+            AppResponse.builder(res).message("company.messages.company_successfuly_updated").data(resumeStatistics).send()
         } catch (err) {
             next(err);
         }

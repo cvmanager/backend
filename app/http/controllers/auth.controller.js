@@ -138,6 +138,7 @@ class AuthController extends Controller {
             const redisKey = req.user_id.toString() + env("REDIS_KEY_REF_TOKENS")
             await redisClient.sRem(redisKey, token);
 
+            EventEmitter.emit(events.LOGOUT, token);
             AppResponse.builder(res).message("auth.messages.success_logout").send();
         } catch (err) {
             next(err);
@@ -162,7 +163,7 @@ class AuthController extends Controller {
     }
 
     /**
-     * POST /auth/check-username
+     * POST /auth/username-isavailable
      * 
      * @summary Check and confirm username
      * @tags Auth 
@@ -177,9 +178,9 @@ class AuthController extends Controller {
     async checkusername(req, res, next) {
         try {
             let user = await User.findOne({ username: req.body.username });
-            if (!user) throw new NotFoundError('auth.errors.username_notfound');
+            if (user) throw new BadRequestError('auth.errors.username_exist');
 
-            AppResponse.builder(res).message("auth.messages.username_exist").send();
+            AppResponse.builder(res).message("auth.messages.username_isavailable").send();
         } catch (err) {
             next(err);
         }

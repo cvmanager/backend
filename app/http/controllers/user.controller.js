@@ -3,6 +3,7 @@ import BadRequestError from '../../exceptions/BadRequestError.js';
 import NotFoundError from '../../exceptions/NotFoundError.js';
 import AppResponse from '../../helper/response.js';
 import User from '../../models/user.model.js';
+import LoginLog from '../../models/loginLog.model.js';
 import Controller from './controller.js';
 import { events } from '../../events/subscribers/user.subscriber.js';
 import bcrypt from 'bcrypt'
@@ -82,7 +83,7 @@ class UserController extends Controller {
      * @return { message.server_error}      500 - Server Error
      */
     async uploadProfileImage(req, res, next) {
-        
+
         try {
             let user = await User.findById(req.user_id);
             if (!user) throw new NotFoundError('user.errors.user_notfound');
@@ -178,6 +179,37 @@ class UserController extends Controller {
             user = await User.findOneAndUpdate({ _id: user._id }, { password: hash_password });
 
             AppResponse.builder(res).data(user).message('user.messages.password_changed').send(req.user_id);
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
+    * GET /users/{id}/login-history
+    * @summary get login histiry 
+    * @tags User
+    * @security BearerAuth
+    * 
+    * @param  { string } id.path.required - user id
+    *  
+    * @return { user.success }                  200 - get login history
+    * @return { message.badrequest_error }      401 - UnauthorizedError
+    * @return { message.NotFoundError }         404 - user not found
+    * @return { message.server_error}           500 - Server Error
+    */
+    async loginHistory(req, res, next) {
+        try {
+            let user = await User.findById(req.params.id);
+            if (!user) throw new NotFoundError('user.errors.user_notfound');
+
+            const { page = 1, size = 10 } = req.query
+            const loginLog = await LoginLog.paginate({ user_id: user._id }, {
+                page: page,
+                limit: size,
+                sort: { createdAt: -1 }
+            });
+
+            AppResponse.builder(res).data(loginLog).message('user.messages.user_login_history_list').send();
         } catch (err) {
             next(err);
         }

@@ -31,7 +31,10 @@
 			"url_not_found": "Url NotFound",
 			"too_many_requests": "Too Many Requests",
 			"not_valid_image_format": "The uploaded file is not an image",
-			"not_valid_file_format": "The uploaded file format is invalid"
+			"not_valid_file_format": "The uploaded file format is invalid",
+			"crop_file": "Error in resizing file",
+			"upload_file": "Error in uploading file",
+			"LIMIT_FILE_SIZE": "file is too large"
 		}
 	},
 	"auth": {
@@ -55,7 +58,8 @@
 			"success_login": "You have successfully logged into your account",
 			"success_logout": "You have successfully logged out",
 			"token_verified": "Token Verified",
-			"username_exist": "The username already exists"
+			"username_exist": "The username already exists",
+			"username_isavailable": "The username is available"
 		},
 		"errors": {
 			"user_already_exists": "There is already a user with this information",
@@ -124,7 +128,9 @@
 			"position_list_found": "position list",
 			"position_found": "position found",
 			"position_managers_found": "position managers successfuly founded",
-			"position_resumes_found": "Position resumes successfuly founded"
+			"position_resumes_found": "Position resumes successfuly founded",
+			"position_successfuly_deactivated": "position status successfuly deactivated",
+			"position_successfuly_activated": "position status successfuly activated"
 		},
 		"errors": {
 			"position_notfound": "position not found",
@@ -135,7 +141,9 @@
 			"position_list_found": "position list",
 			"position_found": "position found",
 			"position_managers_found": "position managers successfuly founded",
-			"position_resumes_found": "Position resumes successfuly founded"
+			"position_resumes_found": "Position resumes successfuly founded",
+			"position_deactivated_alredy": "position has deactiveed alredy",
+			"position_activated_alredy": "position has activated alredy"
 		}
 	},
 	"project": {
@@ -239,14 +247,18 @@
 	},
 	"user": {
 		"enums": {},
-		"validations": {},
+		"validations": {
+			"user_page_number": "user page must be number",
+			"user_size_number": "user size must be number"
+		},
 		"messages": {
 			"user_founded": "user successfuly found",
 			"list_found": "the list of users",
-			"password_changed": "User password successfully changed"
+			"password_changed": "User password successfully changed",
+			"user_login_history_list": "user login history list"
 		},
 		"errors": {
-			"user_notfound": "The desired user was not found",
+			"user_notfound": "User not found",
 			"password_length_not_confirm": "password length must be between 8-10",
 			"password_cant_be_empty": "password cant be empty",
 			"old_password_length_not_confirm": "old password length must be between 8-10",
