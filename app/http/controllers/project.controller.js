@@ -3,6 +3,7 @@ import AlreadyExists from '../../exceptions/AlreadyExists.js';
 import BadRequestError from '../../exceptions/BadRequestError.js';
 import Company from '../../models/company.model.js';
 import Project from '../../models/project.model.js';
+import Position from '../../models/position.model.js';
 import User from '../../models/user.model.js';
 import AppResponse from '../../helper/response.js';
 import Controller from './controller.js';
@@ -261,9 +262,9 @@ class ProjectController extends Controller {
             const project = await Project.findById(req.params.id).populate('created_by');
             if (!project) throw new NotFoundError('project.errors.project_not_found');
 
-            let managers = await Manager.find({ 'entity': "projects", 'entity_id': project.id }).populate('user_id');
+            let positions = await Position.find({ 'project_id': project.id }).populate('created_by');
 
-            AppResponse.builder(res).message('project.messages.project_positions_found').data(managers).send();
+            AppResponse.builder(res).message('project.messages.project_positions_found').data(positions).send();
         } catch (err) {
             next(err);
         }
