@@ -1,4 +1,5 @@
 import EventEmitter from '../emitter.js'
+import { addDefaultManagerForPosition, deleteManagersFromPosition } from '../../helper/service/position.service.js';
 
 export const events = {
     "CREATE": "New Position",
@@ -28,12 +29,12 @@ function deActive(position) {
 }
 
 function create(Position) {
-    console.log(events.DELETE + " event called", Position)
+    addDefaultManagerForPosition(Position)
 }
 
 
 function softdelete(Position) {
-    console.log(events.DELETE + " event called", Position)
+    deleteManagersFromPosition(Company)
 }
 
 
