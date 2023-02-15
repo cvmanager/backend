@@ -84,7 +84,7 @@ class ResumeValidation {
             body('education')
                 .notEmpty()
                 .withMessage('resume.validations.education_required')
-                .isIn(i18n.__('enums.education'))
+                .isIn(i18n.__('system.enums.education'))
                 .withMessage('resume.validations.education_incorrect')
                 .trim(),
             body('phone')
