@@ -17,14 +17,14 @@ const config = {
 
 const createStorage = (path, fieldName) => {
     let basePath = './public';
-    let realPath = '/uploads' + path;
+    let realPath = '/uploads/' + path + '/';
     let fullPath = basePath + realPath;
 
     return multer.diskStorage({
         destination: fullPath,
         filename: (req, file, cb) => {
             let extension = extname(file.originalname);
-            let name = req.user_id._id;
+            let name = req.user_id;
 
             if (fs.existsSync(fullPath + name + extension)) {
                 const date = new Date();
