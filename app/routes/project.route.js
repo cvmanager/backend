@@ -1,6 +1,7 @@
 import express from 'express'
 import ProjectController from '../http/controllers/project.controller.js';
 import ProjectValidation from '../validators/project.validation.js'
+import { Upload } from '../helper/upload.js';
 
 const projectRouter = express.Router();
 
@@ -17,5 +18,6 @@ projectRouter
     .get('/:id/positions', ProjectValidation.find(), ProjectController.getPositions)
     .patch('/:id/active', ProjectValidation.active(), ProjectController.active)
     .patch('/:id/deactive', ProjectValidation.deActive(), ProjectController.deActive)
+    .patch('/:id/logo', Upload('projects', 'logo', 'image'), ProjectValidation.logo(), ProjectController.updateLogo)
 
 export default projectRouter
