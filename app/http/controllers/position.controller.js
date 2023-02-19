@@ -37,11 +37,15 @@ class PositionController extends Controller {
                 page: (page) || 1,
                 limit: size,
                 sort: { createdAt: -1 },
-                populate: {
-                    path: 'managers',
-                    populate: { path: 'user_id', select: ['firstname', 'lastname', 'avatar'] },
-                    select: ['user_id']
-                }
+                populate: [
+                    { path: 'company_id', select: ['_id', 'name', 'logo'] },
+                    { path: 'project_id', select: ['_id', 'name', 'logo'] },
+                    {
+                        path: 'managers',
+                        populate: { path: 'user_id', select: ['firstname', 'lastname', 'avatar'] },
+                        select: ['user_id', 'type']
+                    }
+                ]
             });
             AppResponse.builder(res).message("position.messages.position_list_found").data(positionList).send();
         } catch (err) {
@@ -66,7 +70,11 @@ class PositionController extends Controller {
     */
     async find(req, res, next) {
         try {
-            const position = await Position.findById(req.params.id);
+            const position = await Position.findById(req.params.id)
+                .populate([
+                    { path: 'company_id', select: ['_id', 'name', 'logo'] },
+                    { path: 'project_id', select: ['_id', 'name', 'logo'] }
+                ]);
             if (!position) throw new NotFoundError('position.errors.position_notfound');
 
             AppResponse.builder(res).message('position.messages.position_found').data(position).send();
@@ -247,22 +255,22 @@ class PositionController extends Controller {
     }
 
 
-       /**
-    * GET /positions/{id}/managers
-    * 
-    * @summary gets  position managers list by position id
-    * @tags Position
-    * @security BearerAuth
-    * 
-    * @param  { string } id.path.required - position id
-    * 
-    * @return { position.success }              200 - success response
-    * @return { message.badrequest_error }      400 - bad request respone
-    * @return { message.badrequest_error }      404 - not found respone
-    * @return { message.unauthorized_error }    401 - UnauthorizedError
-    * @return { message.server_error  }         500 - Server Error
-    */
-       async getManagers(req, res, next) {
+    /**
+ * GET /positions/{id}/managers
+ * 
+ * @summary gets  position managers list by position id
+ * @tags Position
+ * @security BearerAuth
+ * 
+ * @param  { string } id.path.required - position id
+ * 
+ * @return { position.success }              200 - success response
+ * @return { message.badrequest_error }      400 - bad request respone
+ * @return { message.badrequest_error }      404 - not found respone
+ * @return { message.unauthorized_error }    401 - UnauthorizedError
+ * @return { message.server_error  }         500 - Server Error
+ */
+    async getManagers(req, res, next) {
         try {
             const position = await Position.findById(req.params.id).populate('created_by');
             if (!position) throw new NotFoundError('position.errors.position_notfound');
@@ -275,20 +283,20 @@ class PositionController extends Controller {
         }
     }
 
-       /**
-     * PATCH /positions/{id}/active
-     * @summary active positions 
-     * @tags Position
-     * @security BearerAuth
-     * 
-     * @param { string } id.path.required - position id
-     * 
-     * @return { position.success }              200 - active positions
-     * @return { message.badrequest_error }      400 - positions not found
-     * @return { message.badrequest_error }      401 - UnauthorizedError
-     * @return { message.server_error}           500 - Server Error
-     */
-       async active(req, res, next) {
+    /**
+  * PATCH /positions/{id}/active
+  * @summary active positions 
+  * @tags Position
+  * @security BearerAuth
+  * 
+  * @param { string } id.path.required - position id
+  * 
+  * @return { position.success }              200 - active positions
+  * @return { message.badrequest_error }      400 - positions not found
+  * @return { message.badrequest_error }      401 - UnauthorizedError
+  * @return { message.server_error}           500 - Server Error
+  */
+    async active(req, res, next) {
         try {
             let position = await Position.findById(req.params.id);
             if (!position) throw new NotFoundError('position.errors.position_notfound');
