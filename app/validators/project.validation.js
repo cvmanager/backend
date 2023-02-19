@@ -101,6 +101,14 @@ class ProjectValidation {
         ];
     }
 
+    logo() {
+        return [
+            param('id')
+                .notEmpty().isMongoId().withMessage('project.validations.project_id_invalid').trim(),
+            generalValidator
+        ];
+    }
+
 
 }
 

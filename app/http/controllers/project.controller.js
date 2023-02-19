@@ -387,6 +387,37 @@ class ProjectController extends Controller {
         }
     }
 
+        /**
+    * PATCH /projects/:id/logo
+    * @summary upload project logo
+    * @tags Project
+    * @security BearerAuth
+    * 
+    * @param { string } id.path.required - project id
+    * @param { project.upload_logo } request.body - project info - multipart/form-data
+    * 
+    * @return { project.success }               200 - update resume profile
+    * @return { message.badrequest_error }      400 - resume not found
+    * @return { message.badrequest_error }      401 - UnauthorizedError
+    * @return { message.server_error}           500 - Server Error
+    */
+         async updateLogo(req, res, next) {
+            try {
+                let project = await project.findById(req.params.id);
+                if (!project) throw new NotFoundError('project.errors.project_notfound');
+    
+                if (req.body.logo) {
+                    project.logo = req.body.logo;
+                    await project.save();
+                }
+    
+                AppResponse.builder(res).message("project.messages.project_successfuly_updated").data(project).send()
+            } catch (err) {
+                next(err);
+            }
+        }
+    
+
 }
 
 export default new ProjectController;

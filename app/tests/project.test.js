@@ -8,6 +8,7 @@ import ManagerData from './data/manager.data';
 import prepareDB from './utils/prepareDB'
 import { Types } from 'mongoose';
 import { faker } from '@faker-js/faker';
+import * as path from 'path';
 
 let token;
 let company;
@@ -618,6 +619,50 @@ describe("Project Routes", () => {
             const response = await request(app)
                 .patch(`/api/V1/projects/${project._id}/deactive`)
                 .set(`Authorization`, token);
+            expect(response.statusCode).toBe(httpStatus.OK);
+        })
+    })
+
+    describe(`PATCH /:id/logo`, () => {
+
+        let logo;
+        beforeEach(async () => {
+            logo = path.join(__dirname, 'data/file/avatar.png');
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} if project id is not send`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/projects//logo`)
+                .set(`Authorization`, token)
+                .attach('logo', logo);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if project id is not valid`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/projects/fakeId/logo`)
+                .set(`Authorization`, token)
+                .attach('logo', logo);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.NOT_FOUND} if project is not exists`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/projects/${Types.ObjectId()}/logo`)
+                .set(`Authorization`, token)
+                .attach('logo', logo);
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+        it(`should return ${httpStatus.BAD_REQUEST} error if logo incorect`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/projects/${project._id}/logo`)
+                .set('Authorization', token)
+                .attach('logo', path.join(__dirname, 'data/file/avatar.zip'));
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        });
+        it(`should get ${httpStatus.OK} if all data correct `, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/projects/${project._id}/logo`)
+                .set(`Authorization`, token)
+                .attach('logo', logo);
             expect(response.statusCode).toBe(httpStatus.OK);
         })
     })
