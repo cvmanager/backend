@@ -128,7 +128,6 @@ describe("Interview Routes", () => {
         })
 
         it(`should get ${httpStatus.OK} success if correct`, async () => {
-
             const response = await request(app)
                 .get(`/api/V1/interviews/${interview._id}`)
                 .set(`Authorization`, token)
@@ -227,6 +226,22 @@ describe("Interview Routes", () => {
         })
         it(`should get ${httpStatus.BAD_REQUEST} if event_time is not valid`, async () => {
             newInterview.event_time = '2022-09-50';
+            const response = await request(app)
+                .post(`/api/V1/positions`)
+                .set(`Authorization`, token)
+                .send(newInterview);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if event_time is before now`, async () => {
+            newInterview.event_time = '2021-01-01';
+            const response = await request(app)
+                .post(`/api/V1/positions`)
+                .set(`Authorization`, token)
+                .send(newInterview);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if event_time bigger than next year`, async () => {
+            newInterview.event_time = '2025-01-01';
             const response = await request(app)
                 .post(`/api/V1/positions`)
                 .set(`Authorization`, token)
@@ -343,6 +358,22 @@ describe("Interview Routes", () => {
         })
         it(`should get ${httpStatus.BAD_REQUEST} if event_time is not valid`, async () => {
             updateInterview.event_time = '2022-09-50';
+            const response = await request(app)
+                .post(`/api/V1/positions`)
+                .set(`Authorization`, token)
+                .send(updateInterview);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if event_time is not valid`, async () => {
+            updateInterview.event_time = '2022-09-50';
+            const response = await request(app)
+                .post(`/api/V1/positions`)
+                .set(`Authorization`, token)
+                .send(updateInterview);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if event_type is not valid`, async () => {
+            updateInterview.event_type = 'fakeeventtime';
             const response = await request(app)
                 .post(`/api/V1/positions`)
                 .set(`Authorization`, token)

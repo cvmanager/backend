@@ -30,6 +30,8 @@
 * @property { string } type.required - interview type
 * @property { string } description - interview description
 * @property { array<string> } contribution - interview contribution
+* @property { string } status
+* @property { string } result
 */
 
 /**
