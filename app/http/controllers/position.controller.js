@@ -10,6 +10,7 @@ import EventEmitter from '../../events/emitter.js';
 import { events } from '../../events/subscribers/positions.subscriber.js'
 import Resume from '../../models/resume.model.js';
 import BadRequestError from '../../exceptions/BadRequestError.js';
+import Company from '../../models/company.model.js';
 
 class PositionController extends Controller {
 
@@ -102,6 +103,9 @@ class PositionController extends Controller {
         try {
             let project = await Project.findById(req.body.project_id);
             if (!project) throw new NotFoundError('project.errors.project_notfound');
+
+            let company = await Company.findById(project.company_id);
+            if (!company.is_active) throw new BadRequestError('project.errors.company_isnot_active');
 
             let position = await Position.findOne({ 'title': req.body.title, 'project_id': req.body.project_id });
             if (position) throw new AlreadyExists('position.errors.position_already_exists');
