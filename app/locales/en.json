@@ -109,7 +109,8 @@
 			"company_already_exists": "company name is duplicated, already exists",
 			"company_notfound": "company not found",
 			"company_deactivated_alredy": "company has deactiveed alredy",
-			"company_activated_alredy": "company has activated alredy"
+			"company_activated_alredy": "company has activated alredy",
+            "company_isnot_active": "company is not active"
 		}
 	},
 	"position": {

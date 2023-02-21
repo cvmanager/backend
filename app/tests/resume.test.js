@@ -29,7 +29,8 @@ let positionData;
 let user;
 let usersData;
 let users;
-
+let positionItem;
+let companyItem;
 
 prepareDB();
 describe("Resumes Routes", () => {
@@ -218,6 +219,38 @@ describe("Resumes Routes", () => {
                 "education": "diploma",
                 "created_by": user._id
             }
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} if company is_active is false`, async () => {
+            companyItem = {
+                "_id": Types.ObjectId(),
+                "is_active": false,
+                "created_by": Types.ObjectId(),
+                "name": faker.company.name(),
+                "description": faker.random.alpha(50),
+                "phone": faker.phone.number('989#########'),
+                "address": faker.random.alpha(100),
+            };
+            companyData.addCompany(companyItem)
+            positionItem = {
+                "_id": Types.ObjectId(),
+                "company_id": companyItem._id,
+                "project_id": Types.ObjectId(),
+                "title": faker.random.alpha(15),
+                "level": "mid",
+                "description": faker.random.alpha(50),
+                "created_by": Types.ObjectId(),
+                "is_active": false,
+            };
+            positionData.addPosition(positionItem)
+
+            newResume.position_id = positionItem._id;
+
+            const response = await request(app)
+                .post(`/api/V1/resumes`)
+                .set(`Authorization`, token)
+                .send(newResume);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
 
         it(`should get ${httpStatus.BAD_REQUEST} if position id is not send`, async () => {
