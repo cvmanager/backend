@@ -186,14 +186,14 @@ class PositionController extends Controller {
     }
 
     /**
-    * POST /positions/{id}/manager
+    * PATCH /positions/{id}/manager
     * 
     * @summary set manager for position 
     * @tags Position
     * @security BearerAuth
     * 
     * @param  { string } id.path.required - position id
-    * @param { position.manager } request.body - position info - application/json
+    * @param { position.set_manager } request.body - position info - application/json
     *    
     * @return { manager.success }           201 - success response
     * @return { message.badrequest_error } 400 - bad request respone
@@ -338,6 +338,42 @@ class PositionController extends Controller {
 
             EventEmitter.emit(events.DEACTIVE, position)
             AppResponse.builder(res).message("position.messages.position_successfuly_deactivated").data(position).send()
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
+* DELETE /positions/{id}/manager
+*
+* @summary delete manager from position
+* @tags Position
+* @security BearerAuth
+*
+* @param  { string } id.path.required - position id - application/json
+* @param  { position.delete_manager } request.body - position info - application/json
+*
+* @return { message.unauthorized_error }     401 - UnauthorizedError
+* @return { message.badrequest_error }       404 - NotFoundError
+* @return { message.server_error }           500 - Server Error
+* @return { position.success }                200 - success respons
+*/
+    async deleteManager(req, res, next) {
+        try {
+            let position = await Position.findById(req.params.id);
+            if (!position) throw new NotFoundError('position.errors.position_notfound');
+
+            let user = await User.findById(req.body.manager_id);
+            if (!user) throw new NotFoundError('user.errors.user_notfound');
+
+            let manager = await Manager.findOne({ 'entity': "positions", 'entity_id': position.id, 'user_id': user.id });
+            if (!manager) throw new BadRequestError("position.errors.the_user_is_not_manager_for_this_position");
+            if (manager.type === 'owner') throw new BadRequestError("position.errors.the_owner_manager_cannot_be_deleted");
+
+            await manager.delete(req.user_id);
+            EventEmitter.emit(events.UNSET_MANAGER, position);
+
+            AppResponse.builder(res).message("position.messages.position_manager_deleted").data(position).send()
         } catch (err) {
             next(err);
         }

@@ -10,6 +10,7 @@ positionRouter
     .post('/', PositionValidation.create(), PositionController.create)
     .patch('/:id', PositionValidation.update(), PositionController.update)
     .patch('/:id/manager', PositionValidation.manager(), PositionController.manager)
+    .delete('/:id/manager', PositionValidation.deleteManager(), PositionController.deleteManager)
     .delete('/:id', PositionValidation.remove(), PositionController.delete)
     .get('/:id/managers', PositionValidation.find(), PositionController.getManagers)
     .get('/:id/resumes', PositionValidation.find(), PositionController.getResumes)
