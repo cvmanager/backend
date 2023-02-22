@@ -1,6 +1,7 @@
 import express from 'express'
 import PositionValidation from '../validators/position.validation.js'
 import PositionController from '../http/controllers/position.controller.js'
+import { Upload } from '../helper/upload.js';
 
 const positionRouter = express.Router();
 
@@ -15,5 +16,6 @@ positionRouter
     .get('/:id/resumes', PositionValidation.find(), PositionController.getResumes)
     .patch('/:id/active', PositionValidation.active(), PositionController.active)
     .patch('/:id/deactive', PositionValidation.deActive(), PositionController.deActive)
+    .patch('/:id/logo', Upload('positions', 'logo', 'image'), PositionValidation.logo(), PositionController.updateLogo)
 
 export default positionRouter;

@@ -343,6 +343,36 @@ class PositionController extends Controller {
         }
     }
 
+    /**
+    * PATCH /positions/:id/logo
+    * @summary upload position logo
+    * @tags Position
+    * @security BearerAuth
+    * 
+    * @param { string } id.path.required - position id
+    * @param { position.upload_logo } request.body - position info - multipart/form-data
+    * 
+    * @return { position.success }               200 - update resume profile
+    * @return { message.badrequest_error }      400 - resume not found
+    * @return { message.badrequest_error }      401 - UnauthorizedError
+    * @return { message.server_error}           500 - Server Error
+    */
+    async updateLogo(req, res, next) {
+        try {
+            let position = await Position.findById(req.params.id);
+            if (!position) throw new NotFoundError('position.errors.position_notfound');
+
+            if (req.body.logo) {
+                position.logo = req.body.logo;
+                await position.save();
+            }
+
+            AppResponse.builder(res).message("position.messages.position_successfuly_updated").data(position).send()
+        } catch (err) {
+            next(err);
+        }
+    }
+
 }
 
 export default new PositionController

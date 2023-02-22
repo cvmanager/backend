@@ -9,6 +9,7 @@ import prepareDB from './utils/prepareDB'
 import { Types } from 'mongoose';
 import { faker } from '@faker-js/faker';
 import i18n from '../middlewares/lang.middleware.js'
+import * as path from 'path';
 
 let token;
 let user;
@@ -79,15 +80,20 @@ describe(`Position Routes`, () => {
                 .send();
 
             let data = response.body.data[0].docs[0];
-            expect(data).toHaveProperty(`project_id`)
+            expect(data).toHaveProperty(`_id`)
             expect(data).toHaveProperty(`company_id`)
+            expect(data).toHaveProperty(`project_id`)
             expect(data).toHaveProperty(`title`)
             expect(data).toHaveProperty(`level`)
             expect(data).toHaveProperty(`is_active`)
-            expect(data).toHaveProperty(`deleted`)
+            expect(data).toHaveProperty(`logo`)
             expect(data).toHaveProperty(`description`)
+            expect(data).toHaveProperty(`created_by`)
+            expect(data).toHaveProperty(`deleted`)
             expect(data).toHaveProperty(`createdAt`)
             expect(data).toHaveProperty(`updatedAt`)
+            expect(data).toHaveProperty(`managers`)
+            expect(data).toHaveProperty(`id`)
         })
 
         it(`should get list of positions`, async () => {
@@ -131,11 +137,13 @@ describe(`Position Routes`, () => {
             expect(data).toHaveProperty(`title`)
             expect(data).toHaveProperty(`level`)
             expect(data).toHaveProperty(`is_active`)
+            expect(data).toHaveProperty(`logo`)
+            expect(data).toHaveProperty(`description`)
             expect(data).toHaveProperty(`created_by`)
             expect(data).toHaveProperty(`deleted`)
-            expect(data).toHaveProperty(`description`)
             expect(data).toHaveProperty(`createdAt`)
             expect(data).toHaveProperty(`updatedAt`)
+            expect(data).toHaveProperty(`id`)
             expect(response.statusCode).toBe(httpStatus.OK)
         })
     })
@@ -557,6 +565,50 @@ describe(`Position Routes`, () => {
             const response = await request(app)
                 .patch(`/api/V1/positions/${position._id}/deactive`)
                 .set(`Authorization`, token);
+            expect(response.statusCode).toBe(httpStatus.OK);
+        })
+    })
+
+    describe(`PATCH /:id/logo`, () => {
+
+        let logo;
+        beforeEach(async () => {
+            logo = path.join(__dirname, 'data/file/avatar.png');
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} if position id is not send`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/positions//logo`)
+                .set(`Authorization`, token)
+                .attach('logo', logo);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if position id is not valid`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/positions/fakeId/logo`)
+                .set(`Authorization`, token)
+                .attach('logo', logo);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.NOT_FOUND} if position is not exists`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/positions/${Types.ObjectId()}/logo`)
+                .set(`Authorization`, token)
+                .attach('logo', logo);
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+        it(`should return ${httpStatus.BAD_REQUEST} error if logo incorect`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/positions/${position._id}/logo`)
+                .set('Authorization', token)
+                .attach('logo', path.join(__dirname, 'data/file/avatar.zip'));
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        });
+        it(`should get ${httpStatus.OK} if all data correct `, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/positions/${position._id}/logo`)
+                .set(`Authorization`, token)
+                .attach('logo', logo);
             expect(response.statusCode).toBe(httpStatus.OK);
         })
     })

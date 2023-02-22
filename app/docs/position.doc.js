@@ -37,3 +37,9 @@
 * @property { array<Position> } data
 * @property { array<> }        errors
 */
+
+/**
+* upload logo position
+* @typedef { object } position.upload_logo
+* @property { logo } logo.required - position logo
+*/
