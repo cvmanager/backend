@@ -1,12 +1,12 @@
 import AlreadyExists from '../../exceptions/AlreadyExists.js';
 import NotFoundError from '../../exceptions/NotFoundError.js';
 import policyService from '../../services/policy.service.js';
-import { cachePermission } from '../../helper/abacConfig.js';
 import AppResponse from '../../helper/response.js';
 import Policy from '../../models/policy.model.js';
 import Controller from './controller.js';
 import permissionService from '../../helper/service/permission.service.js';
 import Permission from '../../models/permission.model.js';
+import { cachePermission } from '../../helper/rbac.js';
 
 class PermissionController extends Controller {
 
@@ -125,7 +125,7 @@ class PermissionController extends Controller {
                 }
             }
 
-            const updatedPermission = await permissionService.updateOne({ _id: req.params.id, ...req.abacQuery }, req.body)
+            const updatedPermission = await permissionService.updateOne({ _id: req.params.id }, req.body)
             if (!updatedPermission) throw new NotFoundError('document.error.document_notfound'); 
             await cachePermission(updatedPermission)
 
@@ -152,12 +152,12 @@ class PermissionController extends Controller {
     * @return { message.server_error  }    500 - Server Error
     */
     async delete(req, res, next) {
-        let permission = await permissionService.findOne({ _id: req.params.id, ...abacQuery });
+        let permission = await permissionService.findOne({ _id: req.params.id });
         if (!permission) throw new NotFoundError('document.error.document_notfound');
 
         await permission.delete(req.user._id);
         // delete from cache
-        const redisKey = env("REDIS_KEY_ABAC_OPERATION") + permission._id.toString()
+        const redisKey = env("REDIS_KEY_RBAC_PERMISSION") + permission._id.toString()
         await redisClient.del(redisKey)
         
         AppResponse.builder(res).message("document.message.document_successfuly_deleted").data(document).send();

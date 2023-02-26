@@ -1,7 +1,7 @@
 import AlreadyExists from '../../exceptions/AlreadyExists.js';
 import NotFoundError from '../../exceptions/NotFoundError.js';
 import roleService from '../../services/role.service.js';
-import { cacheRoles } from '../../helper/abacConfig.js';
+import { cacheRoles } from '../../helper/rbac.js';
 import AppResponse from '../../helper/response.js';
 import Role from '../../models/role.model.js';
 import Controller from './controller.js';
@@ -117,7 +117,7 @@ class RoleController extends Controller {
                 if (roleExist && !roleExist._id.equals(req.params.id)) throw new AlreadyExists('role.error.name_already_exists');
             }
 
-            const updatedRole = await roleService.updateOne({ _id: req.params.id, ...req.abacQuery }, req.body)
+            const updatedRole = await roleService.updateOne({ _id: req.params.id }, req.body)
             if (!updatedRole) throw new NotFoundError('document.error.document_notfound'); 
             await cacheRoles()
 

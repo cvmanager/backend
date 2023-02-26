@@ -11,8 +11,8 @@ export default async function rbacConfig() {
     
     await cacheRoles()
 
-    let permission = await permissionService.getAll()
-    for (let operation of permission) { await cachePermission(operation) }
+    let permissions = await permissionService.getAll({}, ['roles'])
+    for (let permission of permissions) { await cachePermission(permission) }
 
     console.log("RBAC config success")
 }
@@ -32,12 +32,12 @@ export async function createPermissions(app) { // creating list of permissions f
 }
 
 export async function cachePermission(permission) {
-    const redisKey = env("REDIS_KEY_ABAC_OPERATION") + permission.name
+    const redisKey = env("REDIS_KEY_RBAC_PERMISSION") + permission.name
     await redisClient.set(redisKey, JSON.stringify(permission))
 }
 
 export async function cacheRoles() {
     let roles = await roleService.getRolesWithChilds()
-    const redisKey = env("REDIS_KEY_ABAC_ROLES")
+    const redisKey = env("REDIS_KEY_RBAC_ROLES")
     await redisClient.set(redisKey, JSON.stringify(roles))
 }
