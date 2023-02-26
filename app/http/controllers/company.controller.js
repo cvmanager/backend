@@ -12,6 +12,7 @@ import Project from '../../models/project.model.js';
 import Resume from '../../models/resume.model.js';
 import i18n from '../../middlewares/lang.middleware.js';
 import autoBind from 'auto-bind';
+import { companyAccess } from '../../helper/companyAccess.js';
 
 
 class CompanyController extends Controller {
@@ -76,8 +77,7 @@ class CompanyController extends Controller {
     */
     async find(req, res, next) {
         try {
-            const company = await Company.findById(req.params.id).populate('created_by');
-            if (!company) throw new NotFoundError('company.errors.company_notfound');
+            const company = await companyAccess(req)
 
             AppResponse.builder(res).message('company.messages.company_found').data(company).send();
         } catch (err) {
@@ -134,8 +134,7 @@ class CompanyController extends Controller {
     */
     async update(req, res, next) {
         try {
-            let company = await Company.findById(req.params.id);
-            if (!company) throw new NotFoundError('company.errors.company_notfound');
+            let company = await companyAccess(req)
 
             if (req.body.name !== undefined) {
                 let duplicateCompany = await Company.findOne({ '_id': { $ne: company._id }, 'name': req.body.name });
@@ -170,8 +169,7 @@ class CompanyController extends Controller {
     */
     async delete(req, res, next) {
         try {
-            let company = await Company.findById(req.params.id);
-            if (!company) throw new NotFoundError('company.errors.company_notfound');
+            let company = await companyAccess(req)
             await company.delete(req.user_id);
 
             EventEmitter.emit(events.DELETE, company);
@@ -198,8 +196,7 @@ class CompanyController extends Controller {
     */
     async manager(req, res, next) {
         try {
-            let company = await Company.findById(req.params.id);
-            if (!company) throw new NotFoundError('company.errors.company_notfound');
+            let company = await companyAccess(req)
 
             let user = await User.findById(req.body.manager_id);
             if (!user) throw new NotFoundError('user.errors.user_notfound');
@@ -234,8 +231,7 @@ class CompanyController extends Controller {
    */
     async deleteManager(req, res, next) {
         try {
-            let company = await Company.findById(req.params.id);
-            if (!company) throw new NotFoundError('company.errors.company_notfound');
+            let company = await companyAccess(req)
 
             let user = await User.findById(req.body.manager_id);
             if (!user) throw new NotFoundError('user.errors.user_notfound');
@@ -271,8 +267,7 @@ class CompanyController extends Controller {
     */
     async getProjects(req, res, next) {
         try {
-            const company = await Company.findById(req.params.id);
-            if (!company) throw new NotFoundError('company.errors.company_notfound');
+            const company = await companyAccess(req)
 
             let projects = await Project.find({ 'company_id': company.id })
                 .sort({ 'updatedAt': -1 })
@@ -308,8 +303,7 @@ class CompanyController extends Controller {
  */
     async getManagers(req, res, next) {
         try {
-            const company = await Company.findById(req.params.id);
-            if (!company) throw new NotFoundError('company.errors.company_notfound');
+            const company = await companyAccess(req)
 
             let managers = await Manager.find({ 'entity': "companies", 'entity_id': company.id })
                 .populate([
@@ -340,8 +334,7 @@ class CompanyController extends Controller {
     */
     async getResumes(req, res, next) {
         try {
-            const company = await Company.findById(req.params.id);
-            if (!company) throw new NotFoundError('company.errors.company_notfound');
+            const company = await companyAccess(req)
 
             let resumes = await Resume.find({ 'company_id': company.id })
                 .sort({ 'updatedAt': -1 })
@@ -374,8 +367,7 @@ class CompanyController extends Controller {
     */
     async updateLogo(req, res, next) {
         try {
-            let company = await Company.findById(req.params.id);
-            if (!company) throw new NotFoundError('company.errors.company_notfound');
+            let company = await companyAccess(req)
 
             if (req.body.logo) {
                 company.logo = req.body.logo;
@@ -404,8 +396,7 @@ class CompanyController extends Controller {
     */
     async active(req, res, next) {
         try {
-            let company = await Company.findById(req.params.id);
-            if (!company) throw new NotFoundError('company.errors.company_notfound');
+            let company = await companyAccess(req)
 
             if (company.is_active == true) throw new BadRequestError('company.errors.company_activated_alredy');
             company.is_active = true;
@@ -433,8 +424,7 @@ class CompanyController extends Controller {
     */
     async deActive(req, res, next) {
         try {
-            let company = await Company.findById(req.params.id);
-            if (!company) throw new NotFoundError('company.errors.company_notfound');
+            let company = await companyAccess(req)
 
             if (company.is_active == false) throw new BadRequestError('company.errors.company_deactivated_alredy');
             company.is_active = false;
@@ -463,8 +453,7 @@ class CompanyController extends Controller {
    */
     async resumeByStates(req, res, next) {
         try {
-            let company = await Company.findById(req.params.id);
-            if (!company) throw new NotFoundError('company.errors.company_notfound');
+            let company = await companyAccess(req)
 
             let statusArray = i18n.__("resume.enums.status");
             let totalResumeByStates = await Resume.aggregate([
@@ -512,8 +501,7 @@ class CompanyController extends Controller {
    */
     async resumeCountByProjects(req, res, next) {
         try {
-            let company = await Company.findById(req.params.id);
-            if (!company) throw new NotFoundError('company.errors.company_notfound');
+            let company = await companyAccess(req)
 
             let resumeCountByProjects = await Resume.aggregate([
                 {
@@ -582,8 +570,7 @@ class CompanyController extends Controller {
    */
     async resumeCountFromMonth(req, res, next) {
         try {
-            let company = await Company.findById(req.params.id);
-            if (!company) throw new NotFoundError('company.errors.company_notfound');
+            let company = await companyAccess(req)
 
             let date = new Date();
             let date7MonthAgo = date.setMonth(date.getMonth() - 7)
@@ -656,8 +643,7 @@ class CompanyController extends Controller {
    */
     async resumeStateInLastMonth(req, res, next) {
         try {
-            let company = await Company.findById(req.params.id);
-            if (!company) throw new NotFoundError('company.errors.company_notfound');
+            let company = await companyAccess(req)
 
             let date = new Date();
             let date1MonthAgo = date.setMonth(date.getMonth() - 1)

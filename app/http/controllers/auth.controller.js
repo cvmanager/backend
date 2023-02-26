@@ -43,7 +43,7 @@ class AuthController extends Controller {
             if (user.is_banned) throw new BadRequestError('auth.errors.user_is_banned');
 
 
-            const access_token = await generateJwtToken(user._id)
+            const access_token = await generateJwtToken({ _id: user._id, role: user.role })
             const refresh_token = await generateJwtRefeshToken(user._id);
 
             EventEmitter.emit(events.LOGIN, user, access_token, refresh_token);
@@ -106,7 +106,7 @@ class AuthController extends Controller {
      */
     async refresh(req, res, next) {
         try {
-            const access_token = await generateJwtToken(req.user_id)
+            const access_token = await generateJwtToken({ _id: req.user._id, role: req.user.role })
             const refresh_token = await generateJwtRefeshToken(req.user_id);
 
             const redisKey = req.user_id.toString() + env("REDIS_KEY_REF_TOKENS")
