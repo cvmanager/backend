@@ -49,7 +49,7 @@ const schema = new mongoose.Schema(
             default: null,
         },
         role: {
-            type: mongoose.Schema.Types.ObjectId,
+            type: [mongoose.Schema.Types.ObjectId],
             ref: Role
         }
     }

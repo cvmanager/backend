@@ -22,17 +22,17 @@ export async function createPermissions(app) { // creating list of permissions f
 
     for (let endpoint of endpointsList) {
         for (let method of endpoint.methods) {
-            let permissionName = method + ':' + endpoint.path
-            let endpointExist = await Permission.findOne({ name: permissionName })
+            let actionName = method + ':' + endpoint.path
+            let endpointExist = await Permission.findOne({ action: actionName })
             if (endpointExist) continue;
 
-            await Permission.create({ name: permissionName })   
+            await Permission.create({ action: actionName, name: actionName })   
         }
     }
 }
 
 export async function cachePermission(permission) {
-    const redisKey = env("REDIS_KEY_RBAC_PERMISSION") + permission.name
+    const redisKey = env("REDIS_KEY_RBAC_PERMISSION") + permission.action
     await redisClient.set(redisKey, JSON.stringify(permission))
 }
 

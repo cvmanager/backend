@@ -6,6 +6,11 @@ import User from './user.model.js';
 
 const schema = new mongoose.Schema(
     {
+        action: {
+            type: String,
+            required: true,
+            unique: true
+        },
         name: {
             type: String,
             required: true,

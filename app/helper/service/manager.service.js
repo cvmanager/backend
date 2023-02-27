@@ -27,6 +27,17 @@ class ManagerService extends ServiceBase {
     async getUserModeratorProjects(userId) {
         return (await super.getAll({ user_id: userId, entity: 'projects', type: 'moderator' })).map(entity => entity.entity_id)
     }
+
+    async deleteManagersFromCompany(company) {
+        let managers = await super.getAll({ 'entity': "companies", 'entity_id': company.id });
+        managers.map((manager) => {
+            manager.delete(company.deletedBy);
+        })
+    }
+
+    async addDefaultManagerForCompany(company) {
+        await super.create({ user_id: company.created_by, entity: "companies", entity_id: company._id, created_by: company.created_by, type: "owner" });
+    }
 }
 
 export default new ManagerService(Manager);

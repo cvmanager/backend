@@ -1,4 +1,6 @@
 import autoBind from "auto-bind";
+import ForbiddenError from "../../exceptions/Forbidden.js";
+import { mergeQuery } from "../mergeQuery.js";
 
 let _model = new WeakMap()
 
@@ -16,6 +18,16 @@ export default class ServiceBase {
             filter = { _id: filter };
         }
         return _model.get(this).findOne(filter).populate(populates).exec()
+    }
+
+    async findByParamId(req) {
+        const baseQuery = { _id: req.params.id }
+        const rbacQuery = mergeQuery(baseQuery, req.rbacQuery)
+        
+        const document = await this.findOne(rbacQuery)
+        if (!document) throw new ForbiddenError
+
+        return document
     }
 
     async create(data) {

@@ -1,7 +1,6 @@
 import bcrypt from 'bcrypt'
 
 import { generateJwtToken, generateJwtRefeshToken } from '../../helper/jwt.js'
-import UserNotFoundError from '../../exceptions/UserNotFoundError.js';
 import NotFoundError from '../../exceptions/NotFoundError.js';
 import BadRequestError from '../../exceptions/BadRequestError.js';
 import redisClient from '../../helper/redis_client.js';
@@ -11,6 +10,7 @@ import Controller from './controller.js';
 import env from '../../helper/env.js';
 import EventEmitter from '../../events/emitter.js';
 import { events } from '../../events/subscribers/user.subscriber.js';
+import roleService from '../../helper/service/role.service.js';
 
 class AuthController extends Controller {
 
@@ -54,31 +54,34 @@ class AuthController extends Controller {
     }
 
     /**
-     * POST /auth/signup
-     * 
-     * @summary Join the site and receive an authentication token
-     * @tags Auth 
-     *
-     * @param { auth.signup } request.body - signup info - application/json
-     * 
-     * @return { auth.success_response }        201 - signup successfuly 
-     * @return { message.badrequest_error }     400 - Bad Request
-     * @return { message.server_error  }        500 - Server Error
-     */
+    * POST /auth/signup
+    * 
+    * @summary Join the site and receive an authentication token
+    * @tags Auth 
+    *
+    * @param { auth.signup } request.body - signup info - application/json
+    * 
+    * @return { auth.success_response }        201 - signup successfuly 
+    * @return { message.badrequest_error }     400 - Bad Request
+    * @return { message.server_error  }        500 - Server Error
+    */
     async signup(req, res, next) {
         try {
-
             let user = await User.findOne({ $or: [{ mobile: req.body.mobile }, { username: req.body.username }] });
             if (user) throw new BadRequestError('auth.errors.user_already_exists');
 
             let salt = await bcrypt.genSalt(10);
             let hash_password = await bcrypt.hash(req.body.password, salt);
+
+            const ownerRole = await roleService.findOne({ name: "Owner" })
+
             user = await User.create({
                 firstname: req.body.firstname,
                 lastname: req.body.lastname,
                 mobile: req.body.mobile,
                 username: req.body.username,
                 password: hash_password,
+                role: [ownerRole._id]
             });
 
             const access_token = await generateJwtToken({ _id: user._id, role: user.role })

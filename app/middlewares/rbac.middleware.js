@@ -8,7 +8,6 @@ export async function canAccess(req, res, next) {
     try {
         let permissionName = getPermissionName(req)
         let permissionRoles = await getPermissionRoles(permissionName)
-        
         req.roles = await canRole(req.user, permissionRoles)
         next()
     } catch (error) {
@@ -37,7 +36,7 @@ async function canRole(user, permissionRoles) {
 async function getRoleChilds(roleIds) {
     let childs = []
     // reading from cache
-    const redisKey = env("REDIS_KEY_ABAC_ROLES")
+    const redisKey = env("REDIS_KEY_RBAC_ROLES")
     let allRoles = JSON.parse(await redisClient.get(redisKey))
     // reading from db if it's not in cache
     if (!allRoles) {

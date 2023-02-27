@@ -74,7 +74,7 @@ class PermissionController extends Controller {
     */
     async create(req, res, next) {
         try {
-            let permission = await permissionService.findOne({ 'name': req.body.name });
+            let permission = await permissionService.findOne({ $or: [{ 'name': req.body.name }, { 'action': req.body.action }] });
             if (permission) throw new AlreadyExists('permission.error.permission_already_exists');
 
             if (req.body.policies && req.body.policies.length > 0) {
