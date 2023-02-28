@@ -20,11 +20,11 @@ export default class ServiceBase {
         return _model.get(this).findOne(filter).populate(populates).exec()
     }
 
-    async findByParamId(req) {
+    async findByParamId(req, populate = []) {
         const baseQuery = { _id: req.params.id }
         const rbacQuery = mergeQuery(baseQuery, req.rbacQuery)
         
-        const document = await this.findOne(rbacQuery)
+        const document = await this.findOne(rbacQuery, populate)
         if (!document) throw new ForbiddenError
 
         return document

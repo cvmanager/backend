@@ -23,6 +23,6 @@ export async function companyAccess(req, res, next) {
         }
     }
 
-    req.query = query
+    req.rbacQuery = query
     next()
 }

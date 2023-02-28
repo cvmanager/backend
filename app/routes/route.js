@@ -12,6 +12,8 @@ import positionRouter from './position.route.js'
 import { canAccess } from '../middlewares/rbac.middleware.js'
 import companyIdRouter from './companyId.route.js'
 import { companyAccess } from '../middlewares/companyAccess.middleware.js'
+import projectIdRouter from './projectId.route.js'
+import { projectAccess } from '../middlewares/projectAccess.middleware.js'
 
 const router = express.Router();
 
@@ -19,7 +21,8 @@ router.use('/auth', authRouter)
 router.use('/users', verifyToken, userRouter)
 router.use('/companies/:id', verifyToken, canAccess, companyAccess, companyIdRouter)
 router.use('/companies', verifyToken, canAccess, companyAccess, companyRouter)
-router.use('/projects', verifyToken, projectRouter)
+router.use('/projects/:id', verifyToken, canAccess, projectAccess, projectIdRouter)
+router.use('/projects', verifyToken, canAccess, projectAccess, projectRouter)
 router.use('/resumes', verifyToken, resumeRouter)
 router.use('/constant', verifyToken,constantRouter)
 router.use('/provinces', verifyToken,provinceRouter)
