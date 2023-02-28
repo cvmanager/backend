@@ -20,7 +20,7 @@ export async function projectAccess(req, res, next) {
                 break;
             case 'Owner':
                 const ownProjects = await managerService.getUserOwnProjects(req.user._id)
-                query.$or.push({ company_id: { $in: ownProjects } })
+                query.$or.push({ _id: { $in: ownProjects } })
                 break;
             default:
                 break;
