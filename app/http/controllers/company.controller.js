@@ -14,6 +14,8 @@ import i18n from '../../middlewares/lang.middleware.js';
 import autoBind from 'auto-bind';
 import companyService from '../../helper/service/company.service.js';
 import { mergeQuery } from '../../helper/mergeQuery.js';
+import userService from '../../helper/service/user.service.js';
+import roleService from '../../helper/service/role.service.js';
 
 class CompanyController extends Controller {
 
@@ -105,7 +107,7 @@ class CompanyController extends Controller {
             let company = await Company.findOne({ 'name': req.body.name });
             if (company) throw new AlreadyExists('company.errors.company_already_exists');
 
-            req.body.created_by = req.user_id;
+            req.body.created_by = req.user._id;
             company = await Company.create(req.body);
 
             EventEmitter.emit(events.CREATE, company);
@@ -170,7 +172,7 @@ class CompanyController extends Controller {
     async delete(req, res, next) {
         try {
             let company = await companyService.findByParamId(req)
-            await company.delete(req.user_id);
+            await company.delete(req.user._id);
 
             EventEmitter.emit(events.DELETE, company);
             AppResponse.builder(res).message("company.messages.company_successfuly_deleted").data(company).send();
@@ -204,7 +206,10 @@ class CompanyController extends Controller {
             let manager = await Manager.findOne({ 'entity': "companies", 'entity_id': company.id, 'user_id': user.id });
             if (manager) throw new BadRequestError("company.errors.the_user_is_currently_an_manager_for_company");
 
-            await Manager.create({ user_id: user._id, entity: "companies", entity_id: company._id, created_by: req.user_id });
+            await Manager.create({ user_id: user._id, entity: "companies", entity_id: company._id, created_by: req.user._id });
+
+            const companyManagerRole = await roleService.findOne({ name: "Company Manager" })
+            await userService.addRole(user._id, companyManagerRole._id)
 
             EventEmitter.emit(events.SET_MANAGER, company);
 
@@ -240,7 +245,14 @@ class CompanyController extends Controller {
             if (!manager) throw new BadRequestError("company.errors.the_user_is_not_manager_for_this_company");
             if (manager.type === 'owner') throw new BadRequestError("company.errors.the_owner_manager_cannot_be_deleted");
 
-            await manager.delete(req.user_id);
+            await manager.delete(req.user._id);
+
+            let isCompanyManager = await Manager.findOne({ 'entity': "companies", 'user_id': user.id, type: 'moderator' });
+            console.log({ isCompanyManager })
+            if (!isCompanyManager) {
+                const companyManagerRole = await roleService.findOne({ name: "Company Manager" })
+                await userService.removeRole(user._id, companyManagerRole._id)
+            }
 
             EventEmitter.emit(events.UNSET_MANAGER, company);
 
