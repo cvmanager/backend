@@ -11,6 +11,14 @@ class PermissionService extends ServiceBase {
         autoBind(this)
     }
 
+    async addRole(permissionId, roleId) {
+        return Permission.updateOne({ _id: permissionId }, { $addToSet: { roles: roleId } })
+    }
+
+    async removeRole(permissionId, roleId) {
+        return Permission.updateOne({ _id: permissionId }, { $pull: { roles: roleId } })
+    }
+
 }
 
 export default new PermissionService(Permission);

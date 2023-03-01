@@ -47,6 +47,17 @@ const update = [
     generalValidator
 ];
 
+const updateRole = [
+    body('role_id')
+        .notEmpty()
+            .withMessage('permission.validation.role_id_required')
+        .isMongoId()
+            .withMessage('permission.validation.role_id_invalid')
+        .trim(),
+    generalValidator
+];
+
+
 const find = [
     param('id')
         .notEmpty()
@@ -67,4 +78,4 @@ const remove = [
     generalValidator
 ];
 
-export { index, create, find, update, remove }
+export { index, create, find, update, remove, updateRole }

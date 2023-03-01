@@ -135,6 +135,70 @@ class PermissionController extends Controller {
     }
 
     /**
+    * PATCH /permissions/{id}/addRole
+    * 
+    * @summary add role to a permission
+    * @tags Permission
+    * @security BearerAuth
+    * 
+    * @param  { string } id.path - permission id
+    * @param { permission.addRole } request.body - permission info - application/json
+    * 
+    * @return { permission.success }           200 - success response
+    * @return { message.badrequest_error }  400 - bad request respone
+    * @return { message.badrequest_error }  404 - not found respone
+    * @return { message.unauthorized_error }     401 - UnauthorizedError
+    * @return { message.server_error  }    500 - Server Error
+    */
+    async addRole(req, res, next) {
+        try {
+            let roleExist = await roleService.findOne({ _id: req.body.role_id })
+            if (!roleExist) throw new NotFoundError('permission.error.role_not_found');
+
+            const updatedPermission = await permissionService.addRole(req.params.id, req.body.role_id)
+            if (updatedPermission.modifiedCount !== 1) throw new NotFoundError('permission.error.permission_notfound'); 
+            
+            await cachePermission(updatedPermission)
+
+            AppResponse.builder(res).message("permission.message.permission_successfuly_updated").send()
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
+    * PATCH /permissions/{id}/removeRole
+    * 
+    * @summary remove role from permission
+    * @tags Permission
+    * @security BearerAuth
+    * 
+    * @param  { string } id.path - permission id
+    * @param { permission.removeRole } request.body - permission info - application/json
+    * 
+    * @return { permission.success }           200 - success response
+    * @return { message.badrequest_error }  400 - bad request respone
+    * @return { message.badrequest_error }  404 - not found respone
+    * @return { message.unauthorized_error }     401 - UnauthorizedError
+    * @return { message.server_error  }    500 - Server Error
+    */
+    async removeRole(req, res, next) {
+        try {
+            let roleExist = await roleService.findOne({ _id: req.body.role_id })
+            if (!roleExist) throw new NotFoundError('permission.error.role_not_found'); 
+
+            const updatedPermission = await permissionService.removeRole(req.params.id, req.body.role_id)
+            if (updatedPermission.modifiedCount !== 1) throw new NotFoundError('document.error.document_notfound'); 
+
+            await cachePermission(updatedPermission)
+
+            AppResponse.builder(res).message("document.message.document_successfuly_updated").send()
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
     * DELETE /permissions/{id}
     * 
     * @summary deletes a permission by id
