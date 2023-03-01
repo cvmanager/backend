@@ -13,6 +13,8 @@ import { events } from '../../events/subscribers/projects.subscriber.js';
 import Resume from '../../models/resume.model.js';
 import { mergeQuery } from '../../helper/mergeQuery.js';
 import projectService from '../../helper/service/project.service.js';
+import roleService from '../../helper/service/role.service.js';
+import userService from '../../helper/service/user.service.js';
 
 class ProjectController extends Controller {
     /**
@@ -198,6 +200,9 @@ class ProjectController extends Controller {
 
             await Manager.create({ user_id: user._id, entity: "projects", entity_id: project._id, created_by: req.user._id });
 
+            const projectManagerRole = await roleService.findOne({ name: "Project Manager" })
+            await userService.addRole(user._id, projectManagerRole._id)
+
             EventEmitter.emit(events.SET_MANAGER, project)
             AppResponse.builder(res).status(201).message("project.messages.project_manager_successfully_updated").data(project).send();
         } catch (err) {
@@ -232,6 +237,13 @@ class ProjectController extends Controller {
 
             EventEmitter.emit(events.UNSET_MANAGER, project)
             await manager.delete(req.user._id);
+
+            let isProjectManager = await Manager.findOne({ 'entity': "projects", 'user_id': user.id, type: 'moderator' });
+            if (!isProjectManager) {
+                const projectManagerRole = await roleService.findOne({ name: "Project Manager" })
+                await userService.removeRole(user._id, projectManagerRole._id)
+            }
+
             AppResponse.builder(res).status(200).message("project.messages.project_manager_successfully_deleted").data(project).send();
         } catch (err) {
             next(err);

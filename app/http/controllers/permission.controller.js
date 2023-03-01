@@ -1,12 +1,11 @@
 import AlreadyExists from '../../exceptions/AlreadyExists.js';
 import NotFoundError from '../../exceptions/NotFoundError.js';
-import policyService from '../../services/policy.service.js';
 import AppResponse from '../../helper/response.js';
-import Policy from '../../models/policy.model.js';
 import Controller from './controller.js';
 import permissionService from '../../helper/service/permission.service.js';
 import Permission from '../../models/permission.model.js';
 import { cachePermission } from '../../helper/rbac.js';
+import roleService from '../../helper/service/role.service.js';
 
 class PermissionController extends Controller {
 
@@ -25,7 +24,7 @@ class PermissionController extends Controller {
     */
     async index(req, res, next) {
         try {
-            const { page = 1, size = 10, query = '' } = req.query
+            const { page = 1, size = 100, query = '' } = req.query
 
             let searchQuery = (query.length > 0 ? { $or: [{ name: { '$regex': query } }] } : null);
 
@@ -77,10 +76,10 @@ class PermissionController extends Controller {
             let permission = await permissionService.findOne({ $or: [{ 'name': req.body.name }, { 'action': req.body.action }] });
             if (permission) throw new AlreadyExists('permission.error.permission_already_exists');
 
-            if (req.body.policies && req.body.policies.length > 0) {
-                for (let policy of req.body.policies) {
-                    let policyExist = await policyService.findOne(policy)
-                    if (!policyExist) throw new NotFoundError('permission.error.policy_not_found'); 
+            if (req.body.roles && req.body.roles.length > 0) {
+                for (let role of req.body.roles) {
+                    let roleExist = await roleService.findOne(role)
+                    if (!roleExist) throw new NotFoundError('permission.error.role_not_found'); 
                 }
             }
             
@@ -102,7 +101,6 @@ class PermissionController extends Controller {
     * @security BearerAuth
     * 
     * @param  { string } id.path - permission id
-    * @param { permission.create } request.body - permission info - multipart/form-data
     * @param { permission.create } request.body - permission info - application/json
     * 
     * @return { permission.success }           200 - success response
@@ -118,10 +116,10 @@ class PermissionController extends Controller {
                 if (permissionExist && !permissionExist._id.equals(req.params.id)) throw new AlreadyExists('permission.error.name_already_exists');
             }
 
-            if (req.body.policies && req.body.policies.length > 0) {
-                for (let policy of req.body.policies) {
-                    let policyExist = await Policy.findOne({ _id: policy })
-                    if (!policyExist) throw new NotFoundError('permission.error.policy_not_found'); 
+            if (req.body.roles && req.body.roles.length > 0) {
+                for (let role of req.body.roles) {
+                    let roleExist = await roleService.findOne({ _id: role })
+                    if (!roleExist) throw new NotFoundError('permission.error.role_not_found'); 
                 }
             }
 

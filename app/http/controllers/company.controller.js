@@ -248,7 +248,6 @@ class CompanyController extends Controller {
             await manager.delete(req.user._id);
 
             let isCompanyManager = await Manager.findOne({ 'entity': "companies", 'user_id': user.id, type: 'moderator' });
-            console.log({ isCompanyManager })
             if (!isCompanyManager) {
                 const companyManagerRole = await roleService.findOne({ name: "Company Manager" })
                 await userService.removeRole(user._id, companyManagerRole._id)
