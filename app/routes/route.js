@@ -18,9 +18,11 @@ import permissionRouter from './permission.route.js'
 import permissionIdRouter from './permissionId.route.js'
 import roleIdRouter from './roleId.route.js'
 import roleRouter from './role.route.js'
+import { positionAccess } from '../middlewares/positionAccess.middleware.js'
+import positionIdRouter from './positionId.router.js'
 
 
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
 router.use('/auth', authRouter)
 router.use('/users', verifyToken, userRouter)
@@ -28,6 +30,8 @@ router.use('/companies/:id', verifyToken, canAccess, companyAccess, companyIdRou
 router.use('/companies', verifyToken, canAccess, companyAccess, companyRouter)
 router.use('/projects/:id', verifyToken, canAccess, projectAccess, projectIdRouter)
 router.use('/projects', verifyToken, canAccess, projectAccess, projectRouter)
+router.use('/positions/:id', verifyToken, canAccess, positionAccess, positionIdRouter)
+router.use('/positions', verifyToken, canAccess, positionAccess, positionRouter)
 router.use('/permissions/:id', verifyToken, canAccess, permissionIdRouter)
 router.use('/permissions', verifyToken, canAccess, permissionRouter)
 router.use('/roles/:id', verifyToken, canAccess, roleIdRouter)
@@ -36,6 +40,5 @@ router.use('/resumes', verifyToken, resumeRouter)
 router.use('/constant', verifyToken,constantRouter)
 router.use('/provinces', verifyToken,provinceRouter)
 router.use('/cities', verifyToken,cityRouter)
-router.use('/positions', verifyToken,positionRouter)
 
 export default router;

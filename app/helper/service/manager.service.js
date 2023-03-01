@@ -28,6 +28,16 @@ class ManagerService extends ServiceBase {
         return (await super.getAll({ user_id: userId, entity: 'projects', type: 'moderator' })).map(entity => entity.entity_id)
     }
 
+    async getUserOwnPositions(userId) {
+        let positions = await super.getAll({ user_id: userId, entity: 'positions', type: 'owner' })
+        return positions.map(entity => entity.entity_id)
+    }
+
+    async getUserModeratorPositions(userId) {
+        let positions = await super.getAll({ user_id: userId, entity: 'positions', type: 'moderator' })
+        return positions.map(entity => entity.entity_id)
+    }
+
     async deleteManagersFromCompany(company) {
         let managers = await super.getAll({ 'entity': "companies", 'entity_id': company.id });
         managers.map((manager) => {
