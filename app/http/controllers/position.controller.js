@@ -140,7 +140,7 @@ class PositionController extends Controller {
             if (!position) throw new NotFoundError('position.errors.position_notfound');
 
             if (req.body.title !== undefined) {
-                let dupplicatePosition = await Position.findOne({ 'title': req.body.title, 'project_id': position.project_id });
+                let dupplicatePosition = await Position.findOne({ '_id': { $ne: position._id }, 'title': req.body.title, 'project_id': position.project_id });
                 if (dupplicatePosition && dupplicatePosition._id !== position._id) throw new AlreadyExists('position.errors.position_already_exists');
             }
 
