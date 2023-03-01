@@ -1,4 +1,4 @@
- class AppResponse {
+class AppResponse {
     responseMessage = "Successfuly";
     responseData = [];
     responseErrors = [];
@@ -13,7 +13,7 @@
     }
 
     message(message) {
-        this.responseMessage = this.res.__(message);
+        this.responseMessage = this.res.__("translate." + message);
         return this;
     }
 
