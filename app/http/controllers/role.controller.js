@@ -1,8 +1,9 @@
 import AlreadyExists from '../../exceptions/AlreadyExists.js';
 import NotFoundError from '../../exceptions/NotFoundError.js';
-import roleService from '../../services/role.service.js';
+
 import { cacheRoles } from '../../helper/rbac.js';
 import AppResponse from '../../helper/response.js';
+import roleService from '../../helper/service/role.service.js';
 import Role from '../../models/role.model.js';
 import Controller from './controller.js';
 
@@ -82,7 +83,7 @@ class RoleController extends Controller {
             }
 
             req.body.created_by = req.user._id;
-            let createdRole = await RoleService.create(req.body);
+            let createdRole = await roleService.create(req.body);
             await cacheRoles()
 
             AppResponse.builder(res).status(201).message("document.message.document_successfuly_created").data(createdRole).send();
@@ -154,4 +155,4 @@ class RoleController extends Controller {
     }
 }
 
-export default new RoleController(roleService)
+export default new RoleController(roleService, 'role')

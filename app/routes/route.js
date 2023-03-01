@@ -16,6 +16,9 @@ import projectIdRouter from './projectId.route.js'
 import { projectAccess } from '../middlewares/projectAccess.middleware.js'
 import permissionRouter from './permission.route.js'
 import permissionIdRouter from './permissionId.route.js'
+import roleIdRouter from './roleId.route.js'
+import roleRouter from './role.route.js'
+
 
 const router = express.Router();
 
@@ -27,6 +30,8 @@ router.use('/projects/:id', verifyToken, canAccess, projectAccess, projectIdRout
 router.use('/projects', verifyToken, canAccess, projectAccess, projectRouter)
 router.use('/permissions/:id', verifyToken, canAccess, permissionIdRouter)
 router.use('/permissions', verifyToken, canAccess, permissionRouter)
+router.use('/roles/:id', verifyToken, canAccess, roleIdRouter)
+router.use('/roles', verifyToken, canAccess, roleRouter)
 router.use('/resumes', verifyToken, resumeRouter)
 router.use('/constant', verifyToken,constantRouter)
 router.use('/provinces', verifyToken,provinceRouter)
