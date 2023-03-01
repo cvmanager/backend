@@ -1,5 +1,6 @@
 import autoBind from "auto-bind";
 import ForbiddenError from "../../exceptions/Forbidden.js";
+import NotFoundError from "../../exceptions/NotFoundError.js";
 import { mergeQuery } from "../mergeQuery.js";
 
 let _model = new WeakMap()
@@ -20,10 +21,16 @@ export default class ServiceBase {
         return _model.get(this).findOne(filter).populate(populates).exec()
     }
 
+    async exist(filter) {
+        const document = await this.findOne(filter)
+        if (!document) throw new NotFoundError(`${this.modelName}.errors.${this.modelName}_notfound`);
+    }
+
     async findByParamId(req, populate = []) {
         const baseQuery = { _id: req.params.id }
+        await this.exist(baseQuery)
+
         const rbacQuery = mergeQuery(baseQuery, req.rbacQuery)
-        
         const document = await this.findOne(rbacQuery, populate)
         if (!document) throw new ForbiddenError
 

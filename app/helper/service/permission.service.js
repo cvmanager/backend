@@ -12,11 +12,11 @@ class PermissionService extends ServiceBase {
     }
 
     async addRole(permissionId, roleId) {
-        return Permission.updateOne({ _id: permissionId }, { $addToSet: { roles: roleId } })
+        return Permission.findOneAndUpdate({ _id: permissionId }, { $addToSet: { roles: roleId } })
     }
 
     async removeRole(permissionId, roleId) {
-        return Permission.updateOne({ _id: permissionId }, { $pull: { roles: roleId } })
+        return Permission.findOneAndUpdate({ _id: permissionId }, { $pull: { roles: roleId } })
     }
 
 }

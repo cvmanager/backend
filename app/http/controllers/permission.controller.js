@@ -156,7 +156,7 @@ class PermissionController extends Controller {
             if (!roleExist) throw new NotFoundError('permission.error.role_not_found');
 
             const updatedPermission = await permissionService.addRole(req.params.id, req.body.role_id)
-            if (updatedPermission.modifiedCount !== 1) throw new NotFoundError('permission.error.permission_notfound'); 
+            if (!updatedPermission) throw new NotFoundError('permission.error.permission_notfound'); 
             
             await cachePermission(updatedPermission)
 
@@ -188,7 +188,7 @@ class PermissionController extends Controller {
             if (!roleExist) throw new NotFoundError('permission.error.role_not_found'); 
 
             const updatedPermission = await permissionService.removeRole(req.params.id, req.body.role_id)
-            if (updatedPermission.modifiedCount !== 1) throw new NotFoundError('document.error.document_notfound'); 
+            if (!updatedPermission) throw new NotFoundError('document.error.document_notfound'); 
 
             await cachePermission(updatedPermission)
 

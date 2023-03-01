@@ -1,6 +1,6 @@
 import managerService from "../helper/service/manager.service.js";
 
-export async function positionAccess(req, res, next) {
+export async function resumeAccess(req, res, next) {
     let query = { $or: [] }
 
     if (!req.roles || req.roles.length === 0) query = {}
@@ -20,11 +20,10 @@ export async function positionAccess(req, res, next) {
                 break;
             case 'Position Manager':
                 const moderatorPositions = await managerService.getUserModeratorPositions(req.user._id)
-                query.$or.push({ project_id: { $in: moderatorPositions } })
+                query.$or.push({ position_id: { $in: moderatorPositions } })
                 break;
             case 'Owner':
-                const ownPositions = await managerService.getUserOwnPositions(req.user._id)
-                query.$or.push({ _id: { $in: ownPositions } })
+                query.$or.push({ created_by: req.user._id })
                 const ownCompanies = await managerService.getUserOwnCompanies(req.user._id)
                 query.$or.push({ company_id: { $in: ownCompanies } })
                 break;
