@@ -174,7 +174,8 @@
 			"project_not_found": "Project not found",
 			"project_already_attached_company": "Project already attached this company",
 			"project_deactivated_alredy": "project has deactiveed alredy",
-			"project_activated_alredy": "project has activated alredy"
+			"project_activated_alredy": "project has activated alredy",
+			"disabled_companey_create_project_error": "company must be active to create project"
 		}
 	},
 	"resume": {
