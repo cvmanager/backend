@@ -18,15 +18,33 @@ export default async function rbacConfig() {
 }
 
 export async function createPermissions(app) { // creating list of permissions from endpoints
-    const endpointsList = listEndpoints(app)
+    let endpointsList = listEndpoints(app)
+    endpointsList = endpointsList.reverse()
 
     for (let endpoint of endpointsList) {
         for (let method of endpoint.methods) {
             let actionName = method + ':' + endpoint.path
+
+            const entity = endpoint.path.split('/')[3]
+            let functionName = endpoint.middlewares.at(-1).split('bound ').at(-1)
+            
+            if (endpoint.methods.length > 1) {
+                let functionPostfix
+                if (functionName !== 'index' && functionName !== 'find') functionPostfix = " " + functionName
+
+                if(method === 'GET' && endpoint.path.includes(':id')) functionName = 'find'
+                else if(method === 'POST') functionName = 'create'
+                else if(method === 'PATCH') functionName = 'update'
+                else if(method === 'DELETE') functionName = 'delete'
+                
+                if (functionPostfix) functionName += functionPostfix 
+            }
+
             let endpointExist = await Permission.findOne({ action: actionName })
             if (endpointExist) continue;
-
-            await Permission.create({ action: actionName, name: actionName })   
+            try {
+                await Permission.create({ action: actionName, name: entity + ':' + functionName, entity })   
+            } catch (error) {}
         }
     }
 }
