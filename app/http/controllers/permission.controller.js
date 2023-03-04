@@ -6,6 +6,7 @@ import permissionService from '../../helper/service/permission.service.js';
 import Permission from '../../models/permission.model.js';
 import { cachePermission } from '../../helper/rbac.js';
 import roleService from '../../helper/service/role.service.js';
+import positionService from '../../helper/service/position.service.js';
 
 class PermissionController extends Controller {
 
@@ -34,6 +35,30 @@ class PermissionController extends Controller {
             });
             
             AppResponse.builder(res).message("permission.message.permission_list_found").data(permissionList).send();
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
+    * GET /permissions/entities/grouped
+    * 
+    * @summary gets a permission grouped by entities
+    * @tags Permission
+    * @security BearerAuth
+    * 
+    * @param  { string } id.path.required - permission id
+    * 
+    * @return { permission.success } 200 - success response
+    * @return { message.badrequest_error } 400 - bad request respone
+    * @return { message.badrequest_error } 404 - not found respone
+    * @return { message.unauthorized_error }     401 - UnauthorizedError
+    * @return { message.server_error  }    500 - Server Error
+    */
+    async entities(req, res, next) {
+        try {
+            let permissions = await positionService.getPermissions()
+            AppResponse.builder(res).message("permission.message.permission_list_found").data(permissions).send();
         } catch (err) {
             next(err);
         }
