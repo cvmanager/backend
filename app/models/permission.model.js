@@ -19,10 +19,6 @@ const schema = new mongoose.Schema(
         description: {
             type: String
         },
-        roles: {
-            type: [ mongoose.Schema.Types.ObjectId ],
-            ref: Role
-        },
         created_by: {
             type: mongoose.Schema.Types.ObjectId,
             ref: User

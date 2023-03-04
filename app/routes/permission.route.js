@@ -8,5 +8,6 @@ const permissionRouter = express.Router();
 permissionRouter
     .get('/', index, PermissionController.index)
     .post('/', create, PermissionController.create)
+    .get('/entities/grouped/', PermissionController.entities)
 
 export default permissionRouter;

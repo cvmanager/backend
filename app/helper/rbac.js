@@ -11,7 +11,7 @@ export default async function rbacConfig() {
     
     await cacheRoles()
 
-    let permissions = await permissionService.getAll({}, ['roles'])
+    let permissions = await permissionService.getAll()
     for (let permission of permissions) { await cachePermission(permission) }
 
     console.log("RBAC config success")

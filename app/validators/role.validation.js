@@ -29,6 +29,9 @@ const create = [
             .withMessage('role.validation.parent_id_invalid')
         .optional({ nullable: true, checkFalsy: true })
         .trim(),
+    body('roles')
+        .isArray()
+        .optional({ nullable: true, checkFalsy: true }),
     generalValidator
 ]; 
 
@@ -48,6 +51,9 @@ const update = [
             .withMessage('role.validation.parent_id_invalid')
         .optional({ nullable: true, checkFalsy: true })
         .trim(),
+    body('roles')
+        .isArray()
+        .optional({ nullable: true, checkFalsy: true }),
     generalValidator
 ];
 

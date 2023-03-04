@@ -3,7 +3,6 @@
 * @typedef { object } Permission
 * @property { string }         _id
 * @property { string }         name
-* @property { array<string> }  policies
 * @property { string }         created_by
 * @property { string }         createdAt
 * @property { string }         updatedAt
@@ -14,7 +13,6 @@
 * @typedef { object } permission.create
 * @property { string }          name.required
 * @property { string }          description
-* @property { array<string> }   policies 
 */
 
 /**

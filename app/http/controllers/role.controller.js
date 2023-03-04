@@ -3,6 +3,7 @@ import NotFoundError from '../../exceptions/NotFoundError.js';
 
 import { cacheRoles } from '../../helper/rbac.js';
 import AppResponse from '../../helper/response.js';
+import permissionService from '../../helper/service/permission.service.js';
 import roleService from '../../helper/service/role.service.js';
 import Role from '../../models/role.model.js';
 import Controller from './controller.js';
@@ -76,10 +77,17 @@ class RoleController extends Controller {
         try {
             let role = await Role.findOne({ 'name': req.body.name });
             if (role) throw new AlreadyExists('role.error.role_already_exists');
-
+            
             if (req.body.parent) {
                 let parentExist = await Role.findOne({ _id: req.body.parent })
                 if (!parentExist) throw new NotFoundError('role.error.parent_not_found'); 
+            }
+
+            if (req.body.permissions && req.body.permissions.length > 0) {
+                for (let permission of req.body.permissions) {
+                    let permissionExist = await permissionService.findOne(permission)
+                    if (!permissionExist) throw new NotFoundError('permission.error.permission_not_found'); 
+                }
             }
 
             req.body.created_by = req.user._id;
@@ -87,8 +95,6 @@ class RoleController extends Controller {
             await cacheRoles()
 
             AppResponse.builder(res).status(201).message("document.message.document_successfuly_created").data(createdRole).send();
-
-            return super.create(req, res, next)
         } catch (err) {
             next(err)
         }
@@ -118,6 +124,13 @@ class RoleController extends Controller {
                 if (roleExist && !roleExist._id.equals(req.params.id)) throw new AlreadyExists('role.error.name_already_exists');
             }
 
+            if (req.body.permissions && req.body.permissions.length > 0) {
+                for (let permission of req.body.permissions) {
+                    let permissionExist = await permissionService.findOne(permission)
+                    if (!permissionExist) throw new NotFoundError('permission.error.permission_not_found'); 
+                }
+            }
+
             const updatedRole = await roleService.updateOne({ _id: req.params.id }, req.body)
             if (!updatedRole) throw new NotFoundError('document.error.document_notfound'); 
             await cacheRoles()
@@ -144,14 +157,18 @@ class RoleController extends Controller {
     * @return { message.server_error  }    500 - Server Error
     */
     async delete(req, res, next) {
-        let role = await roleService.findOne({ _id: req.params.id, ...req.query });
-        if (!role) throw new NotFoundError('document.error.document_notfound');
-
-        await role.delete(req.user._id);
-        // delete from cache
-        await cacheRoles()
-        
-        AppResponse.builder(res).message("document.message.document_successfuly_deleted").data(document).send();
+        try {
+            let role = await roleService.findOne({ _id: req.params.id, ...req.query });
+            if (!role) throw new NotFoundError('document.error.document_notfound');
+    
+            await role.delete(req.user._id);
+            // delete from cache
+            await cacheRoles()
+            
+            AppResponse.builder(res).message("document.message.document_successfuly_deleted").data().send();
+        } catch (error) {
+            next(error)
+        }
     }
 }
 

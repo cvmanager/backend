@@ -7,29 +7,27 @@ import roleService from "../helper/service/role.service.js"
 export async function canAccess(req, res, next) {
     try {
         let permissionName = getPermissionName(req)
-        let permissionRoles = await getPermissionRoles(permissionName)
-        req.roles = await canRole(req.user, permissionRoles)
+
+        let rolesChilds = await getRoleChilds(req.user.role)
+        const userRoles = [...req.user.role, ...rolesChilds]
+
+        req.roles = await canRole(userRoles, permissionName)
         next()
     } catch (error) {
         next(error)
     }
 }
 
-async function canRole(user, permissionRoles) {
+async function canRole(userRoles, permissionName) {
     let roles = []
 
-    if (typeof user.role === 'string') user.role = [user.role]
-    let rolesChilds = await getRoleChilds(user.role)
-
-    user.role = [...user.role, ...rolesChilds]
+    let allRoles = await roleService.getAllRoles()
     // getting all possible roles
-    for (let role of permissionRoles) {
-        const roleExist = user.role.some(userRole => userRole === role._id)
-        if (roleExist) roles.push(role)
+    for (let role of allRoles) {
+        if (userRoles.includes(role._id.toString()) && role.permissions.includes(permissionName)) roles.push(role)
     }
 
-    if (roles.length === 0 && permissionRoles.length > 0) throw new ForbiddenError
-
+    if (roles.length === 0) throw new ForbiddenError
     return roles
 }
 

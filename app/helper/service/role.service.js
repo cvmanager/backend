@@ -21,6 +21,39 @@ class RoleService extends ServiceBase {
                         'connectToField': 'parent', 
                         'as': 'childs'
                     }
+                },
+                {
+                    '$lookup': {
+                        'from': 'permissions', 
+                        'localField': 'permissions', 
+                        'foreignField': '_id', 
+                        'as': 'permissions'
+                    }
+                },
+                {
+                    '$addFields': {
+                        'permissions': '$permissions.action'
+                    }
+                }
+            ]
+        )
+    }
+
+    async getAllRoles() {
+        return this.model.aggregate(
+            [
+                {
+                    '$lookup': {
+                        'from': 'permissions', 
+                        'localField': 'permissions', 
+                        'foreignField': '_id', 
+                        'as': 'permissions'
+                    }
+                },
+                {
+                    '$addFields': {
+                        'permissions': '$permissions.action'
+                    }
                 }
             ]
         )

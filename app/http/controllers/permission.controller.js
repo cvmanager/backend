@@ -4,9 +4,6 @@ import AppResponse from '../../helper/response.js';
 import Controller from './controller.js';
 import permissionService from '../../helper/service/permission.service.js';
 import Permission from '../../models/permission.model.js';
-import { cachePermission } from '../../helper/rbac.js';
-import roleService from '../../helper/service/role.service.js';
-import positionService from '../../helper/service/position.service.js';
 
 class PermissionController extends Controller {
 
@@ -47,8 +44,6 @@ class PermissionController extends Controller {
     * @tags Permission
     * @security BearerAuth
     * 
-    * @param  { string } id.path.required - permission id
-    * 
     * @return { permission.success } 200 - success response
     * @return { message.badrequest_error } 400 - bad request respone
     * @return { message.badrequest_error } 404 - not found respone
@@ -57,7 +52,7 @@ class PermissionController extends Controller {
     */
     async entities(req, res, next) {
         try {
-            let permissions = await positionService.getPermissions()
+            let permissions = await permissionService.getPermissions()
             AppResponse.builder(res).message("permission.message.permission_list_found").data(permissions).send();
         } catch (err) {
             next(err);
@@ -101,16 +96,8 @@ class PermissionController extends Controller {
             let permission = await permissionService.findOne({ $or: [{ 'name': req.body.name }, { 'action': req.body.action }] });
             if (permission) throw new AlreadyExists('permission.error.permission_already_exists');
 
-            if (req.body.roles && req.body.roles.length > 0) {
-                for (let role of req.body.roles) {
-                    let roleExist = await roleService.findOne(role)
-                    if (!roleExist) throw new NotFoundError('permission.error.role_not_found'); 
-                }
-            }
-            
-            req.body.created_by = req.user._id;
-            let createdPermission = await permissionService.create(req.body);
-            await cachePermission(createdPermission)
+            req.body.created_by = req.user._id
+            let createdPermission = await permissionService.create(req.body)
 
             AppResponse.builder(res).status(201).message("document.message.document_successfuly_created").data(createdPermission).send();
         } catch (err) {
@@ -141,83 +128,11 @@ class PermissionController extends Controller {
                 if (permissionExist && !permissionExist._id.equals(req.params.id)) throw new AlreadyExists('permission.error.name_already_exists');
             }
 
-            if (req.body.roles && req.body.roles.length > 0) {
-                for (let role of req.body.roles) {
-                    let roleExist = await roleService.findOne({ _id: role })
-                    if (!roleExist) throw new NotFoundError('permission.error.role_not_found'); 
-                }
-            }
-
             const updatedPermission = await permissionService.updateOne({ _id: req.params.id }, req.body)
             if (!updatedPermission) throw new NotFoundError('document.error.document_notfound'); 
-            await cachePermission(updatedPermission)
 
             AppResponse.builder(res).message("document.message.document_successfuly_updated").data(updatedPermission).send()
 
-        } catch (err) {
-            next(err);
-        }
-    }
-
-    /**
-    * PATCH /permissions/{id}/addRole
-    * 
-    * @summary add role to a permission
-    * @tags Permission
-    * @security BearerAuth
-    * 
-    * @param  { string } id.path - permission id
-    * @param { permission.addRole } request.body - permission info - application/json
-    * 
-    * @return { permission.success }           200 - success response
-    * @return { message.badrequest_error }  400 - bad request respone
-    * @return { message.badrequest_error }  404 - not found respone
-    * @return { message.unauthorized_error }     401 - UnauthorizedError
-    * @return { message.server_error  }    500 - Server Error
-    */
-    async addRole(req, res, next) {
-        try {
-            let roleExist = await roleService.findOne({ _id: req.body.role_id })
-            if (!roleExist) throw new NotFoundError('permission.error.role_not_found');
-
-            const updatedPermission = await permissionService.addRole(req.params.id, req.body.role_id)
-            if (!updatedPermission) throw new NotFoundError('permission.error.permission_notfound'); 
-            
-            await cachePermission(updatedPermission)
-
-            AppResponse.builder(res).message("permission.message.permission_successfuly_updated").send()
-        } catch (err) {
-            next(err);
-        }
-    }
-
-    /**
-    * PATCH /permissions/{id}/removeRole
-    * 
-    * @summary remove role from permission
-    * @tags Permission
-    * @security BearerAuth
-    * 
-    * @param  { string } id.path - permission id
-    * @param { permission.removeRole } request.body - permission info - application/json
-    * 
-    * @return { permission.success }           200 - success response
-    * @return { message.badrequest_error }  400 - bad request respone
-    * @return { message.badrequest_error }  404 - not found respone
-    * @return { message.unauthorized_error }     401 - UnauthorizedError
-    * @return { message.server_error  }    500 - Server Error
-    */
-    async removeRole(req, res, next) {
-        try {
-            let roleExist = await roleService.findOne({ _id: req.body.role_id })
-            if (!roleExist) throw new NotFoundError('permission.error.role_not_found'); 
-
-            const updatedPermission = await permissionService.removeRole(req.params.id, req.body.role_id)
-            if (!updatedPermission) throw new NotFoundError('document.error.document_notfound'); 
-
-            await cachePermission(updatedPermission)
-
-            AppResponse.builder(res).message("document.message.document_successfuly_updated").send()
         } catch (err) {
             next(err);
         }

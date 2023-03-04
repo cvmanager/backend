@@ -17,6 +17,10 @@ const schema = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: "roles"
         },
+        permissions: {
+            type: [mongoose.Schema.Types.ObjectId],
+            ref: "permissions"
+        },
         created_by: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "users"

@@ -24,9 +24,6 @@ const create = [
             .withMessage('permission.validation.permission_description_length')
         .optional({ nullable: true, checkFalsy: true })
         .trim(),
-    body('roles')
-        .isArray()
-        .optional({ nullable: true, checkFalsy: true }),
     generalValidator
 ]; 
 
@@ -41,22 +38,8 @@ const update = [
             .withMessage('permission.validation.permission_description_length')
         .optional({ nullable: true, checkFalsy: true })
         .trim(),
-    body('roles')
-        .isArray()
-        .optional({ nullable: true, checkFalsy: true }),
     generalValidator
 ];
-
-const updateRole = [
-    body('role_id')
-        .notEmpty()
-            .withMessage('permission.validation.role_id_required')
-        .isMongoId()
-            .withMessage('permission.validation.role_id_invalid')
-        .trim(),
-    generalValidator
-];
-
 
 const find = [
     param('id')
@@ -78,4 +61,4 @@ const remove = [
     generalValidator
 ];
 
-export { index, create, find, update, remove, updateRole }
+export { index, create, find, update, remove }

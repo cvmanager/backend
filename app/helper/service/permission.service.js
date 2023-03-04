@@ -11,12 +11,24 @@ class PermissionService extends ServiceBase {
         autoBind(this)
     }
 
-    async addRole(permissionId, roleId) {
-        return Permission.findOneAndUpdate({ _id: permissionId }, { $addToSet: { roles: roleId } })
-    }
-
-    async removeRole(permissionId, roleId) {
-        return Permission.findOneAndUpdate({ _id: permissionId }, { $pull: { roles: roleId } })
+    async getPermissions () {
+        return this.model.aggregate([
+            {
+                '$group': {
+                    '_id': '$entity', 
+                    'permissions': {
+                        '$push': '$$ROOT'
+                    }
+                }
+            }, 
+            {
+                '$project': {
+                    'entity': '$_id',
+                    '_id': 0, 
+                    'permissions': 1
+                }
+            }
+        ])
     }
 
 }
