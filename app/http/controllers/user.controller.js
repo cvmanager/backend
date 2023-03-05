@@ -7,6 +7,7 @@ import LoginLog from '../../models/loginLog.model.js';
 import Controller from './controller.js';
 import { events } from '../../events/subscribers/user.subscriber.js';
 import bcrypt from 'bcrypt'
+import { exit } from 'process';
 
 class UserController extends Controller {
 
@@ -210,6 +211,47 @@ class UserController extends Controller {
             });
 
             AppResponse.builder(res).data(loginLog).message('user.messages.user_login_history_list').send();
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
+     * PATCH /users/{id}/edit
+     * 
+     * @summary edit user info
+     * @tags User
+     * @security BearerAuth
+     *
+     * @param {string } id.path.required - user id
+     * @param {string} request.body          - edit info - application/json
+     * 
+     * @return { user.success }                 200 - edit successfuly 
+     * @return { message.badrequest_error }     400 - Bad Request
+     * @return { message.badrequest_error }     401 - UnauthorizedError
+     * @return { message.server_error  }        500 - Server Error
+     */
+       async edit(req, res, next) {
+        try {
+
+            let user = await User.findById(req.params.id);
+            if (!user) throw new NotFoundError('user.errors.user_notfound')
+            
+            let userByUserName = await User.findOne({ 'username': req.body.username});
+            if (userByUserName && user.username != req.body.username) throw new BadRequestError('user.errors.username_already_exists');  
+
+            let userByEmail = await User.findOne({ 'email': req.body.email});
+            if (userByEmail && user.email != req.body.email) throw new BadRequestError('user.errors.email_already_exists');  
+ 
+            user.firstname = req.body.firstname
+            user.lastname = req.body.lastname
+            user.username = req.body.username
+            user.email = req.body.email
+            user.save();
+
+            EventEmitter.emit(events.EDIT_USER, user);
+
+            AppResponse.builder(res).status(200).data(user).message('user.messages.user_successfuly_edited').send();
         } catch (err) {
             next(err);
         }

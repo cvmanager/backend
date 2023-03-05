@@ -83,6 +83,36 @@ class UserValidation {
         ];
     }
 
+    edit() {
+        return [
+            param('id')
+                .notEmpty()
+                .withMessage('user.validations.user_id_required')
+                .isMongoId()
+                .withMessage('user.validations.user_id_invalid')
+                .trim(),
+            body('firstname')
+                .isLength({ min: 3, max: 80 })
+                .withMessage('auth.validations.firstname_length')
+                .trim(),
+            body('lastname')
+                .isLength({ min: 3, max: 80 })
+                .withMessage('auth.validations.lastname_length')
+                .trim(),
+            body('username')
+                .notEmpty()
+                .withMessage('auth.validations.username_required')
+                .trim(),
+            body('email')
+                .notEmpty()
+                .withMessage('resume.validations.email_required')
+                .isEmail()
+                .withMessage('resume.validations.email_invalid')
+                .trim(),
+            generalValidator
+        ]
+    }
+    
 }
 
 
