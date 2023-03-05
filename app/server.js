@@ -1,6 +1,9 @@
 import mongoose from 'mongoose'
-import app from './app.js'
+
+import rbacConfig, { createPermissions } from './helper/rbac.js';
 import env from './helper/env.js'
+import app from './app.js'
+
 class App {
     constructor() {
         this.start();
@@ -18,8 +21,12 @@ class App {
 
 
     serve() {
-        app.listen(env('PORT'), (err) => {
+        app.listen(env('PORT'), async (err) => {
             if (err) console.error(`can not run server in port ${env('PORT')}`)
+
+            await createPermissions(app)
+            await rbacConfig()
+
             console.log(`server running at ${env('PORT')}`)
         })
     }

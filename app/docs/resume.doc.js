@@ -77,11 +77,33 @@
 * @property { string } status.required - resume status
 */
 
+/**
+* upload file resume
+* @typedef { object } resume.upload_file
+* @property { file } file.required - resume file
+*/
 
 /**
 * resume success response
 * @typedef { object } resume.success
 * @property { string }         message
 * @property { array<Resume> } data
+* @property { array<> }        errors
+*/
+
+/**
+* create call history
+* @typedef { object } resume.call_history
+* @property { string } result.required - result
+* @property { string } calling_date.required - calling_date
+* @property { string } description - description
+* @property { string } recall_at - recall_at
+*/
+
+/**
+* resume success response
+* @typedef { object } resume.call_history_success
+* @property { string }         message
+* @property { array<resume.call_history> } data
 * @property { array<> }        errors
 */

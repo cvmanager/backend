@@ -9,13 +9,17 @@ import prepareDB from './utils/prepareDB'
 import { Types } from 'mongoose';
 import CompanyData from './data/company.data';
 import { faker } from '@faker-js/faker';
+import * as path from 'path';
 
+let companyData;
+let companyItem;
 let token;
 let company;
 let companies;
 let manager;
 let users;
 let user;
+let managerData;
 
 prepareDB();
 describe("Company Routes", () => {
@@ -26,11 +30,11 @@ describe("Company Routes", () => {
         users = userData.getUsers();
         user = userData.getUser();
 
-        let companyData = new CompanyData();
+        companyData = new CompanyData();
         company = companyData.getCompany();
         companies = companyData.getCompanies();
 
-        let managerData = new ManagerData();
+        managerData = new ManagerData();
         manager = managerData.getManagerByEntityId(company._id);
 
     })
@@ -370,7 +374,7 @@ describe("Company Routes", () => {
         })
         it(`should get ${httpStatus.OK} if all data correct `, async () => {
             const response = await request(app)
-                .delete(`/api/V1/companies/${company._id}`)
+                .delete(`/api/V1/companies/${companies[2]._id}`)
                 .set(`Authorization`, token)
                 .send();
             expect(response.statusCode).toBe(httpStatus.OK);
@@ -378,7 +382,6 @@ describe("Company Routes", () => {
     })
 
     describe("PATCH /companies/{id}/manager", () => {
-        0
 
         let setManager;
         beforeEach(() => {
@@ -549,8 +552,6 @@ describe("Company Routes", () => {
         })
     })
 
-
-
     describe("GET /companies/{id}/managers", () => {
 
         it(`should get ${httpStatus.BAD_REQUEST} company id is not a mongo id`, async () => {
@@ -603,6 +604,155 @@ describe("Company Routes", () => {
                 .set('Authorization', token)
                 .send();
             expect(response.statusCode).toBe(httpStatus.OK);
+        })
+    })
+
+    describe(`PATCH /:id`, () => {
+
+        let logo;
+        beforeEach(async () => {
+            logo = path.join(__dirname, 'data/file/avatar.png');
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} if company id is not send`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/companies//logo`)
+                .set(`Authorization`, token)
+                .attach('logo', logo);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if company id is not valid`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/companies/fakeId/logo`)
+                .set(`Authorization`, token)
+                .attach('logo', logo);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.NOT_FOUND} if company is not exists`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/companies/${Types.ObjectId()}/logo`)
+                .set(`Authorization`, token)
+                .attach('logo', logo);
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+        it(`should return ${httpStatus.BAD_REQUEST} error if logo incorect`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/companies/${company._id}/logo`)
+                .set('Authorization', token)
+                .attach('logo', path.join(__dirname, 'data/file/avatar.zip'));
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        });
+        it(`should get ${httpStatus.OK} if all data correct `, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/companies/${company._id}/logo`)
+                .set(`Authorization`, token)
+                .attach('logo', logo);
+            expect(response.statusCode).toBe(httpStatus.OK);
+        })
+    })
+
+    describe(`PATCH /:id/active`, () => {
+        it(`should get ${httpStatus.BAD_REQUEST} if company id is not valid`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/companies/fakeId/active`)
+                .set(`Authorization`, token);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.NOT_FOUND} if company not found`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/companies/${Types.ObjectId()}/active`)
+                .set(`Authorization`, token);
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if company is_active is true`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/companies/${company._id}/active`)
+                .set(`Authorization`, token);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.OK} if all data correct and update company status`, async () => {
+            companyItem = {
+                "_id": Types.ObjectId(),
+                "is_active": false,
+                "created_by": Types.ObjectId(),
+                "name": faker.company.name(),
+                "description": faker.random.alpha(50),
+                "phone": faker.phone.number('989#########'),
+                "address": faker.random.alpha(100),
+            };
+            companyData.addCompany(companyItem)
+            const response = await request(app)
+                .patch(`/api/V1/companies/${companyItem._id}/active`)
+                .set(`Authorization`, token);
+            expect(response.statusCode).toBe(httpStatus.OK);
+        })
+    })
+
+    describe(`PATCH /:id/deactive`, () => {
+        it(`should get ${httpStatus.BAD_REQUEST} if company id is not valid`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/companies/fakeId/deactive`)
+                .set(`Authorization`, token);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.NOT_FOUND} if company not found`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/companies/${Types.ObjectId()}/deactive`)
+                .set(`Authorization`, token);
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if company is_active is false`, async () => {
+            companyItem = {
+                "_id": Types.ObjectId(),
+                "is_active": false,
+                "created_by": Types.ObjectId(),
+                "name": faker.company.name(),
+                "description": faker.random.alpha(50),
+                "phone": faker.phone.number('989#########'),
+                "address": faker.random.alpha(100),
+            };
+            companyData.addCompany(companyItem)
+            const response = await request(app)
+                .patch(`/api/V1/companies/${companyItem._id}/deactive`)
+                .set(`Authorization`, token);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.OK} if all data correct and update company status`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/companies/${company._id}/deactive`)
+                .set(`Authorization`, token);
+            expect(response.statusCode).toBe(httpStatus.OK);
+        })
+    })
+
+    describe(`GET /:id/statistics/resumes`, () => {
+
+        it(`should get ${httpStatus.BAD_REQUEST} company id is not a mongo id`, async () => {
+            const response = await request(app)
+                .get(`/api/V1/companies/fakeID`)
+                .set(`Authorization`, token)
+                .send();
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.NOT_FOUND} company id is not valid`, async () => {
+            const response = await request(app)
+                .get(`/api/V1/companies/${Types.ObjectId()}`)
+                .set(`Authorization`, token)
+                .send();
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+
+        it(`should get ${httpStatus.OK} success if correct`, async () => {
+            const response = await request(app)
+                .get(`/api/V1/companies/${company._id}`)
+                .set(`Authorization`, token)
+                .send();
+
+            let data = response.body.data[0];
+            expect(data).toHaveProperty(`total_resume_by_states`)
+            expect(data).toHaveProperty(`resume_state_in_last_month`)
+            expect(response.statusCode).toBe(httpStatus.OK)
         })
     })
 

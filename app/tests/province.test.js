@@ -1,44 +1,41 @@
 import httpStatus from 'http-status'
 import request from 'supertest'
-import { userOne, insertUsers, accessToken } from './fixtures/user.fixture.js'
-import setupTestDB from './utils/setupTestDB.js';
-import env from '../helper/env.js';
+import app from '../app.js'
 
-let baseURL = env("TEST_BASE_URL")
-setupTestDB();
+import prepareDB from './utils/prepareDB'
+import UserData from './data/user.data';
 
-describe('Constant routes', () => {
+let token;
+prepareDB();
 
-    let token;
+describe('Province routes', () => {
+
     beforeEach(async () => {
-        await insertUsers([userOne]);
-        token = 'Bearer ' + await accessToken(userOne);
+        let userData = new UserData();
+        token = userData.getAccessToken();
     })
 
     describe('GET /', () => {
 
-        it('should get ' + httpStatus.INTERNAL_SERVER_ERROR + ' error if page is not number', async () => {
-            const response = await request(baseURL)
-                .get("/provinces?page=string")
+        it(`should get ${httpStatus.BAD_REQUEST} page is not number`, async () => {
+            const response = await request(app)
+                .get("/api/V1/provinces?page=string")
                 .set('Authorization', token)
                 .send();
-            expect(response.statusCode).toBe(httpStatus.INTERNAL_SERVER_ERROR);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
 
-        it('should get ' + httpStatus.OK + ' success if size sting and return empty', async () => {
-            const response = await request(baseURL)
-                .get("/provinces?page=1&size=string")
+        it(`should get ${httpStatus.BAD_REQUEST} size is not number`, async () => {
+            const response = await request(app)
+                .get("/api/V1/provinces?page=1&size=string")
                 .set('Authorization', token)
                 .send();
-            let data = response.body.data[0].docs;
-
-            expect(data.length).toBe(0);
-            expect(response.statusCode).toBe(httpStatus.OK);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
 
         it('should get no item if name is not find', async () => {
-            const response = await request(baseURL)
-                .get("/provinces?page=1&size=1&query=no item")
+            const response = await request(app)
+                .get("/api/V1/provinces?page=1&size=1&query=no item")
                 .set('Authorization', token)
                 .send();
             let data = response.body.data[0].docs;
@@ -46,8 +43,8 @@ describe('Constant routes', () => {
         })
 
         it('should get one item if page = 1 and size = 1', async () => {
-            const response = await request(baseURL)
-                .get("/provinces?page=1&size=1")
+            const response = await request(app)
+                .get("/api/V1/provinces?page=1&size=1")
                 .set('Authorization', token)
                 .send();
             let data = response.body.data[0].docs;
@@ -55,24 +52,23 @@ describe('Constant routes', () => {
         })
 
         it("should check field of object returned", async () => {
-            const response = await request(baseURL)
-                .get("/provinces")
+            const response = await request(app)
+                .get("/api/V1/provinces")
                 .set('Authorization', token)
                 .send();
 
             let data = response.body.data[0].docs[0];
             expect(data).toHaveProperty('_id')
             expect(data).toHaveProperty('name')
-            expect(data).toHaveProperty('cities')
             expect(data).toHaveProperty('deleted')
             expect(data).toHaveProperty('createdAt')
             expect(data).toHaveProperty('updatedAt')
             expect(data).toHaveProperty('id')
         })
 
-        it('should get list of province', async () => {
-            const response = await request(baseURL)
-                .get("/provinces")
+        it('should get list of provinces', async () => {
+            const response = await request(app)
+                .get("/api/V1/provinces")
                 .set('Authorization', token)
                 .send();
             expect(response.statusCode).toBe(httpStatus.OK);

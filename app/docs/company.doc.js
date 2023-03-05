@@ -23,6 +23,12 @@
 */
 
 /**
+* upload logo comapny
+* @typedef { object } comapny.upload_logo
+* @property { logo } logo.required - comapny logo
+*/
+
+/**
 * company success response
 * @typedef { object } company.success
 * @property { string }         message

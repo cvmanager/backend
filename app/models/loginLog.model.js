@@ -34,6 +34,14 @@ const schema = new mongoose.Schema(
         },
         mac_address: {
             type: String,
+        },
+        type: {
+            type: String,
+            enum: ['register', 'login']
+        },
+        logout_at: {
+            type: Date,
+            default: null
         }
     }
 )

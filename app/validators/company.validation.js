@@ -97,6 +97,31 @@ class CompanyValidation {
             generalValidator
         ]
     }
+
+
+    logo() {
+        return [
+            param('id')
+                .notEmpty().isMongoId().withMessage('company.validations.company_id_invalid').trim(),
+            generalValidator
+        ];
+    }
+
+    active() {
+        return [
+            param('id')
+                .notEmpty().isMongoId().withMessage('company.validations.company_id_invalid').trim(),
+            generalValidator
+        ]
+    }
+
+    deActive() {
+        return [
+            param('id')
+                .notEmpty().isMongoId().withMessage('company.validations.company_id_invalid').trim(),
+            generalValidator
+        ]
+    }
 }
 
 export default new CompanyValidation();

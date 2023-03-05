@@ -50,4 +50,10 @@
  * @property { string } manager_id - user id
 */
 
+/**
+* upload logo project
+* @typedef { object } project.upload_logo
+* @property { logo } logo.required - project logo
+*/
+
 

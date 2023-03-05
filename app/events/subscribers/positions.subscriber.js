@@ -1,3 +1,4 @@
+import positionService from '../../helper/service/position.service.js'
 import EventEmitter from '../emitter.js'
 
 export const events = {
@@ -5,7 +6,9 @@ export const events = {
     "DELETE": "Delete Position",
     "UPDATE": "Update Position Info",
     "SET_MANAGER": "Set New Manager For Position",
-    "UNSET_MANAGER": "UnSet  Manager For Position"
+    "UNSET_MANAGER": "UnSet  Manager For Position",
+    "ACTIVE": "active Position status",
+    "DEACTIVE": "deactive Position status",
 }
 
 EventEmitter.on(events.CREATE, create)
@@ -13,16 +16,25 @@ EventEmitter.on(events.DELETE, softdelete)
 EventEmitter.on(events.UPDATE, update)
 EventEmitter.on(events.SET_MANAGER, setManager)
 EventEmitter.on(events.UNSET_MANAGER, unsetManager)
+EventEmitter.on(events.ACTIVE, active)
+EventEmitter.on(events.DEACTIVE, deActive)
 
 
+function active(position) {
+    console.log(events.ACTIVE + " event called", position)
+}
+
+function deActive(position) {
+    console.log(events.DEACTIVE + " event called", position)
+}
 
 function create(Position) {
-    console.log(events.DELETE + " event called", Position)
+   positionService.addDefaultManagerForPosition(Position)
 }
 
 
 function softdelete(Position) {
-    console.log(events.DELETE + " event called", Position)
+    positionService.deleteManagersFromPosition(Company)
 }
 
 
