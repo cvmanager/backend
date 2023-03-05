@@ -41,6 +41,29 @@ class RoleController extends Controller {
     }
 
     /**
+    * GET /roles/permissions/rbac
+    * 
+    * @summary get a list of all roles with users 
+    * @tags Role
+    * @security BearerAuth
+    * 
+    * @return { role.success } 200 - success response
+    * @return { message.badrequest_error } 400 - bad request respone
+    * @return { message.badrequest_error } 404 - not found respone
+    * @return { message.unauthorized_error }     401 - UnauthorizedError
+    * @return { message.server_error  }    500 - Server Error
+    */
+    async rbac(req, res, next) {
+        try {
+            let roles = await roleService.rbac()
+
+            AppResponse.builder(res).message("role.message.role_list_found").data(roles).send();
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
     * GET /roles/{id}
     * 
     * @summary gets a role by id

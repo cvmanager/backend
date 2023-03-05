@@ -8,5 +8,6 @@ const roleRouter = express.Router();
 roleRouter
     .get('/', index, RoleController.index)
     .post('/', create, RoleController.create)
+    .get('/permissions/rbac', RoleController.rbac)
 
 export default roleRouter;

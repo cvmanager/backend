@@ -58,6 +58,39 @@ class RoleService extends ServiceBase {
             ]
         )
     }
+
+    async rbac() {
+        return this.model.aggregate([
+            {
+              '$lookup': {
+                'from': 'users', 
+                'localField': '_id', 
+                'foreignField': 'role', 
+                'as': 'users'
+              }
+            }, 
+            {
+              '$addFields': {
+                'usersCount': {
+                  '$size': '$users'
+                }, 
+                'users': {
+                  '$slice': [
+                    '$users', 0, 4
+                  ]
+                }
+              }
+            },
+            {
+               '$lookup': {
+                'from': 'permissions', 
+                'localField': 'permissions', 
+                'foreignField': '_id', 
+                'as': 'permissions'
+              }
+            }
+          ])
+    }
 }
 
 export default new RoleService(Role);
