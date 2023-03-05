@@ -10,6 +10,7 @@ import EventEmitter from '../../events/emitter.js';
 import { events } from '../../events/subscribers/positions.subscriber.js'
 import Resume from '../../models/resume.model.js';
 import BadRequestError from '../../exceptions/BadRequestError.js';
+import i18n from '../../middlewares/lang.middleware.js'
 
 class PositionController extends Controller {
 
@@ -245,8 +246,30 @@ class PositionController extends Controller {
         try {
             const position = await Position.findById(req.params.id).populate('created_by');
             if (!position) throw new NotFoundError('position.errors.position_notfound');
+            const { size = 10 } = req.query
 
-            let resumes = await Resume.find({ 'position_id': position.id }).populate('project_id').populate('company_id');
+            let resumes = [];
+            let promiseResumes = []
+
+            let statuses = i18n.__("resume.enums.status");
+            for (let status of statuses) {
+                let resumeList = Resume.find({ 'position_id': position.id, 'status': status })
+                    .limit(size)
+                    .sort([['updatedAt', -1]])
+                    .populate([
+                        { path: 'company_id', select: ['_id', 'name', 'logo'] },
+                        { path: 'project_id', select: ['_id', 'name', 'logo'] },
+                        { path: 'resumeComments', select: ['_id', 'body'] },
+                    ]);
+                promiseResumes.push(resumeList)
+            }
+            let results = await Promise.all(promiseResumes)
+
+            for (let i = 0; i < statuses.length; i++) {
+                let resume = {}
+                resume[statuses[i]] = results[i]
+                resumes.push(resume)
+            }
 
             AppResponse.builder(res).message('company.messages.company_resumes_found').data(resumes).send();
         } catch (err) {
