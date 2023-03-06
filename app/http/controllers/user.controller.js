@@ -237,11 +237,11 @@ class UserController extends Controller {
             let user = await User.findById(req.params.id);
             if (!user) throw new NotFoundError('user.errors.user_notfound')
             
-            let userByUserName = await User.findOne({ 'username': req.body.username});
-            if (userByUserName && user.username != req.body.username) throw new BadRequestError('user.errors.username_already_exists');  
+            let userByUserName = await User.findOne( { '_id': { $ne: user._id }, 'username': req.body.username});
+            if (userByUserName ) throw new BadRequestError('user.errors.username_already_exists');  
 
-            let userByEmail = await User.findOne({ 'email': req.body.email});
-            if (userByEmail && user.email != req.body.email) throw new BadRequestError('user.errors.email_already_exists');  
+            let userByEmail = await User.findOne({ '_id': { $ne: user._id }, 'email': req.body.email});
+            if (userByEmail ) throw new BadRequestError('user.errors.email_already_exists');  
  
             user.firstname = req.body.firstname
             user.lastname = req.body.lastname

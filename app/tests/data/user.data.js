@@ -39,6 +39,10 @@ class UserData {
         await User.insertMany(users.map((user) => ({ ...user, password: bcrypt.hashSync(user.password, this.salt) })));
     }
 
+    addUser(users) {
+        User.insertMany(users);
+    }
+
 }
 
 export default UserData
