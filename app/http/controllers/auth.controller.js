@@ -11,6 +11,7 @@ import env from '../../helper/env.js';
 import EventEmitter from '../../events/emitter.js';
 import { events } from '../../events/subscribers/user.subscriber.js';
 import roleService from '../../helper/service/role.service.js';
+import userService from '../../helper/service/user.service.js';
 
 class AuthController extends Controller {
 
@@ -28,13 +29,18 @@ class AuthController extends Controller {
      */
     async login(req, res, next) {
         try {
-            let user = await User.findOne({
+            let user = await userService.findOne({
                 $or: [
                     { mobile: req.body.mobile },
                     { username: req.body.mobile }
                 ]
-            });
+            }, [{path: 'role', select: ['name', 'id', 'permissions']}])
+
             if (!user) throw new NotFoundError('auth.errors.user_not_found');
+            user.populate({
+                path: "role.permissions",
+                select: ["name", "id"]
+            })
 
 
             let validPassword = await bcrypt.compare(req.body.password, user.password)
@@ -73,7 +79,7 @@ class AuthController extends Controller {
             let salt = await bcrypt.genSalt(10);
             let hash_password = await bcrypt.hash(req.body.password, salt);
 
-            const ownerRole = await roleService.findOne({ name: "Owner" })
+            const ownerRole = await roleService.findOne({ name: "Owner" }, ['permissions'])
 
             user = await User.create({
                 firstname: req.body.firstname,
@@ -84,7 +90,7 @@ class AuthController extends Controller {
                 role: [ownerRole._id]
             });
 
-            const access_token = await generateJwtToken({ _id: user._id, role: user.role })
+            const access_token = await generateJwtToken({ _id: user._id, role: [ownerRole] })
             const refresh_token = await generateJwtRefeshToken(user._id);
 
             EventEmitter.emit(events.SINGUP, user, access_token, refresh_token);

@@ -7,9 +7,9 @@ import roleService from "../helper/service/role.service.js"
 export async function canAccess(req, res, next) {
     try {
         let permissionName = getPermissionName(req)
-
-        let rolesChilds = await getRoleChilds(req.user.role)
-        const userRoles = [...req.user.role, ...rolesChilds]
+        let userRoles = req.user.role.map(role => role._id)
+        let rolesChilds = await getRoleChilds(userRoles)
+        userRoles = [...userRoles, ...rolesChilds]
 
         req.roles = await canRole(userRoles, permissionName)
         next()

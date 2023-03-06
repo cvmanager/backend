@@ -85,10 +85,10 @@ class UserController extends Controller {
     async uploadProfileImage(req, res, next) {
 
         try {
-            let user = await User.findById(req.user_id);
+            let user = await User.findById(req.user._id);
             if (!user) throw new NotFoundError('user.errors.user_notfound');
 
-            user = await User.findOneAndUpdate({ _id: req.user_id }, { avatar: req.body.avatar }, { new: true });
+            user = await User.findOneAndUpdate({ _id: req.user._id }, { avatar: req.body.avatar }, { new: true });
             AppResponse.builder(res).message("user.messages.profile_image_successfuly_updated").data(user).send();
         } catch (err) {
             next(err);
@@ -116,7 +116,7 @@ class UserController extends Controller {
             if (user.is_banned) throw new BadRequestError('user.errors.user_is_currently_blocked')
 
             user.is_banned = 1;
-            user.banned_by = req.user_id;
+            user.banned_by = req.user._id;
             user.banned_at = new Date().toISOString();
             await user.save();
 
@@ -141,7 +141,7 @@ class UserController extends Controller {
      */
     async getMe(req, res, next) {
         try {
-            let user = await User.findById(req.user_id);
+            let user = await User.findById(req.user._id);
             if (!user) throw new NotFoundError('user.errors.user_notfound');
 
             AppResponse.builder(res).data(user).message('user.messages.user_founded').send();
@@ -165,7 +165,7 @@ class UserController extends Controller {
     */
     async changePassword(req, res, next) {
         try {
-            let user = await User.findById(req.user_id);
+            let user = await User.findById(req.user._id);
             if (!user) throw new NotFoundError('user.errors.user_notfound')
 
             let validPassword = await bcrypt.compare(req.body.old_password, user.password)
@@ -178,7 +178,7 @@ class UserController extends Controller {
             let hash_password = await bcrypt.hash(req.body.password, salt);
             user = await User.findOneAndUpdate({ _id: user._id }, { password: hash_password });
 
-            AppResponse.builder(res).data(user).message('user.messages.password_changed').send(req.user_id);
+            AppResponse.builder(res).data(user).message('user.messages.password_changed').send(req.user._id);
         } catch (err) {
             next(err);
         }

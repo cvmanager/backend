@@ -1,6 +1,6 @@
 import Province from '../../models/province.model.js'
 import provinces from '../../db/province.js'
-import City from '../../models/city.model'
+import City from '../../models/city.model.js'
 
 export const fillProvinceTable = async () => {
     let provinceArray = [];
