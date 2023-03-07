@@ -167,6 +167,12 @@ const schema = new mongoose.Schema(
     }
 );
 
+schema.virtual("resumeComments", {
+    ref: 'resumeComments',
+    localField: "_id",
+    foreignField: "resume_id"
+});
+
 schema.plugin(basePlugin)
 
 const Resume = mongoose.model("resumes", schema);
