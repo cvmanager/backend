@@ -1,15 +1,9 @@
-import bcrypt from 'bcrypt'
-
-let salt = await bcrypt.genSalt(10);
-let hash_password = await bcrypt.hash("some-pass", salt);
-
-let users = [
-    {
+let user = {
         "firstname": "fater",
         "lastname": "admin",
         "username": "admin",
         "mobile": "989123456789",
-        "password": hash_password,
+        "password": "some-pass",
         "mobile_verified_at": null,
         "avatar": "",
         "is_banned": null,
@@ -19,7 +13,6 @@ let users = [
         "deleted": false,
         "email": "admin@cv.com"
     }
-]
 
 
-export default users
+export default user
