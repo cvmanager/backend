@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 
 import basePlugin from '../helper/mongoose/base.plugin.js';
+import Role from './role.model.js';
 
 const schema = new mongoose.Schema(
     {
@@ -46,6 +47,10 @@ const schema = new mongoose.Schema(
         banned_at: {
             type: Date,
             default: null,
+        },
+        role: {
+            type: [mongoose.Schema.Types.ObjectId],
+            ref: Role
         }
     }
 );

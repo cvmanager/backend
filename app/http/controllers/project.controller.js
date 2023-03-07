@@ -11,6 +11,10 @@ import Manager from '../../models/manager.model.js'
 import EventEmitter from '../../events/emitter.js';
 import { events } from '../../events/subscribers/projects.subscriber.js';
 import Resume from '../../models/resume.model.js';
+import { mergeQuery } from '../../helper/mergeQuery.js';
+import projectService from '../../helper/service/project.service.js';
+import roleService from '../../helper/service/role.service.js';
+import userService from '../../helper/service/user.service.js';
 
 class ProjectController extends Controller {
     /**
@@ -37,7 +41,7 @@ class ProjectController extends Controller {
                 }
             }
 
-
+            searchQuery = mergeQuery(searchQuery, req.rbacQuery)
             const projectList = await Project.paginate(searchQuery, {
                 page: (page) || 1,
                 limit: size,
@@ -68,12 +72,10 @@ class ProjectController extends Controller {
      */
     async find(req, res, next) {
         try {
-            let project = await Project.findById(req.params.id)
-                .populate([
-                    { path: 'created_by' },
-                    { path: 'company_id', select: ['_id', 'name'] },
-                ])
-                .exec();
+            let project = await projectService.findByParamId(req, [
+                { path: 'created_by' },
+                { path: 'company_id', select: ['_id', 'name'] },
+            ])
             if (!project) throw new NotFoundError('project.errors.project_notfound');
 
             AppResponse.builder(res).message("project.messages.project_found").data(project).send();
@@ -104,7 +106,7 @@ class ProjectController extends Controller {
             let project = await Project.findOne({ 'name': req.body.name, 'company_id': company._id });
             if (project) throw new AlreadyExists('project.errors.project_already_attached_company');
 
-            req.body.created_by = req.user_id;
+            req.body.created_by = req.user._id;
             project = await Project.create(req.body);
             EventEmitter.emit(events.CREATE, project)
 
@@ -129,8 +131,7 @@ class ProjectController extends Controller {
      */
     async update(req, res, next) {
         try {
-            let project = await Project.findById(req.params.id);
-            if (!project) throw new NotFoundError('project.errors.project_notfound');
+            let project = await projectService.findByParamId(req)
 
             if (req.body.name !== undefined) {
                 let duplicateProject = await Project.findOne({ '_id': { $ne: project._id }, 'name': req.body.name, 'company_id': project.company_id });
@@ -162,10 +163,9 @@ class ProjectController extends Controller {
      */
     async delete(req, res, next) {
         try {
-            let project = await Project.findById(req.params.id);
-            if (!project) throw new NotFoundError('project.errors.project_notfound');
+            let project = await projectService.findByParamId(req)
 
-            await project.delete(req.user_id);
+            await project.delete(req.user._id);
             EventEmitter.emit(events.DELETE, project)
 
             AppResponse.builder(res).message("project.messages.project_successfully_deleted").data(project).send();
@@ -190,8 +190,7 @@ class ProjectController extends Controller {
       */
     async manager(req, res, next) {
         try {
-            let project = await Project.findById(req.params.id);
-            if (!project) throw new NotFoundError("project.errors.project_notfound");
+            let project = await projectService.findByParamId(req)
 
             let user = await User.findById(req.body.manager_id);
             if (!user) throw new NotFoundError("user.errors.user_notfound");
@@ -199,7 +198,10 @@ class ProjectController extends Controller {
             let manager = await Manager.findOne({ 'entity': "projects", 'entity_id': project.id, 'user_id': user.id });
             if (manager) throw new BadRequestError("project.errors.the_user_is_currently_an_manager_for_project");
 
-            await Manager.create({ user_id: user._id, entity: "projects", entity_id: project._id, created_by: req.user_id });
+            await Manager.create({ user_id: user._id, entity: "projects", entity_id: project._id, created_by: req.user._id });
+
+            const projectManagerRole = await roleService.findOne({ name: "Project Manager" })
+            await userService.addRole(user._id, projectManagerRole._id)
 
             EventEmitter.emit(events.SET_MANAGER, project)
             AppResponse.builder(res).status(201).message("project.messages.project_manager_successfully_updated").data(project).send();
@@ -224,8 +226,7 @@ class ProjectController extends Controller {
     */
     async deleteManager(req, res, next) {
         try {
-            let project = await Project.findById(req.params.id);
-            if (!project) throw new NotFoundError("project.errors.project_notfound");
+            let project = await projectService.findByParamId(req)
 
             let user = await User.findById(req.body.manager_id);
             if (!user) throw new NotFoundError("user.errors.user_notfound");
@@ -235,7 +236,14 @@ class ProjectController extends Controller {
             if (manager.type === 'owner') throw new BadRequestError("project.errors.the_owner_manager_cannot_be_deleted");
 
             EventEmitter.emit(events.UNSET_MANAGER, project)
-            await manager.delete(req.user_id);
+            await manager.delete(req.user._id);
+
+            let isProjectManager = await Manager.findOne({ 'entity': "projects", 'user_id': user.id, type: 'moderator' });
+            if (!isProjectManager) {
+                const projectManagerRole = await roleService.findOne({ name: "Project Manager" })
+                await userService.removeRole(user._id, projectManagerRole._id)
+            }
+
             AppResponse.builder(res).status(200).message("project.messages.project_manager_successfully_deleted").data(project).send();
         } catch (err) {
             next(err);
@@ -259,8 +267,7 @@ class ProjectController extends Controller {
     */
     async getPositions(req, res, next) {
         try {
-            const project = await Project.findById(req.params.id).populate('created_by');
-            if (!project) throw new NotFoundError('project.errors.project_not_found');
+            let project = await projectService.findByParamId(req, ['created_by'])
 
             let positions = await Position.find({ 'project_id': project.id }).populate('created_by');
 
@@ -287,8 +294,7 @@ class ProjectController extends Controller {
 */
     async getManagers(req, res, next) {
         try {
-            const project = await Project.findById(req.params.id).populate('created_by');
-            if (!project) throw new NotFoundError('project.errors.project_not_found');
+            let project = await projectService.findByParamId(req, ['created_by'])
 
             let managers = await Manager.find({ 'entity': "projects", 'entity_id': project.id }).populate('user_id');
 
@@ -316,8 +322,7 @@ class ProjectController extends Controller {
     */
     async getResumes(req, res, next) {
         try {
-            const project = await Project.findById(req.params.id).populate('created_by');
-            if (!project) throw new NotFoundError('project.errors.project_not_found');
+            let project = await projectService.findByParamId(req, ['created_by'])
 
             let resumes = await Resume.find({ 'project_id': project.id }).populate('position_id').populate('company_id');
 
@@ -342,8 +347,7 @@ class ProjectController extends Controller {
      */
     async active(req, res, next) {
         try {
-            let project = await Project.findById(req.params.id);
-            if (!project) throw new NotFoundError('project.errors.project_not_found');
+            let project = await projectService.findByParamId(req)
 
             if (project.is_active == true) throw new BadRequestError('project.errors.project_activated_alredy');
 
@@ -372,8 +376,7 @@ class ProjectController extends Controller {
     */
     async deActive(req, res, next) {
         try {
-            let project = await Project.findById(req.params.id);
-            if (!project) throw new NotFoundError('project.errors.project_not_found');
+            let project = await projectService.findByParamId(req)
 
             if (project.is_active == false) throw new BadRequestError('project.errors.project_deactivated_alredy');
 
@@ -403,8 +406,7 @@ class ProjectController extends Controller {
     */
          async updateLogo(req, res, next) {
             try {
-                let project = await project.findById(req.params.id);
-                if (!project) throw new NotFoundError('project.errors.project_notfound');
+                let project = await projectService.findByParamId(req)
     
                 if (req.body.logo) {
                     project.logo = req.body.logo;

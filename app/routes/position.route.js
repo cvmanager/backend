@@ -6,7 +6,6 @@ const positionRouter = express.Router();
 
 positionRouter
     .get('/', PositionValidation.index(), PositionController.index)
-    .get('/:id', PositionValidation.find(), PositionController.find)
     .post('/', PositionValidation.create(), PositionController.create)
     .patch('/:id', PositionValidation.update(), PositionController.update)
     .patch('/:id/manager', PositionValidation.manager(), PositionController.manager)
