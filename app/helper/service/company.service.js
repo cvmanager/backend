@@ -1,14 +1,15 @@
+import autoBind from "auto-bind";
 
-import Manager from '../../models/manager.model.js'
+import Company from "../../models/company.model.js";
+import ServiceBase from "./base.service.js";
 
 
-export const addDefaultManagerForCompany = async (company) => {
-    await Manager.create({ user_id: company.created_by, entity: "companies", entity_id: company._id, created_by: company.created_by, type: "owner" });
+class CompanyService extends ServiceBase {
+    constructor(model) {
+        super(model)
+        this.model = model
+        autoBind(this)
+    }
 }
 
-export const deleteManagersFromCompany = async (company) => {
-    let managers = await Manager.find({ 'entity': "companies", 'entity_id': company.id });
-    managers.map((manager) => {
-        manager.delete(company.deletedBy);
-    })
-}
+export default new CompanyService(Company);

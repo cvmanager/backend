@@ -12,7 +12,10 @@ import Project from '../../models/project.model.js';
 import Resume from '../../models/resume.model.js';
 import i18n from '../../middlewares/lang.middleware.js';
 import autoBind from 'auto-bind';
-
+import companyService from '../../helper/service/company.service.js';
+import { mergeQuery } from '../../helper/mergeQuery.js';
+import userService from '../../helper/service/user.service.js';
+import roleService from '../../helper/service/role.service.js';
 
 class CompanyController extends Controller {
 
@@ -38,7 +41,7 @@ class CompanyController extends Controller {
             const { page = 1, size = 10, query = '' } = req.query
 
             let searchQuery = (query.length > 0 ? { $or: [{ name: { '$regex': new RegExp(query, "i") } }] } : null);
-
+            searchQuery = mergeQuery(searchQuery, req.rbacQuery)
             const companyList = await Company.paginate(searchQuery, {
                 page: (page) || 1,
                 limit: size,
@@ -76,8 +79,7 @@ class CompanyController extends Controller {
     */
     async find(req, res, next) {
         try {
-            const company = await Company.findById(req.params.id).populate('created_by');
-            if (!company) throw new NotFoundError('company.errors.company_notfound');
+            let company = await companyService.findByParamId(req)
 
             AppResponse.builder(res).message('company.messages.company_found').data(company).send();
         } catch (err) {
@@ -105,7 +107,7 @@ class CompanyController extends Controller {
             let company = await Company.findOne({ 'name': req.body.name });
             if (company) throw new AlreadyExists('company.errors.company_already_exists');
 
-            req.body.created_by = req.user_id;
+            req.body.created_by = req.user._id;
             company = await Company.create(req.body);
 
             EventEmitter.emit(events.CREATE, company);
@@ -134,8 +136,7 @@ class CompanyController extends Controller {
     */
     async update(req, res, next) {
         try {
-            let company = await Company.findById(req.params.id);
-            if (!company) throw new NotFoundError('company.errors.company_notfound');
+            let company = await companyService.findByParamId(req)
 
             if (req.body.name !== undefined) {
                 let duplicateCompany = await Company.findOne({ '_id': { $ne: company._id }, 'name': req.body.name });
@@ -170,9 +171,8 @@ class CompanyController extends Controller {
     */
     async delete(req, res, next) {
         try {
-            let company = await Company.findById(req.params.id);
-            if (!company) throw new NotFoundError('company.errors.company_notfound');
-            await company.delete(req.user_id);
+            let company = await companyService.findByParamId(req)
+            await company.delete(req.user._id);
 
             EventEmitter.emit(events.DELETE, company);
             AppResponse.builder(res).message("company.messages.company_successfuly_deleted").data(company).send();
@@ -198,8 +198,7 @@ class CompanyController extends Controller {
     */
     async manager(req, res, next) {
         try {
-            let company = await Company.findById(req.params.id);
-            if (!company) throw new NotFoundError('company.errors.company_notfound');
+            let company = await companyService.findByParamId(req)
 
             let user = await User.findById(req.body.manager_id);
             if (!user) throw new NotFoundError('user.errors.user_notfound');
@@ -207,7 +206,10 @@ class CompanyController extends Controller {
             let manager = await Manager.findOne({ 'entity': "companies", 'entity_id': company.id, 'user_id': user.id });
             if (manager) throw new BadRequestError("company.errors.the_user_is_currently_an_manager_for_company");
 
-            await Manager.create({ user_id: user._id, entity: "companies", entity_id: company._id, created_by: req.user_id });
+            await Manager.create({ user_id: user._id, entity: "companies", entity_id: company._id, created_by: req.user._id });
+
+            const companyManagerRole = await roleService.findOne({ name: "Company Manager" })
+            await userService.addRole(user._id, companyManagerRole._id)
 
             EventEmitter.emit(events.SET_MANAGER, company);
 
@@ -234,8 +236,7 @@ class CompanyController extends Controller {
    */
     async deleteManager(req, res, next) {
         try {
-            let company = await Company.findById(req.params.id);
-            if (!company) throw new NotFoundError('company.errors.company_notfound');
+            let company = await companyService.findByParamId(req)
 
             let user = await User.findById(req.body.manager_id);
             if (!user) throw new NotFoundError('user.errors.user_notfound');
@@ -244,7 +245,13 @@ class CompanyController extends Controller {
             if (!manager) throw new BadRequestError("company.errors.the_user_is_not_manager_for_this_company");
             if (manager.type === 'owner') throw new BadRequestError("company.errors.the_owner_manager_cannot_be_deleted");
 
-            await manager.delete(req.user_id);
+            await manager.delete(req.user._id);
+
+            let isCompanyManager = await Manager.findOne({ 'entity': "companies", 'user_id': user.id, type: 'moderator' });
+            if (!isCompanyManager) {
+                const companyManagerRole = await roleService.findOne({ name: "Company Manager" })
+                await userService.removeRole(user._id, companyManagerRole._id)
+            }
 
             EventEmitter.emit(events.UNSET_MANAGER, company);
 
@@ -271,8 +278,7 @@ class CompanyController extends Controller {
     */
     async getProjects(req, res, next) {
         try {
-            const company = await Company.findById(req.params.id);
-            if (!company) throw new NotFoundError('company.errors.company_notfound');
+            let company = await companyService.findByParamId(req)
 
             let projects = await Project.find({ 'company_id': company.id })
                 .sort({ 'updatedAt': -1 })
@@ -308,8 +314,7 @@ class CompanyController extends Controller {
  */
     async getManagers(req, res, next) {
         try {
-            const company = await Company.findById(req.params.id);
-            if (!company) throw new NotFoundError('company.errors.company_notfound');
+            let company = await companyService.findByParamId(req)
 
             let managers = await Manager.find({ 'entity': "companies", 'entity_id': company.id })
                 .populate([
@@ -340,8 +345,7 @@ class CompanyController extends Controller {
     */
     async getResumes(req, res, next) {
         try {
-            const company = await Company.findById(req.params.id);
-            if (!company) throw new NotFoundError('company.errors.company_notfound');
+            let company = await companyService.findByParamId(req)
 
             let resumes = await Resume.find({ 'company_id': company.id })
                 .sort({ 'updatedAt': -1 })
@@ -374,8 +378,7 @@ class CompanyController extends Controller {
     */
     async updateLogo(req, res, next) {
         try {
-            let company = await Company.findById(req.params.id);
-            if (!company) throw new NotFoundError('company.errors.company_notfound');
+            let company = await companyService.findByParamId(req)
 
             if (req.body.logo) {
                 company.logo = req.body.logo;
@@ -404,8 +407,7 @@ class CompanyController extends Controller {
     */
     async active(req, res, next) {
         try {
-            let company = await Company.findById(req.params.id);
-            if (!company) throw new NotFoundError('company.errors.company_notfound');
+            let company = await companyService.findByParamId(req)
 
             if (company.is_active == true) throw new BadRequestError('company.errors.company_activated_alredy');
             company.is_active = true;
@@ -433,8 +435,7 @@ class CompanyController extends Controller {
     */
     async deActive(req, res, next) {
         try {
-            let company = await Company.findById(req.params.id);
-            if (!company) throw new NotFoundError('company.errors.company_notfound');
+            let company = await companyService.findByParamId(req)
 
             if (company.is_active == false) throw new BadRequestError('company.errors.company_deactivated_alredy');
             company.is_active = false;
@@ -463,8 +464,7 @@ class CompanyController extends Controller {
    */
     async resumeByStates(req, res, next) {
         try {
-            let company = await Company.findById(req.params.id);
-            if (!company) throw new NotFoundError('company.errors.company_notfound');
+            let company = await companyService.findByParamId(req)
 
             let statusArray = i18n.__("resume.enums.status");
             let totalResumeByStates = await Resume.aggregate([
@@ -512,8 +512,7 @@ class CompanyController extends Controller {
    */
     async resumeCountByProjects(req, res, next) {
         try {
-            let company = await Company.findById(req.params.id);
-            if (!company) throw new NotFoundError('company.errors.company_notfound');
+            let company = await companyService.findByParamId(req)
 
             let resumeCountByProjects = await Resume.aggregate([
                 {
@@ -582,8 +581,7 @@ class CompanyController extends Controller {
    */
     async resumeCountFromMonth(req, res, next) {
         try {
-            let company = await Company.findById(req.params.id);
-            if (!company) throw new NotFoundError('company.errors.company_notfound');
+            let company = await companyService.findByParamId(req)
 
             let date = new Date();
             let date7MonthAgo = date.setMonth(date.getMonth() - 7)
@@ -656,8 +654,7 @@ class CompanyController extends Controller {
    */
     async resumeStateInLastMonth(req, res, next) {
         try {
-            let company = await Company.findById(req.params.id);
-            if (!company) throw new NotFoundError('company.errors.company_notfound');
+            let company = await companyService.findByParamId(req)
 
             let date = new Date();
             let date1MonthAgo = date.setMonth(date.getMonth() - 1)
