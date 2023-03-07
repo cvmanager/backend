@@ -7,6 +7,7 @@ import LoginLog from '../../models/loginLog.model.js';
 import Controller from './controller.js';
 import { events } from '../../events/subscribers/user.subscriber.js';
 import bcrypt from 'bcrypt'
+import userService from '../../helper/service/user.service.js';
 
 class UserController extends Controller {
 
@@ -141,8 +142,11 @@ class UserController extends Controller {
      */
     async getMe(req, res, next) {
         try {
-            let user = await User.findById(req.user._id);
+            let user = await userService.findOne(req.user._id, [{path: 'role', select: ['name', 'id', 'permissions']}])
             if (!user) throw new NotFoundError('user.errors.user_notfound');
+            await user.populate({
+                path: "role.permissions"
+            })
 
             AppResponse.builder(res).data(user).message('user.messages.user_founded').send();
         } catch (err) {

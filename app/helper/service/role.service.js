@@ -84,12 +84,9 @@ class RoleService extends ServiceBase {
               }
             },
             {
-               '$lookup': {
-                'from': 'permissions', 
-                'localField': 'permissions', 
-                'foreignField': '_id', 
-                'as': 'permissions'
-              }
+                '$project': {
+                    'users.password': 0
+                }
             }
           ])
     }
