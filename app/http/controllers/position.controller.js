@@ -47,7 +47,8 @@ class PositionController extends Controller {
                         path: 'managers',
                         populate: { path: 'user_id', select: ['firstname', 'lastname', 'avatar'] },
                         select: ['user_id', 'type']
-                    }
+                    },
+                    { path: 'created_by', select: ['firstname', 'lastname', 'avatar'] }
                 ]
             });
             AppResponse.builder(res).message("position.messages.position_list_found").data(positionList).send();
@@ -73,10 +74,12 @@ class PositionController extends Controller {
     */
     async find(req, res, next) {
         try {
-            const position = await positionService.findByParamId(req, [
-                { path: 'company_id', select: ['_id', 'name', 'logo'] },
-                { path: 'project_id', select: ['_id', 'name', 'logo'] }
-            ])
+            const position = await Position.findById(req.params.id)
+                .populate([
+                    { path: 'company_id', select: ['_id', 'name', 'logo'] },
+                    { path: 'project_id', select: ['_id', 'name', 'logo'] },
+                    { path: 'created_by', select: ['firstname', 'lastname', 'avatar'] }
+                ]);
             if (!position) throw new NotFoundError('position.errors.position_notfound');
 
             AppResponse.builder(res).message('position.messages.position_found').data(position).send();
