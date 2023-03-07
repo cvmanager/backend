@@ -490,7 +490,13 @@ class CompanyController extends Controller {
                 }
             ])
 
-            AppResponse.builder(res).message("company.messages.company_successfuly_updated").data(totalResumeByStates).send()
+            statusArray.forEach(element => {
+                if (totalResumeByStates.find(resume => resume.state !== element)) {
+                    totalResumeByStates.push({ 'count': 0, 'state': element });
+                }
+            })
+
+            AppResponse.builder(res).message("company.messages.company_resume_by_states").data(totalResumeByStates).send()
         } catch (err) {
             next(err);
         }
@@ -559,7 +565,7 @@ class CompanyController extends Controller {
                 },
             ]);
 
-            AppResponse.builder(res).message("company.messages.company_successfuly_updated").data(resumeCountByProjects).send()
+            AppResponse.builder(res).message("company.messages.company_resume_count_by_projects").data(resumeCountByProjects).send()
         } catch (err) {
             next(err);
         }
@@ -586,14 +592,14 @@ class CompanyController extends Controller {
             let date = new Date();
             let date7MonthAgo = date.setMonth(date.getMonth() - 7)
             date7MonthAgo = new Date(date7MonthAgo);
-            const monthsArray = [ '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12' ]
+            const monthsArray = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']
 
             let resumeCountFromMonth = await Resume.aggregate([
                 {
                     $match: {
                         company_id: company._id,
                         // createdAt: { $gte: YEAR_BEFORE, $lte: TODAY }
-                        createdAt: { $gte: date7MonthAgo}
+                        createdAt: { $gte: date7MonthAgo }
                     }
                 },
                 {
@@ -606,17 +612,17 @@ class CompanyController extends Controller {
                     $sort: { "_id.year_month": -1 }
                 },
                 {
-                    $project: { 
-                        _id: 0, 
-                        count: 1, 
-                        month_year: { 
-                            $concat: [ 
-                               { $arrayElemAt: [ monthsArray, { $subtract: [ { $toInt: { $substrCP: [ "$_id.year_month", 5, 2 ] } }, 1 ] } ] },
-                               "-", 
-                               { $substrCP: [ "$_id.year_month", 0, 4 ] }
-                            ] 
+                    $project: {
+                        _id: 0,
+                        count: 1,
+                        month_year: {
+                            $concat: [
+                                { $arrayElemAt: [monthsArray, { $subtract: [{ $toInt: { $substrCP: ["$_id.year_month", 5, 2] } }, 1] }] },
+                                "-",
+                                { $substrCP: ["$_id.year_month", 0, 4] }
+                            ]
                         }
-                    } 
+                    }
                 },
                 {
                     $group: {
@@ -632,7 +638,7 @@ class CompanyController extends Controller {
                 }
             ])
 
-            AppResponse.builder(res).message("company.messages.company_successfuly_updated").data(resumeCountFromMonth).send()
+            AppResponse.builder(res).message("company.messages.company_resume_count_from_month").data(resumeCountFromMonth).send()
         } catch (err) {
             next(err);
         }
@@ -723,16 +729,16 @@ class CompanyController extends Controller {
                 }
 
             ])
-            let pendingResumeInLastMonth = await this.resumeCountByStateAndMonth(company, 'pending', date1MonthAgo, date2MonthAgo);
+            let hiredResumeInLastMonth = await this.resumeCountByStateAndMonth(company, 'hired', date1MonthAgo, date2MonthAgo);
             let rejectedResumeInLastMonth = await this.resumeCountByStateAndMonth(company, 'rejected', date1MonthAgo, date2MonthAgo);
 
             let resumeStateInLastMonth = {
                 'received': receivedResumeInLastMonth,
-                'pending': pendingResumeInLastMonth,
+                'hired': hiredResumeInLastMonth,
                 'rejected': rejectedResumeInLastMonth,
             }
 
-            AppResponse.builder(res).message("company.messages.company_successfuly_updated").data(resumeStateInLastMonth).send()
+            AppResponse.builder(res).message("company.messages.company_resume_state_in_last_month").data(resumeStateInLastMonth).send()
         } catch (err) {
             next(err);
         }

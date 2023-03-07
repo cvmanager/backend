@@ -98,6 +98,10 @@
 			"company_resumes_found": "Company resumes successfuly founded",
 			"company_projects_found": "Company projects successfuly founded",
 			"company_successfuly_updated": "Company successfuly updated",
+			"company_resume_by_states": "Company statistics for resume by states",
+			"company_resume_count_by_projects": "Company statistics for projects count",
+			"company_resume_count_from_month": "Company statistics for resume count from month",
+			"company_resume_state_in_last_month": "Company statistics for resume state in last month",
 			"company_manager_successfully_created": "company manager successfully created",
 			"company_successfuly_activated": "company  successfully activated",
 			"company_successfuly_deactivated": "company  successfully deactivated"
