@@ -421,5 +421,69 @@ describe("User Routes", () => {
     })
   })
 
+  describe(`GET /:id/companies`, () => {
+
+    it(`should get ${httpStatus.BAD_REQUEST} user id is not a mongo id`, async () => {
+      const response = await request(app)
+        .get(`/api/V1/users/fakeID/companies`)
+        .set(`Authorization`, token)
+        .send();
+      expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+    })
+
+    it(`should get ${httpStatus.NOT_FOUND} user id is not valid`, async () => {
+      const response = await request(app)
+        .get(`/api/V1/users/${Types.ObjectId()}/companies`)
+        .set(`Authorization`, token)
+        .send();
+      expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+    })
+
+    it('should get one item if page = 1 and size = 1', async () => {
+      const response = await request(app)
+        .get(`/api/V1/users/${user._id}/companies?page=1&size=1`)
+        .set('Authorization', token)
+        .send();
+      let data = response.body.data[0].docs;
+      expect(data.length).toBe(1);
+    })
+    it(`should get ${httpStatus.BAD_REQUEST} page is not number`, async () => {
+      const response = await request(app)
+        .get(`/api/V1/users/${user._id}/companies?page=string`)
+        .set('Authorization', token)
+        .send();
+      expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+    })
+
+    it(`should get ${httpStatus.BAD_REQUEST} size is not number`, async () => {
+      const response = await request(app)
+        .get(`/api/V1/users/${user._id}/companies?page=1&size=string`)
+        .set('Authorization', token)
+        .send();
+      expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+    })
+
+    it(`should get ${httpStatus.OK}  user companies list`, async () => {
+      const response = await request(app)
+        .get(`/api/V1/users/${user._id}/companies`)
+        .set(`Authorization`, token)
+        .send();
+
+      let data = response.body.data[0].docs[0];
+      expect(data).toHaveProperty('_id')
+      expect(data).toHaveProperty('name')
+      expect(data).toHaveProperty('logo')
+      expect(data).toHaveProperty('description')
+      expect(data).toHaveProperty('phone')
+      expect(data).toHaveProperty('address')
+      expect(data).toHaveProperty('is_active')
+      expect(data).toHaveProperty('created_by')
+      expect(data).toHaveProperty('deleted')
+      expect(data).toHaveProperty('createdAt')
+      expect(data).toHaveProperty('updatedAt')
+      expect(data).toHaveProperty('id')
+    })
+  })
+
 
 });

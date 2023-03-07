@@ -15,5 +15,6 @@ userRouter
     .post('/avatar', Upload('/users/org/', 'avatar', 'image'), cropImage(avatar_size), UserValidation.updateProfileImage(), UserController.uploadProfileImage)
     .post('/:id/ban', UserValidation.ban(), UserController.banned)
     .patch('/change-password', UserValidation.changePassword(), UserController.changePassword)
-    .get('/:id/login-history', UserValidation.loginHistory(), UserController.loginHistory);
+    .get('/:id/login-history', UserValidation.loginHistory(), UserController.loginHistory)
+    .get('/:id/companies', UserValidation.companies(), UserController.companies);
 export default userRouter
