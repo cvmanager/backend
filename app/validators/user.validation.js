@@ -105,9 +105,9 @@ class UserValidation {
                 .trim(),
             body('email')
                 .notEmpty()
-                .withMessage('resume.validations.email_required')
+                .withMessage('auth.validations.email_required')
                 .isEmail()
-                .withMessage('resume.validations.email_invalid')
+                .withMessage('auth.validations.email_invalid')
                 .trim(),
             generalValidator
         ]

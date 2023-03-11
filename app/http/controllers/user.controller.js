@@ -217,7 +217,7 @@ class UserController extends Controller {
     }
 
     /**
-     * PATCH /users/{id}/edit
+     * PATCH /users/{id}
      * 
      * @summary edit user info
      * @tags User
@@ -247,7 +247,7 @@ class UserController extends Controller {
             user.lastname = req.body.lastname
             user.username = req.body.username
             user.email = req.body.email
-            user.save();
+            await user.save();
 
             EventEmitter.emit(events.EDIT_USER, user);
 

@@ -52,7 +52,9 @@
 			"mobile_required": "The mobile field is required",
 			"mobile_pattern": "The mobile number entered is invalid",
 			"username_wrong": "The username is wrong",
-			"mobile_wrong": "The username is wrong"
+			"mobile_wrong": "The username is wrong",
+			"email_required": "email is required",
+			"email_invalid": "email is invalid"
 		},
 		"messages": {
 			"user_successfuly_created": "The account was created successfully",

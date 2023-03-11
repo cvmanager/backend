@@ -417,7 +417,7 @@ describe('User Routes', () => {
     })
   })
 
-  describe(`PATCH /user/id/edit`, () => {
+  describe(`PATCH /user/id`, () => {
     let params
     beforeEach(() => {
       params = {

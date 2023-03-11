@@ -16,6 +16,6 @@ userRouter
     .post('/:id/ban', UserValidation.ban(), UserController.banned)
     .patch('/change-password', UserValidation.changePassword(), UserController.changePassword)
     .get('/:id/login-history', UserValidation.loginHistory(), UserController.loginHistory)
-    .patch('/:id/edit', UserValidation.edit(), UserController.edit)
+    .patch('/:id', UserValidation.edit(), UserController.edit)
     
 export default userRouter 
