@@ -356,7 +356,8 @@ class ResumeController extends Controller {
                 calling_date: calling_date,
                 description: req.body.description,
                 recall_at: recall_at,
-                created_by: req.user._id
+                rating: req.body.rating,
+                created_by: req.user_id
             })
             calling_date = calling_date.getTime()
             recall_at = recall_at.getTime()
