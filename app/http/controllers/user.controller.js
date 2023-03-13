@@ -8,6 +8,7 @@ import LoginLog from '../../models/loginLog.model.js';
 import Controller from './controller.js';
 import { events } from '../../events/subscribers/user.subscriber.js';
 import bcrypt from 'bcrypt'
+import { mergeQuery } from '../../helper/mergeQuery.js';
 import userService from '../../helper/service/user.service.js';
 
 class UserController extends Controller {
@@ -234,11 +235,10 @@ class UserController extends Controller {
     async companies(req, res, next) {
         try {
             const { page = 1, size = 10 } = req.query
-            let user = await User.findById(req.params.id);
-            if (!user) throw new NotFoundError('user.errors.user_notfound');
+            let user = await userService.findByParamId(req)
 
             let searchQuery = { 'created_by': user._id }
-            // let userCompanies = await Company.find({ 'created_by': user._id });
+            searchQuery = mergeQuery(searchQuery, req.rbacQuery)
 
             const userCompanies = await Company.paginate(searchQuery, {
                 page: (page) || 1,
