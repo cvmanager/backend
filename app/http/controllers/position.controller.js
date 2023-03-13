@@ -250,8 +250,7 @@ class PositionController extends Controller {
      */
     async getResumes(req, res, next) {
         try {
-            const position = await positionService.findByParamId(req.params.id, ['created_by'])
-            if (!position) throw new NotFoundError('position.errors.position_notfound');
+            const position = await positionService.findByParamId(req)
             const { size = 10 } = req.query
 
             let resumes = [];
@@ -259,9 +258,9 @@ class PositionController extends Controller {
 
             let statuses = i18n.__("resume.enums.status");
             for (let status of statuses) {
-                let resumeList = Resume.find({ 'position_id': position.id, 'status': status })
+                let resumeList = Resume.find({ 'position_id': position._id, 'status': status })
                     .limit(size)
-                    .sort([['updatedAt', -1]])
+                    .sort([['index', 1]])
                     .populate([
                         { path: 'company_id', select: ['_id', 'name', 'logo'] },
                         { path: 'project_id', select: ['_id', 'name', 'logo'] },

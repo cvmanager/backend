@@ -3,7 +3,7 @@ import ResumeController from '../http/controllers/resume.controller.js';
 import ResumeValidation from '../validators/resume.validation.js';
 import { Upload } from '../helper/upload.js';
 
-const resumeIdRouter = express.Router();
+const resumeIdRouter = express.Router({mergeParams: true});
 
 resumeIdRouter
     .get('', ResumeValidation.find(), ResumeController.find)

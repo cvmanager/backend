@@ -163,6 +163,10 @@ const schema = new mongoose.Schema(
         process_duration: {
             type: Number,
             default: null
+        },
+        index: {
+            type: Number,
+            default: null
         }
     }
 );

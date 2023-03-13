@@ -231,6 +231,12 @@ class ResumeValidation {
                 .isIn(i18n.__("resume.enums.status"))
                 .withMessage('resume.validations.status_required')
                 .trim(),
+            body('index')
+                .notEmpty()
+                .withMessage('resume.validations.index_required')
+                .isNumeric()
+                .withMessage('resume.validations.index_invalid')
+                .trim(),
             generalValidator
         ];
     }

@@ -233,7 +233,9 @@
 			"calling_date_must_be_date": "calling_date must be date",
 			"description_length": "description length must be between 0 and 1000",
 			"call_history_recall_at_required": "recall_at is required",
-			"call_history_recall_at_invalid": "recall_at must be date"
+			"call_history_recall_at_invalid": "recall_at must be date",
+			"index_required": "index is required",
+			"index_invalid": "index must be number"
 		},
 		"messages": {
 			"resume_successfuly_created": "resume successfuly created",

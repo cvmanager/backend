@@ -75,6 +75,7 @@
 * update status resume
 * @typedef { object } resume.update_status
 * @property { string } status.required - resume status
+* @property { number } index.required - resume index
 */
 
 /**
