@@ -40,8 +40,8 @@ router.use('/resumes/:id', verifyToken, canAccess, resumeAccess, resumeIdRouter)
 router.use('/resumes', verifyToken, canAccess, resumeAccess, resumeRouter)
 router.use('/roles/:id', verifyToken, canAccess, roleIdRouter)
 router.use('/roles', verifyToken, canAccess, roleRouter)
-router.use('/constant', verifyToken,constantRouter)
-router.use('/provinces', verifyToken,provinceRouter)
-router.use('/cities', verifyToken,cityRouter)
+router.use('/constant', verifyToken, canAccess, constantRouter)
+router.use('/provinces', verifyToken, canAccess, provinceRouter)
+router.use('/cities', verifyToken, canAccess, cityRouter)
 
 export default router;

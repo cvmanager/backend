@@ -10,6 +10,7 @@ import EventEmitter from '../../events/emitter.js';
 import { events } from '../../events/subscribers/positions.subscriber.js'
 import Resume from '../../models/resume.model.js';
 import BadRequestError from '../../exceptions/BadRequestError.js';
+import i18n from '../../middlewares/lang.middleware.js'
 import positionService from '../../helper/service/position.service.js';
 import { mergeQuery } from '../../helper/mergeQuery.js';
 
@@ -47,7 +48,8 @@ class PositionController extends Controller {
                         path: 'managers',
                         populate: { path: 'user_id', select: ['firstname', 'lastname', 'avatar'] },
                         select: ['user_id', 'type']
-                    }
+                    },
+                    { path: 'created_by', select: ['firstname', 'lastname', 'avatar'] }
                 ]
             });
             AppResponse.builder(res).message("position.messages.position_list_found").data(positionList).send();
@@ -73,10 +75,12 @@ class PositionController extends Controller {
     */
     async find(req, res, next) {
         try {
-            const position = await positionService.findByParamId(req, [
-                { path: 'company_id', select: ['_id', 'name', 'logo'] },
-                { path: 'project_id', select: ['_id', 'name', 'logo'] }
-            ])
+            const position = await Position.findById(req.params.id)
+                .populate([
+                    { path: 'company_id', select: ['_id', 'name', 'logo'] },
+                    { path: 'project_id', select: ['_id', 'name', 'logo'] },
+                    { path: 'created_by', select: ['firstname', 'lastname', 'avatar'] }
+                ]);
             if (!position) throw new NotFoundError('position.errors.position_notfound');
 
             AppResponse.builder(res).message('position.messages.position_found').data(position).send();
@@ -141,7 +145,7 @@ class PositionController extends Controller {
             if (!position) throw new NotFoundError('position.errors.position_notfound');
 
             if (req.body.title !== undefined) {
-                let dupplicatePosition = await Position.findOne({ 'title': req.body.title, 'project_id': position.project_id });
+                let dupplicatePosition = await Position.findOne({ '_id': { $ne: position._id }, 'title': req.body.title, 'project_id': position.project_id });
                 if (dupplicatePosition && dupplicatePosition._id !== position._id) throw new AlreadyExists('position.errors.position_already_exists');
             }
 
@@ -248,8 +252,30 @@ class PositionController extends Controller {
         try {
             const position = await positionService.findByParamId(req.params.id, ['created_by'])
             if (!position) throw new NotFoundError('position.errors.position_notfound');
+            const { size = 10 } = req.query
 
-            let resumes = await Resume.find({ 'position_id': position.id }).populate('project_id').populate('company_id');
+            let resumes = [];
+            let promiseResumes = []
+
+            let statuses = i18n.__("resume.enums.status");
+            for (let status of statuses) {
+                let resumeList = Resume.find({ 'position_id': position.id, 'status': status })
+                    .limit(size)
+                    .sort([['updatedAt', -1]])
+                    .populate([
+                        { path: 'company_id', select: ['_id', 'name', 'logo'] },
+                        { path: 'project_id', select: ['_id', 'name', 'logo'] },
+                        { path: 'resumeComments', select: ['_id', 'body'] },
+                    ]);
+                promiseResumes.push(resumeList)
+            }
+            let results = await Promise.all(promiseResumes)
+
+            for (let i = 0; i < statuses.length; i++) {
+                let resume = {}
+                resume[statuses[i]] = results[i]
+                resumes.push(resume)
+            }
 
             AppResponse.builder(res).message('company.messages.company_resumes_found').data(resumes).send();
         } catch (err) {

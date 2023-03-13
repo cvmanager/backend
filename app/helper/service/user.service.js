@@ -5,6 +5,8 @@ import LoginLog from '../../models/loginLog.model.js'
 import systemInfo from "systeminformation";
 import User from "../../models/user.model.js";
 import ServiceBase from "./base.service.js";
+import user from "../../db/user.js";
+import bcrypt from 'bcrypt'
 const browser = detect();
 
 
@@ -67,7 +69,12 @@ class UserService extends ServiceBase {
             loginLog.logout_at = new Date();
             await loginLog.save();
         }
-    
+    }
+
+    async fillUsers() {
+        const salt = await bcrypt.genSalt(10)
+        user.password = await bcrypt.hash("some-pass", salt);
+        return super.createMany(user)
     }
 }
 
