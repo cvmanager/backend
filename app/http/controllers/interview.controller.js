@@ -9,11 +9,13 @@ import Controller from './controller.js';
 class InterviewController extends Controller {
 
     /**
-    * GET /interviews
+    * GET /resumes/{resume_id}/interviews
     * 
     * @summary get a list of all interviews
-    * @tags Interview
+    * @tags Resume
     * @security BearerAuth
+    * 
+    * @param  { string } resume_id.path.required - resume id
     * 
     * @return { interview.success } 200 - success response
     * @return { message.badrequest_error } 400 - bad request respone
@@ -23,6 +25,9 @@ class InterviewController extends Controller {
     */
     async index(req, res, next) {
         try {
+            let resume = await Resume.findById(req.param.resume_id);
+            if (!resume) throw new NotFoundError('resume.errors.resume_not_found');
+
             const { page = 1, size = 10, query = '' } = req.query
 
             let searchQuery = {}
@@ -47,13 +52,14 @@ class InterviewController extends Controller {
     }
 
     /**
-    * GET /interviews/{id}
+    * GET /resumes/{resume_id}/interviews/{id}
     * 
     * @summary gets a interview by id
-    * @tags Interview
+    * @tags Resume
     * @security BearerAuth
     * 
     * @param  { string } id.path.required - interview id
+    * @param  { string } resume_id.path.required - resume id
     * 
     * @return { interview.success } 200 - success response
     * @return { message.badrequest_error } 400 - bad request respone
@@ -73,13 +79,14 @@ class InterviewController extends Controller {
     }
 
     /**
-    * POST /interviews
+    * POST /resumes/{resume_id}/interviews
     * 
     * @summary create a interview
-    * @tags Interview
+    * @tags Resume
     * @security BearerAuth
     * 
     * @param { interview.create } request.body - interview info - application/json
+    * @param  { string } resume_id.path.required - resume id
     
     * @return { interview.success }         201 - success response
     * @return { message.badrequest_error }  400 - bad request respone
@@ -89,7 +96,7 @@ class InterviewController extends Controller {
     */
     async create(req, res, next) {
         try {
-            let resume = await Resume.findById(req.body.resume_id);
+            let resume = await Resume.findById(req.param.resume_id);
             if (!resume) throw new NotFoundError('resume.errors.resume_not_found');
 
             req.body.created_by = req.user_id
@@ -104,13 +111,14 @@ class InterviewController extends Controller {
     }
 
     /**
-    * PATCH /interviews/{id}
+    * PATCH /resumes/{resume_id}/interviews/{id}
     * 
     * @summary updates a copmany
-    * @tags Interview
+    * @tags Resume
     * @security BearerAuth
     * 
     * @param { string } id.path.required - interview id
+    * @param { string } resume_id.path.required - resume id
     * @param { interview.update } request.body - interview info - application/json
     * 
     * @return { interview.success }           200 - success response
@@ -121,6 +129,9 @@ class InterviewController extends Controller {
     */
     async update(req, res, next) {
         try {
+            let resume = await Resume.findById(req.param.resume_id);
+            if (!resume) throw new NotFoundError('resume.errors.resume_not_found');
+
             let interview = await Interview.findById(req.params.id);
             if (!interview) throw new NotFoundError('interview.errors.interview_notfound');
 
@@ -142,13 +153,14 @@ class InterviewController extends Controller {
     }
 
     /**
-    * DELETE /interviews/{id}
+    * DELETE /resumes/{resume_id}/interviews/{id}
     * 
     * @summary deletes a copmany by id
-    * @tags Interview
+    * @tags Resume
     * @security BearerAuth
     * 
     * @param  { string } id.path - interview id
+    * @param  { string } resume_id.path.required - resume id
     * 
     * @return { interview.success } 200 - success response
     * @return { message.badrequest_error } 400 - bad request respone
@@ -158,6 +170,9 @@ class InterviewController extends Controller {
     */
     async delete(req, res, next) {
         try {
+            let resume = await Resume.findById(req.param.resume_id);
+            if (!resume) throw new NotFoundError('resume.errors.resume_not_found');
+
             let interview = await Interview.findById(req.params.id);
             if (!interview) throw new NotFoundError('interview.errors.interview_notfound');
 

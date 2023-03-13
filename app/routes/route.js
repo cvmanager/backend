@@ -10,6 +10,7 @@ import provinceRouter from './province.route.js'
 import cityRouter from './city.route.js'
 import positionRouter from './position.route.js'
 import interviewRouter from './interview.route.js'
+import interviewIdRouter from './interviewId.route.js'
 import { canAccess } from '../middlewares/rbac.middleware.js'
 import companyIdRouter from './companyId.route.js'
 import { companyAccess } from '../middlewares/companyAccess.middleware.js'
@@ -37,14 +38,14 @@ router.use('/positions/:id', verifyToken, canAccess, positionAccess, positionIdR
 router.use('/positions', verifyToken, canAccess, positionAccess, positionRouter)
 router.use('/permissions/:id', verifyToken, canAccess, permissionIdRouter)
 router.use('/permissions', verifyToken, canAccess, permissionRouter)
+router.use('/resumes/:resume_id/interviews/:id', canAccess, interviewIdRouter)
+router.use('/resumes/:resume_id/interviews', canAccess, interviewRouter)
 router.use('/resumes/:id', verifyToken, canAccess, resumeAccess, resumeIdRouter)
 router.use('/resumes', verifyToken, canAccess, resumeAccess, resumeRouter)
 router.use('/roles/:id', verifyToken, canAccess, roleIdRouter)
 router.use('/roles', verifyToken, canAccess, roleRouter)
-router.use('/positions', verifyToken, canAccess, positionRouter)
-router.use('/interviews', verifyToken, canAccess, interviewRouter)
-router.use('/constant', verifyToken, canAccess, constantRouter)
-router.use('/provinces', verifyToken, canAccess, provinceRouter)
-router.use('/cities', verifyToken, canAccess, cityRouter)
+router.use('/constant', verifyToken, constantRouter)
+router.use('/provinces', verifyToken, provinceRouter)
+router.use('/cities', verifyToken, cityRouter)
 
 export default router;
