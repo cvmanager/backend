@@ -3,7 +3,7 @@ import { Upload } from '../helper/upload.js';
 import ProjectController from '../http/controllers/project.controller.js';
 import ProjectValidation from '../validators/project.validation.js'
 
-const projectIdRouter = express.Router({mergeParams: true});
+const projectIdRouter = express.Router({ mergeParams: true });
 
 projectIdRouter
     .get('', ProjectValidation.find(), ProjectController.find)
@@ -16,5 +16,5 @@ projectIdRouter
     .get('/positions', ProjectValidation.find(), ProjectController.getPositions)
     .patch('/active', ProjectValidation.active(), ProjectController.active)
     .patch('/deactive', ProjectValidation.deActive(), ProjectController.deActive)
-    .patch('/:id/logo', Upload('projects', 'logo', 'image'), ProjectValidation.logo(), ProjectController.updateLogo)
+    .patch('/logo', Upload('projects', 'logo', 'image'), ProjectValidation.logo(), ProjectController.updateLogo)
 export default projectIdRouter

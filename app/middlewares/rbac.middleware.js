@@ -24,9 +24,17 @@ async function canRole(userRoles, permissionName) {
     let allRoles = await roleService.getAllRoles()
     // getting all possible roles
     for (let role of allRoles) {
-        if (userRoles.includes(role._id.toString()) && role.permissions.includes(permissionName)) roles.push(role)
-    }
+        let hasPermission = false;
+        role.permissions.map(element => {
+            if (element.toLowerCase() === permissionName.toLowerCase()) {
+                hasPermission = true;
+            }
+        });
 
+        if (userRoles.includes(role._id.toString()) && hasPermission) {
+            roles.push(role)
+        }
+    }
     if (roles.length === 0) throw new ForbiddenError
     return roles
 }
@@ -47,7 +55,7 @@ async function getRoleChilds(roleIds) {
         let roleChilds = role && role.childs && role.childs.length > 0 ? role.childs.map(child => child._id) : []
         childs = [...childs, ...roleChilds]
     })
-    
+
     return childs.reverse()
 }
 
@@ -66,7 +74,7 @@ export async function getPermissionRoles(name) {
     let permission
 
     // getting from cache
-    let redisKey = env("REDIS_KEY_RBAC_PERMISSION") + name 
+    let redisKey = env("REDIS_KEY_RBAC_PERMISSION") + name
     permission = JSON.parse(await redisClient.get(redisKey))
 
     // gettign from db if not exist in cache
