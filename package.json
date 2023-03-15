@@ -24,6 +24,7 @@
     "dotenv": "^16.0.1",
     "express": "^4.18.1",
     "express-jsdoc-swagger": "^1.8.0",
+    "express-list-endpoints": "^6.0.0",
     "express-rate-limit": "^6.6.0",
     "express-session": "^1.17.3",
     "express-validator": "^6.14.2",
@@ -49,6 +50,8 @@
     "supertest": "^6.3.1"
   },
   "jest": {
-    "transformIgnorePatterns": ["/node_modules/(?!(auto-bind|pify)/)"]
+    "transformIgnorePatterns": [
+      "/node_modules/(?!(auto-bind|pify)/)"
+    ]
   }
 }

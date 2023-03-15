@@ -81,7 +81,7 @@ class AuthController extends Controller {
                 mobile: req.body.mobile,
                 username: req.body.username,
                 password: hash_password,
-                role: [ownerRole._id]
+                role: ((ownerRole && ownerRole._id )? [ownerRole._id] : [])
             });
 
             const access_token = await generateJwtToken({ _id: user._id, role: [ownerRole._id] })

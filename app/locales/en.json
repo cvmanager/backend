@@ -1,5 +1,4 @@
 {
-	"translate": {
 		"system": {
 			"enums": {
 				"gender": [
@@ -288,5 +287,5 @@
 			"messages": {},
 			"errors": {}
 		}
-	}
+	
 }

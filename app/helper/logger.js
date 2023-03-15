@@ -7,17 +7,17 @@ class Logger {
 
     constructor(req) {
         this.req = req;
+        console.log(env('SENTRY_DNS'));
+        Sentry.init({
+            dsn: env('SENTRY_DNS'),
+            tracesSampleRate: env('SENTRY_TRACESSAMPLERATE'),
+            environment: env('NODE_ENV')
+        });
 
-        if (env('NODE_ENV') == 'production') {
-            Sentry.init({
-                dsn: env('SENTRY_DNS'),
-                tracesSampleRate: env('SENTRY_TRACESSAMPLERATE'),
-            });
+        Sentry.configureScope(scope => {
+            if (req.user && req.user._id) scope.setUser({ id: req.user._id });
+        });
 
-            Sentry.configureScope(scope => {
-                if (req.user._id) scope.setUser({ id: req.user._id });
-            });
-        }
 
     }
 
@@ -28,7 +28,7 @@ class Logger {
 
     async setExeption(err) {
         try {
-            if (env('NODE_ENV') == 'production') await Sentry.captureException(err);
+            await Sentry.captureException(err);
 
             const today = new Date();
             let newdate = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
