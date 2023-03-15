@@ -159,9 +159,19 @@ const schema = new mongoose.Schema(
         file: {
             type: Array,
             default: null
+        },
+        process_duration: {
+            type: Number,
+            default: null
         }
     }
 );
+
+schema.virtual("resumeComments", {
+    ref: 'resumeComments',
+    localField: "_id",
+    foreignField: "resume_id"
+});
 
 schema.plugin(basePlugin)
 

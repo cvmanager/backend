@@ -10,6 +10,9 @@ import EventEmitter from '../../events/emitter.js';
 import { events } from '../../events/subscribers/positions.subscriber.js'
 import Resume from '../../models/resume.model.js';
 import BadRequestError from '../../exceptions/BadRequestError.js';
+import i18n from '../../middlewares/lang.middleware.js'
+import positionService from '../../helper/service/position.service.js';
+import { mergeQuery } from '../../helper/mergeQuery.js';
 
 class PositionController extends Controller {
 
@@ -33,6 +36,7 @@ class PositionController extends Controller {
 
             let searchQuery = (query.length > 0 ? { $or: [{ title: { '$regex': query } }] } : null);
 
+            searchQuery = mergeQuery(searchQuery, req.rbacQuery)
             const positionList = await Position.paginate(searchQuery, {
                 page: (page) || 1,
                 limit: size,
@@ -44,7 +48,8 @@ class PositionController extends Controller {
                         path: 'managers',
                         populate: { path: 'user_id', select: ['firstname', 'lastname', 'avatar'] },
                         select: ['user_id', 'type']
-                    }
+                    },
+                    { path: 'created_by', select: ['firstname', 'lastname', 'avatar'] }
                 ]
             });
             AppResponse.builder(res).message("position.messages.position_list_found").data(positionList).send();
@@ -73,7 +78,8 @@ class PositionController extends Controller {
             const position = await Position.findById(req.params.id)
                 .populate([
                     { path: 'company_id', select: ['_id', 'name', 'logo'] },
-                    { path: 'project_id', select: ['_id', 'name', 'logo'] }
+                    { path: 'project_id', select: ['_id', 'name', 'logo'] },
+                    { path: 'created_by', select: ['firstname', 'lastname', 'avatar'] }
                 ]);
             if (!position) throw new NotFoundError('position.errors.position_notfound');
 
@@ -106,7 +112,7 @@ class PositionController extends Controller {
             let position = await Position.findOne({ 'title': req.body.title, 'project_id': req.body.project_id });
             if (position) throw new AlreadyExists('position.errors.position_already_exists');
 
-            req.body.created_by = req.user_id;
+            req.body.created_by = req.user._id;
             req.body.company_id = project.company_id;
             position = await Position.create(req.body);
 
@@ -135,12 +141,11 @@ class PositionController extends Controller {
     */
     async update(req, res, next) {
         try {
-
-            let position = await Position.findById(req.params.id);
+            const position = await positionService.findByParamId(req)
             if (!position) throw new NotFoundError('position.errors.position_notfound');
 
             if (req.body.title !== undefined) {
-                let dupplicatePosition = await Position.findOne({ 'title': req.body.title, 'project_id': position.project_id });
+                let dupplicatePosition = await Position.findOne({ '_id': { $ne: position._id }, 'title': req.body.title, 'project_id': position.project_id });
                 if (dupplicatePosition && dupplicatePosition._id !== position._id) throw new AlreadyExists('position.errors.position_already_exists');
             }
 
@@ -173,10 +178,10 @@ class PositionController extends Controller {
     */
     async delete(req, res, next) {
         try {
-            let position = await Position.findById(req.params.id);
+            const position = await positionService.findByParamId(req)
             if (!position) throw new NotFoundError('position.errors.position_notfound');
 
-            await position.delete(req.user_id);
+            await position.delete(req.user._id);
             EventEmitter.emit(events.DELETE, position);
 
             AppResponse.builder(res).message("position.messages.position_successfuly_deleted").data(position).send();
@@ -205,7 +210,7 @@ class PositionController extends Controller {
     async manager(req, res, next) {
 
         try {
-            let position = await Position.findById(req.params.id);
+            const position = await positionService.findByParamId(req)
             if (!position) throw new NotFoundError('position.errors.position_notfound');
 
             let user = await User.findById(req.body.manager_id);
@@ -216,14 +221,16 @@ class PositionController extends Controller {
                 throw new AlreadyExists('manager.errors.duplicate');
             }
 
-            const manager = await Manager.create({ 'user_id': user._id, 'entity_id': position._id, 'entity': 'positions', 'created_by': req.user_id });
+            const manager = await Manager.create({ 'user_id': user._id, 'entity_id': position._id, 'entity': 'positions', 'created_by': req.user._id });
             EventEmitter.emit(events.SET_MANAGER, position);
+
+            const positionManagerRole = await roleService.findOne({ name: "Position Manager" })
+            await userService.addRole(user._id, positionManagerRole._id)
 
             AppResponse.builder(res).status(201).message('manager.messages.manager_successfuly_created').data(manager).send();
         } catch (err) {
             next(err);
         }
-
     }
 
     /**
@@ -243,10 +250,32 @@ class PositionController extends Controller {
      */
     async getResumes(req, res, next) {
         try {
-            const position = await Position.findById(req.params.id).populate('created_by');
+            const position = await positionService.findByParamId(req.params.id, ['created_by'])
             if (!position) throw new NotFoundError('position.errors.position_notfound');
+            const { size = 10 } = req.query
 
-            let resumes = await Resume.find({ 'position_id': position.id }).populate('project_id').populate('company_id');
+            let resumes = [];
+            let promiseResumes = []
+
+            let statuses = i18n.__("resume.enums.status");
+            for (let status of statuses) {
+                let resumeList = Resume.find({ 'position_id': position.id, 'status': status })
+                    .limit(size)
+                    .sort([['updatedAt', -1]])
+                    .populate([
+                        { path: 'company_id', select: ['_id', 'name', 'logo'] },
+                        { path: 'project_id', select: ['_id', 'name', 'logo'] },
+                        { path: 'resumeComments', select: ['_id', 'body'] },
+                    ]);
+                promiseResumes.push(resumeList)
+            }
+            let results = await Promise.all(promiseResumes)
+
+            for (let i = 0; i < statuses.length; i++) {
+                let resume = {}
+                resume[statuses[i]] = results[i]
+                resumes.push(resume)
+            }
 
             AppResponse.builder(res).message('company.messages.company_resumes_found').data(resumes).send();
         } catch (err) {
@@ -272,7 +301,7 @@ class PositionController extends Controller {
  */
     async getManagers(req, res, next) {
         try {
-            const position = await Position.findById(req.params.id).populate('created_by');
+            const position = await positionService.findByParamId(req.params.id, ['created_by'])
             if (!position) throw new NotFoundError('position.errors.position_notfound');
 
             let managers = await Manager.find({ 'entity': "positions", 'entity_id': position.id }).populate('user_id');
@@ -298,7 +327,7 @@ class PositionController extends Controller {
   */
     async active(req, res, next) {
         try {
-            let position = await Position.findById(req.params.id);
+            const position = await positionService.findByParamId(req)
             if (!position) throw new NotFoundError('position.errors.position_notfound');
 
             if (position.is_active == true) throw new BadRequestError('position.errors.position_activated_alredy');
@@ -328,7 +357,7 @@ class PositionController extends Controller {
     */
     async deActive(req, res, next) {
         try {
-            let position = await Position.findById(req.params.id);
+            const position = await positionService.findByParamId(req)
             if (!position) throw new NotFoundError('position.errors.position_notfound');
 
             if (position.is_active == false) throw new BadRequestError('position.errors.position_deactivated_alredy');

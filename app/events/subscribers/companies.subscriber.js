@@ -1,5 +1,5 @@
 import EventEmitter from '../emitter.js'
-import { addDefaultManagerForCompany, deleteManagersFromCompany } from '../../helper/service/company.service.js';
+import managerService from '../../helper/service/manager.service.js';
 
 export const events = {
     "CREATE": "New Company",
@@ -28,12 +28,11 @@ function deActive(Company) {
 }
 
 function create(Company) {
-    addDefaultManagerForCompany(Company)
+    managerService.addDefaultManagerForCompany(Company)
 }
 
-
 function softdelete(Company) {
-    deleteManagersFromCompany(Company)
+    managerService.deleteManagersFromCompany(Company)
 }
 
 

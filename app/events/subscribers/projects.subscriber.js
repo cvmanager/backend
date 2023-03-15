@@ -1,5 +1,5 @@
+import projectService from '../../helper/service/project.service.js'
 import EventEmitter from '../emitter.js'
-import { addDefaultManagerForProject, deleteManagersFromProject } from '../../helper/service/project.service.js';
 
 export const events = {
     "CREATE": "New Project",
@@ -28,11 +28,11 @@ function deActive(project) {
 }
 
 function create(project) {
-    addDefaultManagerForProject(project);
+   projectService.addDefaultManagerForProject(project);
 }
 
 function softdelete(project) {
-    deleteManagersFromProject(project);
+    projectService.deleteManagersFromProject(project);
 }
 
 function update(project) {
