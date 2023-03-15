@@ -84,6 +84,13 @@
 */
 
 /**
+* update hire status 
+* @typedef { object } resume.hire_status
+* @property { string } hire_status.required - hire status 
+* @property { number } income - income
+*/
+
+/**
 * resume success response
 * @typedef { object } resume.success
 * @property { string }         message
