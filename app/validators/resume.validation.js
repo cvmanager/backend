@@ -84,7 +84,7 @@ class ResumeValidation {
             body('education')
                 .notEmpty()
                 .withMessage('resume.validations.education_required')
-                .isIn(i18n.__('system.enums.education'))
+                .isIn(i18n.__("system.enums.education"))
                 .withMessage('resume.validations.education_incorrect')
                 .trim(),
             body('phone')
@@ -348,6 +348,28 @@ class ResumeValidation {
         ];
     }
 
+    hireStatus() {
+        return [
+            param('id')
+                .notEmpty()
+                .withMessage('resume.validations.resume_id_required')
+                .isMongoId()
+                .withMessage('resume.validations.resume_id_invalid')
+                .trim(),
+            body('hire_status')
+                .isIn(i18n.__("system.enums.hire_status"))
+                .withMessage('resume.validations.hire_status_value_not_valid')
+                .notEmpty()
+                .withMessage('resume.validations.hire_status_required')
+                .trim(),
+            body('income')
+                .isNumeric()
+                .withMessage('resume.validations.income_is_number')
+                .optional({ nullable: true, checkFalsy: true })
+                .trim(),
+            generalValidator
+        ];
+    }
 }
 
 export default new ResumeValidation();

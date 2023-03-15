@@ -10,6 +10,7 @@ import { Types } from 'mongoose';
 import { faker } from '@faker-js/faker';
 import i18n from '../middlewares/lang.middleware.js'
 import EventEmitter from '../events/emitter.js';
+import CompanyData from './data/company.data';
 
 let token;
 let user;
@@ -18,15 +19,23 @@ let position;
 let manager;
 let positionData;
 let positionItem;
+let companyItem;
+let companyData;
+let projectItem;
+let projectData;
+
 prepareDB();
 describe(`Position Routes`, () => {
 
     beforeEach(async () => {
+
+        companyData = new CompanyData();
+
         let userData = new UserData();
         token = userData.getAccessToken();
         user = userData.getUser();
 
-        let projectData = new ProjectData();
+        projectData = new ProjectData();
         project = projectData.getProject();
 
         positionData = new PositionData();
@@ -153,6 +162,36 @@ describe(`Position Routes`, () => {
                 "description": faker.random.alpha(50),
                 'created_by': user._id
             }
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} if company is_active is false`, async() => {
+            companyItem = {
+                "_id": Types.ObjectId(),
+                "is_active": false,
+                "created_by": Types.ObjectId(),
+                "name": faker.company.name(),
+                "description": faker.random.alpha(50),
+                "phone": faker.phone.number('989#########'),
+                "address": faker.random.alpha(100),
+            };
+            companyData.addCompany(companyItem)
+
+            projectItem = {
+                "_id": Types.ObjectId(),
+                "company_id": companyItem._id,
+                "is_active": true,
+                "created_by": Types.ObjectId(),
+                "name": faker.company.name(),
+                "description": faker.random.alpha(50),
+            };
+            projectData.addProject(projectItem);
+
+            newPosition.project_id = projectItem._id;
+            const response = await request(app)
+                .post(`/api/V1/positions`)
+                .set(`Authorization`, token)
+                .send(newPosition);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
 
         it(`should get ${httpStatus.BAD_REQUEST} if project id is not send`, async () => {

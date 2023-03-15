@@ -100,8 +100,8 @@ class ResumeController extends Controller {
     * 
     * @return { resume.success } 200 - success response
     * @return { message.badrequest_error }  400 - bad request respone
-    * @return { message.badrequest_error }  404 - not found respone
-    * @return { message.badrequest_error }       401 - UnauthorizedError
+    * @return { message.NotFoundError }  404 - not found respone
+    * @return { message.badrequest_error }  401 - UnauthorizedError
     * @return { message.server_error  }     500 - Server Error
     */
     async create(req, res, next) {
@@ -110,7 +110,10 @@ class ResumeController extends Controller {
             let position = await Position.findById(req.body.position_id)
             if (!position) throw new NotFoundError('position.errors.position_not_found');
 
-            req.body.created_by = req.user._id
+            let company = await Company.findById(position.company_id)
+            if (!company.is_active) throw new BadRequestError('company.errors.company_isnot_active');
+            
+            req.body.created_by = req.user_id
             req.body.project_id = position.project_id;
             req.body.company_id = position.company_id;
 
@@ -369,6 +372,41 @@ class ResumeController extends Controller {
             EventEmitter.emit(events.UPDATE_STATUS, resume)
 
             AppResponse.builder(res).message("resume.messages.resume_call_history_successfuly_created").data(resume).send();
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
+    * PATCH /resumes/{id}/hire_status
+    * 
+    * @summary update hire status
+    * @tags Resume
+    * @security BearerAuth
+    * 
+    * @param { string } id.path.required - resume id
+    * @param { resume.hire_status } request.body - application/json
+    * 
+    * @return { resume.success }            200 - success response
+    * @return { message.badrequest_error }  400 - bad request respone
+    * @return { message.badrequest_error }  404 - not found respone
+    * @return { message.badrequest_error }  401 - UnauthorizedError
+    * @return { message.server_error  }     500 - Server Error
+    */
+    async hireStatus(req, res, next) {
+        try {
+            let resume = await Resume.findById(req.params.id);
+            if (!resume) throw new NotFoundError('resume.errors.resume_notfound');
+
+            if (req.body.hire_status == 'hired_on' && (req.body.income == '' || req.body.income == undefined)) {
+                throw new BadRequestError('resume.errors.income_cant_be_empty');
+            }
+
+            resume.hire_status = req.body.hire_status;
+            resume.income = req.body.income;
+            await resume.save();
+
+            AppResponse.builder(res).message("resume.messages.hire_status_successfuly_updated").data(resume).send();
         } catch (err) {
             next(err);
         }

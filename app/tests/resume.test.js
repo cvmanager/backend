@@ -29,7 +29,8 @@ let positionData;
 let user;
 let usersData;
 let users;
-
+let positionItem;
+let companyItem;
 
 prepareDB();
 describe("Resumes Routes", () => {
@@ -80,7 +81,6 @@ describe("Resumes Routes", () => {
                 .set('Authorization', token)
                 .send();
             let data = response.body.data[0].docs;
-            console.log(data);
             expect(data.length).toBe(0);
         })
 
@@ -218,6 +218,38 @@ describe("Resumes Routes", () => {
                 "education": "diploma",
                 "created_by": user._id
             }
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} if company is_active is false`, async () => {
+            companyItem = {
+                "_id": Types.ObjectId(),
+                "is_active": false,
+                "created_by": Types.ObjectId(),
+                "name": faker.company.name(),
+                "description": faker.random.alpha(50),
+                "phone": faker.phone.number('989#########'),
+                "address": faker.random.alpha(100),
+            };
+            companyData.addCompany(companyItem)
+            positionItem = {
+                "_id": Types.ObjectId(),
+                "company_id": companyItem._id,
+                "project_id": Types.ObjectId(),
+                "title": faker.random.alpha(15),
+                "level": "mid",
+                "description": faker.random.alpha(50),
+                "created_by": Types.ObjectId(),
+                "is_active": false,
+            };
+            positionData.addPosition(positionItem)
+
+            newResume.position_id = positionItem._id;
+
+            const response = await request(app)
+                .post(`/api/V1/resumes`)
+                .set(`Authorization`, token)
+                .send(newResume);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
 
         it(`should get ${httpStatus.BAD_REQUEST} if position id is not send`, async () => {
@@ -1116,6 +1148,80 @@ describe("Resumes Routes", () => {
         })
     })
 
+    describe(`PATCH /:id/hire_status`, () => {
+
+        let hireParams;
+        beforeEach(() => {
+            hireParams = {
+                hire_status: "hired_on",
+                income: 18000000
+            }
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} if resume id is not MongoId`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/resumes/fakeId/hire_status`)
+                .set(`Authorization`, token)
+                .send(hireParams);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.NOT_FOUND} if resume id is not valid`, async () => {
+            let invalidResumeId = Types.ObjectId();
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${invalidResumeId}/hire_status`)
+                .set(`Authorization`, token)
+                .send(hireParams);
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} hire status is required`, async () => {
+            delete hireParams.hire_status
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${resume._id}/hire_status`)
+                .set(`Authorization`, token)
+                .send(hireParams);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} hire status is not valid`, async () => {
+            hireParams.hire_status = 'test'
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${resume._id}/hire_status`)
+                .set(`Authorization`, token)
+                .send(hireParams);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} income  is not numeric`, async () => {
+            hireParams.income = 'test'
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${resume._id}/hire_status`)
+                .set(`Authorization`, token)
+                .send(hireParams);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} if hire status is 'hired_on' income cant be null`, async () => {
+            hireParams.hire_status = 'hired_on'
+            hireParams.income = ''
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${resume._id}/hire_status`)
+                .set(`Authorization`, token)
+                .send(hireParams);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+
+        it(`should get ${httpStatus.OK} hire status updated successfuly`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${resume._id}/hire_status`)
+                .set(`Authorization`, token)
+                .send(hireParams);
+            expect(response.statusCode).toBe(httpStatus.OK);
+        })
+
+    })
 })
 
 
