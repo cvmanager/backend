@@ -8,6 +8,7 @@ import Resume from '../../models/resume.model.js';
 import Controller from './controller.js';
 import BadRequestError from '../../exceptions/BadRequestError.js';
 import { mergeQuery } from '../../helper/mergeQuery.js';
+import resumeService from '../../helper/service/resume.service.js';
 
 class ResumeController extends Controller {
 
@@ -211,11 +212,8 @@ class ResumeController extends Controller {
     */
     async updateStatus(req, res, next) {
         try {
-            let resume = await Resume.findById(req.params.id);
-            if (!resume) throw new NotFoundError('resume.errors.resume_notfound');
-
+            let resume = await resumeService.findByParamId(req);
             if (resume.status == req.body.status) throw new BadRequestError('resume.errors.can_not_update_status_to_current')
-
             resume.status_history.push({
                 old_status: resume.status,
                 new_status: req.body.status,
@@ -223,6 +221,7 @@ class ResumeController extends Controller {
                 created_by: req.user._id
             });
             resume.status = req.body.status;
+            resume.index = req.body.index;
             await resume.save();
 
             EventEmitter.emit(events.UPDATE_STATUS, resume)

@@ -9,6 +9,7 @@ import prepareDB from './utils/prepareDB'
 import { Types } from 'mongoose';
 import { faker } from '@faker-js/faker';
 import i18n from '../middlewares/lang.middleware.js'
+import EventEmitter from '../events/emitter.js';
 import CompanyData from './data/company.data';
 
 let token;
@@ -392,11 +393,13 @@ describe(`Position Routes`, () => {
             expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
         })
         it(`should get ${httpStatus.OK} if all data correct `, async () => {
+            let emit = jest.spyOn(EventEmitter, 'emit').mockImplementation(() => null);
             const response = await request(app)
                 .delete(`/api/V1/positions/${position._id}`)
                 .set(`Authorization`, token)
                 .send();
             expect(response.statusCode).toBe(httpStatus.OK);
+            expect(emit).toHaveBeenCalledTimes(1);
         })
     })
 

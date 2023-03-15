@@ -172,6 +172,10 @@ const schema = new mongoose.Schema(
         income: {
             type: Number,
             default: null
+        },
+        index: {
+            type: Number,
+            default: null
         }
     }
 );

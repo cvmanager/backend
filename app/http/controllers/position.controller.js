@@ -13,6 +13,8 @@ import BadRequestError from '../../exceptions/BadRequestError.js';
 import Company from '../../models/company.model.js';
 import i18n from '../../middlewares/lang.middleware.js'
 import positionService from '../../helper/service/position.service.js';
+import roleService from '../../helper/service/role.service.js';
+import userService from '../../helper/service/user.service.js';
 import { mergeQuery } from '../../helper/mergeQuery.js';
 
 class PositionController extends Controller {
@@ -225,11 +227,12 @@ class PositionController extends Controller {
                 throw new AlreadyExists('manager.errors.duplicate');
             }
 
-            const manager = await Manager.create({ 'user_id': user._id, 'entity_id': position._id, 'entity': 'positions', 'created_by': req.user._id });
+            let manager = await Manager.create({ 'user_id': user._id, 'entity_id': position._id, 'entity': 'positions', 'created_by': req.user._id });
             EventEmitter.emit(events.SET_MANAGER, position);
 
-            const positionManagerRole = await roleService.findOne({ name: "Position Manager" })
-            await userService.addRole(user._id, positionManagerRole._id)
+            let positionManagerRole = await roleService.findOne({ name: "Position Manager" })
+            if (positionManagerRole) await userService.addRole(user._id, positionManagerRole._id)
+
 
             AppResponse.builder(res).status(201).message('manager.messages.manager_successfuly_created').data(manager).send();
         } catch (err) {
@@ -254,8 +257,7 @@ class PositionController extends Controller {
      */
     async getResumes(req, res, next) {
         try {
-            const position = await positionService.findByParamId(req.params.id, ['created_by'])
-            if (!position) throw new NotFoundError('position.errors.position_notfound');
+            const position = await positionService.findByParamId(req)
             const { size = 10 } = req.query
 
             let resumes = [];
@@ -263,9 +265,9 @@ class PositionController extends Controller {
 
             let statuses = i18n.__("resume.enums.status");
             for (let status of statuses) {
-                let resumeList = Resume.find({ 'position_id': position.id, 'status': status })
+                let resumeList = Resume.find({ 'position_id': position._id, 'status': status })
                     .limit(size)
-                    .sort([['updatedAt', -1]])
+                    .sort([['index', 1]])
                     .populate([
                         { path: 'company_id', select: ['_id', 'name', 'logo'] },
                         { path: 'project_id', select: ['_id', 'name', 'logo'] },
@@ -305,11 +307,8 @@ class PositionController extends Controller {
  */
     async getManagers(req, res, next) {
         try {
-            const position = await positionService.findByParamId(req.params.id, ['created_by'])
-            if (!position) throw new NotFoundError('position.errors.position_notfound');
-
+            const position = await positionService.findByParamId(req)
             let managers = await Manager.find({ 'entity': "positions", 'entity_id': position.id }).populate('user_id');
-
             AppResponse.builder(res).message('position.messages.position_managers_found').data(managers).send();
         } catch (err) {
             next(err);

@@ -784,6 +784,7 @@ describe("Resumes Routes", () => {
         beforeEach(() => {
             updateResumeStatus = {
                 'status': 'hired',
+                'index': 1,
             }
         })
         it(`should get ${httpStatus.BAD_REQUEST} if resume id is not valid`, async () => {
@@ -800,10 +801,10 @@ describe("Resumes Routes", () => {
                 .send(updateResumeStatus);
             expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
         })
-        it(`should get ${httpStatus.BAD_REQUEST} if status is not valid`, async () => {
+        it(`should get ${httpStatus.BAD_REQUEST} if status is not send`, async () => {
             delete updateResumeStatus.status;
             const response = await request(app)
-                .patch(`/api/V1/resumes/fakeId/status`)
+                .patch(`/api/V1/resumes/${resume._id}/status`)
                 .set(`Authorization`, token)
                 .send(updateResumeStatus);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
@@ -811,7 +812,23 @@ describe("Resumes Routes", () => {
         it(`should get ${httpStatus.BAD_REQUEST} if status is not valid`, async () => {
             updateResumeStatus.status = faker.random.alpha(5);
             const response = await request(app)
-                .patch(`/api/V1/resumes/fakeId/status`)
+                .patch(`/api/V1/resumes/${resume._id}/status`)
+                .set(`Authorization`, token)
+                .send(updateResumeStatus);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if index is not send`, async () => {
+            delete updateResumeStatus.index;
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${resume._id}/status`)
+                .set(`Authorization`, token)
+                .send(updateResumeStatus);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if index is not valid`, async () => {
+            updateResumeStatus.index = faker.random.alpha(5);
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${resume._id}/status`)
                 .set(`Authorization`, token)
                 .send(updateResumeStatus);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
@@ -819,14 +836,14 @@ describe("Resumes Routes", () => {
         it(`should get ${httpStatus.BAD_REQUEST} if status is already set for this resume`, async () => {
             updateResumeStatus.status = 'pending';
             const response = await request(app)
-                .patch(`/api/V1/resumes/fakeId/status`)
+                .patch(`/api/V1/resumes/${resume._id}/status`)
                 .set(`Authorization`, token)
                 .send(updateResumeStatus);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
         it(`should get ${httpStatus.OK} if all data correct `, async () => {
             const response = await request(app)
-                .patch(`/api/V1/resumes/${resume._id}`)
+                .patch(`/api/V1/resumes/${resume._id}/status`)
                 .set(`Authorization`, token)
                 .send(updateResumeStatus);
             expect(response.statusCode).toBe(httpStatus.OK);
