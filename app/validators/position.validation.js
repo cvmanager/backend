@@ -37,6 +37,16 @@ class PositionValidation {
         ]
     }
 
+    getResumes() {
+        return [
+            param('id').notEmpty().isMongoId().withMessage('position.validations.position_id_invalid').trim(),
+            query('size')
+                .optional({ nullable: true, checkFalsy: true })
+                .isNumeric().withMessage('position.validations.position_size_number').trim(),
+            generalValidator
+        ]
+    }
+
     update() {
         return [
             param('id')
@@ -84,6 +94,20 @@ class PositionValidation {
             param('id').notEmpty().isMongoId().withMessage('position.validations.position_id_invalid').trim(),
             generalValidator
         ];
+    }
+
+    active() {
+        return [
+            param('id').notEmpty().isMongoId().withMessage('position.validations.position_id_invalid').trim(),
+            generalValidator
+        ]
+    }
+
+    deActive() {
+        return [
+            param('id').notEmpty().isMongoId().withMessage('position.validations.position_id_invalid').trim(),
+            generalValidator
+        ]
     }
 }
 

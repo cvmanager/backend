@@ -10,10 +10,26 @@ for (i = 0; i < numberRowInsert; i++) {
         "_id": Types.ObjectId(),
         "firstname": faker.name.firstName(),
         "lastname": faker.name.lastName(),
-        "username": faker.internet.userName(),
+        "username": faker.random.alpha(9),
         "mobile": faker.phone.number('989#########'),
         "email": faker.internet.email(),
         "password": '12345678'
+    })
+}
+
+let logHistory = [];
+for (i = 0; i < numberRowInsert; i++) {
+    logHistory.push({
+        "_id": Types.ObjectId(),
+        "user_id": users[i]._id,
+        "access_token": faker.random.alpha(50),
+        "refresh_token": faker.random.alpha(50),
+        "os": faker.random.alpha(10),
+        "cpu": faker.random.alpha(10),
+        "browser": faker.random.alpha(10),
+        "memory": faker.random.alpha(10),
+        "ip4": faker.random.alpha(10),
+        "ip6": faker.random.alpha(10),
     })
 }
 
@@ -140,4 +156,4 @@ for (i = 0; i < numberRowInsert; i++) {
 
 }
 
-export { users, companies, projects, positions, managers, resumes, resumeComments };
+export { users, companies, projects, positions, managers, resumes, resumeComments, logHistory };

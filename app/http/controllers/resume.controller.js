@@ -7,6 +7,7 @@ import AppResponse from '../../helper/response.js';
 import Resume from '../../models/resume.model.js';
 import Controller from './controller.js';
 import BadRequestError from '../../exceptions/BadRequestError.js';
+import { mergeQuery } from '../../helper/mergeQuery.js';
 
 class ResumeController extends Controller {
 
@@ -30,6 +31,8 @@ class ResumeController extends Controller {
             const { page = 1, size = 10, query = '' } = req.query
 
             let searchQuery = {}
+            
+            searchQuery = mergeQuery(searchQuery, req.rbacQuery)
             if (query.length > 0) {
                 searchQuery = {
                     $or: [
@@ -47,7 +50,11 @@ class ResumeController extends Controller {
                 page: (page) || 1,
                 limit: size,
                 sort: { createdAt: -1 },
-                populate: [{ path: 'company_id', select: 'name' }, { path: 'project_id', select: 'name' }, { path: 'created_by', select: 'name' }]
+                populate: [
+                    { path: 'company_id', select: 'name' },
+                    { path: 'project_id', select: 'name' },
+                    { path: 'created_by', select: ['firstname', 'lastname'] }
+                ]
             });
             AppResponse.builder(res).message("project.messages.resume_list_found").data(resumeList).send();
         } catch (err) {
@@ -72,7 +79,7 @@ class ResumeController extends Controller {
     */
     async find(req, res, next) {
         try {
-            let resume = await Resume.findById(req.params.id).populate('created_by').exec();
+            let resume = await Resume.findById(req.params.id).populate('created_by')
             if (!resume) throw new NotFoundError('resume.error.resume_notfound');
 
             AppResponse.builder(res).message("resume.messages.project_found").data(resume).send();
@@ -102,6 +109,9 @@ class ResumeController extends Controller {
             let position = await Position.findById(req.body.position_id)
             if (!position) throw new NotFoundError('position.errors.position_not_found');
 
+            let company = await Company.findById(position.company_id)
+            if (!company.is_active) throw new BadRequestError('company.errors.company_isnot_active');
+            
             req.body.created_by = req.user_id
             req.body.project_id = position.project_id;
             req.body.company_id = position.company_id;
@@ -170,7 +180,7 @@ class ResumeController extends Controller {
             let resume = await Resume.findById(req.params.id);
             if (!resume) throw new NotFoundError('resume.errors.resume_notfound');
             resume.deleted_at = Date.now();
-            resume.deleted_by = req.user_id;
+            resume.deleted_by = req.user._id;
 
             await resume.save();
 
@@ -210,7 +220,7 @@ class ResumeController extends Controller {
                 old_status: resume.status,
                 new_status: req.body.status,
                 createdAt: new Date(),
-                created_by: req.user_id
+                created_by: req.user._id
             });
             resume.status = req.body.status;
             await resume.save();
@@ -266,8 +276,9 @@ class ResumeController extends Controller {
     * @security BearerAuth
     * 
     * @param  { string } id.path.required - resume id
+    * @param { resume.call_history } request.body - call history info - application/json
     * 
-    * @return { resumeComment.success }     200 - success response
+    * @return { resume.call_history_success } 200 - success response
     * @return { message.badrequest_error }  400 - bad request respone
     * @return { message.badrequest_error }  401 - UnauthorizedError
     * @return { message.NotFoundError }     404 - not found respone
@@ -309,7 +320,7 @@ class ResumeController extends Controller {
 
             req.body.body = req.body.body
             req.body.resume_id = resume._id
-            req.body.created_by = req.user_id
+            req.body.created_by = req.user._id
 
             let resumeCommentsRes = await ResumeComments.create(req.body)
             AppResponse.builder(res).status(201).message("resume.messages.resume_comment_successfuly_created").data(resumeCommentsRes).send();
@@ -348,7 +359,7 @@ class ResumeController extends Controller {
                 calling_date: calling_date,
                 description: req.body.description,
                 recall_at: recall_at,
-                created_by: req.user_id
+                created_by: req.user._id
             })
             calling_date = calling_date.getTime()
             recall_at = recall_at.getTime()

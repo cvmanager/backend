@@ -160,6 +160,10 @@ const schema = new mongoose.Schema(
             type: Array,
             default: null
         },
+        process_duration: {
+            type: Number,
+            default: null
+        },
         hire_status: {
             type: String,
             default: 'not_employed',
@@ -171,6 +175,12 @@ const schema = new mongoose.Schema(
         }
     }
 );
+
+schema.virtual("resumeComments", {
+    ref: 'resumeComments',
+    localField: "_id",
+    foreignField: "resume_id"
+});
 
 schema.plugin(basePlugin)
 

@@ -9,6 +9,7 @@ import prepareDB from './utils/prepareDB'
 import { Types } from 'mongoose';
 import { faker } from '@faker-js/faker';
 import i18n from '../middlewares/lang.middleware.js'
+import CompanyData from './data/company.data';
 
 let token;
 let user;
@@ -16,16 +17,24 @@ let project;
 let position;
 let manager;
 let positionData;
+let positionItem;
+let companyItem;
+let companyData;
+let projectItem;
+let projectData;
 
 prepareDB();
 describe(`Position Routes`, () => {
 
     beforeEach(async () => {
+
+        companyData = new CompanyData();
+
         let userData = new UserData();
         token = userData.getAccessToken();
         user = userData.getUser();
 
-        let projectData = new ProjectData();
+        projectData = new ProjectData();
         project = projectData.getProject();
 
         positionData = new PositionData();
@@ -152,6 +161,36 @@ describe(`Position Routes`, () => {
                 "description": faker.random.alpha(50),
                 'created_by': user._id
             }
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} if company is_active is false`, async() => {
+            companyItem = {
+                "_id": Types.ObjectId(),
+                "is_active": false,
+                "created_by": Types.ObjectId(),
+                "name": faker.company.name(),
+                "description": faker.random.alpha(50),
+                "phone": faker.phone.number('989#########'),
+                "address": faker.random.alpha(100),
+            };
+            companyData.addCompany(companyItem)
+
+            projectItem = {
+                "_id": Types.ObjectId(),
+                "company_id": companyItem._id,
+                "is_active": true,
+                "created_by": Types.ObjectId(),
+                "name": faker.company.name(),
+                "description": faker.random.alpha(50),
+            };
+            projectData.addProject(projectItem);
+
+            newPosition.project_id = projectItem._id;
+            const response = await request(app)
+                .post(`/api/V1/positions`)
+                .set(`Authorization`, token)
+                .send(newPosition);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
 
         it(`should get ${httpStatus.BAD_REQUEST} if project id is not send`, async () => {
@@ -449,6 +488,14 @@ describe(`Position Routes`, () => {
             expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
         })
 
+        it(`should get ${httpStatus.BAD_REQUEST} size is not number`, async () => {
+            const response = await request(app)
+                .get(`/api/V1/positions/${position._id}/resumes?size=a`)
+                .set('Authorization', token)
+                .send();
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
         it(`should get ${httpStatus.OK} position resumes list `, async () => {
             const response = await request(app)
                 .get(`/api/V1/positions/${position._id}/resumes`)
@@ -484,4 +531,81 @@ describe(`Position Routes`, () => {
             expect(response.statusCode).toBe(httpStatus.OK);
         })
     })
+
+    describe(`PATCH /:id/active`, () => {
+        it(`should get ${httpStatus.BAD_REQUEST} if position id is not valid`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/positions/fakeId/active`)
+                .set(`Authorization`, token);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.NOT_FOUND} if position not found`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/positions/${Types.ObjectId()}/active`)
+                .set(`Authorization`, token);
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if position status was active befor`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/positions/${position._id}/active`)
+                .set(`Authorization`, token);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.OK} if all data correct and update position status`, async () => {
+            positionItem = {
+                "_id": Types.ObjectId(),
+                "company_id": Types.ObjectId(),
+                "project_id": Types.ObjectId(),
+                "title": faker.random.alpha(15),
+                "level": "mid",
+                "description": faker.random.alpha(50),
+                "created_by": Types.ObjectId(),
+                "is_active": false,
+            };
+            positionData.addPosition(positionItem)
+            const response = await request(app)
+                .patch(`/api/V1/positions/${positionItem._id}/active`)
+                .set(`Authorization`, token);
+            expect(response.statusCode).toBe(httpStatus.OK);
+        })
+    })
+
+    describe(`PATCH /:id/deactive`, () => {
+        it(`should get ${httpStatus.BAD_REQUEST} if position id is not valid`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/positions/fakeId/deactive`)
+                .set(`Authorization`, token);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.NOT_FOUND} if position not found`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/positions/${Types.ObjectId()}/deactive`)
+                .set(`Authorization`, token);
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if position status was deactive befor`, async () => {
+            positionItem = {
+                "_id": Types.ObjectId(),
+                "company_id": Types.ObjectId(),
+                "project_id": Types.ObjectId(),
+                "title": faker.random.alpha(15),
+                "level": "mid",
+                "description": faker.random.alpha(50),
+                "created_by": Types.ObjectId(),
+                "is_active": false,
+            };
+            positionData.addPosition(positionItem)
+            const response = await request(app)
+                .patch(`/api/V1/positions/${positionItem._id}/deactive`)
+                .set(`Authorization`, token);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.OK} if all data correct and update position status`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/positions/${position._id}/deactive`)
+                .set(`Authorization`, token);
+            expect(response.statusCode).toBe(httpStatus.OK);
+        })
+    })
+
 })

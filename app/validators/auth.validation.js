@@ -1,4 +1,4 @@
-import { body } from 'express-validator';
+import { body, oneOf } from 'express-validator';
 
 import generalValidator from '../helper/validator.js';
 import { mobileFormat } from '../helper/helper.js';
@@ -26,7 +26,7 @@ class AuthValidator {
             body('username')
                 .notEmpty()
                 .isLength({ min: 5, max: 10 })
-                .withMessage('auth.validations.username_required')
+                .withMessage('auth.validations.username_lenght')
                 .trim(),
             body('password')
                 .notEmpty()
@@ -39,12 +39,18 @@ class AuthValidator {
 
     login() {
         return [
-            body('mobile')
-                .notEmpty()
-                .withMessage('auth.validations.mobile_required')
-                .matches(mobileFormat)
-                .withMessage('auth.validations.mobile_pattern')
-                .trim(),
+            oneOf([
+                body('mobile')
+                    .notEmpty()
+                    .matches(mobileFormat)
+                    .trim()
+                    .withMessage('auth.validations.mobile_wrong'),
+                body('mobile')
+                    .notEmpty()
+                    .isLength({ min: 5, max: 10 })
+                    .trim()
+                    .withMessage('auth.validations.username_wrong')
+            ]),
             body('password')
                 .notEmpty()
                 .withMessage('auth.validations.password_required')

@@ -1,73 +1,62 @@
+import { extname } from 'path';
 import multer from 'multer';
-import mkdirp from 'mkdirp';
+import fs from 'fs';
 
 import BadRequestError from '../exceptions/BadRequestError.js';
 
-const createStorage = (destinationDir, fieldName, dupllicate) => {
-    const storage = multer.diskStorage({
-        destination: function (req, file, cb) {
-            mkdirp(destinationDir)
-                .then((result) => {
-                    cb(null, destinationDir)
-                })
-        },
-        filename: (req, file, cb) => {
-            let suffix = file.originalname.split('.');
-
-            let name = req.user_id;
-            if (dupllicate == true) {
-                const date = new Date();
-                let time = date.getTime();
-                name += '_' + time;
-            }
-            name += '.' + suffix[1];
-
-            cb(null, name);
-            req.body[fieldName] = destinationDir + name;
-        }
-    })
-    return storage
+const config = {
+    'image': {
+        types: ['image/jpeg', 'image/jpg', 'image/png'],
+        maxSize: 0.6 * 1048576, // 1048576 Bytes = 1 MB
+    },
+    'file': {
+        types: ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'],
+        maxSize: 0.1 * 1048576, // 1048576 Bytes = 1 MB
+    }
 }
 
-const maxSize = 0.1; //1mb
-const Upload = multer({
-    storage: createStorage('./public/profile/', 'avatar', false),
-    fileFilter: (req, file, cb) => {
-        if (!['image/jpeg', 'image/jpg', 'image/png'].includes(file.mimetype)) {
-            cb(null, false);
-            return cb(new BadRequestError('exceptions.valid_image_format'));
+const createStorage = (path, fieldName) => {
+    let basePath = './public';
+    let realPath = '/uploads/' + path + '/';
+    let fullPath = basePath + realPath;
+
+    return multer.diskStorage({
+        destination: fullPath,
+        filename: (req, file, cb) => {
+            let extension = extname(file.originalname);
+            let name = req.user._id;
+
+            if (fs.existsSync(fullPath + name + extension)) {
+                const date = new Date();
+                name = name + '_' + date.getTime();
+            }
+            name += extension;
+            console.log(name)
+            cb(null, name);
+            req.body[fieldName] = realPath + name;
         }
-        cb(null, true);
-    },
-    limits: { fileSize: maxSize }
-})
+    })
+}
 
-const maxFileSize = 0.1; //1mb
-const UploadFile = multer({
-    storage: createStorage('./public/resume/file/', 'file', true),
-    fileFilter: (req, file, cb) => {
-        if (!['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'].includes(file.mimetype)) {
-            cb(null, false);
-            return cb(new BadRequestError('exceptions.valid_file_format'));
-        }
-        cb(null, true);
-    },
-    limits: { fileSize: maxFileSize }
-})
+function Upload(entity, field, type) {
+    return (req, res, next) => {
+        let fileConfig = config[type];
+        const upload = multer({
+            storage: createStorage(entity, field),
+            fileFilter: (req, file, cb) => {
+                if (!fileConfig.types.includes(file.mimetype)) {
+                    return cb(new BadRequestError(`exceptions.valid_${type}_format`));
+                }
+                cb(null, true);
+            },
+            limits: { fileSize: fileConfig.maxSize }
+        }).single(field)
+    
+        upload(req, res, (error) => {
+            if (error) next(new BadRequestError('system.errors.' + error.code || "upload_file"), [error])
+            return next()
+        })
+    }
+}
 
-
-const maxLogoSize = 0.1; //1mb
-const UploadLogo = multer({
-    storage: createStorage('./public/company/logo/', 'logo', false),
-    fileFilter: (req, file, cb) => {
-        if (!['image/jpeg', 'image/jpg', 'image/png'].includes(file.mimetype)) {
-            cb(null, false);
-            return cb(new BadRequestError('exceptions.valid_image_format'));
-        }
-        cb(null, true);
-    },
-    limits: { fileSize: maxLogoSize }
-})
-
-
-export { Upload, UploadFile, UploadLogo };
+export { Upload };
