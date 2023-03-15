@@ -237,6 +237,24 @@ describe("Project Routes", () => {
                 .send(newProject);
             expect(response.statusCode).toBe(httpStatus.CREATED);
         })
+        it(`should get ${httpStatus.BAD_REQUEST} if company is not active`, async () => {
+            let company = {
+                "_id": Types.ObjectId(),
+                "name": faker.company.name(),
+                "description": faker.random.alpha(50),
+                "phone": faker.phone.number('989#########'),
+                "address": faker.random.alpha(100),
+                "created_by": user._id,
+                "is_active": false
+            }
+            companyData.addCompany(company)
+            newProject.company_id = company._id;
+            const response = await request(app)
+                .post(`/api/V1/projects`)
+                .set(`Authorization`, token)
+                .send(newProject);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
     })
 
     describe(`PATCH /:id`, () => {
