@@ -488,6 +488,14 @@ describe(`Position Routes`, () => {
             expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
         })
 
+        it(`should get ${httpStatus.BAD_REQUEST} size is not number`, async () => {
+            const response = await request(app)
+                .get(`/api/V1/positions/${position._id}/resumes?size=a`)
+                .set('Authorization', token)
+                .send();
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
         it(`should get ${httpStatus.OK} position resumes list `, async () => {
             const response = await request(app)
                 .get(`/api/V1/positions/${position._id}/resumes`)
