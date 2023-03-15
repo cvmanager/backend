@@ -75,12 +75,20 @@
 * update status resume
 * @typedef { object } resume.update_status
 * @property { string } status.required - resume status
+* @property { number } index.required - resume index
 */
 
 /**
 * upload file resume
 * @typedef { object } resume.upload_file
 * @property { file } file.required - resume file
+*/
+
+/**
+* update hire status 
+* @typedef { object } resume.hire_status
+* @property { string } hire_status.required - hire status 
+* @property { number } income - income
 */
 
 /**

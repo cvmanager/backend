@@ -15,7 +15,7 @@ class Logger {
             });
 
             Sentry.configureScope(scope => {
-                if (req.user_id) scope.setUser({ id: req.user_id });
+                if (req.user._id) scope.setUser({ id: req.user._id });
             });
         }
 

@@ -1,7 +1,8 @@
 import mongoose from "mongoose";
 import env from '../helper/env.js'
-import { fillProvinceTable } from "../helper/service/province.service"
-
+import { fillProvinceTable } from "../helper/service/province.service.js"
+import roleService from "../helper/service/role.service.js";
+import userService from "../helper/service/user.service.js";
 
 
 mongoose.connect(
@@ -15,7 +16,17 @@ mongoose.connect(
     .catch()
 
 export const seedDB = async () => {
-    await fillProvinceTable();
+    try {
+        await fillProvinceTable();
+    } catch (error) { console.log(error) }
+
+    try {
+        await roleService.fillRoles();
+    } catch (error) { console.log(error) }
+
+    try {
+        await userService.fillUsers();
+    } catch (error) { console.log(error) }
 }
 
 seedDB().then(() => {
