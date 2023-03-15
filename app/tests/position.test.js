@@ -10,29 +10,42 @@ import { Types } from 'mongoose';
 import { faker } from '@faker-js/faker';
 import i18n from '../middlewares/lang.middleware.js'
 import * as path from 'path';
+import EventEmitter from '../events/emitter.js';
+import CompanyData from './data/company.data';
 
 let token;
 let user;
+let users;
 let project;
 let position;
 let manager;
 let positionData;
 let positionItem;
+let managerData;
+let companyItem;
+let companyData;
+let projectItem;
+let projectData;
+
 prepareDB();
 describe(`Position Routes`, () => {
 
     beforeEach(async () => {
+
+        companyData = new CompanyData();
+
         let userData = new UserData();
         token = userData.getAccessToken();
         user = userData.getUser();
+        users = userData.getUsers();
 
-        let projectData = new ProjectData();
+        projectData = new ProjectData();
         project = projectData.getProject();
 
         positionData = new PositionData();
         position = positionData.getPosition();
 
-        let managerData = new ManagerData();
+        managerData = new ManagerData();
         manager = managerData.getManagerByEntityId(position._id);
 
     })
@@ -160,6 +173,36 @@ describe(`Position Routes`, () => {
                 "description": faker.random.alpha(50),
                 'created_by': user._id
             }
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} if company is_active is false`, async() => {
+            companyItem = {
+                "_id": Types.ObjectId(),
+                "is_active": false,
+                "created_by": Types.ObjectId(),
+                "name": faker.company.name(),
+                "description": faker.random.alpha(50),
+                "phone": faker.phone.number('989#########'),
+                "address": faker.random.alpha(100),
+            };
+            companyData.addCompany(companyItem)
+
+            projectItem = {
+                "_id": Types.ObjectId(),
+                "company_id": companyItem._id,
+                "is_active": true,
+                "created_by": Types.ObjectId(),
+                "name": faker.company.name(),
+                "description": faker.random.alpha(50),
+            };
+            projectData.addProject(projectItem);
+
+            newPosition.project_id = projectItem._id;
+            const response = await request(app)
+                .post(`/api/V1/positions`)
+                .set(`Authorization`, token)
+                .send(newPosition);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
 
         it(`should get ${httpStatus.BAD_REQUEST} if project id is not send`, async () => {
@@ -361,11 +404,13 @@ describe(`Position Routes`, () => {
             expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
         })
         it(`should get ${httpStatus.OK} if all data correct `, async () => {
+            let emit = jest.spyOn(EventEmitter, 'emit').mockImplementation(() => null);
             const response = await request(app)
                 .delete(`/api/V1/positions/${position._id}`)
                 .set(`Authorization`, token)
                 .send();
             expect(response.statusCode).toBe(httpStatus.OK);
+            expect(emit).toHaveBeenCalledTimes(1);
         })
     })
 
@@ -440,6 +485,86 @@ describe(`Position Routes`, () => {
 
     })
 
+    describe("DELETE /positions/{id}/manager", () => {
+
+        let deleteManager;
+        beforeEach(() => {
+            deleteManager = {
+                'manager_id': manager.user_id,
+            };
+        })
+
+        it(`should get ${httpStatus.NOT_FOUND} position id is not valid`, async () => {
+            const response = await request(app)
+                .delete(`/api/V1/positions/${Types.ObjectId()}/manager`)
+                .set('Authorization', token)
+                .send(deleteManager);
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} position id is not a mongo id`, async () => {
+            const response = await request(app)
+                .delete("/api/V1/positions/fakeID/manager")
+                .set('Authorization', token)
+                .send(deleteManager);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} manager id is not sended`, async () => {
+            delete deleteManager.manager_id
+            const response = await request(app)
+                .delete(`/api/V1/positions/${position._id}/manager`)
+                .set('Authorization', token)
+                .send(deleteManager);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} manager id is not a mongo id`, async () => {
+            deleteManager.manager_id = 'fake'
+            const response = await request(app)
+                .delete(`/api/V1/positions/${position._id}/manager`)
+                .set('Authorization', token)
+                .send(deleteManager);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.NOT_FOUND} manager id is not valid`, async () => {
+            deleteManager.manager_id = Types.ObjectId()
+            const response = await request(app)
+                .delete(`/api/V1/positions/${position._id}/manager`)
+                .set('Authorization', token)
+                .send(deleteManager);
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} this user is not manager for this position`, async () => {
+            deleteManager.manager_id = users[0]._id
+            const response = await request(app)
+                .delete(`/api/V1/positions/${position._id}/manager`)
+                .set('Authorization', token)
+                .send(deleteManager);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} user is owner manager for this position`, async () => {
+            deleteManager.manager_id =  managerData.getManagerByEntityIdAndType(position._id,'positions');
+            const response = await request(app)
+                .delete(`/api/V1/positions/${manager.entity_id}/manager`)
+                .set('Authorization', token)
+                .send(deleteManager);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.OK} manager successfully deleted`, async () => {
+            const response = await request(app)
+                .delete(`/api/V1/positions/${position._id}/manager`)
+                .set('Authorization', token)
+                .send(deleteManager);
+            expect(response.statusCode).toBe(httpStatus.OK);
+        })
+
+    })
+
     describe("GET /positions/{id}/resumes", () => {
         it(`should get ${httpStatus.BAD_REQUEST} position id is not a mongo id`, async () => {
             const response = await request(app)
@@ -455,6 +580,14 @@ describe(`Position Routes`, () => {
                 .set('Authorization', token)
                 .send();
             expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} size is not number`, async () => {
+            const response = await request(app)
+                .get(`/api/V1/positions/${position._id}/resumes?size=a`)
+                .set('Authorization', token)
+                .send();
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
 
         it(`should get ${httpStatus.OK} position resumes list `, async () => {

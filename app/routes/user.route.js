@@ -12,7 +12,7 @@ userRouter
     .get('/getMe', UserController.getMe)
     .get('/', UserValidation.index(), UserController.index)
     .get('/:id', UserValidation.find(), UserController.find)
-    .post('/avatar', Upload('/users/org/', 'avatar', 'image'), cropImage(avatar_size), UserValidation.updateProfileImage(), UserController.uploadProfileImage)
+    .post('/avatar', Upload('/users/org/', 'avatar', 'image'), UserValidation.updateProfileImage(), cropImage(avatar_size), UserController.uploadProfileImage)
     .post('/:id/ban', UserValidation.ban(), UserController.banned)
     .patch('/change-password', UserValidation.changePassword(), UserController.changePassword)
     .get('/:id/login-history', UserValidation.loginHistory(), UserController.loginHistory);

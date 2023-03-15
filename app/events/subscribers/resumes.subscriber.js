@@ -1,6 +1,5 @@
+import resumeService from '../../helper/service/resume.service.js'
 import EventEmitter from '../emitter.js'
-import { setProccessDuration } from '../../helper/service/resume.service.js';
-
 export const events = {
     "CREATE": "New Resume",
     "DELETE": "Delete Resume",
@@ -30,5 +29,5 @@ function update(Resume) {
 }
 
 function updateStatus(Resume) {
-    setProccessDuration(Resume)
+    resumeService.setProccessDuration(Resume)
 }

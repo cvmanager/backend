@@ -25,9 +25,14 @@
 
 /**
 * set manager for position
-* @typedef { object } position.manager
-* @property { string } user_id.required - manager user_id
+* @typedef { object } position.set_manager
+* @property { string } manager_id.required - manager id
+*/
 
+/**
+* set manager for position
+* @typedef { object } position.delete_manager
+* @property { string } manager_id.required - manager id
 */
 
 /**
