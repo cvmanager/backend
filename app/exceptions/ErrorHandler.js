@@ -9,6 +9,7 @@ import NotFoundError from './NotFoundError.js';
 import NoContentError from './NoContentError.js';
 import AlreadyExists from './AlreadyExists.js';
 import ManyRequestsError from './ManyRequestsError.js';
+import ForbiddenError from './Forbidden.js';
 
 
 async function errorHandler(err, req, res, next) {
@@ -66,6 +67,14 @@ async function errorHandler(err, req, res, next) {
 
     if (err instanceof ManyRequestsError) {
         return res.status(429).json({
+            message: res.__(err.message),
+            errors: err.errors ? err.errors : [],
+            data: []
+        });
+    }
+
+    if (err instanceof ForbiddenError) {
+        return res.status(403).json({
             message: res.__(err.message),
             errors: err.errors ? err.errors : [],
             data: []
