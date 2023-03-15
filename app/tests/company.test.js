@@ -517,6 +517,15 @@ describe("Company Routes", () => {
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
 
+        it(`should get ${httpStatus.BAD_REQUEST} user is owner manager for this company`, async () => {
+            deleteManager.manager_id =  managerData.getManagerByEntityIdAndType(company._id,'companies');
+            const response = await request(app)
+                .delete(`/api/V1/companies/${manager.entity_id}/manager`)
+                .set('Authorization', token)
+                .send(deleteManager);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
         it(`should get ${httpStatus.OK} manager successfully deleted`, async () => {
             const response = await request(app)
                 .delete(`/api/V1/companies/${company._id}/manager`)

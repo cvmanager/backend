@@ -14,11 +14,13 @@ import CompanyData from './data/company.data';
 
 let token;
 let user;
+let users;
 let project;
 let position;
 let manager;
 let positionData;
 let positionItem;
+let managerData;
 let companyItem;
 let companyData;
 let projectItem;
@@ -34,6 +36,7 @@ describe(`Position Routes`, () => {
         let userData = new UserData();
         token = userData.getAccessToken();
         user = userData.getUser();
+        users = userData.getUsers();
 
         projectData = new ProjectData();
         project = projectData.getProject();
@@ -41,7 +44,7 @@ describe(`Position Routes`, () => {
         positionData = new PositionData();
         position = positionData.getPosition();
 
-        let managerData = new ManagerData();
+        managerData = new ManagerData();
         manager = managerData.getManagerByEntityId(position._id);
 
     })
@@ -470,6 +473,86 @@ describe(`Position Routes`, () => {
                 .send(setManager);
 
             expect(response.statusCode).toBe(httpStatus.CREATED);
+        })
+
+    })
+
+    describe("DELETE /positions/{id}/manager", () => {
+
+        let deleteManager;
+        beforeEach(() => {
+            deleteManager = {
+                'manager_id': manager.user_id,
+            };
+        })
+
+        it(`should get ${httpStatus.NOT_FOUND} position id is not valid`, async () => {
+            const response = await request(app)
+                .delete(`/api/V1/positions/${Types.ObjectId()}/manager`)
+                .set('Authorization', token)
+                .send(deleteManager);
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} position id is not a mongo id`, async () => {
+            const response = await request(app)
+                .delete("/api/V1/positions/fakeID/manager")
+                .set('Authorization', token)
+                .send(deleteManager);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} manager id is not sended`, async () => {
+            delete deleteManager.manager_id
+            const response = await request(app)
+                .delete(`/api/V1/positions/${position._id}/manager`)
+                .set('Authorization', token)
+                .send(deleteManager);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} manager id is not a mongo id`, async () => {
+            deleteManager.manager_id = 'fake'
+            const response = await request(app)
+                .delete(`/api/V1/positions/${position._id}/manager`)
+                .set('Authorization', token)
+                .send(deleteManager);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.NOT_FOUND} manager id is not valid`, async () => {
+            deleteManager.manager_id = Types.ObjectId()
+            const response = await request(app)
+                .delete(`/api/V1/positions/${position._id}/manager`)
+                .set('Authorization', token)
+                .send(deleteManager);
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} this user is not manager for this position`, async () => {
+            deleteManager.manager_id = users[0]._id
+            const response = await request(app)
+                .delete(`/api/V1/positions/${position._id}/manager`)
+                .set('Authorization', token)
+                .send(deleteManager);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} user is owner manager for this position`, async () => {
+            deleteManager.manager_id =  managerData.getManagerByEntityIdAndType(position._id,'positions');
+            const response = await request(app)
+                .delete(`/api/V1/positions/${manager.entity_id}/manager`)
+                .set('Authorization', token)
+                .send(deleteManager);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.OK} manager successfully deleted`, async () => {
+            const response = await request(app)
+                .delete(`/api/V1/positions/${position._id}/manager`)
+                .set('Authorization', token)
+                .send(deleteManager);
+            expect(response.statusCode).toBe(httpStatus.OK);
         })
 
     })
