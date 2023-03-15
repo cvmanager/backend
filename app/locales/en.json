@@ -23,6 +23,11 @@
 				"end",
 				"exemption-edu",
 				"exemption-spo"
+			],
+			"hire_status": [
+				"not_employed",
+				"hired_on",
+				"leaving_work"
 			]
 		},
 		"errors": {
@@ -235,7 +240,12 @@
 			"calling_date_must_be_date": "calling_date must be date",
 			"description_length": "description length must be between 0 and 1000",
 			"call_history_recall_at_required": "recall_at is required",
-			"call_history_recall_at_invalid": "recall_at must be date"
+			"call_history_recall_at_invalid": "recall_at must be date",
+			"resume_id_required": "resume id required",
+			"resume_id_invalid": "resume id invalid",
+			"hire_status_required": "hire status is required",
+			"hire_status_value_not_valid": "hire status value is not valid",
+			"income_is_number": "income is number"
 		},
 		"messages": {
 			"resume_successfuly_created": "resume successfuly created",
@@ -243,13 +253,15 @@
 			"resume_call_history_successfuly_created": "resume call history successfuly created",
 			"max_comment_length": "Comment has be between 5 and 1000 character",
 			"resume_page_number": "resume page must by number",
-			"resume_size_number": "resume size must by number"
+			"resume_size_number": "resume size must by number",
+			"hire_status_successfuly_updated": "hire status successfuly updated"
 		},
 		"errors": {
 			"resume_notfound": "Sorry, Resume not found",
 			"resume_comments_no_content": "Sorry, This resume  dont have any comment",
 			"resume_comments_notfound": "Sorry, Resume not have any comment",
-			"can_not_update_status_to_current": "It is not possible to update the status to the current status"
+			"can_not_update_status_to_current": "It is not possible to update the status to the current status",
+			"income_cant_be_empty": "income is required"
 		}
 	},
 	"user": {
