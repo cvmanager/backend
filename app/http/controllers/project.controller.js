@@ -419,12 +419,7 @@ class ProjectController extends Controller {
         } catch (err) {
             next(err);
         }
-
-        AppResponse.builder(res).message("project.messages.project_successfuly_updated").data(project).send()
-    } catch(err) {
-        next(err);
     }
-}
 
 
 }
