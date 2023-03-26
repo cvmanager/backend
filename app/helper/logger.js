@@ -35,6 +35,7 @@ class Logger {
 
             await winston.add(new winston.transports.File({ filename: `./app/logs/${newdate}.log` }));
             await winston.error(err.message, err);
+            if (env('NODE_ENV') == 'development') console.log(err);
         } catch (err) {
             next(err);
         }
