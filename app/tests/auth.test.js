@@ -143,15 +143,15 @@ describe("Auth Routes", () => {
                 .send(newUser);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
-        it(`should get ${httpStatus.BAD_REQUEST} if username is less than 5 character`, async () => {
-            newUser.username = faker.random.alpha(4);
+        it(`should get ${httpStatus.BAD_REQUEST} if username is less than 3 character`, async () => {
+            newUser.username = faker.random.alpha(2);
             const response = await request(app)
                 .post(`/api/V1/auth/signup`)
                 .send(newUser);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
-        it(`should get ${httpStatus.BAD_REQUEST} if username is grather than 10 character`, async () => {
-            newUser.username = faker.random.alpha(11);
+        it(`should get ${httpStatus.BAD_REQUEST} if username is grather than 15 character`, async () => {
+            newUser.username = faker.random.alpha(16);
             const response = await request(app)
                 .post(`/api/V1/auth/signup`)
                 .send(newUser);
@@ -164,15 +164,15 @@ describe("Auth Routes", () => {
                 .send(newUser);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
-        it(`should get ${httpStatus.BAD_REQUEST} if password is less than 3 character`, async () => {
+        it(`should get ${httpStatus.BAD_REQUEST} if password is less than 8 character`, async () => {
             newUser.password = faker.random.alpha(7);
             const response = await request(app)
                 .post(`/api/V1/auth/signup`)
                 .send(newUser);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
-        it(`should get ${httpStatus.BAD_REQUEST} if password is grather than 80 character`, async () => {
-            newUser.password = faker.random.alpha(11);
+        it(`should get ${httpStatus.BAD_REQUEST} if password is grather than 20 character`, async () => {
+            newUser.password = faker.random.alpha(21);
             const response = await request(app)
                 .post(`/api/V1/auth/signup`)
                 .send(newUser);
@@ -225,15 +225,15 @@ describe("Auth Routes", () => {
                 .send(loginUser);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
-        it(`should get ${httpStatus.BAD_REQUEST} if username is less than 5 character`, async () => {
-            loginUser.mobile = faker.random.alpha(4);
+        it(`should get ${httpStatus.BAD_REQUEST} if username is less than 3 character`, async () => {
+            loginUser.mobile = faker.random.alpha(2);
             const response = await request(app)
                 .post(`/api/V1/auth/login`)
                 .send(loginUser);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
-        it(`should get ${httpStatus.BAD_REQUEST} if username is grather than 10 character`, async () => {
-            loginUser.mobile = faker.random.alpha(11);
+        it(`should get ${httpStatus.BAD_REQUEST} if username is grather than 15 character`, async () => {
+            loginUser.mobile = faker.random.alpha(16);
             const response = await request(app)
                 .post(`/api/V1/auth/login`)
                 .send(loginUser);
@@ -246,26 +246,26 @@ describe("Auth Routes", () => {
                 .send(loginUser);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
-        it(`should get ${httpStatus.BAD_REQUEST} if password is less than 3 character`, async () => {
+        it(`should get ${httpStatus.BAD_REQUEST} if password is less than 8 character`, async () => {
             loginUser.password = faker.random.alpha(7);
             const response = await request(app)
                 .post(`/api/V1/auth/login`)
                 .send(loginUser);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
-        it(`should get ${httpStatus.BAD_REQUEST} if password is grather than 80 character`, async () => {
-            loginUser.password = faker.random.alpha(11);
+        it(`should get ${httpStatus.BAD_REQUEST} if password is grather than 20 character`, async () => {
+            loginUser.password = faker.random.alpha(21);
             const response = await request(app)
                 .post(`/api/V1/auth/login`)
                 .send(loginUser);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
-        it(`should get ${httpStatus.NOT_FOUND} if user is not found`, async () => {
+        it(`should get ${httpStatus.BAD_REQUEST} if user is not found`, async () => {
             loginUser.mobile = faker.phone.number('989#########');
             const response = await request(app)
                 .post(`/api/V1/auth/login`)
                 .send(loginUser);
-            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
         it(`should get ${httpStatus.BAD_REQUEST} if password is wrong`, async () => {
             loginUser.password = '987654321';

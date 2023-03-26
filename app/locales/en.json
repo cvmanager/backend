@@ -195,6 +195,9 @@
 					"busy",
 					"wrong-number",
 					"recall"
+				],
+				"hire_status": [
+					"not_employed"
 				]
 			},
 			"validations": {
