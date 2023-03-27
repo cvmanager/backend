@@ -221,6 +221,7 @@ class PositionController extends Controller {
 
             let user = await User.findById(req.body.manager_id);
             if (!user) throw new NotFoundError('user.errors.user_notfound');
+            if (user.is_banned) throw new BadRequestError("user.errors.manager_is_banned");
 
             const duplicateManager = await Manager.findOne({ 'user_id': user._id, 'entity_id': position._id, 'entity': 'positions' })
             if (duplicateManager) {

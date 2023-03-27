@@ -196,6 +196,7 @@ class ProjectController extends Controller {
 
             let user = await User.findById(req.body.manager_id);
             if (!user) throw new NotFoundError("user.errors.user_notfound");
+            if (user.is_banned) throw new BadRequestError("user.errors.manager_is_banned");
 
             let manager = await Manager.findOne({ 'entity': "projects", 'entity_id': project.id, 'user_id': user.id });
             if (manager) throw new BadRequestError("project.errors.the_user_is_currently_an_manager_for_project");
