@@ -1222,6 +1222,41 @@ describe("Resumes Routes", () => {
         })
 
     })
+
+    describe(`PATCH /:id/avatar`, () => {
+        let avatar;
+        beforeEach(async () => {
+            avatar = path.join(__dirname, 'data/file/avatar.png');
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if resume id is not valid`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/resumes/fakeId/avatar`)
+                .set(`Authorization`, token)
+                .attach('avatar', avatar);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.NOT_FOUND} if resume is not exists`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${Types.ObjectId()}/avatar`)
+                .set(`Authorization`, token)
+                .attach('avatar', avatar);
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+        it(`should return ${httpStatus.BAD_REQUEST} error if avatar incorect`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${resume._id}/avatar`)
+                .set('Authorization', token)
+                .attach('avatar', path.join(__dirname, 'data/file/avatar.zip'));
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        });
+        it(`should get ${httpStatus.OK} if all data correct `, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${resume._id}/avatar`)
+                .set(`Authorization`, token)
+                .attach('avatar', avatar);
+            expect(response.statusCode).toBe(httpStatus.OK);
+        })
+    })
 })
 
 

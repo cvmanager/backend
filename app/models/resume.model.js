@@ -167,7 +167,7 @@ const schema = new mongoose.Schema(
         hire_status: {
             type: String,
             default: 'not_employed',
-            enum: i18n.__("system.enums.hire_status")
+            enum: i18n.__("resume.enums.hire_status")
         },
         income: {
             type: Number,
@@ -176,7 +176,15 @@ const schema = new mongoose.Schema(
         index: {
             type: Number,
             default: null
-        }
+        },
+        avatar: {
+            type: String,
+            default: null,
+        },
+        tag: {
+            type: String,
+            default: null,
+        },
     }
 );
 

@@ -370,6 +370,14 @@ class ResumeValidation {
             generalValidator
         ];
     }
+
+    avatar() {
+        return [
+            param('id')
+                .notEmpty().isMongoId().withMessage('resume.validations.resume_id_invalid').trim(),
+            generalValidator
+        ];
+    }
 }
 
 export default new ResumeValidation();

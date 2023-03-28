@@ -411,6 +411,35 @@ class ResumeController extends Controller {
             next(err);
         }
     }
+
+    /**
+    * PATCH /resumes/:id/avatar
+    * @summary upload resume avatar
+    * @tags Resume
+    * @security BearerAuth
+    * 
+    * @param { string } id.path.required - resume id
+    * @param { resume.upload_avatar } request.body - resume info - multipart/form-data
+    * 
+    * @return { resume.success }               200 - update resume profile
+    * @return { message.badrequest_error }      400 - resume not found
+    * @return { message.badrequest_error }      401 - UnauthorizedError
+    * @return { message.server_error}           500 - Server Error
+    */
+    async updateAvatar(req, res, next) {
+        try {
+            let resume = await resumeService.findByParamId(req);
+
+            if (req.body.avatar) {
+                resume.avatar = req.body.avatar;
+                await resume.save();
+            }
+
+            AppResponse.builder(res).message("resume.messages.resume_successfuly_updated").data(resume).send()
+        } catch (err) {
+            next(err);
+        }
+    }
 }
 
 export default new ResumeController;
