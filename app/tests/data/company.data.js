@@ -25,6 +25,7 @@ class CompanyData {
             "name": faker.company.name(),
             "description": faker.random.alpha(50),
             "phone": faker.phone.number('989#########'),
+            "is_active": false,
             "address": faker.random.alpha(100),
             "created_by": Types.ObjectId()
         }

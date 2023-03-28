@@ -409,7 +409,7 @@ describe("Company Routes", () => {
             expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
         })
         it(`should get ${httpStatus.BAD_REQUEST} company is deactive`, async () => {
-            let deactiveCompany = companyData.setDeActiveData();
+            let deactiveCompany = await companyData.setDeActiveData();
             const response = await request(app)
                 .patch(`/api/V1/companies/${deactiveCompany._id}/manager`)
                 .set('Authorization', token)
