@@ -175,7 +175,8 @@
 				"project_not_found": "Project not found",
 				"project_already_attached_company": "Project already attached this company",
 				"project_deactivated_alredy": "project has deactiveed alredy",
-				"project_activated_alredy": "project has activated alredy"
+				"project_activated_alredy": "project has activated alredy",
+				"project_deactive_cant_set_manager": "cant set manager for deactive project"
 			}
 		},
 		"resume": {
