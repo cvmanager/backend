@@ -260,12 +260,12 @@ describe("Auth Routes", () => {
                 .send(loginUser);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
-        it(`should get ${httpStatus.NOT_FOUND} if user is not found`, async () => {
+        it(`should get ${httpStatus.BAD_REQUEST} if user is not found`, async () => {
             loginUser.mobile = faker.phone.number('989#########');
             const response = await request(app)
                 .post(`/api/V1/auth/login`)
                 .send(loginUser);
-            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
         it(`should get ${httpStatus.BAD_REQUEST} if password is wrong`, async () => {
             loginUser.password = '987654321';

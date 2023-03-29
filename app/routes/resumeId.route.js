@@ -10,9 +10,10 @@ resumeIdRouter
     .patch('', ResumeValidation.update(), ResumeController.update)
     .delete('', ResumeValidation.remove(), ResumeController.delete)
     .patch('/status', ResumeValidation.update_status(), ResumeController.updateStatus)
-    .post('/call-history', ResumeValidation.call_history(), ResumeController.callHistory)
+    .patch('/call-history', ResumeValidation.call_history(), ResumeController.callHistory)
     .patch('/file', Upload('resumes', 'file', 'file'), ResumeValidation.upload_file(), ResumeController.uploadFile)
     .get('/comments', ResumeValidation.comments(), ResumeController.comments)
-    .post('/comments', ResumeValidation.addComments(), ResumeController.addComments)
+    .patch('/comments', ResumeValidation.addComments(), ResumeController.addComments)
+    .patch('/hire_status', ResumeValidation.hireStatus(), ResumeController.hireStatus)
 
 export default resumeIdRouter

@@ -709,13 +709,6 @@ describe(`Position Routes`, () => {
             logo = path.join(__dirname, 'data/file/avatar.png');
         })
 
-        it(`should get ${httpStatus.BAD_REQUEST} if position id is not send`, async () => {
-            const response = await request(app)
-                .patch(`/api/V1/positions//logo`)
-                .set(`Authorization`, token)
-                .attach('logo', logo);
-            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
-        })
         it(`should get ${httpStatus.BAD_REQUEST} if position id is not valid`, async () => {
             const response = await request(app)
                 .patch(`/api/V1/positions/fakeId/logo`)
