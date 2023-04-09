@@ -5,6 +5,7 @@ import ResumeComments from '../../models/resumeComment.model.js';
 import EventEmitter from '../../events/emitter.js';
 import AppResponse from '../../helper/response.js';
 import Resume from '../../models/resume.model.js';
+import Company from '../../models/company.model.js';
 import Controller from './controller.js';
 import BadRequestError from '../../exceptions/BadRequestError.js';
 import { mergeQuery } from '../../helper/mergeQuery.js';
@@ -113,7 +114,7 @@ class ResumeController extends Controller {
             let company = await Company.findById(position.company_id)
             if (!company.is_active) throw new BadRequestError('company.errors.company_isnot_active');
             
-            req.body.created_by = req.user_id
+            req.body.created_by = req.user._id;
             req.body.project_id = position.project_id;
             req.body.company_id = position.company_id;
 
@@ -297,7 +298,7 @@ class ResumeController extends Controller {
     }
 
     /**
-    * POST /resumes/{id}/comments
+    * PATCH /resumes/{id}/comments
     * 
     * @summary add  comments for resume in table
     * @tags Resume
@@ -329,7 +330,7 @@ class ResumeController extends Controller {
     }
 
     /**
-      * POST /resumes/{id}/call-history
+      * PATCH /resumes/{id}/call-history
       * 
       * @summary creates a call history for specific resume
       * @tags Resume

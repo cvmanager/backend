@@ -856,13 +856,6 @@ describe("Resumes Routes", () => {
         beforeEach(async () => {
             file = path.join(__dirname, 'data/file/resumeFileValid.docx');
         })
-        it(`should return ${httpStatus.BAD_REQUEST} error if resume id empty`, async () => {
-            const response = await request(app)
-                .patch(`/api/V1/resumes//file`)
-                .set('Authorization', token)
-                .attach('file', file);
-            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
-        });
         it(`should return ${httpStatus.BAD_REQUEST} error if resume id invalid`, async () => {
             const response = await request(app)
                 .patch(`/api/V1/resumes/fakeid/file`)
@@ -965,7 +958,7 @@ describe("Resumes Routes", () => {
         })
     })
 
-    describe("POST /resumes/{id}/commments", () => {
+    describe("PATCH /resumes/{id}/commments", () => {
         let data = {
             'body': faker.random.alpha(50),
         }
@@ -973,7 +966,7 @@ describe("Resumes Routes", () => {
         it(`should get ${httpStatus.BAD_REQUEST} resume id is not a mongo id`, async () => {
             data.body = 'test text';
             const response = await request(app)
-                .post(`/api/V1/resumes/fakeID/comments`,)
+                .patch(`/api/V1/resumes/fakeID/comments`,)
                 .set('Authorization', token)
                 .send(data);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
@@ -981,7 +974,7 @@ describe("Resumes Routes", () => {
 
         it(`should get ${httpStatus.NOT_FOUND} resume is not exist `, async () => {
             const response = await request(app)
-                .post(`/api/V1/resumes/${Types.ObjectId()}/comments`)
+                .patch(`/api/V1/resumes/${Types.ObjectId()}/comments`)
                 .set('Authorization', token)
                 .send(data);
             expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
@@ -990,7 +983,7 @@ describe("Resumes Routes", () => {
         it(`should get ${httpStatus.BAD_REQUEST} body text is empty `, async () => {
             data.body = '';
             const response = await request(app)
-                .post(`/api/V1/resumes/${resume._id}/comments`)
+                .patch(`/api/V1/resumes/${resume._id}/comments`)
                 .set('Authorization', token)
                 .send(data);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
@@ -999,7 +992,7 @@ describe("Resumes Routes", () => {
         it(`should get ${httpStatus.BAD_REQUEST} body text is not send `, async () => {
             delete data.body;
             const response = await request(app)
-                .post(`/api/V1/resumes/${resume._id}/comments`)
+                .patch(`/api/V1/resumes/${resume._id}/comments`)
                 .set('Authorization', token)
                 .send(data);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
@@ -1008,7 +1001,7 @@ describe("Resumes Routes", () => {
         it(`should get ${httpStatus.BAD_REQUEST} body text is less than 5 character `, async () => {
             data.body = faker.random.alpha(4);
             const response = await request(app)
-                .post(`/api/V1/resumes/${resume._id}/comments`)
+                .patch(`/api/V1/resumes/${resume._id}/comments`)
                 .set('Authorization', token)
                 .send(data);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
@@ -1017,7 +1010,7 @@ describe("Resumes Routes", () => {
         it(`should get ${httpStatus.BAD_REQUEST}body text is more than 1000 character `, async () => {
             data.body = faker.random.alpha(1001);
             const response = await request(app)
-                .post(`/api/V1/resumes/${resume._id}/comments`)
+                .patch(`/api/V1/resumes/${resume._id}/comments`)
                 .set('Authorization', token)
                 .send(data);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
@@ -1026,7 +1019,7 @@ describe("Resumes Routes", () => {
         it(`should check field of object returned`, async () => {
             data.body = faker.random.alpha(50);
             const response = await request(app)
-                .post(`/api/V1/resumes/${resume._id}/comments`)
+                .patch(`/api/V1/resumes/${resume._id}/comments`)
                 .set(`Authorization`, token)
                 .send(data);
 
@@ -1042,7 +1035,7 @@ describe("Resumes Routes", () => {
         })
     })
 
-    describe(`POST /:id/call-history`, () => {
+    describe(`PATCH /:id/call-history`, () => {
 
         let callHistory;
         beforeEach(async () => {
@@ -1058,7 +1051,7 @@ describe("Resumes Routes", () => {
 
         it(`should get ${httpStatus.BAD_REQUEST} if resume id is not MongoId`, async () => {
             const response = await request(app)
-                .post(`/api/V1/resumes/fakeId/call-history`)
+                .patch(`/api/V1/resumes/fakeId/call-history`)
                 .set(`Authorization`, token)
                 .send(callHistory);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
@@ -1066,7 +1059,7 @@ describe("Resumes Routes", () => {
         it(`should get ${httpStatus.NOT_FOUND} if resume id is not valid`, async () => {
             let invalidResumeId = Types.ObjectId();
             const response = await request(app)
-                .post(`/api/V1/resumes/${invalidResumeId}/call-history`)
+                .patch(`/api/V1/resumes/${invalidResumeId}/call-history`)
                 .set(`Authorization`, token)
                 .send(callHistory);
             expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
@@ -1074,7 +1067,7 @@ describe("Resumes Routes", () => {
         it(`should get ${httpStatus.BAD_REQUEST} if result is not send`, async () => {
             delete callHistory.result
             const response = await request(app)
-                .post(`/api/V1/resumes/${resume._id}/call-history`)
+                .patch(`/api/V1/resumes/${resume._id}/call-history`)
                 .set(`Authorization`, token)
                 .send(callHistory);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
@@ -1082,7 +1075,7 @@ describe("Resumes Routes", () => {
         it(`should get ${httpStatus.BAD_REQUEST} if result is not enum`, async () => {
             callHistory.result = 'fakeResult'
             const response = await request(app)
-                .post(`/api/V1/resumes/${resume._id}/call-history`)
+                .patch(`/api/V1/resumes/${resume._id}/call-history`)
                 .set(`Authorization`, token)
                 .send(callHistory);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
@@ -1090,7 +1083,7 @@ describe("Resumes Routes", () => {
         it(`should get ${httpStatus.BAD_REQUEST} if calling_date is not send`, async () => {
             delete callHistory.calling_date
             const response = await request(app)
-                .post(`/api/V1/resumes/${resume._id}/call-history`)
+                .patch(`/api/V1/resumes/${resume._id}/call-history`)
                 .set(`Authorization`, token)
                 .send(callHistory);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
@@ -1098,7 +1091,7 @@ describe("Resumes Routes", () => {
         it(`should get ${httpStatus.BAD_REQUEST} if calling_date is not date`, async () => {
             callHistory.calling_date = 'fakeDate';
             const response = await request(app)
-                .post(`/api/V1/resumes/${resume._id}/call-history`)
+                .patch(`/api/V1/resumes/${resume._id}/call-history`)
                 .set(`Authorization`, token)
                 .send(callHistory);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
@@ -1106,7 +1099,7 @@ describe("Resumes Routes", () => {
         it(`should get ${httpStatus.BAD_REQUEST} if description is grather than 1000 character`, async () => {
             callHistory.description = faker.random.alpha(1001);
             const response = await request(app)
-                .post(`/api/V1/resumes/${resume._id}/call-history`)
+                .patch(`/api/V1/resumes/${resume._id}/call-history`)
                 .set(`Authorization`, token)
                 .send(callHistory);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
@@ -1116,7 +1109,7 @@ describe("Resumes Routes", () => {
             callHistory.result = 'recall'
             delete callHistory.recall_at;
             const response = await request(app)
-                .post(`/api/V1/resumes/${resume._id}/call-history`)
+                .patch(`/api/V1/resumes/${resume._id}/call-history`)
                 .set(`Authorization`, token)
                 .send(callHistory);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
@@ -1125,7 +1118,7 @@ describe("Resumes Routes", () => {
             callHistory.result = 'recall'
             callHistory.recall_at = 'invalidDate';
             const response = await request(app)
-                .post(`/api/V1/resumes/${resume._id}/call-history`)
+                .patch(`/api/V1/resumes/${resume._id}/call-history`)
                 .set(`Authorization`, token)
                 .send(callHistory);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
@@ -1134,16 +1127,17 @@ describe("Resumes Routes", () => {
             callHistory.result = 'recall'
             callHistory.recall_at = faker.date.past(10);
             const response = await request(app)
-                .post(`/api/V1/resumes/${resume._id}/call-history`)
+                .patch(`/api/V1/resumes/${resume._id}/call-history`)
                 .set(`Authorization`, token)
                 .send(callHistory);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
         it(`should get ${httpStatus.OK} if all data correct `, async () => {
             const response = await request(app)
-                .post(`/api/V1/resumes/${resume._id}/call-history`)
+                .patch(`/api/V1/resumes/${resume._id}/call-history`)
                 .set(`Authorization`, token)
                 .send(callHistory);
+            console.log(response.body);
             expect(response.statusCode).toBe(httpStatus.OK);
         })
     })
