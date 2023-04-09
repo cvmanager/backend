@@ -36,7 +36,7 @@ class AuthController extends Controller {
                 ]
             })
 
-            if (!user) throw new NotFoundError('auth.errors.user_not_found');
+            if (!user) throw new BadRequestError('auth.errors.invalid_credentials');
 
             let validPassword = await bcrypt.compare(req.body.password, user.password)
             if (!validPassword) throw new BadRequestError('auth.errors.invalid_credentials');
@@ -81,7 +81,7 @@ class AuthController extends Controller {
                 mobile: req.body.mobile,
                 username: req.body.username,
                 password: hash_password,
-                role: [ownerRole._id]
+                role: ((ownerRole && ownerRole._id )? [ownerRole._id] : [])
             });
 
             const access_token = await generateJwtToken({ _id: user._id, role: [ownerRole._id] })

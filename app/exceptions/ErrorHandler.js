@@ -14,9 +14,6 @@ import ForbiddenError from './Forbidden.js';
 
 async function errorHandler(err, req, res, next) {
 
-    await Logger.builder(req).setExeption(err);
-
-
     if (err instanceof NotFoundError) {
         return res.status(404).json({
             message: res.__(err.message),
@@ -81,7 +78,7 @@ async function errorHandler(err, req, res, next) {
         });
     }
 
-    if (env('NODE_ENV') == 'development') console.log(err);
+    await Logger.builder(req).setExeption(err);
 
     return res.status(500).json({
         message: res.__("system.errors.server_error"),

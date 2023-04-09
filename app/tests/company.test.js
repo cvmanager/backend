@@ -10,6 +10,7 @@ import { Types } from 'mongoose';
 import CompanyData from './data/company.data';
 import { faker } from '@faker-js/faker';
 import * as path from 'path';
+import EventEmitter from '../events/emitter.js';
 
 let companyData;
 let companyItem;
@@ -349,11 +350,13 @@ describe("Company Routes", () => {
             expect(response.statusCode).toBe(httpStatus.CONFLICT);
         })
         it(`should get ${httpStatus.OK} if all data correct `, async () => {
+            let emit = jest.spyOn(EventEmitter, 'emit').mockImplementation(() => null);
             const response = await request(app)
                 .patch(`/api/V1/companies/${company._id}`)
                 .set(`Authorization`, token)
                 .send(updateCompany);
             expect(response.statusCode).toBe(httpStatus.OK);
+            expect(emit).toHaveBeenCalledTimes(1);
         })
     })
 
@@ -514,6 +517,15 @@ describe("Company Routes", () => {
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
 
+        it(`should get ${httpStatus.BAD_REQUEST} user is owner manager for this company`, async () => {
+            deleteManager.manager_id =  managerData.getManagerByEntityIdAndType(company._id,'companies');
+            const response = await request(app)
+                .delete(`/api/V1/companies/${manager.entity_id}/manager`)
+                .set('Authorization', token)
+                .send(deleteManager);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
         it(`should get ${httpStatus.OK} manager successfully deleted`, async () => {
             const response = await request(app)
                 .delete(`/api/V1/companies/${company._id}/manager`)
@@ -607,20 +619,13 @@ describe("Company Routes", () => {
         })
     })
 
-    describe(`PATCH /:id`, () => {
+    describe(`PATCH /:id/logo`, () => {
 
         let logo;
         beforeEach(async () => {
             logo = path.join(__dirname, 'data/file/avatar.png');
         })
 
-        it(`should get ${httpStatus.BAD_REQUEST} if company id is not send`, async () => {
-            const response = await request(app)
-                .patch(`/api/V1/companies//logo`)
-                .set(`Authorization`, token)
-                .attach('logo', logo);
-            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
-        })
         it(`should get ${httpStatus.BAD_REQUEST} if company id is not valid`, async () => {
             const response = await request(app)
                 .patch(`/api/V1/companies/fakeId/logo`)
@@ -725,11 +730,11 @@ describe("Company Routes", () => {
         })
     })
 
-    describe(`GET /:id/statistics/resumes`, () => {
 
+    describe(`GET /:id/statistics/resume-by-states`, () => {
         it(`should get ${httpStatus.BAD_REQUEST} company id is not a mongo id`, async () => {
             const response = await request(app)
-                .get(`/api/V1/companies/fakeID`)
+                .get(`/api/V1/companies/fakeID/statistics/resume-by-states`)
                 .set(`Authorization`, token)
                 .send();
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
@@ -737,22 +742,73 @@ describe("Company Routes", () => {
 
         it(`should get ${httpStatus.NOT_FOUND} company id is not valid`, async () => {
             const response = await request(app)
-                .get(`/api/V1/companies/${Types.ObjectId()}`)
+                .get(`/api/V1/companies/${Types.ObjectId()}/statistics/resume-by-states`)
                 .set(`Authorization`, token)
                 .send();
             expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
         })
+    })
 
+    describe(`GET /:id/statistics/resume-state-in-last-month`, () => {
+        it(`should get ${httpStatus.BAD_REQUEST} company id is not a mongo id`, async () => {
+            const response = await request(app)
+                .get(`/api/V1/companies/fakeID/statistics/resume-state-in-last-month`)
+                .set(`Authorization`, token)
+                .send();
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.NOT_FOUND} company id is not valid`, async () => {
+            const response = await request(app)
+                .get(`/api/V1/companies/${Types.ObjectId()}/statistics/resume-state-in-last-month`)
+                .set(`Authorization`, token)
+                .send();
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
         it(`should get ${httpStatus.OK} success if correct`, async () => {
             const response = await request(app)
-                .get(`/api/V1/companies/${company._id}`)
+                .get(`/api/V1/companies/${company._id}/statistics/resume-state-in-last-month`)
                 .set(`Authorization`, token)
                 .send();
 
             let data = response.body.data[0];
-            expect(data).toHaveProperty(`total_resume_by_states`)
-            expect(data).toHaveProperty(`resume_state_in_last_month`)
+            expect(data).toHaveProperty(`received`)
+            expect(data).toHaveProperty(`hired`)
+            expect(data).toHaveProperty(`rejected`)
             expect(response.statusCode).toBe(httpStatus.OK)
+        })
+    })
+
+    describe(`GET /:id/statistics/resume-count-by-projects`, () => {
+        it(`should get ${httpStatus.BAD_REQUEST} company id is not a mongo id`, async () => {
+            const response = await request(app)
+                .get(`/api/V1/companies/fakeID/statistics/resume-count-by-projects`)
+                .set(`Authorization`, token)
+                .send();
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.NOT_FOUND} company id is not valid`, async () => {
+            const response = await request(app)
+                .get(`/api/V1/companies/${Types.ObjectId()}/statistics/resume-count-by-projects`)
+                .set(`Authorization`, token)
+                .send();
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+    })
+
+    describe(`GET /:id/statistics/resume-count-from-month`, () => {
+        it(`should get ${httpStatus.BAD_REQUEST} company id is not a mongo id`, async () => {
+            const response = await request(app)
+                .get(`/api/V1/companies/fakeID/statistics/resume-count-from-month`)
+                .set(`Authorization`, token)
+                .send();
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.NOT_FOUND} company id is not valid`, async () => {
+            const response = await request(app)
+                .get(`/api/V1/companies/${Types.ObjectId()}/statistics/resume-count-from-month`)
+                .set(`Authorization`, token)
+                .send();
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
         })
     })
 

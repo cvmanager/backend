@@ -9,6 +9,10 @@ import ResumeComment from '../../models/resumeComment.model';
 import { users, companies, projects, positions, managers, resumes, resumeComments, logHistory } from '../data/data';
 import bcrypt from 'bcrypt';
 import { fillProvinceTable } from "../../helper/service/province.service"
+import roleService from "../../helper/service/role.service.js";
+import userService from "../../helper/service/user.service.js";
+import rbacConfig, { createPermissions } from '../../helper/rbac.js';
+import app from '../../app.js'
 
 class AllInit {
     async setData() {
@@ -22,7 +26,10 @@ class AllInit {
         await ResumeComment.insertMany(resumeComments);
         await Manager.insertMany(managers);
         await fillProvinceTable();
-
+        await createPermissions(app)
+        // await rbacConfig()
+        await roleService.fillRoles();
+        await userService.fillUsers();
     }
 }
 

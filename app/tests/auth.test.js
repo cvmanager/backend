@@ -31,34 +31,36 @@ describe("Auth Routes", () => {
             };
         })
 
-        it(`should get ${httpStatus.OK} username exist`, async () => {
-            authData.username = users[0].username
-            const response = await request(app)
-                .post("/api/V1/auth/check-username")
-                .set("Authorization", token)
-                .send(authData);
-
-            expect(response.statusCode).toBe(httpStatus.OK);
-        });
-
-        it(`should get ${httpStatus.NOT_FOUND} username not found`, async () => {
-            authData.username = faker.internet.userName()
-            const response = await request(app)
-                .post("/api/V1/auth/check-username")
-                .set("Authorization", token)
-                .send(authData);
-
-            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
-        });
-
         it(`should get ${httpStatus.BAD_REQUEST} username not send`, async () => {
             delete authData.username
             const response = await request(app)
-                .post("/api/V1/auth/check-username")
+                .post("/api/V1/auth/username-isavailable")
                 .set("Authorization", token)
                 .send(authData);
 
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        });
+
+
+        it(`should get ${httpStatus.BAD_REQUEST} username is already exist`, async () => {
+            authData.username = users[0].username
+            const response = await request(app)
+                .post("/api/V1/auth/username-isavailable")
+                .set("Authorization", token)
+                .send(authData);
+
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        });
+
+
+        it(`should get ${httpStatus.OK} username not found and available`, async () => {
+            authData.username = faker.internet.userName()
+            const response = await request(app)
+                .post("/api/V1/auth/username-isavailable")
+                .set("Authorization", token)
+                .send(authData);
+
+            expect(response.statusCode).toBe(httpStatus.OK);
         });
 
     });
@@ -258,12 +260,12 @@ describe("Auth Routes", () => {
                 .send(loginUser);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
-        it(`should get ${httpStatus.NOT_FOUND} if user is not found`, async () => {
+        it(`should get ${httpStatus.BAD_REQUEST} if user is not found`, async () => {
             loginUser.mobile = faker.phone.number('989#########');
             const response = await request(app)
                 .post(`/api/V1/auth/login`)
                 .send(loginUser);
-            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
         it(`should get ${httpStatus.BAD_REQUEST} if password is wrong`, async () => {
             loginUser.password = '987654321';
