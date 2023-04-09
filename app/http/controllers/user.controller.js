@@ -144,7 +144,7 @@ class UserController extends Controller {
      */
     async getMe(req, res, next) {
         try {
-            let user = await userService.findOne(req.user._id, [{path: 'role', select: ['name', 'id', 'permissions']}])
+            let user = await userService.findOne(req.user._id, [{ path: 'role', select: ['name', 'id', 'permissions'] }])
             if (!user) throw new NotFoundError('user.errors.user_notfound');
             await user.populate({
                 path: "role.permissions"
@@ -223,10 +223,13 @@ class UserController extends Controller {
 
     /**
      * GET /users/id/companies
+     * 
      * @summary Get user companies
      * @tags User
      * @security BearerAuth
      * 
+     * @param  { string } id.path.required - user id
+     *
      * @return { user.success }             200 - user successfuly found
      * @return { message.badrequest_error } 400 - user not found
      * @return { message.badrequest_error } 401 - UnauthorizedError
