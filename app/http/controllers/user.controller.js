@@ -98,7 +98,7 @@ class UserController extends Controller {
 
     /**
      * POST /users/{id}/ban
-     * @summary update user prifile image
+     * @summary ban user
      * @tags User
      * @security BearerAuth
      * 
@@ -130,6 +130,37 @@ class UserController extends Controller {
     }
 
     /**
+     * POST /users/{id}/unban
+     * @summary unban user
+     * @tags User
+     * @security BearerAuth
+     * 
+     * @param { user.avatar } id.path.required - user id - application/json
+     * 
+     * @return { user.success }             200 - user successfuly unbanded
+     * @return { message.badrequest_error }      400 - user not found
+     * @return { message.badrequest_error }      401 - UnauthorizedError
+     * @return { message.server_error}      500 - Server Error
+     */
+    async unbanned(req, res, next) {
+        try {
+            let user = await User.findById(req.params.id);
+            if (!user) throw new NotFoundError('user.errors.user_notfound');
+
+            user.is_banned = 0;
+            user.banned_by = null;
+            user.banned_at = null;
+            await user.save();
+
+            EventEmitter.emit(events.BANNED, user)
+            AppResponse.builder(res).message('user.messages.user_successfully_unblocked').data(user).send();
+
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
      * GET /users/getMe
      * @summary Get authenticated user information
      * @tags User
@@ -142,7 +173,7 @@ class UserController extends Controller {
      */
     async getMe(req, res, next) {
         try {
-            let user = await userService.findOne(req.user._id, [{path: 'role', select: ['name', 'id', 'permissions']}])
+            let user = await userService.findOne(req.user._id, [{ path: 'role', select: ['name', 'id', 'permissions'] }])
             if (!user) throw new NotFoundError('user.errors.user_notfound');
             await user.populate({
                 path: "role.permissions"
