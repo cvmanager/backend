@@ -430,15 +430,15 @@ describe('User Routes', () => {
 
     it(`should get ${httpStatus.BAD_REQUEST} user id is not a mongo id`, async () => {
       const response = await request(app)
-        .patch(`/api/V1/users/fakeID/edit`)
+        .patch(`/api/V1/users/fakeID`)
         .set(`Authorization`, token)
-        .send()
+        .send(params)
       expect(response.statusCode).toBe(httpStatus.BAD_REQUEST)
     })
 
     it(`should get ${httpStatus.NOT_FOUND} user id is not valid`, async () => {
       const response = await request(app)
-        .patch(`/api/V1/users/${Types.ObjectId()}/edit`)
+        .patch(`/api/V1/users/${Types.ObjectId()}`)
         .set(`Authorization`, token)
         .send(params)
       expect(response.statusCode).toBe(httpStatus.NOT_FOUND)
@@ -458,7 +458,7 @@ describe('User Routes', () => {
 
       params.username = userItem.username
       const response = await request(app)
-        .patch(`/api/V1/users/${user._id}/edit`)
+        .patch(`/api/V1/users/${user._id}`)
         .set(`Authorization`, token)
         .send(params)
       expect(response.statusCode).toBe(httpStatus.BAD_REQUEST)
@@ -478,7 +478,7 @@ describe('User Routes', () => {
 
       params.email = userItem.email
       const response = await request(app)
-        .patch(`/api/V1/users/${user._id}/edit`)
+        .patch(`/api/V1/users/${user._id}`)
         .set(`Authorization`, token)
         .send(params)
       expect(response.statusCode).toBe(httpStatus.BAD_REQUEST)
@@ -487,7 +487,7 @@ describe('User Routes', () => {
     it(`should get ${httpStatus.BAD_REQUEST} if firstname is less than 3 character`, async () => {
       params.firstname = faker.random.alpha(2)
       const response = await request(app)
-        .patch(`/api/V1/users/${user._id}/edit`)
+        .patch(`/api/V1/users/${user._id}`)
         .send(params)
       expect(response.statusCode).toBe(httpStatus.BAD_REQUEST)
     })
@@ -495,7 +495,7 @@ describe('User Routes', () => {
     it(`should get ${httpStatus.BAD_REQUEST} if firstname is grather than 80 character`, async () => {
       params.firstname = faker.random.alpha(81)
       const response = await request(app)
-        .patch(`/api/V1/users/${user._id}/edit`)
+        .patch(`/api/V1/users/${user._id}`)
         .send(params)
       expect(response.statusCode).toBe(httpStatus.BAD_REQUEST)
     })
@@ -503,7 +503,7 @@ describe('User Routes', () => {
     it(`should get ${httpStatus.BAD_REQUEST} if lastname is less than 3 character`, async () => {
       params.lastname = faker.random.alpha(2)
       const response = await request(app)
-        .patch(`/api/V1/users/${user._id}/edit`)
+        .patch(`/api/V1/users/${user._id}`)
         .send(params)
       expect(response.statusCode).toBe(httpStatus.BAD_REQUEST)
     })
@@ -511,7 +511,7 @@ describe('User Routes', () => {
     it(`should get ${httpStatus.BAD_REQUEST} if lastname is grather than 80 character`, async () => {
       params.lastname = faker.random.alpha(81)
       const response = await request(app)
-        .patch(`/api/V1/users/${user._id}/edit`)
+        .patch(`/api/V1/users/${user._id}`)
         .send(params)
       expect(response.statusCode).toBe(httpStatus.BAD_REQUEST)
     })
@@ -519,7 +519,7 @@ describe('User Routes', () => {
     it(`should get ${httpStatus.BAD_REQUEST} if username is not send `, async () => {
       delete params.username
       const response = await request(app)
-        .patch(`/api/V1/users/${user._id}/edit`)
+        .patch(`/api/V1/users/${user._id}`)
         .send(params)
       expect(response.statusCode).toBe(httpStatus.BAD_REQUEST)
     })
@@ -527,7 +527,7 @@ describe('User Routes', () => {
     it(`should get ${httpStatus.BAD_REQUEST} if email is not send`, async () => {
       delete params.email
       const response = await request(app)
-        .patch(`/api/V1/users/${user._id}/edit`)
+        .patch(`/api/V1/users/${user._id}`)
         .send(params)
       expect(response.statusCode).toBe(httpStatus.BAD_REQUEST)
     })
@@ -535,14 +535,14 @@ describe('User Routes', () => {
     it(`should get ${httpStatus.BAD_REQUEST} if email is not correct`, async () => {
       params.email = 'email'
       const response = await request(app)
-        .patch(`/api/V1/users/${user._id}/edit`)
+        .patch(`/api/V1/users/${user._id}`)
         .send(params)
       expect(response.statusCode).toBe(httpStatus.BAD_REQUEST)
     })
 
     it(`should get ${httpStatus.OK} if everything is ok`, async () => {
       const response = await request(app)
-        .patch(`/api/V1/users/${user._id}/edit`)
+        .patch(`/api/V1/users/${user._id}`)
         .set(`Authorization`, token)
         .send(params)
       expect(response.statusCode).toBe(httpStatus.OK)

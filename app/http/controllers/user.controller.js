@@ -143,7 +143,7 @@ class UserController extends Controller {
      */
     async getMe(req, res, next) {
         try {
-            let user = await userService.findOne(req.user._id, [{path: 'role', select: ['name', 'id', 'permissions']}])
+            let user = await userService.findOne(req.user._id, [{ path: 'role', select: ['name', 'id', 'permissions'] }])
             if (!user) throw new NotFoundError('user.errors.user_notfound');
             await user.populate({
                 path: "role.permissions"
@@ -235,18 +235,17 @@ class UserController extends Controller {
      * @return { message.badrequest_error }     401 - UnauthorizedError
      * @return { message.server_error  }        500 - Server Error
      */
-       async edit(req, res, next) {
+    async edit(req, res, next) {
         try {
 
             let user = await User.findById(req.params.id);
             if (!user) throw new NotFoundError('user.errors.user_notfound')
-            
-            let userByUserName = await User.findOne( { '_id': { $ne: user._id }, 'username': req.body.username});
-            if (userByUserName ) throw new BadRequestError('user.errors.username_already_exists');  
+            let userByUserName = await User.findOne({ '_id': { $ne: user._id }, 'username': req.body.username });
+            if (userByUserName) throw new BadRequestError('user.errors.username_already_exists');
 
-            let userByEmail = await User.findOne({ '_id': { $ne: user._id }, 'email': req.body.email});
-            if (userByEmail ) throw new BadRequestError('user.errors.email_already_exists');  
- 
+            let userByEmail = await User.findOne({ '_id': { $ne: user._id }, 'email': req.body.email });
+            if (userByEmail) throw new BadRequestError('user.errors.email_already_exists');
+
             user.firstname = req.body.firstname
             user.lastname = req.body.lastname
             user.username = req.body.username
