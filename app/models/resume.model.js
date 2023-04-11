@@ -142,6 +142,11 @@ const schema = new mongoose.Schema(
                         type: Date,
                         default: null
                     },
+                    rating: {
+                        type: Number,
+                        required: true,
+                        length: 1
+                    },
                     created_by: {
                         type: mongoose.Schema.Types.ObjectId,
                         required: true,
@@ -159,9 +164,40 @@ const schema = new mongoose.Schema(
         file: {
             type: Array,
             default: null
-        }
+        },
+        process_duration: {
+            type: Number,
+            default: null
+        },
+        hire_status: {
+            type: String,
+            default: 'not_employed',
+            enum: i18n.__("resume.enums.hire_status")
+        },
+        income: {
+            type: Number,
+            default: null
+        },
+        index: {
+            type: Number,
+            default: null
+        },
+        avatar: {
+            type: String,
+            default: null,
+        },
+        tag: {
+            type: String,
+            default: null,
+        },
     }
 );
+
+schema.virtual("resumeComments", {
+    ref: 'resumeComments',
+    localField: "_id",
+    foreignField: "resume_id"
+});
 
 schema.plugin(basePlugin)
 

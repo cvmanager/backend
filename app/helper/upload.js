@@ -17,7 +17,7 @@ const config = {
 
 const createStorage = (path, fieldName) => {
     let basePath = './public';
-    let realPath = '/uploads' + path;
+    let realPath = '/uploads/' + path + '/';
     let fullPath = basePath + realPath;
 
     return multer.diskStorage({
