@@ -347,10 +347,7 @@ class ResumeController extends Controller {
       */
     async callHistory(req, res, next) {
         try {
-
-            let resume = await Resume.findById(req.params.id);
-
-            if (!resume) throw new NotFoundError('resume.errors.resume_notfound');
+            let resume = await resumeService.findByParamId(req);
 
             let calling_date = new Date(req.body.calling_date)
             let recall_at = new Date(req.body.recall_at)
@@ -359,6 +356,7 @@ class ResumeController extends Controller {
                 calling_date: calling_date,
                 description: req.body.description,
                 recall_at: recall_at,
+                rating: req.body.rating,
                 created_by: req.user._id
             })
             calling_date = calling_date.getTime()

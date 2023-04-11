@@ -142,6 +142,11 @@ const schema = new mongoose.Schema(
                         type: Date,
                         default: null
                     },
+                    rating: {
+                        type: Number,
+                        required: true,
+                        length: 1
+                    },
                     created_by: {
                         type: mongoose.Schema.Types.ObjectId,
                         required: true,
