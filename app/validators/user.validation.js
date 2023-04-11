@@ -83,6 +83,24 @@ class UserValidation {
         ];
     }
 
+    companies() {
+        return [
+            param('id')
+                .notEmpty()
+                .withMessage('user.validations.user_id_required')
+                .isMongoId()
+                .withMessage('user.validations.user_id_invalid')
+                .trim(),
+            query('page')
+                .optional({ nullable: true, checkFalsy: true })
+                .isNumeric().withMessage('user.validations.user_page_number').trim(),
+            query('size')
+                .optional({ nullable: true, checkFalsy: true })
+                .isNumeric().withMessage('user.validations.user_size_number').trim(),
+            generalValidator
+        ];
+    }
+
 }
 
 

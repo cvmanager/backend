@@ -522,7 +522,8 @@
 			"user_founded": "user successfuly found",
 			"list_found": "the list of users",
 			"password_changed": "User password successfully changed",
-			"user_login_history_list": "user login history list"
+			"user_login_history_list": "user login history list",
+			"companies_founded": "user companies successfully found"
 		},
 		"errors": {
 			"user_notfound": "User not found",
