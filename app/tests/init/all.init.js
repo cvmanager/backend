@@ -10,20 +10,28 @@ import Interview from '../../models/interview.model.js';
 import { users, companies, projects, positions, managers, resumes, resumeComments, interviews, logHistory } from '../data/data';
 import bcrypt from 'bcrypt';
 import { fillProvinceTable } from "../../helper/service/province.service"
+import roleService from "../../helper/service/role.service.js";
+import userService from "../../helper/service/user.service.js";
+import rbacConfig, { createPermissions } from '../../helper/rbac.js';
+import app from '../../app.js'
+
 class AllInit {
-        async setData() {
-                this.salt = bcrypt.genSaltSync(10);
-                await User.insertMany(users.map((user) => ({ ...user, password: bcrypt.hashSync(user.password, this.salt) })));
-                await Company.insertMany(companies);
-                await LogHistory.insertMany(logHistory);
-                await Project.insertMany(projects);
-                await Position.insertMany(positions);
-                await Resume.insertMany(resumes);
-                await ResumeComment.insertMany(resumeComments);
-                await Manager.insertMany(managers);
-                await Interview.insertMany(interviews);
-                await fillProvinceTable();
-        }
+    async setData() {
+        this.salt = bcrypt.genSaltSync(10);
+        await User.insertMany(users.map((user) => ({ ...user, password: bcrypt.hashSync(user.password, this.salt) })));
+        await Company.insertMany(companies);
+        await LogHistory.insertMany(logHistory);
+        await Project.insertMany(projects);
+        await Position.insertMany(positions);
+        await Resume.insertMany(resumes);
+        await ResumeComment.insertMany(resumeComments);
+        await Manager.insertMany(managers);
+        await fillProvinceTable();
+        await createPermissions(app)
+        // await rbacConfig()
+        await roleService.fillRoles();
+        await userService.fillUsers();
+    }
 }
 
 export default AllInit

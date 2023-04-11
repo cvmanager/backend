@@ -53,8 +53,8 @@ export default class ServiceBase {
         return _model.get(this).findOneAndUpdate(filter, { $set: updateData }, { new: true })
     }
 
-    async getAll(filter = {}, populate = []) {
-        return _model.get(this).find(filter).populate(populate)
+    async getAll(filter = {}, populate = [], sort = {}) {
+        return _model.get(this).find(filter).sort(sort).populate(populate)
     }
 
     async find(filters, pagination, sort) { // pagination: {skip: number, limit: number }

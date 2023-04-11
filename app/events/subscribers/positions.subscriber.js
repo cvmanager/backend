@@ -34,7 +34,7 @@ function create(Position) {
 
 
 function softdelete(Position) {
-    positionService.deleteManagersFromPosition(Company)
+    positionService.deleteManagersFromPosition(Position)
 }
 
 

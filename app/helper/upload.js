@@ -24,14 +24,14 @@ const createStorage = (path, fieldName) => {
         destination: fullPath,
         filename: (req, file, cb) => {
             let extension = extname(file.originalname);
-            let name = req.user._id;
+            let name = req.user_id;
 
             if (fs.existsSync(fullPath + name + extension)) {
                 const date = new Date();
                 name = name + '_' + date.getTime();
             }
             name += extension;
-            console.log(name)
+            
             cb(null, name);
             req.body[fieldName] = realPath + name;
         }

@@ -103,6 +103,8 @@ class ProjectController extends Controller {
             let company = await Company.findOne({ '_id': req.body.company_id });
             if (!company) throw new NotFoundError('company.errors.company_notfound');
 
+            if (!company.is_active) throw new BadRequestError('project.errors.disabled_companey_create_project_error')
+
             let project = await Project.findOne({ 'name': req.body.name, 'company_id': company._id });
             if (project) throw new AlreadyExists('project.errors.project_already_attached_company');
 
@@ -191,6 +193,7 @@ class ProjectController extends Controller {
     async manager(req, res, next) {
         try {
             let project = await projectService.findByParamId(req)
+            if (!project.is_active) throw new BadRequestError('project.errors.project_deactive_cant_set_manager');
 
             let user = await User.findById(req.body.manager_id);
             if (!user) throw new NotFoundError("user.errors.user_notfound");
@@ -390,35 +393,35 @@ class ProjectController extends Controller {
         }
     }
 
-        /**
-    * PATCH /projects/:id/logo
-    * @summary upload project logo
-    * @tags Project
-    * @security BearerAuth
-    * 
-    * @param { string } id.path.required - project id
-    * @param { project.upload_logo } request.body - project info - multipart/form-data
-    * 
-    * @return { project.success }               200 - update resume profile
-    * @return { message.badrequest_error }      400 - resume not found
-    * @return { message.badrequest_error }      401 - UnauthorizedError
-    * @return { message.server_error}           500 - Server Error
-    */
-         async updateLogo(req, res, next) {
-            try {
-                let project = await projectService.findByParamId(req)
-    
-                if (req.body.logo) {
-                    project.logo = req.body.logo;
-                    await project.save();
-                }
-    
-                AppResponse.builder(res).message("project.messages.project_successfuly_updated").data(project).send()
-            } catch (err) {
-                next(err);
+    /**
+* PATCH /projects/:id/logo
+* @summary upload project logo
+* @tags Project
+* @security BearerAuth
+* 
+* @param { string } id.path.required - project id
+* @param { project.upload_logo } request.body - project info - multipart/form-data
+* 
+* @return { project.success }               200 - update resume profile
+* @return { message.badrequest_error }      400 - resume not found
+* @return { message.badrequest_error }      401 - UnauthorizedError
+* @return { message.server_error}           500 - Server Error
+*/
+    async updateLogo(req, res, next) {
+        try {
+            let project = await projectService.findByParamId(req)
+
+            if (req.body.logo) {
+                project.logo = req.body.logo;
+                await project.save();
             }
+
+            AppResponse.builder(res).message("project.messages.project_successfuly_updated").data(project).send()
+        } catch (err) {
+            next(err);
         }
-    
+    }
+
 
 }
 

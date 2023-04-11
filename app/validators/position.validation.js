@@ -37,6 +37,16 @@ class PositionValidation {
         ]
     }
 
+    getResumes() {
+        return [
+            param('id').notEmpty().isMongoId().withMessage('position.validations.position_id_invalid').trim(),
+            query('size')
+                .optional({ nullable: true, checkFalsy: true })
+                .isNumeric().withMessage('position.validations.position_size_number').trim(),
+            generalValidator
+        ]
+    }
+
     update() {
         return [
             param('id')
@@ -98,6 +108,24 @@ class PositionValidation {
             param('id').notEmpty().isMongoId().withMessage('position.validations.position_id_invalid').trim(),
             generalValidator
         ]
+    }
+
+    deleteManager() {
+        return [
+            param('id')
+                .notEmpty().isMongoId().withMessage('position.validations.position_id_invalid').trim(),
+            body('manager_id')
+                .notEmpty().isMongoId().withMessage('position.validations.manager_id_invalid').trim(),
+            generalValidator
+        ]
+    }
+
+    logo() {
+        return [
+            param('id')
+                .notEmpty().isMongoId().withMessage('position.validations.position_id_invalid').trim(),
+            generalValidator
+        ];
     }
 }
 
