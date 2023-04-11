@@ -357,7 +357,7 @@ class ResumeValidation {
                 .withMessage('resume.validations.resume_id_invalid')
                 .trim(),
             body('hire_status')
-                .isIn(i18n.__("system.enums.hire_status"))
+                .isIn(i18n.__("resume.enums.hire_status"))
                 .withMessage('resume.validations.hire_status_value_not_valid')
                 .notEmpty()
                 .withMessage('resume.validations.hire_status_required')
@@ -367,6 +367,14 @@ class ResumeValidation {
                 .withMessage('resume.validations.income_is_number')
                 .optional({ nullable: true, checkFalsy: true })
                 .trim(),
+            generalValidator
+        ];
+    }
+
+    avatar() {
+        return [
+            param('id')
+                .notEmpty().isMongoId().withMessage('resume.validations.resume_id_invalid').trim(),
             generalValidator
         ];
     }

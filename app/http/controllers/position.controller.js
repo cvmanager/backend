@@ -218,6 +218,7 @@ class PositionController extends Controller {
         try {
             const position = await positionService.findByParamId(req)
             if (!position) throw new NotFoundError('position.errors.position_notfound');
+            if (!position.is_active) throw new BadRequestError('position.errors.position_deactive_cant_set_manager');
 
             let user = await User.findById(req.body.manager_id);
             if (!user) throw new NotFoundError('user.errors.user_notfound');

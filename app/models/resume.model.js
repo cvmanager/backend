@@ -176,7 +176,15 @@ const schema = new mongoose.Schema(
         index: {
             type: Number,
             default: null
-        }
+        },
+        avatar: {
+            type: String,
+            default: null,
+        },
+        tag: {
+            type: String,
+            default: null,
+        },
     }
 );
 
