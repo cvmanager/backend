@@ -1,5 +1,5 @@
+import userService from "../../helper/service/user.service.js";
 import EventEmitter from "../emitter.js";
-import { setLogForLogin, setLogForLogout } from '../../helper/service/user.service.js';
 
 export const events = {
     "LOGIN": "Login User",
@@ -18,11 +18,11 @@ EventEmitter.on(events.EDIT_USER, editUser);
 
 
 function login(user, access_token, refresh_token) {
-    setLogForLogin(user, access_token, refresh_token);
+    userService.setLogForLogin(user, access_token, refresh_token);
 }
 
 function signup(user, access_token, refresh_token) {
-    setLogForLogin(user, access_token, refresh_token, 'register')
+    userService.setLogForLogin(user, access_token, refresh_token, 'register')
 }
 
 function banned(user) {
@@ -34,5 +34,5 @@ function editUser(user) {
 }
 
 function logout(access_token) {
-    setLogForLogout(access_token);
+    userService.setLogForLogout(access_token);
 }

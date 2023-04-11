@@ -13,6 +13,7 @@ for (i = 0; i < numberRowInsert; i++) {
         "username": faker.random.alpha(9),
         "mobile": faker.phone.number('989#########'),
         "email": faker.internet.email(),
+        "role": ["636793ebed4e4ba2664f2cbe"],
         "password": '12345678'
     })
 }
@@ -87,7 +88,8 @@ for (i = 0; i < numberRowInsert; i++) {
         "residence_city": Types.ObjectId(),
         "work_city": Types.ObjectId(),
         "education": "diploma",
-        "created_by": users[i]._id
+        "created_by": users[i]._id,
+        "index": i
     })
 }
 
@@ -97,7 +99,7 @@ for (i = 0; i < numberRowInsert; i++) {
         "_id": Types.ObjectId(),
         "resume_id": resumes[i]._id,
         "body": faker.random.alpha(50),
-        "created_by": users[i]._id,
+        "created_by": users[i]._id
     })
 }
 
