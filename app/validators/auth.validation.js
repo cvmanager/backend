@@ -25,12 +25,12 @@ class AuthValidator {
                 .trim(),
             body('username')
                 .notEmpty()
-                .isLength({ min: 5, max: 10 })
+                .isLength({ min: 3, max: 15 })
                 .withMessage('auth.validations.username_lenght')
                 .trim(),
             body('password')
                 .notEmpty()
-                .isLength({ min: 8, max: 10 })
+                .isLength({ min: 8, max: 20 })
                 .withMessage('auth.validations.password_length')
                 .trim(),
             generalValidator
@@ -47,14 +47,14 @@ class AuthValidator {
                     .withMessage('auth.validations.mobile_wrong'),
                 body('mobile')
                     .notEmpty()
-                    .isLength({ min: 5, max: 10 })
+                    .isLength({ min: 3, max: 15 })
                     .trim()
                     .withMessage('auth.validations.username_wrong')
             ]),
             body('password')
                 .notEmpty()
                 .withMessage('auth.validations.password_required')
-                .isLength({ min: 8, max: 10 })
+                .isLength({ min: 8, max: 20 })
                 .withMessage('auth.validations.password_length')
                 .trim(),
             generalValidator
