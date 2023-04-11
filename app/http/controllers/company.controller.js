@@ -199,6 +199,7 @@ class CompanyController extends Controller {
         try {
 
             let company = await companyService.findByParamId(req)
+            if (!company.is_active) throw new BadRequestError('company.errors.company_deactive_cant_set_manager');
 
             let user = await userService.findOne({ _id: req.body.manager_id });
             if (!user) throw new NotFoundError('user.errors.user_notfound');
