@@ -1137,7 +1137,7 @@ describe("Resumes Routes", () => {
         it(`should get ${httpStatus.BAD_REQUEST} if rating is not send`, async () => {
             delete callHistory.rating
             const response = await request(app)
-                .post(`/api/V1/resumes/${resume._id}/call-history`)
+                .patch(`/api/V1/resumes/${resume._id}/call-history`)
                 .set(`Authorization`, token)
                 .send(callHistory);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
@@ -1146,7 +1146,7 @@ describe("Resumes Routes", () => {
         it(`should get ${httpStatus.BAD_REQUEST} if rating is not number`, async () => {
             callHistory.rating = 'test'
             const response = await request(app)
-                .post(`/api/V1/resumes/${resume._id}/call-history`)
+                .patch(`/api/V1/resumes/${resume._id}/call-history`)
                 .set(`Authorization`, token)
                 .send(callHistory);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
@@ -1155,7 +1155,7 @@ describe("Resumes Routes", () => {
         it(`should get ${httpStatus.BAD_REQUEST} if rating is less than 1`, async () => {
             callHistory.rating = 0
             const response = await request(app)
-                .post(`/api/V1/resumes/${resume._id}/call-history`)
+                .patch(`/api/V1/resumes/${resume._id}/call-history`)
                 .set(`Authorization`, token)
                 .send(callHistory);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
@@ -1164,7 +1164,7 @@ describe("Resumes Routes", () => {
         it(`should get ${httpStatus.BAD_REQUEST} if rating is more than 5`, async () => {
             callHistory.rating = 6
             const response = await request(app)
-                .post(`/api/V1/resumes/${resume._id}/call-history`)
+                .patch(`/api/V1/resumes/${resume._id}/call-history`)
                 .set(`Authorization`, token)
                 .send(callHistory);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
