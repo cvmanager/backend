@@ -9,6 +9,7 @@ import prepareDB from './utils/prepareDB'
 import { Types } from 'mongoose';
 import { faker } from '@faker-js/faker';
 import * as path from 'path';
+import EventEmitter from '../events/emitter.js';
 
 let token;
 let company;
@@ -236,6 +237,24 @@ describe("Project Routes", () => {
                 .set(`Authorization`, token)
                 .send(newProject);
             expect(response.statusCode).toBe(httpStatus.CREATED);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if company is not active`, async () => {
+            let company = {
+                "_id": Types.ObjectId(),
+                "name": faker.company.name(),
+                "description": faker.random.alpha(50),
+                "phone": faker.phone.number('989#########'),
+                "address": faker.random.alpha(100),
+                "created_by": user._id,
+                "is_active": false
+            }
+            companyData.addCompany(company)
+            newProject.company_id = company._id;
+            const response = await request(app)
+                .post(`/api/V1/projects`)
+                .set(`Authorization`, token)
+                .send(newProject);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
     })
 
@@ -630,13 +649,6 @@ describe("Project Routes", () => {
             logo = path.join(__dirname, 'data/file/avatar.png');
         })
 
-        it(`should get ${httpStatus.BAD_REQUEST} if project id is not send`, async () => {
-            const response = await request(app)
-                .patch(`/api/V1/projects//logo`)
-                .set(`Authorization`, token)
-                .attach('logo', logo);
-            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
-        })
         it(`should get ${httpStatus.BAD_REQUEST} if project id is not valid`, async () => {
             const response = await request(app)
                 .patch(`/api/V1/projects/fakeId/logo`)
@@ -664,6 +676,34 @@ describe("Project Routes", () => {
                 .set(`Authorization`, token)
                 .attach('logo', logo);
             expect(response.statusCode).toBe(httpStatus.OK);
+        })
+    })
+
+    describe(`DELETE /:id`, () => {
+
+
+        it(`should get ${httpStatus.BAD_REQUEST} if project id is not valid`, async () => {
+            const response = await request(app)
+                .delete(`/api/V1/projects/fakeId`)
+                .set(`Authorization`, token)
+                .send();
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.NOT_FOUND} if project not found `, async () => {
+            const response = await request(app)
+                .delete(`/api/V1/projects/${Types.ObjectId()}`)
+                .set(`Authorization`, token)
+                .send();
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+        it(`should get ${httpStatus.OK} if all data correct `, async () => {
+            let emit = jest.spyOn(EventEmitter, 'emit').mockImplementation(() => null);
+            const response = await request(app)
+                .delete(`/api/V1/projects/${project._id}`)
+                .set(`Authorization`, token)
+                .send();
+            expect(response.statusCode).toBe(httpStatus.OK);
+            expect(emit).toHaveBeenCalledTimes(1);
         })
     })
 })

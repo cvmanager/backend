@@ -1,7 +1,9 @@
 import autoBind from "auto-bind";
+import roles from "../../db/roles.js";
 
 import Role from "../../models/role.model.js";
 import ServiceBase from "./base.service.js";
+import permissionService from "./permission.service.js";
 
 class RoleService extends ServiceBase {
     constructor(model) {
@@ -82,14 +84,17 @@ class RoleService extends ServiceBase {
               }
             },
             {
-               '$lookup': {
-                'from': 'permissions', 
-                'localField': 'permissions', 
-                'foreignField': '_id', 
-                'as': 'permissions'
-              }
+                '$project': {
+                    'users.password': 0
+                }
             }
           ])
+    }
+
+    async fillRoles() {
+        let permissions = (await permissionService.getAll()).map(permission => permission._id)
+        roles[0].permissions = permissions
+        await super.createMany(roles)
     }
 }
 

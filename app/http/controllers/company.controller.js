@@ -13,9 +13,12 @@ import Resume from '../../models/resume.model.js';
 import i18n from '../../middlewares/lang.middleware.js';
 import autoBind from 'auto-bind';
 import companyService from '../../helper/service/company.service.js';
+import resumeService from '../../helper/service/resume.service.js';
 import { mergeQuery } from '../../helper/mergeQuery.js';
 import userService from '../../helper/service/user.service.js';
 import roleService from '../../helper/service/role.service.js';
+import managerService from '../../helper/service/manager.service.js';
+import projectService from '../../helper/service/project.service.js';
 
 class CompanyController extends Controller {
 
@@ -104,11 +107,11 @@ class CompanyController extends Controller {
     */
     async create(req, res, next) {
         try {
-            let company = await Company.findOne({ 'name': req.body.name });
+            let company = await companyService.findOne({ 'name': req.body.name })
             if (company) throw new AlreadyExists('company.errors.company_already_exists');
 
             req.body.created_by = req.user._id;
-            company = await Company.create(req.body);
+            company = await companyService.create(req.body);
 
             EventEmitter.emit(events.CREATE, company);
 
@@ -137,18 +140,14 @@ class CompanyController extends Controller {
     async update(req, res, next) {
         try {
             let company = await companyService.findByParamId(req)
-
             if (req.body.name !== undefined) {
-                let duplicateCompany = await Company.findOne({ '_id': { $ne: company._id }, 'name': req.body.name });
+                let duplicateCompany = await companyService.findOne({ '_id': { $ne: company._id }, 'name': req.body.name })
                 if (duplicateCompany && duplicateCompany._id !== company._id) throw new AlreadyExists('company.errors.company_already_exists');
             }
 
-            await Company.findByIdAndUpdate(req.params.id, req.body, { new: true })
-                .then(company => {
-                    EventEmitter.emit(events.UPDATE, company);
-                    AppResponse.builder(res).message("company.messages.company_successfuly_updated").data(company).send()
-                })
-                .catch(err => next(err));
+            company = await companyService.updateOne({ '_id': req.params.id }, req.body)
+            EventEmitter.emit(events.UPDATE, company);
+            AppResponse.builder(res).message("company.messages.company_successfuly_updated").data(company).send()
         } catch (err) {
             next(err);
         }
@@ -198,15 +197,16 @@ class CompanyController extends Controller {
     */
     async manager(req, res, next) {
         try {
+
             let company = await companyService.findByParamId(req)
 
-            let user = await User.findById(req.body.manager_id);
+            let user = await userService.findOne({ _id: req.body.manager_id });
             if (!user) throw new NotFoundError('user.errors.user_notfound');
 
-            let manager = await Manager.findOne({ 'entity': "companies", 'entity_id': company.id, 'user_id': user.id });
+            let manager = await managerService.findOne({ 'entity': "companies", 'entity_id': company.id, 'user_id': user.id });
             if (manager) throw new BadRequestError("company.errors.the_user_is_currently_an_manager_for_company");
 
-            await Manager.create({ user_id: user._id, entity: "companies", entity_id: company._id, created_by: req.user._id });
+            await managerService.create({ user_id: user._id, entity: "companies", entity_id: company._id, created_by: req.user._id });
 
             const companyManagerRole = await roleService.findOne({ name: "Company Manager" })
             await userService.addRole(user._id, companyManagerRole._id)
@@ -238,16 +238,16 @@ class CompanyController extends Controller {
         try {
             let company = await companyService.findByParamId(req)
 
-            let user = await User.findById(req.body.manager_id);
+            let user = await userService.findOne({ _id: req.body.manager_id });
             if (!user) throw new NotFoundError('user.errors.user_notfound');
 
-            let manager = await Manager.findOne({ 'entity': "companies", 'entity_id': company.id, 'user_id': user.id });
+            let manager = await managerService.findOne({ 'entity': "companies", 'entity_id': company.id, 'user_id': user.id });
             if (!manager) throw new BadRequestError("company.errors.the_user_is_not_manager_for_this_company");
             if (manager.type === 'owner') throw new BadRequestError("company.errors.the_owner_manager_cannot_be_deleted");
 
-            await manager.delete(req.user._id);
+            await managerService.delete(manager, req.user._id);
 
-            let isCompanyManager = await Manager.findOne({ 'entity': "companies", 'user_id': user.id, type: 'moderator' });
+            let isCompanyManager = await managerService.findOne({ 'entity': "companies", 'user_id': user.id, type: 'moderator' });
             if (!isCompanyManager) {
                 const companyManagerRole = await roleService.findOne({ name: "Company Manager" })
                 await userService.removeRole(user._id, companyManagerRole._id)
@@ -280,16 +280,14 @@ class CompanyController extends Controller {
         try {
             let company = await companyService.findByParamId(req)
 
-            let projects = await Project.find({ 'company_id': company.id })
-                .sort({ 'updatedAt': -1 })
-                .populate([
-                    { path: 'created_by', select: ['firstname', 'lastname'] },
-                    {
-                        path: 'managers',
-                        populate: { path: 'user_id', select: ['firstname', 'lastname', 'avatar'] },
-                        select: ['user_id']
-                    }
-                ]);
+            let projects = await projectService.getAll({ 'company_id': company.id }, [
+                { path: 'created_by', select: ['firstname', 'lastname'] },
+                {
+                    path: 'managers',
+                    populate: { path: 'user_id', select: ['firstname', 'lastname', 'avatar'] },
+                    select: ['user_id']
+                }
+            ], { 'updatedAt': -1 })
 
             AppResponse.builder(res).message('company.messages.company_projects_found').data(projects).send();
         } catch (err) {
@@ -316,11 +314,10 @@ class CompanyController extends Controller {
         try {
             let company = await companyService.findByParamId(req)
 
-            let managers = await Manager.find({ 'entity': "companies", 'entity_id': company.id })
-                .populate([
-                    { path: 'created_by', select: ['firstname', 'lastname'] },
-                    { path: 'user_id' }
-                ]);
+            let managers = await managerService.getAll({ 'entity': "companies", 'entity_id': company.id }, [
+                { path: 'created_by', select: ['firstname', 'lastname'] },
+                { path: 'user_id' }
+            ], { 'updatedAt': -1 })
 
             AppResponse.builder(res).message('company.messages.company_managers_found').data(managers).send();
         } catch (err) {
@@ -347,13 +344,11 @@ class CompanyController extends Controller {
         try {
             let company = await companyService.findByParamId(req)
 
-            let resumes = await Resume.find({ 'company_id': company.id })
-                .sort({ 'updatedAt': -1 })
-                .populate([
-                    { path: 'created_by', select: ['firstname', 'lastname'] },
-                    { path: 'project_id' },
-                    { path: 'position_id' },
-                ]);
+            let resumes = await resumeService.getAll({ 'company_id': company.id }, [
+                { path: 'created_by', select: ['firstname', 'lastname'] },
+                { path: 'project_id' },
+                { path: 'position_id' },
+            ], { 'updatedAt': -1 })
 
             AppResponse.builder(res).message('company.messages.company_resumes_found').data(resumes).send();
         } catch (err) {
@@ -490,7 +485,13 @@ class CompanyController extends Controller {
                 }
             ])
 
-            AppResponse.builder(res).message("company.messages.company_successfuly_updated").data(totalResumeByStates).send()
+            statusArray.forEach(element => {
+                if (totalResumeByStates.find(resume => resume.state !== element)) {
+                    totalResumeByStates.push({ 'count': 0, 'state': element });
+                }
+            })
+
+            AppResponse.builder(res).message("company.messages.company_resume_by_states").data(totalResumeByStates).send()
         } catch (err) {
             next(err);
         }
@@ -559,7 +560,7 @@ class CompanyController extends Controller {
                 },
             ]);
 
-            AppResponse.builder(res).message("company.messages.company_successfuly_updated").data(resumeCountByProjects).send()
+            AppResponse.builder(res).message("company.messages.company_resume_count_by_projects").data(resumeCountByProjects).send()
         } catch (err) {
             next(err);
         }
@@ -586,14 +587,14 @@ class CompanyController extends Controller {
             let date = new Date();
             let date7MonthAgo = date.setMonth(date.getMonth() - 7)
             date7MonthAgo = new Date(date7MonthAgo);
-            const monthsArray = [ '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12' ]
+            const monthsArray = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']
 
             let resumeCountFromMonth = await Resume.aggregate([
                 {
                     $match: {
                         company_id: company._id,
                         // createdAt: { $gte: YEAR_BEFORE, $lte: TODAY }
-                        createdAt: { $gte: date7MonthAgo}
+                        createdAt: { $gte: date7MonthAgo }
                     }
                 },
                 {
@@ -606,17 +607,17 @@ class CompanyController extends Controller {
                     $sort: { "_id.year_month": -1 }
                 },
                 {
-                    $project: { 
-                        _id: 0, 
-                        count: 1, 
-                        month_year: { 
-                            $concat: [ 
-                               { $arrayElemAt: [ monthsArray, { $subtract: [ { $toInt: { $substrCP: [ "$_id.year_month", 5, 2 ] } }, 1 ] } ] },
-                               "-", 
-                               { $substrCP: [ "$_id.year_month", 0, 4 ] }
-                            ] 
+                    $project: {
+                        _id: 0,
+                        count: 1,
+                        month_year: {
+                            $concat: [
+                                { $arrayElemAt: [monthsArray, { $subtract: [{ $toInt: { $substrCP: ["$_id.year_month", 5, 2] } }, 1] }] },
+                                "-",
+                                { $substrCP: ["$_id.year_month", 0, 4] }
+                            ]
                         }
-                    } 
+                    }
                 },
                 {
                     $group: {
@@ -632,7 +633,7 @@ class CompanyController extends Controller {
                 }
             ])
 
-            AppResponse.builder(res).message("company.messages.company_successfuly_updated").data(resumeCountFromMonth).send()
+            AppResponse.builder(res).message("company.messages.company_resume_count_from_month").data(resumeCountFromMonth).send()
         } catch (err) {
             next(err);
         }
@@ -723,16 +724,16 @@ class CompanyController extends Controller {
                 }
 
             ])
-            let pendingResumeInLastMonth = await this.resumeCountByStateAndMonth(company, 'pending', date1MonthAgo, date2MonthAgo);
+            let hiredResumeInLastMonth = await this.resumeCountByStateAndMonth(company, 'hired', date1MonthAgo, date2MonthAgo);
             let rejectedResumeInLastMonth = await this.resumeCountByStateAndMonth(company, 'rejected', date1MonthAgo, date2MonthAgo);
 
             let resumeStateInLastMonth = {
                 'received': receivedResumeInLastMonth,
-                'pending': pendingResumeInLastMonth,
+                'hired': hiredResumeInLastMonth,
                 'rejected': rejectedResumeInLastMonth,
             }
 
-            AppResponse.builder(res).message("company.messages.company_successfuly_updated").data(resumeStateInLastMonth).send()
+            AppResponse.builder(res).message("company.messages.company_resume_state_in_last_month").data(resumeStateInLastMonth).send()
         } catch (err) {
             next(err);
         }

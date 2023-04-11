@@ -11,6 +11,7 @@ import env from '../../helper/env.js';
 import EventEmitter from '../../events/emitter.js';
 import { events } from '../../events/subscribers/user.subscriber.js';
 import roleService from '../../helper/service/role.service.js';
+import userService from '../../helper/service/user.service.js';
 
 class AuthController extends Controller {
 
@@ -28,23 +29,22 @@ class AuthController extends Controller {
      */
     async login(req, res, next) {
         try {
-            let user = await User.findOne({
+            let user = await userService.findOne({
                 $or: [
                     { mobile: req.body.mobile },
                     { username: req.body.mobile }
                 ]
-            });
-            if (!user) throw new NotFoundError('auth.errors.user_not_found');
+            })
 
+            if (!user) throw new BadRequestError('auth.errors.invalid_credentials');
 
             let validPassword = await bcrypt.compare(req.body.password, user.password)
             if (!validPassword) throw new BadRequestError('auth.errors.invalid_credentials');
 
             if (user.is_banned) throw new BadRequestError('auth.errors.user_is_banned');
 
-
             const access_token = await generateJwtToken({ _id: user._id, role: user.role })
-            const refresh_token = await generateJwtRefeshToken(user._id);
+            const refresh_token = await generateJwtRefeshToken({ _id: user._id, role: user.role });
 
             EventEmitter.emit(events.LOGIN, user, access_token, refresh_token);
             AppResponse.builder(res).message('auth.messages.success_login').data({ access_token, refresh_token }).send();
@@ -81,11 +81,11 @@ class AuthController extends Controller {
                 mobile: req.body.mobile,
                 username: req.body.username,
                 password: hash_password,
-                role: [ownerRole._id]
+                role: ((ownerRole && ownerRole._id )? [ownerRole._id] : [])
             });
 
-            const access_token = await generateJwtToken({ _id: user._id, role: user.role })
-            const refresh_token = await generateJwtRefeshToken(user._id);
+            const access_token = await generateJwtToken({ _id: user._id, role: [ownerRole._id] })
+            const refresh_token = await generateJwtRefeshToken({ _id: user._id, role: [ownerRole._id]});
 
             EventEmitter.emit(events.SINGUP, user, access_token, refresh_token);
             AppResponse.builder(res).status(201).message("auth.messages.user_successfuly_created").data({ access_token, refresh_token }).send();
@@ -110,9 +110,9 @@ class AuthController extends Controller {
     async refresh(req, res, next) {
         try {
             const access_token = await generateJwtToken({ _id: req.user._id, role: req.user.role })
-            const refresh_token = await generateJwtRefeshToken(req.user_id);
+            const refresh_token = await generateJwtRefeshToken({ _id: req.user._id, role: req.user.role });
 
-            const redisKey = req.user_id.toString() + env("REDIS_KEY_REF_TOKENS")
+            const redisKey = req.user._id.toString() + env("REDIS_KEY_REF_TOKENS")
             redisClient.sRem(redisKey, req.body.token)
 
             AppResponse.builder(res).message('auth.messages.success_login').data({ access_token, refresh_token }).send();
@@ -138,7 +138,7 @@ class AuthController extends Controller {
         try {
             const token = req.headers.authorization.split(' ')[1];
 
-            const redisKey = req.user_id.toString() + env("REDIS_KEY_REF_TOKENS")
+            const redisKey = req.user._id.toString() + env("REDIS_KEY_REF_TOKENS")
             await redisClient.sRem(redisKey, token);
 
             EventEmitter.emit(events.LOGOUT, token);
