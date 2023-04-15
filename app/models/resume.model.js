@@ -190,6 +190,10 @@ const schema = new mongoose.Schema(
             type: String,
             default: null,
         },
+        contributors: {
+            type: Array,
+            default: null,
+        },
     }
 );
 
