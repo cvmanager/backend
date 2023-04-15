@@ -201,8 +201,6 @@ class CompanyController extends Controller {
             let company = await companyService.findByParamId(req)
 
             let user = await userService.findOne({ _id: req.body.manager_id });
-            if (!user) throw new NotFoundError('user.errors.user_notfound');
-            if (user.is_banned) throw new BadRequestError("user.errors.manager_is_banned");
 
             let manager = await managerService.findOne({ 'entity': "companies", 'entity_id': company.id, 'user_id': user.id });
             if (manager) throw new BadRequestError("company.errors.the_user_is_currently_an_manager_for_company");

@@ -473,12 +473,13 @@ describe(`Position Routes`, () => {
                 .send(setManager);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
-        it(`should get ${httpStatus.CONFLICT} user is currently manager`, async () => {
+        it(`should get ${httpStatus.BAD_REQUEST} user is currently manager`, async () => {
             const response = await request(app)
                 .patch(`/api/V1/positions/${position._id}/manager`)
                 .set(`Authorization`, token)
                 .send(setManager);
-            expect(response.statusCode).toBe(httpStatus.CONFLICT);
+                console.log(response.body);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
 
         it(`should get ${httpStatus.CREATED} user successfully assign as manager`, async () => {

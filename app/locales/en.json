@@ -145,7 +145,8 @@
 				"position_managers_found": "position managers successfuly founded",
 				"position_resumes_found": "Position resumes successfuly founded",
 				"position_deactivated_alredy": "position has deactiveed alredy",
-				"position_activated_alredy": "position has activated alredy"
+				"position_activated_alredy": "position has activated alredy",
+				"the_user_is_currently_an_manager_for_position": "The user is currently an manager for position"
 			}
 		},
 		"project": {
