@@ -403,7 +403,7 @@ class PositionController extends Controller {
             if (!manager) throw new BadRequestError("position.errors.the_user_is_not_manager_for_this_position");
             if (manager.type === 'owner') throw new BadRequestError("position.errors.the_owner_manager_cannot_be_deleted");
 
-            await manager.delete(req.user_id);
+            await manager.delete(req.user._id);
             EventEmitter.emit(events.UNSET_MANAGER, position);
 
             AppResponse.builder(res).message("position.messages.position_manager_deleted").data(position).send()
