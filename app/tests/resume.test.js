@@ -1256,6 +1256,60 @@ describe("Resumes Routes", () => {
 
     })
 
+    describe(`PATCH /:id/contributor`, () => {
+
+        let contributor;
+        beforeEach(() => {
+            contributor = {
+                contributor: user._id,
+            }
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} if resume id is not MongoId`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/resumes/fakeId/contributor`)
+                .set(`Authorization`, token)
+                .send(contributor);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.NOT_FOUND} if resume id is not valid`, async () => {
+            let invalidResumeId = Types.ObjectId();
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${invalidResumeId}/contributor`)
+                .set(`Authorization`, token)
+                .send(contributor);
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} contributor is required`, async () => {
+            delete contributor.contributor
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${resume._id}/contributor`)
+                .set(`Authorization`, token)
+                .send(contributor);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} contributor is not valid`, async () => {
+            contributor.contributor = 'test'
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${resume._id}/contributor`)
+                .set(`Authorization`, token)
+                .send(contributor);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.OK} contributor added successfuly`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${resume._id}/contributor`)
+                .set(`Authorization`, token)
+                .send(contributor);
+            expect(response.statusCode).toBe(httpStatus.OK);
+        })
+
+    })
+
     describe(`PATCH /:id/avatar`, () => {
         let avatar;
         beforeEach(async () => {

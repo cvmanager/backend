@@ -17,5 +17,6 @@ resumeIdRouter
     .patch('/avatar', Upload('resumes', 'avatar', 'image'), ResumeValidation.avatar(), ResumeController.updateAvatar)
     .patch('/comments', ResumeValidation.addComments(), ResumeController.addComments)
     .patch('/hire_status', ResumeValidation.hireStatus(), ResumeController.hireStatus)
+    .patch('/contributor', ResumeValidation.contributor(), ResumeController.contributor)
 
 export default resumeIdRouter

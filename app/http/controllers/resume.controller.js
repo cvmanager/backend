@@ -33,7 +33,7 @@ class ResumeController extends Controller {
             const { page = 1, size = 10, query = '' } = req.query
 
             let searchQuery = {}
-            
+
             searchQuery = mergeQuery(searchQuery, req.rbacQuery)
             if (query.length > 0) {
                 searchQuery = {
@@ -113,7 +113,7 @@ class ResumeController extends Controller {
 
             let company = await Company.findById(position.company_id)
             if (!company.is_active) throw new BadRequestError('company.errors.company_isnot_active');
-            
+
             req.body.created_by = req.user._id;
             req.body.project_id = position.project_id;
             req.body.company_id = position.company_id;
@@ -406,6 +406,50 @@ class ResumeController extends Controller {
             await resume.save();
 
             AppResponse.builder(res).message("resume.messages.hire_status_successfuly_updated").data(resume).send();
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
+    * PATCH /resumes/{id}/contributor
+    * 
+    * @summary add contributor
+    * @tags Resume
+    * @security BearerAuth
+    * 
+    * @param { string } id.path.required - resume id
+    * @param { resume.contributor } request.body - application/json
+    * 
+    * @return { resume.success }            200 - success response
+    * @return { message.badrequest_error }  400 - bad request respone
+    * @return { message.badrequest_error }  404 - not found respone
+    * @return { message.badrequest_error }  401 - UnauthorizedError
+    * @return { message.server_error  }     500 - Server Error
+    */
+    async contributor(req, res, next) {
+        try {
+            let resume = await Resume.findById(req.params.id);
+            if (!resume) throw new NotFoundError('resume.errors.resume_notfound');
+
+            if (req.body.contributor == '' || req.body.contributor == undefined) {
+                throw new BadRequestError('resume.errors.contributor_could_not_empty');
+            }
+
+            let contributor = req.body.contributor;
+            let contributors = [];
+            if(resume.contributors){
+                contributors = resume.contributors;
+            }
+
+            if (contributors.includes(contributor)) {
+                throw new BadRequestError('resume.errors.contributor_could_not_be_duplicate');
+            }
+
+            resume.contributor = contributors.push(req.body.contributor);
+            await resume.save();
+
+            AppResponse.builder(res).message("resume.messages.contributor_successfuly_added").data(resume).send();
         } catch (err) {
             next(err);
         }
