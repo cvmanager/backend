@@ -102,7 +102,7 @@ class UserController extends Controller {
      * @tags User
      * @security BearerAuth
      * 
-     * @param { user.avatar } id.path.required - user id - application/json
+     * @param { string } id.path.required - user id - application/json
      * 
      * @return { user.success }             200 - user successfuly banded
      * @return { message.badrequest_error }      400 - user not found
@@ -135,7 +135,7 @@ class UserController extends Controller {
      * @tags User
      * @security BearerAuth
      * 
-     * @param { user.avatar } id.path.required - user id - application/json
+     * @param { string } id.path.required - user id - application/json
      * 
      * @return { user.success }             200 - user successfuly unbanded
      * @return { message.badrequest_error }      400 - user not found
