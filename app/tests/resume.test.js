@@ -188,6 +188,7 @@ describe("Resumes Routes", () => {
             expect(data).toHaveProperty('created_by')
             expect(data).toHaveProperty('deleted')
             expect(data).toHaveProperty('status_history')
+            expect(data).toHaveProperty('summary_count')
             expect(data).toHaveProperty('createdAt')
             expect(data).toHaveProperty('updatedAt')
             expect(response.statusCode).toBe(httpStatus.OK)

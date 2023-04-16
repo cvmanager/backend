@@ -33,7 +33,7 @@ class ResumeController extends Controller {
             const { page = 1, size = 10, query = '' } = req.query
 
             let searchQuery = {}
-            
+
             searchQuery = mergeQuery(searchQuery, req.rbacQuery)
             if (query.length > 0) {
                 searchQuery = {
@@ -113,7 +113,7 @@ class ResumeController extends Controller {
 
             let company = await Company.findById(position.company_id)
             if (!company.is_active) throw new BadRequestError('company.errors.company_isnot_active');
-            
+
             req.body.created_by = req.user._id;
             req.body.project_id = position.project_id;
             req.body.company_id = position.company_id;
@@ -262,6 +262,8 @@ class ResumeController extends Controller {
             resume.file = files;
             await resume.save();
 
+            EventEmitter.emit(events.ADD_FILE, resume)
+
             AppResponse.builder(res).message("resume.message.resume_file_successfuly_upload").data(resume).send()
         } catch (err) {
             next(err);
@@ -323,6 +325,8 @@ class ResumeController extends Controller {
             req.body.created_by = req.user._id
 
             let resumeCommentsRes = await ResumeComments.create(req.body)
+            EventEmitter.emit(events.ADD_COMMENT, resume)
+
             AppResponse.builder(res).status(201).message("resume.messages.resume_comment_successfuly_created").data(resumeCommentsRes).send();
         } catch (err) {
             next(err);
@@ -367,8 +371,7 @@ class ResumeController extends Controller {
             }
 
             await resume.save()
-
-            EventEmitter.emit(events.UPDATE_STATUS, resume)
+            EventEmitter.emit(events.ADD_CALL_HISTORY, resume)
 
             AppResponse.builder(res).message("resume.messages.resume_call_history_successfuly_created").data(resume).send();
         } catch (err) {
