@@ -1,5 +1,7 @@
 import { companies } from './data';
 import Company from '../../models/company.model.js';
+import { Types } from 'mongoose';
+import { faker } from '@faker-js/faker';
 class CompanyData {
     getCompany() {
         return Object.values(companies)[0];
@@ -15,6 +17,21 @@ class CompanyData {
  
     addCompany(company) {
         Company.insertMany(company);
+    }
+
+    async setDeActiveData() {
+        let company = {
+            "_id": Types.ObjectId(),
+            "name": faker.company.name(),
+            "description": faker.random.alpha(50),
+            "phone": faker.phone.number('989#########'),
+            "is_active": false,
+            "address": faker.random.alpha(100),
+            "created_by": Types.ObjectId()
+        }
+
+        await this.setCompanies([company]);
+        return company
     }
 }
 

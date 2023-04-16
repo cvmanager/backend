@@ -193,6 +193,7 @@ class ProjectController extends Controller {
     async manager(req, res, next) {
         try {
             let project = await projectService.findByParamId(req)
+            if (!project.is_active) throw new BadRequestError('project.errors.project_deactive_cant_set_manager');
 
             let user = await User.findById(req.body.manager_id);
             if (!user) throw new NotFoundError("user.errors.user_notfound");
