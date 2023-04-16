@@ -379,7 +379,25 @@ class ResumeValidation {
         ];
     }
 
-    contributor() {
+    addContributor() {
+        return [
+            param('id')
+                .notEmpty()
+                .withMessage('resume.validations.resume_id_required')
+                .isMongoId()
+                .withMessage('resume.validations.resume_id_invalid')
+                .trim(),
+            body('contributor')
+                .notEmpty()
+                .withMessage('resume.validations.hire_status_required')
+                .isMongoId()
+                .withMessage('resume.validation.contributor_id_invalid')
+                .trim(),
+            generalValidator
+        ];
+    }
+
+    removeContributor() {
         return [
             param('id')
                 .notEmpty()

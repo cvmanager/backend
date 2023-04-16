@@ -89,6 +89,7 @@ for (i = 0; i < numberRowInsert; i++) {
         "work_city": Types.ObjectId(),
         "education": "diploma",
         "created_by": users[i]._id,
+        "contributors": [users[i]._id],
         "index": i
     })
 }

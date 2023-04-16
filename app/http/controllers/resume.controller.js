@@ -412,7 +412,7 @@ class ResumeController extends Controller {
     }
 
     /**
-    * PATCH /resumes/{id}/contributor
+    * PATCH /resumes/{id}/add_contributor
     * 
     * @summary add contributor
     * @tags Resume
@@ -427,7 +427,7 @@ class ResumeController extends Controller {
     * @return { message.badrequest_error }  401 - UnauthorizedError
     * @return { message.server_error  }     500 - Server Error
     */
-    async contributor(req, res, next) {
+    async addContributor(req, res, next) {
         try {
             let resume = await Resume.findById(req.params.id);
             if (!resume) throw new NotFoundError('resume.errors.resume_notfound');
@@ -450,6 +450,51 @@ class ResumeController extends Controller {
             await resume.save();
 
             AppResponse.builder(res).message("resume.messages.contributor_successfuly_added").data(resume).send();
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
+    * PATCH /resumes/{id}/remove_contributor
+    * 
+    * @summary remove contributor
+    * @tags Resume
+    * @security BearerAuth
+    * 
+    * @param { string } id.path.required - resume id
+    * @param { resume.contributor } request.body - application/json
+    * 
+    * @return { resume.success }            200 - success response
+    * @return { message.badrequest_error }  400 - bad request respone
+    * @return { message.badrequest_error }  404 - not found respone
+    * @return { message.badrequest_error }  401 - UnauthorizedError
+    * @return { message.server_error  }     500 - Server Error
+    */
+    async removeContributor(req, res, next) {
+        try {
+            let resume = await Resume.findById(req.params.id);
+            if (!resume) throw new NotFoundError('resume.errors.resume_notfound');
+
+            if (req.body.contributor == '' || req.body.contributor == undefined) {
+                throw new BadRequestError('resume.errors.contributor_could_not_empty');
+            }
+
+            let contributor = req.body.contributor;
+            let contributors = []
+            if(resume.contributors){
+                contributors = resume.contributors;
+            }
+
+            if (!contributors.includes(contributor)) {
+                throw new BadRequestError('resume.errors.contributor_not_exists');
+            }
+
+            console.log(contributors.filter(e => e != contributor));
+            resume.contributors = contributors.filter(e => e != contributor)
+            await resume.save();
+
+            AppResponse.builder(res).message("resume.messages.contributor_successfuly_removed").data(resume).send();
         } catch (err) {
             next(err);
         }
