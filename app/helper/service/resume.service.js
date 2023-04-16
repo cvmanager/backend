@@ -2,6 +2,7 @@ import autoBind from "auto-bind";
 
 import Resume from "../../models/resume.model.js";
 import ServiceBase from "./base.service.js";
+import ResumeComments from '../../models/resumeComment.model.js';
 
 const endOfResumeStatus = ['rejected', 'hired'];
 
@@ -22,21 +23,15 @@ class ResumeService extends ServiceBase {
         }
     }
 
-    async plusSummeryCount(resume, field) {
-        let fieldCount = 0;
-        let summaryCount = resume.summary_count;
-        if (summaryCount != undefined && summaryCount[field] != undefined) fieldCount = summaryCount[field];
-        summaryCount[field] = fieldCount + 1;
-        resume.field = summaryCount;
-        await resume.save();
+    async getResumeCommentCount(resume) {
+        let commentCount = await ResumeComments.find({ 'resume_id': resume._id }).count();
+        return commentCount;
     }
 
-    async minusSummeryCount(resume, field) {
-        let fieldCount = 0;
+    async updateSummeryCount(resume, field, count) {
         let summaryCount = resume.summary_count;
-        if (summaryCount != undefined && summaryCount[field] != undefined) fieldCount = summaryCount[field];
-        if (fieldCount > 0) summaryCount[field] = fieldCount - 1;
-        resume.field = summaryCount;
+        summaryCount[field] = count;
+        resume.summary_count = summaryCount;
         await resume.save();
     }
 }

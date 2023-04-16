@@ -37,14 +37,15 @@ function updateStatus(Resume) {
     resumeService.setProccessDuration(Resume)
 }
 
-function addComment(Resume) {
-    resumeService.plusSummeryCount(Resume, 'comment')
+async function addComment(Resume) {
+    let commentCount = await resumeService.getResumeCommentCount(Resume);
+    resumeService.updateSummeryCount(Resume, 'comment', commentCount)
 }
 
 function addCallHistory(Resume) {
-    resumeService.plusSummeryCount(Resume, 'call_history')
+    resumeService.updateSummeryCount(Resume, 'call_history', Resume.call_history.length)
 }
 
 function addFile(Resume) {
-    resumeService.plusSummeryCount(Resume, 'file')
+    resumeService.updateSummeryCount(Resume, 'file', Resume.call_history.length)
 }
