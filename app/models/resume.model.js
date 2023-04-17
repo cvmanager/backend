@@ -186,8 +186,8 @@ const schema = new mongoose.Schema(
             type: String,
             default: null,
         },
-        tag: {
-            type: String,
+        tags: {
+            type: Array,
             default: null,
         },
     }

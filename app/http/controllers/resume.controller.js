@@ -10,6 +10,7 @@ import Controller from './controller.js';
 import BadRequestError from '../../exceptions/BadRequestError.js';
 import { mergeQuery } from '../../helper/mergeQuery.js';
 import resumeService from '../../helper/service/resume.service.js';
+import TagService from '../../helper/service/tag.service.js';
 
 class ResumeController extends Controller {
 
@@ -33,7 +34,7 @@ class ResumeController extends Controller {
             const { page = 1, size = 10, query = '' } = req.query
 
             let searchQuery = {}
-            
+
             searchQuery = mergeQuery(searchQuery, req.rbacQuery)
             if (query.length > 0) {
                 searchQuery = {
@@ -113,7 +114,7 @@ class ResumeController extends Controller {
 
             let company = await Company.findById(position.company_id)
             if (!company.is_active) throw new BadRequestError('company.errors.company_isnot_active');
-            
+
             req.body.created_by = req.user._id;
             req.body.project_id = position.project_id;
             req.body.company_id = position.company_id;
@@ -435,6 +436,74 @@ class ResumeController extends Controller {
             }
 
             AppResponse.builder(res).message("resume.messages.resume_successfuly_updated").data(resume).send()
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
+    * PATCH /resumes/{id}/add-tags
+    * 
+    * @summary add comments for resume in table
+    * @tags Resume
+    * @security BearerAuth
+    * 
+    * @param  { string } id.path.required - resume id
+    * @param { tag.create } request.body - resume info - application/json
+    * 
+    * @return { tag.success }     201 - success response
+    * @return { message.badrequest_error }  400 - bad request respone
+    * @return { message.badrequest_error }  401 - UnauthorizedError
+    * @return { message.NotFoundError }     404 - not found respone
+    * @return { message.server_error  }     500 - Server Error
+    */
+    async addTags(req, res, next) {
+        try {
+            let resume = await resumeService.findByParamId(req);
+            let tag = await TagService.checkAndReturnTag(req.body.tag);
+
+            let tags = [];
+            if (resume.tags) tags = resume.tags;
+            if (tags.includes(tag._id)) throw new BadRequestError('resume.errors.tag_could_not_be_duplicate');
+            
+            tags.push(tag._id)
+            resume.tags = tags;
+            await resume.save();
+
+            AppResponse.builder(res).status(200).message("resume.messages.resume_tags_successfuly_updated").data(resume).send();
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
+    * PATCH /resumes/{id}/remove-tags
+    * 
+    * @summary add comments for resume in table
+    * @tags Resume
+    * @security BearerAuth
+    * 
+    * @param  { string } id.path.required - resume id
+    * @param { tag.remove } request.body - resume info - application/json
+    * 
+    * @return { tag.success }     201 - success response
+    * @return { message.badrequest_error }  400 - bad request respone
+    * @return { message.badrequest_error }  401 - UnauthorizedError
+    * @return { message.NotFoundError }     404 - not found respone
+    * @return { message.server_error  }     500 - Server Error
+    */
+    async removeTags(req, res, next) {
+        try {
+            let resume = await resumeService.findByParamId(req);
+
+            let tag = req.body.tag_id;
+            if (!resume.tags.includes(tag)) {
+                throw new BadRequestError('resume.errors.tag_not_exists');
+            }
+            resume.tags = resume.tags.filter(e => e != tag)
+            await resume.save();
+
+            AppResponse.builder(res).status(200).message("resume.messages.resume_tags_successfuly_deleted").data(resume).send();
         } catch (err) {
             next(err);
         }

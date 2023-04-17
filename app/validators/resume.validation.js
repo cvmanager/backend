@@ -386,6 +386,39 @@ class ResumeValidation {
             generalValidator
         ];
     }
+
+    addTags() {
+        return [
+            param('id')
+                .notEmpty()
+                .withMessage('resume.validations.resume_id_required')
+                .isMongoId()
+                .withMessage('resume.validations.resume_id_invalid')
+                .trim(),
+            body('tag')
+                .isLength({ min: 3, max: 100 })
+                .withMessage('resume.validations.max_tag_length')
+                .trim(),
+            generalValidator
+        ];
+    }
+    removeTags() {
+        return [
+            param('id')
+                .notEmpty()
+                .withMessage('resume.validations.resume_id_required')
+                .isMongoId()
+                .withMessage('resume.validations.resume_id_invalid')
+                .trim(),
+            body('tag_id')
+                .notEmpty()
+                .withMessage('tag.validations.tag_id_required')
+                .isMongoId()
+                .withMessage('tag.validations.tag_id_invalid')
+                .trim(),
+            generalValidator
+        ];
+    }
 }
 
 export default new ResumeValidation();

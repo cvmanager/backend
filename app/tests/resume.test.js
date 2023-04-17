@@ -9,6 +9,7 @@ import { Types } from 'mongoose';
 import ResumeData from './data/resume.data';
 import { faker } from '@faker-js/faker';
 
+import TagData from './data/tag.data';
 import CompanyData from './data/company.data';
 import ProjectData from './data/project.data';
 import PositionData from './data/position.data';
@@ -22,6 +23,8 @@ let resume;
 let position;
 let company;
 let project;
+let tagData;
+let tag;
 let resumeData;
 let companyData;
 let projectData;
@@ -41,6 +44,9 @@ describe("Resumes Routes", () => {
 
         resumeData = new ResumeData();
         resume = resumeData.getResume();
+
+        tagData = new TagData();
+        tag = tagData.getTag();
 
         companyData = new CompanyData();
         company = companyData.getCompany();
@@ -1289,6 +1295,129 @@ describe("Resumes Routes", () => {
                 .attach('avatar', avatar);
             expect(response.statusCode).toBe(httpStatus.OK);
         })
+    })
+
+    describe(`PATCH /:id/add_tags`, () => {
+
+        let newTag;
+        beforeEach(() => {
+            newTag = {
+                tag: faker.random.alpha(5),
+            }
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} if resume id is not MongoId`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/resumes/fakeId/add_tags`)
+                .set(`Authorization`, token)
+                .send(newTag);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.NOT_FOUND} if resume id is not valid`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${Types.ObjectId()}/add_tags`)
+                .set(`Authorization`, token)
+                .send(newTag);
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} if name is less than 3 character`, async () => {
+            newTag.tag = faker.random.alpha(2);
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${resume._id}/add_tags`)
+                .set(`Authorization`, token)
+                .send(newTag);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if name is grather than 100 character`, async () => {
+            newTag.tag = faker.random.alpha(101);
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${resume._id}/add_tags`)
+                .set(`Authorization`, token)
+                .send(newTag);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} if tag already saved`, async () => {
+            newTag.tag = tagData.getTagById(resume.tags[0]).name;
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${resume._id}/add_tags`)
+                .set(`Authorization`, token)
+                .send(newTag);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.OK} tag added successfuly`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${resume._id}/add_tags`)
+                .set(`Authorization`, token)
+                .send(newTag);
+            expect(response.statusCode).toBe(httpStatus.OK);
+        })
+
+    })
+
+    describe(`PATCH /:id/remove_tags`, () => {
+
+        let removeTag;
+        beforeEach(() => {
+            removeTag = {
+                tag_id: resume.tags[0],
+            }
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} if resume id is not MongoId`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/resumes/fakeId/remove_tags`)
+                .set(`Authorization`, token)
+                .send(removeTag);
+                expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.NOT_FOUND} if resume id is not valid`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${Types.ObjectId()}/remove_tags`)
+                .set(`Authorization`, token)
+                .send(removeTag);
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} if tag_id is not send`, async () => {
+            delete removeTag.tag_id;
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${resume._id}/remove_tags`)
+                .set(`Authorization`, token)
+                .send(removeTag);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} if tag_id is not not valid`, async () => {
+            removeTag.tag_id = 'fakeId';
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${resume._id}/remove_tags`)
+                .set(`Authorization`, token)
+                .send(removeTag);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} if tag not exists`, async () => {
+            removeTag.tag_id = Types.ObjectId();
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${resume._id}/remove_tags`)
+                .set(`Authorization`, token)
+                .send(removeTag);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.OK} tag added successfuly`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${resume._id}/remove_tags`)
+                .set(`Authorization`, token)
+                .send(removeTag);
+            expect(response.statusCode).toBe(httpStatus.OK);
+        })
+
     })
 })
 
