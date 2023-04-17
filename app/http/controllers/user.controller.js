@@ -152,7 +152,7 @@ class UserController extends Controller {
             user.banned_at = null;
             await user.save();
 
-            EventEmitter.emit(events.BANNED, user)
+            EventEmitter.emit(events.UNBANNED, user)
             AppResponse.builder(res).message('user.messages.user_successfully_unblocked').data(user).send();
 
         } catch (err) {
