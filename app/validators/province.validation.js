@@ -3,14 +3,10 @@ import generalValidator from '../helper/validator.js';
 
 class ProvinceValidation {
 
-    index() {
+    find() {
         return [
-            query('page')
-                .optional({ nullable: true, checkFalsy: true })
-                .isNumeric().withMessage('province.validations.province_page_number').trim(),
-            query('size')
-                .optional({ nullable: true, checkFalsy: true })
-                .isNumeric().withMessage('province.validations.province_size_number').trim(),
+            param('id')
+                .notEmpty().isMongoId().withMessage('province.validations.province_id_invalid').trim(),
             generalValidator
         ];
     }
