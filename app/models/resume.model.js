@@ -142,6 +142,11 @@ const schema = new mongoose.Schema(
                         type: Date,
                         default: null
                     },
+                    rating: {
+                        type: Number,
+                        required: true,
+                        length: 1
+                    },
                     created_by: {
                         type: mongoose.Schema.Types.ObjectId,
                         required: true,
@@ -176,6 +181,46 @@ const schema = new mongoose.Schema(
         index: {
             type: Number,
             default: null
+        },
+        avatar: {
+            type: String,
+            default: null,
+        },
+        tag: {
+            type: String,
+            default: null,
+        },
+        summary_count: {
+            type:
+            {
+                view: {
+                    type: Number,
+                    default: 0
+                },
+                comment: {
+                    type: Number,
+                    default: 0
+                },
+                file: {
+                    type: Number,
+                    default: 0
+                },
+                call_history: {
+                    type: Number,
+                    default: 0
+                },
+                interview: {
+                    type: Number,
+                    default: 0
+                }
+            },
+            default: {
+                'view': 0,
+                'cumment': 0,
+                'file': 0,
+                'call_history': 0,
+                'interview': 0
+            }
         }
     }
 );

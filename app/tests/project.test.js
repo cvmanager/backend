@@ -366,6 +366,16 @@ describe("Project Routes", () => {
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
 
+        it(`should get ${httpStatus.BAD_REQUEST} project is deactive`, async () => {
+            let deactiveProject = await projectData.setDeActiveData();
+            const response = await request(app)
+                .patch(`/api/V1/projects/${deactiveProject._id}/manager`)
+                .set('Authorization', token)
+                .send(setManager);
+
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
         it(`should get ${httpStatus.BAD_REQUEST} manager id is not sended`, async () => {
             delete setManager.manager_id;
             const response = await request(app)

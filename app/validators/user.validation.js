@@ -39,6 +39,18 @@ class UserValidation {
         return [
             param('id')
                 .notEmpty()
+                .withMessage('user.validations.user_id_required_ban')
+                .isMongoId()
+                .withMessage('user.validations.user_id_invalid_ban')
+                .trim(),
+            generalValidator
+        ];
+    }
+
+    unban() {
+        return [
+            param('id')
+                .notEmpty()
                 .withMessage('user.validations.user_id_required')
                 .isMongoId()
                 .withMessage('user.validations.user_id_invalid')
@@ -66,6 +78,24 @@ class UserValidation {
     }
 
     loginHistory() {
+        return [
+            param('id')
+                .notEmpty()
+                .withMessage('user.validations.user_id_required')
+                .isMongoId()
+                .withMessage('user.validations.user_id_invalid')
+                .trim(),
+            query('page')
+                .optional({ nullable: true, checkFalsy: true })
+                .isNumeric().withMessage('user.validations.user_page_number').trim(),
+            query('size')
+                .optional({ nullable: true, checkFalsy: true })
+                .isNumeric().withMessage('user.validations.user_size_number').trim(),
+            generalValidator
+        ];
+    }
+
+    companies() {
         return [
             param('id')
                 .notEmpty()

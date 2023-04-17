@@ -5,6 +5,7 @@ import ResumeComments from '../../models/resumeComment.model.js';
 import EventEmitter from '../../events/emitter.js';
 import AppResponse from '../../helper/response.js';
 import Resume from '../../models/resume.model.js';
+import Company from '../../models/company.model.js';
 import Controller from './controller.js';
 import BadRequestError from '../../exceptions/BadRequestError.js';
 import { mergeQuery } from '../../helper/mergeQuery.js';
@@ -32,7 +33,7 @@ class ResumeController extends Controller {
             const { page = 1, size = 10, query = '' } = req.query
 
             let searchQuery = {}
-            
+
             searchQuery = mergeQuery(searchQuery, req.rbacQuery)
             if (query.length > 0) {
                 searchQuery = {
@@ -112,8 +113,8 @@ class ResumeController extends Controller {
 
             let company = await Company.findById(position.company_id)
             if (!company.is_active) throw new BadRequestError('company.errors.company_isnot_active');
-            
-            req.body.created_by = req.user_id
+
+            req.body.created_by = req.user._id;
             req.body.project_id = position.project_id;
             req.body.company_id = position.company_id;
 
@@ -261,6 +262,8 @@ class ResumeController extends Controller {
             resume.file = files;
             await resume.save();
 
+            EventEmitter.emit(events.ADD_FILE, resume)
+
             AppResponse.builder(res).message("resume.message.resume_file_successfuly_upload").data(resume).send()
         } catch (err) {
             next(err);
@@ -297,7 +300,7 @@ class ResumeController extends Controller {
     }
 
     /**
-    * POST /resumes/{id}/comments
+    * PATCH /resumes/{id}/comments
     * 
     * @summary add  comments for resume in table
     * @tags Resume
@@ -322,6 +325,8 @@ class ResumeController extends Controller {
             req.body.created_by = req.user._id
 
             let resumeCommentsRes = await ResumeComments.create(req.body)
+            EventEmitter.emit(events.ADD_COMMENT, resume)
+
             AppResponse.builder(res).status(201).message("resume.messages.resume_comment_successfuly_created").data(resumeCommentsRes).send();
         } catch (err) {
             next(err);
@@ -329,7 +334,7 @@ class ResumeController extends Controller {
     }
 
     /**
-      * POST /resumes/{id}/call-history
+      * PATCH /resumes/{id}/call-history
       * 
       * @summary creates a call history for specific resume
       * @tags Resume
@@ -346,10 +351,7 @@ class ResumeController extends Controller {
       */
     async callHistory(req, res, next) {
         try {
-
-            let resume = await Resume.findById(req.params.id);
-
-            if (!resume) throw new NotFoundError('resume.errors.resume_notfound');
+            let resume = await resumeService.findByParamId(req);
 
             let calling_date = new Date(req.body.calling_date)
             let recall_at = new Date(req.body.recall_at)
@@ -358,6 +360,7 @@ class ResumeController extends Controller {
                 calling_date: calling_date,
                 description: req.body.description,
                 recall_at: recall_at,
+                rating: req.body.rating,
                 created_by: req.user._id
             })
             calling_date = calling_date.getTime()
@@ -368,8 +371,7 @@ class ResumeController extends Controller {
             }
 
             await resume.save()
-
-            EventEmitter.emit(events.UPDATE_STATUS, resume)
+            EventEmitter.emit(events.ADD_CALL_HISTORY, resume)
 
             AppResponse.builder(res).message("resume.messages.resume_call_history_successfuly_created").data(resume).send();
         } catch (err) {
@@ -407,6 +409,35 @@ class ResumeController extends Controller {
             await resume.save();
 
             AppResponse.builder(res).message("resume.messages.hire_status_successfuly_updated").data(resume).send();
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
+    * PATCH /resumes/:id/avatar
+    * @summary upload resume avatar
+    * @tags Resume
+    * @security BearerAuth
+    * 
+    * @param { string } id.path.required - resume id
+    * @param { resume.upload_avatar } request.body - resume info - multipart/form-data
+    * 
+    * @return { resume.success }               200 - update resume profile
+    * @return { message.badrequest_error }      400 - resume not found
+    * @return { message.badrequest_error }      401 - UnauthorizedError
+    * @return { message.server_error}           500 - Server Error
+    */
+    async updateAvatar(req, res, next) {
+        try {
+            let resume = await resumeService.findByParamId(req);
+
+            if (req.body.avatar) {
+                resume.avatar = req.body.avatar;
+                await resume.save();
+            }
+
+            AppResponse.builder(res).message("resume.messages.resume_successfuly_updated").data(resume).send()
         } catch (err) {
             next(err);
         }
