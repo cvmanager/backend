@@ -289,10 +289,16 @@
 			"enums": {},
 			"validations": {
 				"province_page_number": "province page must by number",
-				"province_size_number": "province size must by number"
+				"province_size_number": "province size must by number",
+				"province_id_invalid": "province id invalid"
 			},
-			"messages": {},
-			"errors": {}
+			"messages": {
+				"province_list_found": "province list found",
+				"city_list_found": "city list found"
+			},
+			"errors": {
+				"province_notfound": "province notfound"
+			}
 		}
 	},
 	"auth": {

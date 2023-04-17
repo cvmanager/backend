@@ -24,6 +24,7 @@ import { positionAccess } from '../middlewares/positionAccess.middleware.js'
 import positionIdRouter from './positionId.router.js'
 import { resumeAccess } from '../middlewares/resumeAccess.middleware.js'
 import resumeIdRouter from './resumeId.route.js'
+import provinceIdRouter from './provinceId.route.js'
 
 
 const router = express.Router({ mergeParams: true });
@@ -54,6 +55,7 @@ router.use('/roles', verifyToken, canAccess, roleRouter)
 
 router.use('/constant', verifyToken, constantRouter)
 
+router.use('/provinces/:id', verifyToken, canAccess, provinceIdRouter)
 router.use('/provinces', verifyToken, canAccess, provinceRouter)
 
 router.use('/cities', verifyToken, canAccess, cityRouter)
