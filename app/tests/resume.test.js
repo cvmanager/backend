@@ -1282,6 +1282,17 @@ describe("Resumes Routes", () => {
             expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
         })
 
+        it(`should get ${httpStatus.NOT_FOUND} if contributor id is not valid`, async () => {
+            let invalidContributor = {
+                contributor: Types.ObjectId()
+            }
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${resume._id}/add_contributor`)
+                .set(`Authorization`, token)
+                .send(invalidContributor);
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+
         it(`should get ${httpStatus.BAD_REQUEST} contributor is required`, async () => {
             delete contributor.contributor
             const response = await request(app)
@@ -1301,6 +1312,7 @@ describe("Resumes Routes", () => {
         })
 
         it(`should get ${httpStatus.OK} contributor added successfuly`, async () => {
+            contributor.contributor = users[2]._id;
             const response = await request(app)
                 .patch(`/api/V1/resumes/${resume._id}/add_contributor`)
                 .set(`Authorization`, token)
@@ -1333,6 +1345,17 @@ describe("Resumes Routes", () => {
                 .patch(`/api/V1/resumes/${invalidResumeId}/remove_contributor`)
                 .set(`Authorization`, token)
                 .send(contributor);
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+
+        it(`should get ${httpStatus.NOT_FOUND} if contributor id is not valid`, async () => {
+            let invalidContributor = {
+                contributor: Types.ObjectId()
+            }
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${resume._id}/remove_contributor`)
+                .set(`Authorization`, token)
+                .send(invalidContributor);
             expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
         })
 

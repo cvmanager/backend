@@ -1,4 +1,5 @@
 import { events } from '../../events/subscribers/resumes.subscriber.js';
+import AlreadyExists from '../../exceptions/AlreadyExists.js';
 import NotFoundError from '../../exceptions/NotFoundError.js';
 import Position from '../../models/position.model.js';
 import ResumeComments from '../../models/resumeComment.model.js';
@@ -10,6 +11,7 @@ import Controller from './controller.js';
 import BadRequestError from '../../exceptions/BadRequestError.js';
 import { mergeQuery } from '../../helper/mergeQuery.js';
 import resumeService from '../../helper/service/resume.service.js';
+import userService from '../../helper/service/user.service.js';
 
 class ResumeController extends Controller {
 
@@ -429,12 +431,10 @@ class ResumeController extends Controller {
     */
     async addContributor(req, res, next) {
         try {
-            let resume = await Resume.findById(req.params.id);
-            if (!resume) throw new NotFoundError('resume.errors.resume_notfound');
+            let resume = await resumeService.findByParamId(req)
 
-            if (req.body.contributor == '' || req.body.contributor == undefined) {
-                throw new BadRequestError('resume.errors.contributor_could_not_empty');
-            }
+            let user = await userService.findOne({ '_id': req.body.contributor })
+            if (!user) throw new NotFoundError('user.errors.user_notfound');
 
             let contributor = req.body.contributor;
             let contributors = [];
@@ -446,7 +446,7 @@ class ResumeController extends Controller {
                 throw new BadRequestError('resume.errors.contributor_could_not_be_duplicate');
             }
 
-            resume.contributor = contributors.push(req.body.contributor);
+            resume.contributors = contributors.push(req.body.contributor);
             await resume.save();
 
             AppResponse.builder(res).message("resume.messages.contributor_successfuly_added").data(resume).send();
@@ -473,12 +473,10 @@ class ResumeController extends Controller {
     */
     async removeContributor(req, res, next) {
         try {
-            let resume = await Resume.findById(req.params.id);
-            if (!resume) throw new NotFoundError('resume.errors.resume_notfound');
+            let resume = await resumeService.findByParamId(req)
 
-            if (req.body.contributor == '' || req.body.contributor == undefined) {
-                throw new BadRequestError('resume.errors.contributor_could_not_empty');
-            }
+            let user = await userService.findOne({ '_id': req.body.contributor })
+            if (!user) throw new NotFoundError('user.errors.user_notfound');
 
             let contributor = req.body.contributor;
             let contributors = []
@@ -490,7 +488,6 @@ class ResumeController extends Controller {
                 throw new BadRequestError('resume.errors.contributor_not_exists');
             }
 
-            console.log(contributors.filter(e => e != contributor));
             resume.contributors = contributors.filter(e => e != contributor)
             await resume.save();
 
