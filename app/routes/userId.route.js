@@ -7,5 +7,6 @@ userRouter
     .get('/', UserValidation.find(), UserController.find)
     .post('/ban', UserValidation.ban(), UserController.banned)
     .post('/unban', UserValidation.unban(), UserController.unbanned)
-    .get('/login-history', UserValidation.loginHistory(), UserController.loginHistory);
+    .get('/login-history', UserValidation.loginHistory(), UserController.loginHistory)
+    .get('/companies', UserValidation.companies(), UserController.companies);
 export default userRouter

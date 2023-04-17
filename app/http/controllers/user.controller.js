@@ -3,10 +3,12 @@ import BadRequestError from '../../exceptions/BadRequestError.js';
 import NotFoundError from '../../exceptions/NotFoundError.js';
 import AppResponse from '../../helper/response.js';
 import User from '../../models/user.model.js';
+import Company from '../../models/company.model.js';
 import LoginLog from '../../models/loginLog.model.js';
 import Controller from './controller.js';
 import { events } from '../../events/subscribers/user.subscriber.js';
 import bcrypt from 'bcrypt'
+import { mergeQuery } from '../../helper/mergeQuery.js';
 import userService from '../../helper/service/user.service.js';
 
 class UserController extends Controller {
@@ -245,6 +247,49 @@ class UserController extends Controller {
             });
 
             AppResponse.builder(res).data(loginLog).message('user.messages.user_login_history_list').send();
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
+     * GET /users/id/companies
+     * 
+     * @summary Get user companies
+     * @tags User
+     * @security BearerAuth
+     * 
+     * @param  { string } id.path.required - user id
+     *
+     * @return { user.success }             200 - user successfuly found
+     * @return { message.badrequest_error } 400 - user not found
+     * @return { message.badrequest_error } 401 - UnauthorizedError
+     * @return { message.server_error}      500 - Server Error
+     */
+    async companies(req, res, next) {
+        try {
+            const { page = 1, size = 10 } = req.query
+            let user = await userService.findByParamId(req)
+
+            let searchQuery = { 'created_by': user._id }
+            searchQuery = mergeQuery(searchQuery, req.rbacQuery)
+
+            const userCompanies = await Company.paginate(searchQuery, {
+                page: (page) || 1,
+                limit: size,
+                sort: { createdAt: -1 },
+                populate: [
+                    { path: 'projects' },
+                    {
+                        path: 'managers',
+                        populate: { path: 'user_id', select: ['firstname', 'lastname', 'avatar'] },
+                        select: ['user_id']
+                    },
+                    { path: 'created_by', select: ['firstname', 'lastname'] }
+                ]
+            });
+
+            AppResponse.builder(res).data(user).message('user.messages.companies_founded').data(userCompanies).send();
         } catch (err) {
             next(err);
         }

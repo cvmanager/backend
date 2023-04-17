@@ -275,6 +275,14 @@ class ResumeValidation {
                 .toDate()
                 .withMessage('recall_at must be date')
                 .trim(),
+            body('rating')
+                .notEmpty()
+                .withMessage('resume.validations.rating_is_required')
+                .isNumeric()
+                .withMessage('resume.validations.rating_numeric')
+                .isInt({ min: 1, max: 5 })
+                .withMessage('resume.validations.rating_number_not_correct')
+                .trim(),
             generalValidator
         ];
     }
@@ -367,6 +375,14 @@ class ResumeValidation {
                 .withMessage('resume.validations.income_is_number')
                 .optional({ nullable: true, checkFalsy: true })
                 .trim(),
+            generalValidator
+        ];
+    }
+
+    avatar() {
+        return [
+            param('id')
+                .notEmpty().isMongoId().withMessage('resume.validations.resume_id_invalid').trim(),
             generalValidator
         ];
     }

@@ -13,7 +13,7 @@ class AppResponse {
     }
 
     message(message) {
-        this.responseMessage = this.res.__("translate." + message);
+        this.responseMessage = this.res.__(message);
         return this;
     }
 

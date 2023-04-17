@@ -115,3 +115,9 @@
 * @property { array<resume.call_history> } data
 * @property { array<> }        errors
 */
+
+/**
+* upload avatar resume
+* @typedef { object } resume.upload_avatar
+* @property { avatar } avatar.required - resume avatar
+*/

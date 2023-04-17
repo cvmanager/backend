@@ -1044,8 +1044,9 @@ describe("Resumes Routes", () => {
                 'result': 'answered',
                 'calling_date': faker.date.recent(),
                 'description': faker.random.alpha(10),
-                'created_by': user._id,
-                'recall_at': faker.date.future(1)
+                'recall_at': faker.date.future(1),
+                "rating": "1",
+                'created_by': user._id
             }
         })
 
@@ -1132,6 +1133,44 @@ describe("Resumes Routes", () => {
                 .send(callHistory);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
+
+        it(`should get ${httpStatus.BAD_REQUEST} if rating is not send`, async () => {
+            delete callHistory.rating
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${resume._id}/call-history`)
+                .set(`Authorization`, token)
+                .send(callHistory);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} if rating is not number`, async () => {
+            callHistory.rating = 'test'
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${resume._id}/call-history`)
+                .set(`Authorization`, token)
+                .send(callHistory);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} if rating is less than 1`, async () => {
+            callHistory.rating = 0
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${resume._id}/call-history`)
+                .set(`Authorization`, token)
+                .send(callHistory);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} if rating is more than 5`, async () => {
+            callHistory.rating = 6
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${resume._id}/call-history`)
+                .set(`Authorization`, token)
+                .send(callHistory);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+
         it(`should get ${httpStatus.OK} if all data correct `, async () => {
             const response = await request(app)
                 .patch(`/api/V1/resumes/${resume._id}/call-history`)
@@ -1215,6 +1254,41 @@ describe("Resumes Routes", () => {
             expect(response.statusCode).toBe(httpStatus.OK);
         })
 
+    })
+
+    describe(`PATCH /:id/avatar`, () => {
+        let avatar;
+        beforeEach(async () => {
+            avatar = path.join(__dirname, 'data/file/avatar.png');
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if resume id is not valid`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/resumes/fakeId/avatar`)
+                .set(`Authorization`, token)
+                .attach('avatar', avatar);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.NOT_FOUND} if resume is not exists`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${Types.ObjectId()}/avatar`)
+                .set(`Authorization`, token)
+                .attach('avatar', avatar);
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+        it(`should return ${httpStatus.BAD_REQUEST} error if avatar incorect`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${resume._id}/avatar`)
+                .set('Authorization', token)
+                .attach('avatar', path.join(__dirname, 'data/file/avatar.zip'));
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        });
+        it(`should get ${httpStatus.OK} if all data correct `, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${resume._id}/avatar`)
+                .set(`Authorization`, token)
+                .attach('avatar', avatar);
+            expect(response.statusCode).toBe(httpStatus.OK);
+        })
     })
 })
 

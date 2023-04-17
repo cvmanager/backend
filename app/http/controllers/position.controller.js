@@ -218,6 +218,7 @@ class PositionController extends Controller {
         try {
             const position = await positionService.findByParamId(req)
             if (!position) throw new NotFoundError('position.errors.position_notfound');
+            if (!position.is_active) throw new BadRequestError('position.errors.position_deactive_cant_set_manager');
 
             let user = await User.findById(req.body.manager_id);
             if (!user) throw new NotFoundError('user.errors.user_notfound');
@@ -402,7 +403,7 @@ class PositionController extends Controller {
             if (!manager) throw new BadRequestError("position.errors.the_user_is_not_manager_for_this_position");
             if (manager.type === 'owner') throw new BadRequestError("position.errors.the_owner_manager_cannot_be_deleted");
 
-            await manager.delete(req.user_id);
+            await manager.delete(req.user._id);
             EventEmitter.emit(events.UNSET_MANAGER, position);
 
             AppResponse.builder(res).message("position.messages.position_manager_deleted").data(position).send()

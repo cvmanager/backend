@@ -142,6 +142,11 @@ const schema = new mongoose.Schema(
                         type: Date,
                         default: null
                     },
+                    rating: {
+                        type: Number,
+                        required: true,
+                        length: 1
+                    },
                     created_by: {
                         type: mongoose.Schema.Types.ObjectId,
                         required: true,
@@ -176,7 +181,15 @@ const schema = new mongoose.Schema(
         index: {
             type: Number,
             default: null
-        }
+        },
+        avatar: {
+            type: String,
+            default: null,
+        },
+        tag: {
+            type: String,
+            default: null,
+        },
     }
 );
 
