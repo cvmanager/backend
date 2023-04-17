@@ -146,6 +146,7 @@
 				"position_resumes_found": "Position resumes successfuly founded",
 				"position_deactivated_alredy": "position has deactiveed alredy",
 				"position_activated_alredy": "position has activated alredy",
+				"the_user_is_currently_an_manager_for_position": "The user is currently an manager for position",
 				"position_deactive_cant_set_manager": "cant set manager for deactive position"
 			}
 		},
@@ -272,7 +273,8 @@
 				"old_password_length_not_confirm": "old password length must be between 8-10",
 				"old_password_cant_be_empty": "old password cant be empty",
 				"incorrect_password": "The password is incorrect",
-				"duplicate_password": "New password cant be duplicate with old password"
+				"duplicate_password": "New password cant be duplicate with old password",
+				"manager_is_banned": "banned user cant set for manager"
 			}
 		},
 		"manager": {

@@ -2,6 +2,7 @@ import express from 'express'
 import { Upload } from '../helper/upload.js';
 import ProjectController from '../http/controllers/project.controller.js';
 import ProjectValidation from '../validators/project.validation.js'
+import { banUserCantSetForManager } from '../middlewares/manager.middleware.js'
 
 const projectIdRouter = express.Router({ mergeParams: true });
 
@@ -9,7 +10,7 @@ projectIdRouter
     .get('', ProjectValidation.find(), ProjectController.find)
     .patch('', ProjectValidation.update(), ProjectController.update)
     .delete('', ProjectValidation.remove(), ProjectController.delete)
-    .patch('/manager', ProjectValidation.manager(), ProjectController.manager)
+    .patch('/manager', ProjectValidation.manager(), banUserCantSetForManager, ProjectController.manager)
     .delete('/manager', ProjectValidation.deleteManager(), ProjectController.deleteManager)
     .get('/resumes', ProjectValidation.find(), ProjectController.getResumes)
     .get('/managers', ProjectValidation.find(), ProjectController.getManagers)

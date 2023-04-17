@@ -16,6 +16,7 @@ import positionService from '../../helper/service/position.service.js';
 import roleService from '../../helper/service/role.service.js';
 import userService from '../../helper/service/user.service.js';
 import { mergeQuery } from '../../helper/mergeQuery.js';
+import managerService from '../../helper/service/manager.service.js';
 
 class PositionController extends Controller {
 
@@ -220,21 +221,17 @@ class PositionController extends Controller {
             if (!position) throw new NotFoundError('position.errors.position_notfound');
             if (!position.is_active) throw new BadRequestError('position.errors.position_deactive_cant_set_manager');
 
-            let user = await User.findById(req.body.manager_id);
-            if (!user) throw new NotFoundError('user.errors.user_notfound');
+            let user = await userService.findOne({ _id: req.body.manager_id });
 
-            const duplicateManager = await Manager.findOne({ 'user_id': user._id, 'entity_id': position._id, 'entity': 'positions' })
-            if (duplicateManager) {
-                throw new AlreadyExists('manager.errors.duplicate');
-            }
+            let manager = await managerService.findOne({ 'entity': "positions", 'entity_id': position.id, 'user_id': user.id });
+            if (manager) throw new BadRequestError("project.errors.the_user_is_currently_an_manager_for_position");
+            
+            await managerService.create({ user_id: user._id, entity: "positions", entity_id: position._id, created_by: req.user._id });
 
-            let manager = await Manager.create({ 'user_id': user._id, 'entity_id': position._id, 'entity': 'positions', 'created_by': req.user._id });
+            const positionManagerRole = await roleService.findOne({ name: "Position Manager" })
+            await userService.addRole(user._id, positionManagerRole._id)
+            
             EventEmitter.emit(events.SET_MANAGER, position);
-
-            let positionManagerRole = await roleService.findOne({ name: "Position Manager" })
-            if (positionManagerRole) await userService.addRole(user._id, positionManagerRole._id)
-
-
             AppResponse.builder(res).status(201).message('manager.messages.manager_successfuly_created').data(manager).send();
         } catch (err) {
             next(err);

@@ -20,12 +20,13 @@ let user;
 let projectData;
 let companyData;
 let projectItem;
+let userData;
 
 prepareDB();
 describe("Project Routes", () => {
 
     beforeEach(async () => {
-        let userData = new UserData();
+        userData = new UserData();
         token = userData.getAccessToken();
         users = userData.getUsers();
         user = userData.getUser();
@@ -400,6 +401,16 @@ describe("Project Routes", () => {
                 .set('Authorization', token)
                 .send(setManager);
             expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} manager is banned`, async () => {
+            user = userData.saveBannedUser();
+            setManager.manager_id = user._id
+            const response = await request(app)
+                .patch(`/api/V1/projects/${project._id}/manager`)
+                .set('Authorization', token)
+                .send(setManager);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
 
         it(`should get ${httpStatus.BAD_REQUEST} user is currently manager`, async () => {
