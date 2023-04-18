@@ -1,4 +1,5 @@
 import { events } from '../../events/subscribers/resumes.subscriber.js';
+import AlreadyExists from '../../exceptions/AlreadyExists.js';
 import NotFoundError from '../../exceptions/NotFoundError.js';
 import Position from '../../models/position.model.js';
 import ResumeComments from '../../models/resumeComment.model.js';
@@ -10,6 +11,7 @@ import Controller from './controller.js';
 import BadRequestError from '../../exceptions/BadRequestError.js';
 import { mergeQuery } from '../../helper/mergeQuery.js';
 import resumeService from '../../helper/service/resume.service.js';
+import userService from '../../helper/service/user.service.js';
 import TagService from '../../helper/service/tag.service.js';
 
 class ResumeController extends Controller {
@@ -410,6 +412,91 @@ class ResumeController extends Controller {
             await resume.save();
 
             AppResponse.builder(res).message("resume.messages.hire_status_successfuly_updated").data(resume).send();
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
+    * PATCH /resumes/{id}/add_contributor
+    * 
+    * @summary add contributor
+    * @tags Resume
+    * @security BearerAuth
+    * 
+    * @param { string } id.path.required - resume id
+    * @param { resume.contributor } request.body - application/json
+    * 
+    * @return { resume.success }            200 - success response
+    * @return { message.badrequest_error }  400 - bad request respone
+    * @return { message.badrequest_error }  404 - not found respone
+    * @return { message.badrequest_error }  401 - UnauthorizedError
+    * @return { message.server_error  }     500 - Server Error
+    */
+    async addContributor(req, res, next) {
+        try {
+            let resume = await resumeService.findByParamId(req)
+
+            let user = await userService.findOne({ '_id': req.body.contributor })
+            if (!user) throw new NotFoundError('user.errors.user_notfound');
+
+            let contributor = req.body.contributor;
+            let contributors = [];
+            if(resume.contributors){
+                contributors = resume.contributors;
+            }
+
+            if (contributors.includes(contributor)) {
+                throw new BadRequestError('resume.errors.contributor_could_not_be_duplicate');
+            }
+
+            contributors.push(req.body.contributor);
+            resume.contributors = contributors;
+            await resume.save();
+
+            AppResponse.builder(res).message("resume.messages.contributor_successfuly_added").data(resume).send();
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
+    * PATCH /resumes/{id}/remove_contributor
+    * 
+    * @summary remove contributor
+    * @tags Resume
+    * @security BearerAuth
+    * 
+    * @param { string } id.path.required - resume id
+    * @param { resume.contributor } request.body - application/json
+    * 
+    * @return { resume.success }            200 - success response
+    * @return { message.badrequest_error }  400 - bad request respone
+    * @return { message.badrequest_error }  404 - not found respone
+    * @return { message.badrequest_error }  401 - UnauthorizedError
+    * @return { message.server_error  }     500 - Server Error
+    */
+    async removeContributor(req, res, next) {
+        try {
+            let resume = await resumeService.findByParamId(req)
+
+            let user = await userService.findOne({ '_id': req.body.contributor })
+            if (!user) throw new NotFoundError('user.errors.user_notfound');
+
+            let contributor = req.body.contributor;
+            let contributors = []
+            if(resume.contributors){
+                contributors = resume.contributors;
+            }
+
+            if (!contributors.includes(contributor)) {
+                throw new BadRequestError('resume.errors.contributor_not_exists');
+            }
+
+            resume.contributors = contributors.filter(e => e != contributor)
+            await resume.save();
+
+            AppResponse.builder(res).message("resume.messages.contributor_successfuly_removed").data(resume).send();
         } catch (err) {
             next(err);
         }

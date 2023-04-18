@@ -205,6 +205,10 @@ const schema = new mongoose.Schema(
             ],
             default: null,
         },
+        contributors: {
+            type: Array,
+            default: null,
+        },
         summary_count: {
             type:
             {
