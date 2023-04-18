@@ -1340,7 +1340,7 @@ describe("Resumes Routes", () => {
         })
 
         it(`should get ${httpStatus.BAD_REQUEST} if tag already saved`, async () => {
-            newTag.tag = tagData.getTagById(resume.tags[0]).name;
+            newTag.tag = tagData.getTagById(resume.tags[0].id).name;
             const response = await request(app)
                 .patch(`/api/V1/resumes/${resume._id}/add_tags`)
                 .set(`Authorization`, token)
@@ -1363,7 +1363,7 @@ describe("Resumes Routes", () => {
         let removeTag;
         beforeEach(() => {
             removeTag = {
-                tag_id: resume.tags[0],
+                tag_id: resume.tags[0].id,
             }
         })
 

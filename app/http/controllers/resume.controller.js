@@ -463,10 +463,14 @@ class ResumeController extends Controller {
             let tag = await TagService.checkAndReturnTag(req.body.tag);
 
             let tags = [];
-            if (resume.tags) tags = resume.tags;
-            if (tags.includes(tag._id)) throw new BadRequestError('resume.errors.tag_could_not_be_duplicate');
-            
-            tags.push(tag._id)
+            if (resume.tags) tags = resume.tags.filter(value => JSON.stringify(value) !== '{}');
+            if (tags.some(value => value.id == tag._id)) throw new BadRequestError('resume.errors.tag_could_not_be_duplicate');
+
+            tags.push({
+                id: tag._id,
+                name: tag.name,
+                color: tag.color,
+            })
             resume.tags = tags;
             await resume.save();
 
@@ -497,10 +501,10 @@ class ResumeController extends Controller {
             let resume = await resumeService.findByParamId(req);
 
             let tag = req.body.tag_id;
-            if (!resume.tags.includes(tag)) {
+            if (!resume.tags.some(value => value.id == tag)) {
                 throw new BadRequestError('resume.errors.tag_not_exists');
             }
-            resume.tags = resume.tags.filter(e => e != tag)
+            resume.tags = resume.tags.filter(e => e.id != tag)
             await resume.save();
 
             AppResponse.builder(res).status(200).message("resume.messages.resume_tags_successfuly_deleted").data(resume).send();

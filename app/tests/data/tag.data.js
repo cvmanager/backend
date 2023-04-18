@@ -10,7 +10,7 @@ class TagData {
     }
 
     getTagById(tagId) {
-        return tags.find(tag => tag._id == tagId);
+        return tags.some(tag => tag.id == tagId);
     }
 }
 

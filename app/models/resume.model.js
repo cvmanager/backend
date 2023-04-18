@@ -187,7 +187,22 @@ const schema = new mongoose.Schema(
             default: null,
         },
         tags: {
-            type: Array,
+            type: [
+                {
+                    id: {
+                        type: String,
+                        required: null,
+                    },
+                    name: {
+                        type: String,
+                        required: null,
+                    },
+                    color: {
+                        type: String,
+                        required: null,
+                    }
+                }
+            ],
             default: null,
         },
     }
