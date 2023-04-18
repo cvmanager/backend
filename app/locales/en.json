@@ -503,21 +503,26 @@
 			"call_history_recall_at_invalid": "recall_at must be date",
 			"rating_numeric": "rating must be number",
 			"rating_number_not_correct": "rating number must be between 1 and 5",
-			"rating_is_required": "rating is reauired"
+			"rating_is_required": "rating is reauired",
+			"max_tag_length": "tag has be between 5 and 100 character",
+			"max_comment_length": "Comment has be between 5 and 1000 character",
+			"resume_page_number": "resume page must by number",
+			"resume_size_number": "resume size must by number"
 		},
 		"messages": {
 			"resume_successfuly_created": "resume successfuly created",
 			"resume_status_successfuly_updated": "resume successfuly updated",
 			"resume_call_history_successfuly_created": "resume call history successfuly created",
-			"max_comment_length": "Comment has be between 5 and 1000 character",
-			"resume_page_number": "resume page must by number",
-			"resume_size_number": "resume size must by number"
+			"resume_tags_successfuly_updated": "resume tags successfuly updated",
+			"resume_tags_successfuly_deleted": "resume tags successfuly deleted"
 		},
 		"errors": {
 			"resume_notfound": "Sorry, Resume not found",
 			"resume_comments_no_content": "Sorry, This resume  dont have any comment",
 			"resume_comments_notfound": "Sorry, Resume not have any comment",
-			"can_not_update_status_to_current": "It is not possible to update the status to the current status"
+			"can_not_update_status_to_current": "It is not possible to update the status to the current status",
+			"tag_could_not_be_duplicate": "tag could not be duplicate",
+			"tag_not_exists": "tag not exists"
 		}
 	},
 	"user": {
@@ -558,6 +563,15 @@
 		"validations": {
 			"province_page_number": "province page must by number",
 			"province_size_number": "province size must by number"
+		},
+		"messages": {},
+		"errors": {}
+	},
+	"tag": {
+		"enums": {},
+		"validations": {
+			"tag_id_required": "tag id required",
+			"tag_id_invalid": "tag id invalid"
 		},
 		"messages": {},
 		"errors": {}

@@ -186,8 +186,23 @@ const schema = new mongoose.Schema(
             type: String,
             default: null,
         },
-        tag: {
-            type: String,
+        tags: {
+            type: [
+                {
+                    id: {
+                        type: String,
+                        required: null,
+                    },
+                    name: {
+                        type: String,
+                        required: null,
+                    },
+                    color: {
+                        type: String,
+                        required: null,
+                    }
+                }
+            ],
             default: null,
         },
         summary_count: {

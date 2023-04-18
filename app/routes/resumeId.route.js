@@ -16,5 +16,7 @@ resumeIdRouter
     .patch('/avatar', Upload('resumes', 'avatar', 'image'), ResumeValidation.avatar(), ResumeController.updateAvatar)
     .patch('/comments', ResumeValidation.addComments(), ResumeController.addComments)
     .patch('/hire_status', ResumeValidation.hireStatus(), ResumeController.hireStatus)
+    .patch('/add_tags', ResumeValidation.addTags(), ResumeController.addTags)
+    .patch('/remove_tags', ResumeValidation.removeTags(), ResumeController.removeTags)
 
 export default resumeIdRouter
