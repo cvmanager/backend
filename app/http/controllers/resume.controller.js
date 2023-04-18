@@ -33,7 +33,7 @@ class ResumeController extends Controller {
             const { page = 1, size = 10, query = '' } = req.query
 
             let searchQuery = {}
-            
+
             searchQuery = mergeQuery(searchQuery, req.rbacQuery)
             if (query.length > 0) {
                 searchQuery = {
@@ -84,7 +84,9 @@ class ResumeController extends Controller {
             let resume = await Resume.findById(req.params.id).populate('created_by')
             if (!resume) throw new NotFoundError('resume.error.resume_notfound');
 
-            AppResponse.builder(res).message("resume.messages.project_found").data(resume).send();
+            EventEmitter.emit(events.FIND, resume)
+
+            AppResponse.builder(res).message("resume.messages.project_found").data('test').send();
         } catch (err) {
             next(err);
         }
@@ -113,7 +115,7 @@ class ResumeController extends Controller {
 
             let company = await Company.findById(position.company_id)
             if (!company.is_active) throw new BadRequestError('company.errors.company_isnot_active');
-            
+
             req.body.created_by = req.user._id;
             req.body.project_id = position.project_id;
             req.body.company_id = position.company_id;
