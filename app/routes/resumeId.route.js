@@ -13,11 +13,12 @@ resumeIdRouter
     .patch('/call-history', ResumeValidation.call_history(), ResumeController.callHistory)
     .patch('/file', Upload('resumes', 'file', 'file'), ResumeValidation.upload_file(), ResumeController.uploadFile)
     .get('/comments', ResumeValidation.comments(), ResumeController.comments)
-    .post('/comments', ResumeValidation.addComments(), ResumeController.addComments)
     .patch('/avatar', Upload('resumes', 'avatar', 'image'), ResumeValidation.avatar(), ResumeController.updateAvatar)
     .patch('/comments', ResumeValidation.addComments(), ResumeController.addComments)
     .patch('/hire_status', ResumeValidation.hireStatus(), ResumeController.hireStatus)
     .patch('/add_contributor', ResumeValidation.addContributor(), ResumeController.addContributor)
     .patch('/remove_contributor', ResumeValidation.removeContributor(), ResumeController.removeContributor)
+    .patch('/add_tags', ResumeValidation.addTags(), ResumeController.addTags)
+    .patch('/remove_tags', ResumeValidation.removeTags(), ResumeController.removeTags)
 
 export default resumeIdRouter

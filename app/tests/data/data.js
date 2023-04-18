@@ -1,5 +1,6 @@
 import { Types } from 'mongoose';
 import { faker } from '@faker-js/faker';
+import { getRandomColor } from '../../helper/helper.js'
 
 const numberRowInsert = 3;
 let i = 0;
@@ -70,6 +71,16 @@ for (i = 0; i < numberRowInsert; i++) {
     })
 }
 
+let tags = [];
+for (i = 0; i < numberRowInsert; i++) {
+    tags.push({
+        "_id": Types.ObjectId(),
+        "name": faker.random.alpha(5),
+        "color": getRandomColor(),
+        "count": 1
+    })
+}
+
 let resumes = [];
 for (i = 0; i < numberRowInsert; i++) {
     resumes.push({
@@ -90,7 +101,12 @@ for (i = 0; i < numberRowInsert; i++) {
         "education": "diploma",
         "created_by": users[i]._id,
         "contributors": [users[i]._id],
-        "index": i
+        "index": i,
+        "tags": [{
+            "id": tags[i]._id,
+            "name": tags[i].name,
+            "color": tags[i].color
+        }],
     })
 }
 
@@ -159,4 +175,4 @@ for (i = 0; i < numberRowInsert; i++) {
 
 }
 
-export { users, companies, projects, positions, managers, resumes, resumeComments, logHistory };
+export { users, companies, projects, positions, managers, resumes, resumeComments, logHistory ,tags };
