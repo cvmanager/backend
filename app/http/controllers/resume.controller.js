@@ -446,7 +446,8 @@ class ResumeController extends Controller {
                 throw new BadRequestError('resume.errors.contributor_could_not_be_duplicate');
             }
 
-            resume.contributors = contributors.push(req.body.contributor);
+            contributors.push(req.body.contributor);
+            resume.contributors = contributors;
             await resume.save();
 
             AppResponse.builder(res).message("resume.messages.contributor_successfuly_added").data(resume).send();
