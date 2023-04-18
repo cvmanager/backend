@@ -532,7 +532,8 @@ describe("Resumes Routes", () => {
                 .send(newResume);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
-        it(`should get ${httpStatus.BAD_REQUEST} if military_status is not in ${i18n.__("system.enums.military_status")}`, async () => {
+        it(`should get ${httpStatus.BAD_REQUEST} if gender is men and military_status is not in ${i18n.__("system.enums.military_status")}`, async () => {
+            newResume.gender = 'men'
             newResume.military_status = faker.random.alpha(5);
             const response = await request(app)
                 .post(`/api/V1/resumes`)
