@@ -114,9 +114,9 @@ class ResumeValidation {
                 .withMessage('resume.validations.work_exp_numeric')
                 .trim(),
             body('military_status')
-                .optional({ nullable: true, checkFalsy: true })
+                .if(body('gender').isIn('men', i18n.__('system.enums.gender')))
                 .isIn(i18n.__("system.enums.military_status"))
-                .withMessage('resume.validations.military_status_incorrect')
+                .withMessage('resume.validations.military_status_incorrect_for_men')
                 .trim(),
             generalValidator
         ];
