@@ -5,6 +5,7 @@ import NotFoundError from '../../exceptions/NotFoundError.js';
 import EventEmitter from '../../events/emitter.js';
 import AppResponse from '../../helper/response.js';
 import Controller from './controller.js';
+import { mergeQuery } from '../../helper/mergeQuery.js';
 
 class InterviewController extends Controller {
 
@@ -25,19 +26,13 @@ class InterviewController extends Controller {
     */
     async index(req, res, next) {
         try {
-            let resume = await Resume.findById(req.param.resume_id);
+            let resume = await Resume.findById(req.params.resume_id);
             if (!resume) throw new NotFoundError('resume.errors.resume_not_found');
 
             const { page = 1, size = 10, query = '' } = req.query
 
-            let searchQuery = {}
-            if (query.length > 0) {
-                searchQuery = {
-                    $or: [
-                        { description: { '$regex': query } },
-                    ]
-                }
-            }
+            let searchQuery = (query.length > 0 ? { $or: [{ description: { '$regex': query } }] } : null);
+            searchQuery = mergeQuery(searchQuery, req.rbacQuery)
 
             const interviewList = await Interview.paginate(searchQuery, {
                 page: (page) || 1,
@@ -58,6 +53,7 @@ class InterviewController extends Controller {
     * @tags Resume
     * @security BearerAuth
     * 
+    * @param { string } resume_id.path.required - resume id
     * @param  { string } id.path.required - interview id
     * @param  { string } resume_id.path.required - resume id
     * 
@@ -69,6 +65,9 @@ class InterviewController extends Controller {
     */
     async find(req, res, next) {
         try {
+            let resume = await Resume.findById(req.params.resume_id);
+            if (!resume) throw new NotFoundError('resume.errors.resume_not_found');
+
             let interview = await Interview.findById(req.params.id).populate({ path: 'created_by', select: ['firstname', 'lastname', 'avatar'] }).exec();
             if (!interview) throw new NotFoundError('interview.errors.interview_notfound');
 
@@ -85,6 +84,7 @@ class InterviewController extends Controller {
     * @tags Resume
     * @security BearerAuth
     * 
+    * @param { string } resume_id.path.required - resume id
     * @param { interview.create } request.body - interview info - application/json
     * @param  { string } resume_id.path.required - resume id
     
@@ -96,11 +96,12 @@ class InterviewController extends Controller {
     */
     async create(req, res, next) {
         try {
-            let resume = await Resume.findById(req.param.resume_id);
+            let resume = await Resume.findById(req.params.resume_id);
             if (!resume) throw new NotFoundError('resume.errors.resume_not_found');
 
-            req.body.created_by = req.user_id
+            req.body.created_by = req.user._id
             req.body.event_time = new Date(req.body.event_time)
+            req.body.resume_id = req.params.resume_id;
             let interview = await Interview.create(req.body)
             EventEmitter.emit(events.NEW_INTERVIEW, interview)
 
@@ -117,8 +118,8 @@ class InterviewController extends Controller {
     * @tags Resume
     * @security BearerAuth
     * 
-    * @param { string } id.path.required - interview id
     * @param { string } resume_id.path.required - resume id
+    * @param { string } id.path.required - interview id
     * @param { interview.update } request.body - interview info - application/json
     * 
     * @return { interview.success }           200 - success response
@@ -129,7 +130,7 @@ class InterviewController extends Controller {
     */
     async update(req, res, next) {
         try {
-            let resume = await Resume.findById(req.param.resume_id);
+            let resume = await Resume.findById(req.params.resume_id);
             if (!resume) throw new NotFoundError('resume.errors.resume_not_found');
 
             let interview = await Interview.findById(req.params.id);
@@ -159,6 +160,7 @@ class InterviewController extends Controller {
     * @tags Resume
     * @security BearerAuth
     * 
+    * @param { string } resume_id.path.required - resume id
     * @param  { string } id.path - interview id
     * @param  { string } resume_id.path.required - resume id
     * 
@@ -170,13 +172,13 @@ class InterviewController extends Controller {
     */
     async delete(req, res, next) {
         try {
-            let resume = await Resume.findById(req.param.resume_id);
+            let resume = await Resume.findById(req.params.resume_id);
             if (!resume) throw new NotFoundError('resume.errors.resume_not_found');
 
             let interview = await Interview.findById(req.params.id);
             if (!interview) throw new NotFoundError('interview.errors.interview_notfound');
 
-            await interview.delete(req.user_id);
+            await interview.delete(req.user._id);
             EventEmitter.emit(events.DELETE_INTERVIEW, interview)
 
 

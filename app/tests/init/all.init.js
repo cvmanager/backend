@@ -26,6 +26,7 @@ class AllInit {
         await Resume.insertMany(resumes);
         await ResumeComment.insertMany(resumeComments);
         await Manager.insertMany(managers);
+        await Interview.insertMany(interviews);
         await fillProvinceTable();
         await createPermissions(app)
         // await rbacConfig()

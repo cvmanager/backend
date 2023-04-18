@@ -47,8 +47,9 @@ router.use('/positions', verifyToken, canAccess, positionAccess, positionRouter)
 
 router.use('/permissions/:id', verifyToken, canAccess, permissionIdRouter)
 router.use('/permissions', verifyToken, canAccess, permissionRouter)
-router.use('/resumes/:resume_id/interviews/:id', canAccess, interviewIdRouter)
-router.use('/resumes/:resume_id/interviews', canAccess, interviewRouter)
+
+router.use('/resumes/:resume_id/interviews/:id', verifyToken, interviewIdRouter)
+router.use('/resumes/:resume_id/interviews', verifyToken, interviewRouter)
 router.use('/resumes/:id', verifyToken, canAccess, resumeAccess, resumeIdRouter)
 router.use('/resumes', verifyToken, canAccess, resumeAccess, resumeRouter)
 

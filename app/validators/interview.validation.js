@@ -9,6 +9,12 @@ class InterviewValidation {
 
     index() {
         return [
+            param('resume_id')
+                .notEmpty()
+                .withMessage('interview.validations.resume_id_required')
+                .isMongoId()
+                .withMessage('interview.validations.resume_id_invalid')
+                .trim(),
             query('page')
                 .optional({ nullable: true, checkFalsy: true })
                 .isNumeric().withMessage('interview.validations.interview_page_number').trim(),
@@ -21,7 +27,7 @@ class InterviewValidation {
 
     create() {
         return [
-            body('resume_id')
+            param('resume_id')
                 .notEmpty()
                 .withMessage('interview.validations.resume_id_required')
                 .isMongoId()
@@ -73,6 +79,12 @@ class InterviewValidation {
 
     update() {
         return [
+            param('resume_id')
+                .notEmpty()
+                .withMessage('interview.validations.resume_id_required')
+                .isMongoId()
+                .withMessage('interview.validations.resume_id_invalid')
+                .trim(),
             param('id')
                 .notEmpty()
                 .isMongoId()
@@ -132,6 +144,12 @@ class InterviewValidation {
 
     find() {
         return [
+            param('resume_id')
+                .notEmpty()
+                .withMessage('interview.validations.resume_id_required')
+                .isMongoId()
+                .withMessage('interview.validations.resume_id_invalid')
+                .trim(),
             param('id')
                 .notEmpty()
                 .withMessage('interview.validations.interview_id_required')
@@ -144,6 +162,12 @@ class InterviewValidation {
 
     remove() {
         return [
+            param('resume_id')
+                .notEmpty()
+                .withMessage('interview.validations.resume_id_required')
+                .isMongoId()
+                .withMessage('interview.validations.resume_id_invalid')
+                .trim(),
             param('id')
                 .notEmpty()
                 .withMessage('interview.validations.interview_id_required')
