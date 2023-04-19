@@ -5,12 +5,17 @@ export const events = {
     "DELETE": "Delete Resume",
     "UPDATE": "Update Resume Info",
     "UPDATE_STATUS": "Update Resume Status",
+    "ADD_COMMENT": "add comment for resume",
+    "ADD_CALL_HISTORY": "add call history for resume",
 }
 
 EventEmitter.on(events.CREATE, create)
 EventEmitter.on(events.DELETE, softdelete)
 EventEmitter.on(events.UPDATE, update)
 EventEmitter.on(events.UPDATE_STATUS, updateStatus)
+EventEmitter.on(events.ADD_COMMENT, addComment)
+EventEmitter.on(events.ADD_CALL_HISTORY, addCallHistory)
+EventEmitter.on(events.ADD_FILE, addFile)
 
 
 function create(Resume) {
@@ -30,4 +35,17 @@ function update(Resume) {
 
 function updateStatus(Resume) {
     resumeService.setProccessDuration(Resume)
+}
+
+async function addComment(Resume) {
+    let commentCount = await resumeService.getResumeCommentCount(Resume);
+    resumeService.updateSummeryCount(Resume, 'comment', commentCount)
+}
+
+function addCallHistory(Resume) {
+    resumeService.updateSummeryCount(Resume, 'call_history', Resume.call_history.length)
+}
+
+function addFile(Resume) {
+    resumeService.updateSummeryCount(Resume, 'file', Resume.call_history.length)
 }

@@ -186,10 +186,61 @@ const schema = new mongoose.Schema(
             type: String,
             default: null,
         },
-        tag: {
-            type: String,
+        tags: {
+            type: [
+                {
+                    id: {
+                        type: String,
+                        required: null,
+                    },
+                    name: {
+                        type: String,
+                        required: null,
+                    },
+                    color: {
+                        type: String,
+                        required: null,
+                    }
+                }
+            ],
             default: null,
         },
+        contributors: {
+            type: Array,
+            default: null,
+        },
+        summary_count: {
+            type:
+            {
+                view: {
+                    type: Number,
+                    default: 0
+                },
+                comment: {
+                    type: Number,
+                    default: 0
+                },
+                file: {
+                    type: Number,
+                    default: 0
+                },
+                call_history: {
+                    type: Number,
+                    default: 0
+                },
+                interview: {
+                    type: Number,
+                    default: 0
+                }
+            },
+            default: {
+                'view': 0,
+                'cumment': 0,
+                'file': 0,
+                'call_history': 0,
+                'interview': 0
+            }
+        }
     }
 );
 

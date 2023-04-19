@@ -12,7 +12,7 @@ export const fillProvinceTable = async () => {
         .then(async (items) => {
             let cities = [];
             items.map((province) => {
-                const provinceInfo = provinces.find(element => element.name = province.name);
+                const provinceInfo = provinces.find(element => element.name == province.name);
                 provinceInfo.cities.map((hi) => {
                     let object = {
                         province_id: province._id,
