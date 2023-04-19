@@ -30,9 +30,9 @@ class ProvinceController extends Controller {
     }
 
     /**
-* GET /provinces/{id}
+* GET /provinces/{id}/cities
 * 
-* @summary gets a province by id
+* @summary get cities of province by id
 * @tags Province
 * @security BearerAuth
 * 
@@ -44,7 +44,7 @@ class ProvinceController extends Controller {
 * @return { message.unauthorized_error }     401 - UnauthorizedError
 * @return { message.server_error  }    500 - Server Error
 */
-    async find(req, res, next) {
+    async cities(req, res, next) {
         try {
             let province = await Province.findById(req.params.id);
             if (!province) throw new NotFoundError('province.errors.province_notfound');
