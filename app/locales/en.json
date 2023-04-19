@@ -232,6 +232,7 @@
 				"major_required": "resume.validation.major_required",
 				"major_length": "resume.validation.major_length",
 				"result_required": "result is required",
+				"military_status_incorrect_for_men": "military status is required for men",
 				"result_incorrect": "result is incorrect",
 				"calling_date_required": "calling_date is required",
 				"calling_date_must_be_date": "calling_date must be date",

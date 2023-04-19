@@ -91,7 +91,7 @@ const schema = new mongoose.Schema(
         military_status: {
             type: String,
             default: null,
-            enum: i18n.__("system.enums.military_status")
+            // enum: i18n.__("system.enums.military_status")
         },
         status_updated_at: {
             type: Date,
