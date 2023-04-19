@@ -564,6 +564,8 @@ class ResumeController extends Controller {
             resume.tags = tags;
             await resume.save();
 
+            EventEmitter.emit(events.ADD_TAG, resume)
+
             AppResponse.builder(res).status(200).message("resume.messages.resume_tags_successfuly_updated").data(resume).send();
         } catch (err) {
             next(err);

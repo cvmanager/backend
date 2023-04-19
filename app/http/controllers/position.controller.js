@@ -225,12 +225,12 @@ class PositionController extends Controller {
 
             let manager = await managerService.findOne({ 'entity': "positions", 'entity_id': position.id, 'user_id': user.id });
             if (manager) throw new BadRequestError("project.errors.the_user_is_currently_an_manager_for_position");
-            
+
             await managerService.create({ user_id: user._id, entity: "positions", entity_id: position._id, created_by: req.user._id });
 
             const positionManagerRole = await roleService.findOne({ name: "Position Manager" })
             await userService.addRole(user._id, positionManagerRole._id)
-            
+
             EventEmitter.emit(events.SET_MANAGER, position);
             AppResponse.builder(res).status(201).message('manager.messages.manager_successfuly_created').data(manager).send();
         } catch (err) {
@@ -264,12 +264,11 @@ class PositionController extends Controller {
             let statuses = i18n.__("resume.enums.status");
             for (let status of statuses) {
                 let resumeList = Resume.find({ 'position_id': position._id, 'status': status })
+                    .select(['name', 'avatar', 'summary_count', 'rating', 'tags.name', 'contributors', 'index'])
                     .limit(size)
                     .sort([['index', 1]])
                     .populate([
-                        { path: 'company_id', select: ['_id', 'name', 'logo'] },
-                        { path: 'project_id', select: ['_id', 'name', 'logo'] },
-                        { path: 'resumeComments', select: ['_id', 'body'] },
+                        { path: 'position_id' },
                     ]);
                 promiseResumes.push(resumeList)
             }
