@@ -170,12 +170,10 @@ class AuthController extends Controller {
      * 
      * @summary Check and confirm username
      * @tags Auth 
-     * @security BearerAuth
      *
      * @param { auth.checkUsername }                request.body - refresh info - application/json
      * 
      * @return { auth.success }                     200 - found successfuly 
-     * @return { message.UserNotFoundError }        404 - not found 
      * @return { message.server_error  }            500 - Server Error
      */
     async checkusername(req, res, next) {

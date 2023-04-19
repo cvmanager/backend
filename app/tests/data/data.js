@@ -120,6 +120,21 @@ for (i = 0; i < numberRowInsert; i++) {
     })
 }
 
+let interviews = [];
+for (i = 0; i < numberRowInsert; i++) {
+    interviews.push({
+        "_id": Types.ObjectId(),
+        "resume_id": resumes[i]._id,
+        "event_time": "2022-09-21",
+        "event_type": "online",
+        "status": "pending",
+        "type": "person",
+        "description": faker.random.alpha(50),
+        "contribution": [],
+        "created_by": users[i]._id,
+    })
+}
+
 let managers = [];
 for (i = 0; i < numberRowInsert; i++) {
     managers.push({
@@ -175,4 +190,4 @@ for (i = 0; i < numberRowInsert; i++) {
 
 }
 
-export { users, companies, projects, positions, managers, resumes, resumeComments, logHistory ,tags };
+export { users, companies, projects, positions, managers, resumes, resumeComments, interviews, logHistory, tags };
