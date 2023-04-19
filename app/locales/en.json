@@ -600,7 +600,10 @@
 			"description_invalid": "description most grather than 2 and less than 512 character",
 			"contribution_invalid": "contribution most array of id",
 			"interview_page_number": "interview page must by number",
-			"interview_size_number": "interview size must by number"
+			"interview_size_number": "interview size must by number",
+			"rating_numeric": "rating must be number",
+			"rating_number_not_correct": "rating number must be between 1 and 5",
+			"rating_is_required": "rating is reauired"
 		},
 		"messages": {
 			"interview_found": "interview found",

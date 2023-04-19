@@ -240,6 +240,11 @@ const schema = new mongoose.Schema(
                 'call_history': 0,
                 'interview': 0
             }
+        },
+        rating: {
+            type: Number,
+            default: 3,
+            length: 1
         }
     }
 );
