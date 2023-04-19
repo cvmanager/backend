@@ -27,15 +27,15 @@ class ResumeValidation {
                 .trim(),
             body('firstname')
                 .notEmpty()
-                .withMessage('resume.validations.firstname_required')
+                .withMessage('resume.validations.first_name_required')
                 .isLength({ min: 3, max: 50 })
-                .withMessage('resume.validations.firstname_length')
+                .withMessage('resume.validations.first_name_length')
                 .trim(),
             body('lastname')
                 .notEmpty()
-                .withMessage('resume.validations.lastname_required')
+                .withMessage('resume.validations.last_name_required')
                 .isLength({ min: 3, max: 50 })
-                .withMessage('resume.validations.lastname_length')
+                .withMessage('resume.validations.last_name_length')
                 .trim(),
             body('gender')
                 .notEmpty()

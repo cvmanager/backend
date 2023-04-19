@@ -1,5 +1,5 @@
 class AppResponse {
-    responseMessage = "Successfuly";
+    responseMessage = "successfully";
     responseData = [];
     responseErrors = [];
     responseStatus = 200;

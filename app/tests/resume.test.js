@@ -1254,7 +1254,7 @@ describe("Resumes Routes", () => {
         })
 
 
-        it(`should get ${httpStatus.OK} hire status updated successfuly`, async () => {
+        it(`should get ${httpStatus.OK} hire status updated successfully`, async () => {
             const response = await request(app)
                 .patch(`/api/V1/resumes/${resume._id}/hire_status`)
                 .set(`Authorization`, token)
@@ -1319,7 +1319,7 @@ describe("Resumes Routes", () => {
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
 
-        it(`should get ${httpStatus.OK} contributor added successfuly`, async () => {
+        it(`should get ${httpStatus.OK} contributor added successfully`, async () => {
             contributor.contributor = users[2]._id;
             const response = await request(app)
                 .patch(`/api/V1/resumes/${resume._id}/add_contributor`)
@@ -1385,7 +1385,7 @@ describe("Resumes Routes", () => {
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
 
-        it(`should get ${httpStatus.OK} contributor remove successfuly`, async () => {
+        it(`should get ${httpStatus.OK} contributor remove successfully`, async () => {
             const response = await request(app)
                 .patch(`/api/V1/resumes/${resume._id}/remove_contributor`)
                 .set(`Authorization`, token)
@@ -1481,7 +1481,7 @@ describe("Resumes Routes", () => {
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
 
-        it(`should get ${httpStatus.OK} tag added successfuly`, async () => {
+        it(`should get ${httpStatus.OK} tag added successfully`, async () => {
             const response = await request(app)
                 .patch(`/api/V1/resumes/${resume._id}/add_tags`)
                 .set(`Authorization`, token)
@@ -1543,7 +1543,7 @@ describe("Resumes Routes", () => {
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
 
-        it(`should get ${httpStatus.OK} tag added successfuly`, async () => {
+        it(`should get ${httpStatus.OK} tag added successfully`, async () => {
             const response = await request(app)
                 .patch(`/api/V1/resumes/${resume._id}/remove_tags`)
                 .set(`Authorization`, token)

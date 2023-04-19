@@ -350,13 +350,13 @@ class ProjectController extends Controller {
         try {
             let project = await projectService.findByParamId(req)
 
-            if (project.is_active == true) throw new BadRequestError('project.errors.project_activated_alredy');
+            if (project.is_active == true) throw new BadRequestError('project.errors.project_activated_already');
 
             project.is_active = true;
             await project.save();
 
             EventEmitter.emit(events.ACTIVE, project)
-            AppResponse.builder(res).message("project.messages.project_successfuly_activated").data(project).send()
+            AppResponse.builder(res).message("project.messages.project_successfully_activated").data(project).send()
         } catch (err) {
             next(err);
         }
@@ -379,13 +379,13 @@ class ProjectController extends Controller {
         try {
             let project = await projectService.findByParamId(req)
 
-            if (project.is_active == false) throw new BadRequestError('project.errors.project_deactivated_alredy');
+            if (project.is_active == false) throw new BadRequestError('project.errors.project_deactivated_already');
 
             project.is_active = false;
             await project.save();
 
             EventEmitter.emit(events.DEACTIVE, project)
-            AppResponse.builder(res).message("project.messages.project_successfuly_deactivated").data(project).send()
+            AppResponse.builder(res).message("project.messages.project_successfully_deactivated").data(project).send()
         } catch (err) {
             next(err);
         }
@@ -414,7 +414,7 @@ class ProjectController extends Controller {
                 await project.save();
             }
 
-            AppResponse.builder(res).message("project.messages.project_successfuly_updated").data(project).send()
+            AppResponse.builder(res).message("project.messages.project_successfully_updated").data(project).send()
         } catch (err) {
             next(err);
         }

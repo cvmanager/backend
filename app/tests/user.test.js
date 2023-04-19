@@ -369,7 +369,7 @@ describe("User Routes", () => {
       expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
     })
 
-    it(`should get ${httpStatus.OK} password successfuly changed `, async () => {
+    it(`should get ${httpStatus.OK} password successfully changed `, async () => {
       const response = await request(app)
         .patch(`/api/V1/users/change-password`)
         .set(`Authorization`, token)

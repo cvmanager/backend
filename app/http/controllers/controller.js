@@ -18,7 +18,7 @@ class Controller {
         req.body.created_by = req.user._id;
         let createdDocument = await _service.get(this).create(req.body);
 
-        AppResponse.builder(res).status(201).message(`${this.modelName}.message.${this.modelName}_successfuly_created`).data(createdDocument).send();
+        AppResponse.builder(res).status(201).message(`${this.modelName}.message.${this.modelName}_successfully_created`).data(createdDocument).send();
     } catch (err) {
         next(err);
     }
@@ -30,7 +30,7 @@ class Controller {
         const updatedDocument = await _service.get(this).updateOne(query, req.body)
         if (!updatedDocument) throw new NotFoundError(`${this.modelName}.error.${this.modelName}_notfound`); 
 
-        AppResponse.builder(res).message(`${this.modelName}.message.${this.modelName}_successfuly_updated`).data(updatedDocument).send()
+        AppResponse.builder(res).message(`${this.modelName}.message.${this.modelName}_successfully_updated`).data(updatedDocument).send()
     } catch (err) {
         next(err);
     }
@@ -54,7 +54,7 @@ class Controller {
 
         await _service.get(this).delete(document, req.user._id)
 
-        AppResponse.builder(res).message(`${this.modelName}.message.${this.modelName}_successfuly_deleted`).data(document).send();
+        AppResponse.builder(res).message(`${this.modelName}.message.${this.modelName}_successfully_deleted`).data(document).send();
     } catch (err) {
         next(err);
     }
