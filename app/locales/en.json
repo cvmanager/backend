@@ -400,7 +400,8 @@
 			"position_managers_found": "position managers successfully founded",
 			"position_resumes_found": "Position resumes successfully founded",
 			"position_successfully_deactivated": "position status successfully deactivated",
-			"position_successfully_activated": "position status successfully activated"
+			"position_successfully_activated": "position status successfully activated",
+			"position_successfully_created" : "position successfully created"
 		},
 		"errors": {
 			"position_notfound": "position not found",
@@ -444,7 +445,9 @@
 			"project_not_found": "Project not found",
 			"project_already_attached_company": "Project already attached this company",
 			"project_deactivated_already": "project has deactivated already",
-			"project_activated_already": "project has activated already"
+			"project_activated_already": "project has activated already",
+			"disabled_company_create_project_error": "The selected company is currently deactivated and it is not possible to define a new project",
+			"company_is_not_active" : "The selected project company is currently disabled and it is not possible to define a new project"
 		}
 	},
 	"resume": {

@@ -115,7 +115,7 @@ class ResumeController extends Controller {
             if (!position) throw new NotFoundError('position.errors.position_not_found');
 
             let company = await Company.findById(position.company_id)
-            if (!company.is_active) throw new BadRequestError('company.errors.company_isnot_active');
+            if (!company.is_active) throw new BadRequestError('company.errors.company_is_not_active');
 
             req.body.created_by = req.user._id;
             req.body.project_id = position.project_id;

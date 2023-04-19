@@ -104,7 +104,7 @@ class ProjectController extends Controller {
             let company = await Company.findOne({ '_id': req.body.company_id });
             if (!company) throw new NotFoundError('company.errors.company_notfound');
 
-            if (!company.is_active) throw new BadRequestError('project.errors.disabled_companey_create_project_error')
+            if (!company.is_active) throw new BadRequestError('project.errors.disabled_company_create_project_error')
 
             let project = await Project.findOne({ 'name': req.body.name, 'company_id': company._id });
             if (project) throw new AlreadyExists('project.errors.project_already_attached_company');

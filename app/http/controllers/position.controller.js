@@ -114,7 +114,7 @@ class PositionController extends Controller {
             if (!project) throw new NotFoundError('project.errors.project_notfound');
 
             let company = await Company.findById(project.company_id);
-            if (!company.is_active) throw new BadRequestError('project.errors.company_isnot_active');
+            if (!company.is_active) throw new BadRequestError('project.errors.company_is_not_active');
 
             let position = await Position.findOne({ 'title': req.body.title, 'project_id': req.body.project_id });
             if (position) throw new AlreadyExists('position.errors.position_already_exists');
