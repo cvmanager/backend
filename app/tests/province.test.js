@@ -57,11 +57,11 @@ describe('Province routes', () => {
 
     })
 
-    describe(`GET /:id`, () => {
+    describe(`GET /:id/cities`, () => {
 
         it(`should get ${httpStatus.NOT_FOUND} province id is not valid`, async () => {
             const response = await request(app)
-                .get(`/api/V1/provinces/${Types.ObjectId()}`)
+                .get(`/api/V1/provinces/${Types.ObjectId()}/cities`)
                 .set(`Authorization`, token)
                 .send();
             expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
@@ -70,7 +70,7 @@ describe('Province routes', () => {
         it(`should get ${httpStatus.OK} success if correct`, async () => {
             console.log(province);
             const response = await request(app)
-                .get(`/api/V1/provinces/${province._id}`)
+                .get(`/api/V1/provinces/${province._id}/cities`)
                 .set(`Authorization`, token)
                 .send();
 

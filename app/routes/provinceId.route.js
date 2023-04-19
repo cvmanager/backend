@@ -5,5 +5,5 @@ import ProvinceValidation from '../validators/province.validation.js'
 const provinceIdRouter = express.Router({ mergeParams: true });
 
 provinceIdRouter
-    .get('', ProvinceValidation.find(), ProvinceController.find)
+    .get('/cities', ProvinceValidation.cities(), ProvinceController.cities)
 export default provinceIdRouter
