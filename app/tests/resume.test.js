@@ -791,7 +791,7 @@ describe("Resumes Routes", () => {
         let updateResumeStatus;
         beforeEach(() => {
             updateResumeStatus = {
-                'status': 'hired',
+                'status': 'wait_hire',
                 'index': 1,
             }
         })
@@ -811,6 +811,22 @@ describe("Resumes Routes", () => {
         })
         it(`should get ${httpStatus.BAD_REQUEST} if status is not send`, async () => {
             delete updateResumeStatus.status;
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${resume._id}/status`)
+                .set(`Authorization`, token)
+                .send(updateResumeStatus);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if status is hired`, async () => {
+            updateResumeStatus.status = 'hired';
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${resume._id}/status`)
+                .set(`Authorization`, token)
+                .send(updateResumeStatus);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if status is rejected`, async () => {
+            updateResumeStatus.status = 'rejected';
             const response = await request(app)
                 .patch(`/api/V1/resumes/${resume._id}/status`)
                 .set(`Authorization`, token)

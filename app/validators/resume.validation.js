@@ -228,6 +228,8 @@ class ResumeValidation {
             body('status')
                 .notEmpty()
                 .withMessage('resume.validations.status_required')
+                .not().isIn(['hired', 'rejected'])
+                .withMessage('resume.errors.can_not_save_hired_rejected_status')
                 .isIn(i18n.__("resume.enums.status"))
                 .withMessage('resume.validations.status_required')
                 .trim(),
