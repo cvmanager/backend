@@ -115,7 +115,7 @@ class ResumeController extends Controller {
             if (!position) throw new NotFoundError('position.errors.position_not_found');
 
             let company = await Company.findById(position.company_id)
-            if (!company.is_active) throw new BadRequestError('company.errors.company_isnot_active');
+            if (!company.is_active) throw new BadRequestError('company.errors.company_is_not_active');
 
             req.body.created_by = req.user._id;
             req.body.project_id = position.project_id;
@@ -125,7 +125,7 @@ class ResumeController extends Controller {
 
             EventEmitter.emit(events.NEW_RESUME, resume)
 
-            AppResponse.builder(res).status(201).message("resume.messages.resume_successfuly_created").data(resume).send();
+            AppResponse.builder(res).status(201).message("resume.messages.resume_successfully_created").data(resume).send();
         } catch (err) {
             next(err);
         }
@@ -156,7 +156,7 @@ class ResumeController extends Controller {
             await Resume.findByIdAndUpdate(req.params.id, req.body, { new: true })
                 .then(resume => {
                     EventEmitter.emit(events.UPDATE, resume)
-                    AppResponse.builder(res).message("resume.messages.resume_successfuly_updated").data(resume).send()
+                    AppResponse.builder(res).message("resume.messages.resume_successfully_updated").data(resume).send()
                 })
                 .catch(err => next(err));
         } catch (err) {
@@ -192,7 +192,7 @@ class ResumeController extends Controller {
             EventEmitter.emit(events.DELETE_RESUME, resume)
 
 
-            AppResponse.builder(res).message("resume.messages.resume_successfuly_deleted").data(resume).send();
+            AppResponse.builder(res).message("resume.messages.resume_successfully_deleted").data(resume).send();
         } catch (err) {
             next(err);
         }
@@ -230,7 +230,7 @@ class ResumeController extends Controller {
 
             EventEmitter.emit(events.UPDATE_STATUS, resume)
 
-            AppResponse.builder(res).message("resume.messages.resume_status_successfuly_updated").data(resume).send();
+            AppResponse.builder(res).message("resume.messages.resume_status_successfully_updated").data(resume).send();
         } catch (err) {
             next(err);
         }
@@ -267,7 +267,7 @@ class ResumeController extends Controller {
 
             EventEmitter.emit(events.ADD_FILE, resume)
 
-            AppResponse.builder(res).message("resume.message.resume_file_successfuly_upload").data(resume).send()
+            AppResponse.builder(res).message("resume.message.resume_file_successfully_upload").data(resume).send()
         } catch (err) {
             next(err);
         }
@@ -330,7 +330,7 @@ class ResumeController extends Controller {
             let resumeCommentsRes = await ResumeComments.create(req.body)
             EventEmitter.emit(events.ADD_COMMENT, resume)
 
-            AppResponse.builder(res).status(201).message("resume.messages.resume_comment_successfuly_created").data(resumeCommentsRes).send();
+            AppResponse.builder(res).status(201).message("resume.messages.resume_comment_successfully_created").data(resumeCommentsRes).send();
         } catch (err) {
             next(err);
         }
@@ -376,7 +376,7 @@ class ResumeController extends Controller {
             await resume.save()
             EventEmitter.emit(events.ADD_CALL_HISTORY, resume)
 
-            AppResponse.builder(res).message("resume.messages.resume_call_history_successfuly_created").data(resume).send();
+            AppResponse.builder(res).message("resume.messages.resume_call_history_successfully_created").data(resume).send();
         } catch (err) {
             next(err);
         }
@@ -411,7 +411,7 @@ class ResumeController extends Controller {
             resume.income = req.body.income;
             await resume.save();
 
-            AppResponse.builder(res).message("resume.messages.hire_status_successfuly_updated").data(resume).send();
+            AppResponse.builder(res).message("resume.messages.hire_status_successfully_updated").data(resume).send();
         } catch (err) {
             next(err);
         }
@@ -454,7 +454,7 @@ class ResumeController extends Controller {
             resume.contributors = contributors;
             await resume.save();
 
-            AppResponse.builder(res).message("resume.messages.contributor_successfuly_added").data(resume).send();
+            AppResponse.builder(res).message("resume.messages.contributor_successfully_added").data(resume).send();
         } catch (err) {
             next(err);
         }
@@ -496,7 +496,7 @@ class ResumeController extends Controller {
             resume.contributors = contributors.filter(e => e != contributor)
             await resume.save();
 
-            AppResponse.builder(res).message("resume.messages.contributor_successfuly_removed").data(resume).send();
+            AppResponse.builder(res).message("resume.messages.contributor_successfully_removed").data(resume).send();
         } catch (err) {
             next(err);
         }
@@ -525,7 +525,7 @@ class ResumeController extends Controller {
                 await resume.save();
             }
 
-            AppResponse.builder(res).message("resume.messages.resume_successfuly_updated").data(resume).send()
+            AppResponse.builder(res).message("resume.messages.resume_successfully_updated").data(resume).send()
         } catch (err) {
             next(err);
         }
@@ -564,7 +564,9 @@ class ResumeController extends Controller {
             resume.tags = tags;
             await resume.save();
 
-            AppResponse.builder(res).status(200).message("resume.messages.resume_tags_successfuly_updated").data(resume).send();
+            EventEmitter.emit(events.ADD_TAG, resume)
+
+            AppResponse.builder(res).status(200).message("resume.messages.resume_tags_successfully_updated").data(resume).send();
         } catch (err) {
             next(err);
         }
@@ -597,7 +599,7 @@ class ResumeController extends Controller {
             resume.tags = resume.tags.filter(e => e.id != tag)
             await resume.save();
 
-            AppResponse.builder(res).status(200).message("resume.messages.resume_tags_successfuly_deleted").data(resume).send();
+            AppResponse.builder(res).status(200).message("resume.messages.resume_tags_successfully_deleted").data(resume).send();
         } catch (err) {
             next(err);
         }

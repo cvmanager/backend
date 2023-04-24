@@ -117,7 +117,7 @@ class RoleController extends Controller {
             let createdRole = await roleService.create(req.body);
             await cacheRoles()
 
-            AppResponse.builder(res).status(201).message("document.message.document_successfuly_created").data(createdRole).send();
+            AppResponse.builder(res).status(201).message("document.message.document_successfully_created").data(createdRole).send();
         } catch (err) {
             next(err)
         }
@@ -158,7 +158,7 @@ class RoleController extends Controller {
             if (!updatedRole) throw new NotFoundError('document.error.document_notfound'); 
             await cacheRoles()
 
-            AppResponse.builder(res).message("document.message.document_successfuly_updated").data(updatedRole).send()
+            AppResponse.builder(res).message("document.message.document_successfully_updated").data(updatedRole).send()
         } catch (err) {
             next(err);
         }
@@ -188,7 +188,7 @@ class RoleController extends Controller {
             // delete from cache
             await cacheRoles()
             
-            AppResponse.builder(res).message("document.message.document_successfuly_deleted").data().send();
+            AppResponse.builder(res).message("document.message.document_successfully_deleted").data().send();
         } catch (error) {
             next(error)
         }

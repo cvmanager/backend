@@ -99,7 +99,7 @@ class PermissionController extends Controller {
             req.body.created_by = req.user._id
             let createdPermission = await permissionService.create(req.body)
 
-            AppResponse.builder(res).status(201).message("document.message.document_successfuly_created").data(createdPermission).send();
+            AppResponse.builder(res).status(201).message("document.message.document_successfully_created").data(createdPermission).send();
         } catch (err) {
             next(err)
         }
@@ -131,7 +131,7 @@ class PermissionController extends Controller {
             const updatedPermission = await permissionService.updateOne({ _id: req.params.id }, req.body)
             if (!updatedPermission) throw new NotFoundError('document.error.document_notfound'); 
 
-            AppResponse.builder(res).message("document.message.document_successfuly_updated").data(updatedPermission).send()
+            AppResponse.builder(res).message("document.message.document_successfully_updated").data(updatedPermission).send()
 
         } catch (err) {
             next(err);
@@ -162,7 +162,7 @@ class PermissionController extends Controller {
         const redisKey = env("REDIS_KEY_RBAC_PERMISSION") + permission._id.toString()
         await redisClient.del(redisKey)
         
-        AppResponse.builder(res).message("document.message.document_successfuly_deleted").data(document).send();
+        AppResponse.builder(res).message("document.message.document_successfully_deleted").data(document).send();
     }
 }
 

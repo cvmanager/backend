@@ -92,7 +92,7 @@ class UserController extends Controller {
             if (!user) throw new NotFoundError('user.errors.user_notfound');
 
             user = await User.findOneAndUpdate({ _id: req.user._id }, { avatar: req.body.avatar }, { new: true });
-            AppResponse.builder(res).message("user.messages.profile_image_successfuly_updated").data(user).send();
+            AppResponse.builder(res).message("user.messages.profile_image_successfully_updated").data(user).send();
         } catch (err) {
             next(err);
         }
@@ -106,7 +106,7 @@ class UserController extends Controller {
      * 
      * @param { string } id.path.required - user id - application/json
      * 
-     * @return { user.success }             200 - user successfuly banded
+     * @return { user.success }             200 - user successfully banded
      * @return { message.badrequest_error }      400 - user not found
      * @return { message.badrequest_error }      401 - UnauthorizedError
      * @return { message.server_error}      500 - Server Error
@@ -139,7 +139,7 @@ class UserController extends Controller {
      * 
      * @param { string } id.path.required - user id - application/json
      * 
-     * @return { user.success }             200 - user successfuly unbanded
+     * @return { user.success }             200 - user successfully unbanded
      * @return { message.badrequest_error }      400 - user not found
      * @return { message.badrequest_error }      401 - UnauthorizedError
      * @return { message.server_error}      500 - Server Error
@@ -168,7 +168,7 @@ class UserController extends Controller {
      * @tags User
      * @security BearerAuth
      * 
-     * @return { user.success }             200 - user successfuly found
+     * @return { user.success }             200 - user successfully found
      * @return { message.badrequest_error } 400 - user not found
      * @return { message.badrequest_error } 401 - UnauthorizedError
      * @return { message.server_error}      500 - Server Error
@@ -261,7 +261,7 @@ class UserController extends Controller {
      * 
      * @param  { string } id.path.required - user id
      *
-     * @return { user.success }             200 - user successfuly found
+     * @return { user.success }             200 - user successfully found
      * @return { message.badrequest_error } 400 - user not found
      * @return { message.badrequest_error } 401 - UnauthorizedError
      * @return { message.server_error}      500 - Server Error

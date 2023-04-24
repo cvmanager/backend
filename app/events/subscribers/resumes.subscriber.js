@@ -7,7 +7,8 @@ export const events = {
     "UPDATE_STATUS": "Update Resume Status",
     "ADD_COMMENT": "add comment for resume",
     "ADD_CALL_HISTORY": "add call history for resume",
-    "ADD_FILE": "add file in resume"
+    "ADD_FILE": "add file to resume",
+    "ADD_TAG": "add tag to resume",
 }
 
 EventEmitter.on(events.CREATE, create)
@@ -17,6 +18,7 @@ EventEmitter.on(events.UPDATE_STATUS, updateStatus)
 EventEmitter.on(events.ADD_COMMENT, addComment)
 EventEmitter.on(events.ADD_CALL_HISTORY, addCallHistory)
 EventEmitter.on(events.ADD_FILE, addFile)
+EventEmitter.on(events.ADD_TAG, addTag)
 
 
 function create(Resume) {
@@ -49,5 +51,9 @@ async function addCallHistory(Resume) {
 }
 
 function addFile(Resume) {
-    resumeService.updateSummeryCount(Resume, 'file', Resume.file.length)
+    resumeService.updateSummeryCount(Resume, 'file', Resume.call_history.length)
+}
+
+function addTag(Resume) {
+    resumeService.updateSummeryCount(Resume, 'tag', Resume.tags.length)
 }

@@ -105,7 +105,7 @@ class InterviewController extends Controller {
             let interview = await Interview.create(req.body)
             EventEmitter.emit(events.CREATE, interview)
 
-            AppResponse.builder(res).status(201).message("interview.messages.interview_successfuly_created").data(interview).send();
+            AppResponse.builder(res).status(201).message("interview.messages.interview_successfully_created").data(interview).send();
         } catch (err) {
             next(err);
         }
@@ -143,7 +143,7 @@ class InterviewController extends Controller {
             await Interview.findByIdAndUpdate(req.params.id, req.body, { new: true })
                 .then(interview => {
                     EventEmitter.emit(events.UPDATE, interview);
-                    AppResponse.builder(res).message("interview.messages.interview_successfuly_updated").data(interview).send();
+                    AppResponse.builder(res).message("interview.messages.interview_successfully_updated").data(interview).send();
                 })
                 .catch(err => {
                     next(err);
@@ -182,7 +182,7 @@ class InterviewController extends Controller {
             EventEmitter.emit(events.DELETE, interview)
 
 
-            AppResponse.builder(res).message("interview.messages.interview_successfuly_deleted").data(interview).send();
+            AppResponse.builder(res).message("interview.messages.interview_successfully_deleted").data(interview).send();
         } catch (err) {
             next(err);
         }

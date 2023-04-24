@@ -91,7 +91,7 @@ const schema = new mongoose.Schema(
         military_status: {
             type: String,
             default: null,
-            enum: i18n.__("system.enums.military_status")
+            // enum: i18n.__("system.enums.military_status")
         },
         status_updated_at: {
             type: Date,
@@ -231,6 +231,10 @@ const schema = new mongoose.Schema(
                 interview: {
                     type: Number,
                     default: 0
+                },
+                tag: {
+                    type: Number,
+                    default: 0
                 }
             },
             default: {
@@ -238,7 +242,8 @@ const schema = new mongoose.Schema(
                 'cumment': 0,
                 'file': 0,
                 'call_history': 0,
-                'interview': 0
+                'interview': 0,
+                'tag': 0
             }
         },
         rating: {
