@@ -243,7 +243,6 @@ const schema = new mongoose.Schema(
         },
         rating: {
             type: Number,
-            default: 3,
             length: 1
         }
     }
