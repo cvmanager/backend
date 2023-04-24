@@ -46,6 +46,11 @@ const schema = new mongoose.Schema(
             required: true,
             ref: 'users'
         }
+        , rating: {
+            type: Number,
+            required: true,
+            length: 1
+        }
     }
 )
 

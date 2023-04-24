@@ -45,8 +45,9 @@ async function addComment(Resume) {
     resumeService.updateSummeryCount(Resume, 'comment', commentCount)
 }
 
-function addCallHistory(Resume) {
-    resumeService.updateSummeryCount(Resume, 'call_history', Resume.call_history.length)
+async function addCallHistory(Resume) {
+    await resumeService.updateSummeryCount(Resume, 'call_history', Resume.call_history.length)
+    await resumeService.updateRating(Resume)
 }
 
 function addFile(Resume) {

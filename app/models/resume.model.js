@@ -248,7 +248,7 @@ const schema = new mongoose.Schema(
         },
         rating: {
             type: Number,
-            default: 0,
+            default: null,
             length: 1
         }
     }

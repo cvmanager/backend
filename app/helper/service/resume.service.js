@@ -3,6 +3,7 @@ import autoBind from "auto-bind";
 import Resume from "../../models/resume.model.js";
 import ServiceBase from "./base.service.js";
 import ResumeComments from '../../models/resumeComment.model.js';
+import Interview from "../../models/interview.model.js";
 
 const endOfResumeStatus = ['rejected', 'hired'];
 
@@ -32,6 +33,39 @@ class ResumeService extends ServiceBase {
         let summaryCount = resume.summary_count;
         summaryCount[field] = count;
         resume.summary_count = summaryCount;
+        await resume.save();
+    }
+
+    async updateRating(resume) {
+        let rating = resume.rating;
+        let ratingSum = 0;
+        let ratingCount = 0;
+
+        let interviews = await Interview.find({ 'resume_id': resume._id });
+        if (interviews) {
+            interviews.map(value => {
+                if (value.rating != undefined) {
+                    ratingSum += value.rating * 2;
+                    ratingCount += 2;
+                }
+            })
+
+        }
+
+        if (resume.call_history) {
+            resume.call_history.map(value => {
+                if (value.rating != undefined) {
+                    ratingSum += value.rating
+                    ratingCount += 1;
+                }
+            })
+        }
+
+        if (ratingCount > 0) {
+            rating = ratingSum / ratingCount;
+        }
+
+        resume.rating = parseFloat(rating).toFixed(2);
         await resume.save();
     }
 }

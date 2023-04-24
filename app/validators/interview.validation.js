@@ -73,6 +73,14 @@ class InterviewValidation {
                 .isArray()
                 .withMessage('interview.validations.contribution_array')
                 .trim(),
+            body('rating')
+                .notEmpty()
+                .withMessage('interview.validations.rating_is_required')
+                .isNumeric()
+                .withMessage('interview.validations.rating_numeric')
+                .isInt({ min: 1, max: 5 })
+                .withMessage('interview.validations.rating_number_not_correct')
+                .trim(),
             generalValidator
         ];
     }
@@ -136,6 +144,13 @@ class InterviewValidation {
                 .notEmpty()
                 .isIn(i18n.__("interview.enums.result"))
                 .withMessage('interview.validations.result_incorrect')
+                .trim(),
+            body('rating')
+                .optional({ nullable: true, checkFalsy: true })
+                .isNumeric()
+                .withMessage('interview.validations.rating_numeric')
+                .isInt({ min: 1, max: 5 })
+                .withMessage('interview.validations.rating_number_not_correct')
                 .trim(),
             generalValidator
         ];
