@@ -321,7 +321,9 @@
 			"mobile_required": "The mobile field is required",
 			"mobile_pattern": "The mobile number entered is invalid",
 			"username_wrong": "The username is wrong",
-			"mobile_wrong": "The username is wrong"
+			"mobile_wrong": "The username is wrong",
+			"email_required": "email is required",
+			"email_invalid": "email is invalid"
 		},
 		"messages": {
 			"user_successfully_created": "The account was created successfully",
@@ -552,7 +554,9 @@
 			"old_password_length_not_confirm": "old password length must be between 8-10",
 			"old_password_cant_be_empty": "old password cant be empty",
 			"incorrect_password": "The password is incorrect",
-			"duplicate_password": "New password cant be duplicate with old password"
+			"duplicate_password": "New password cant be duplicate with old password",
+			"email_already_exists": "this email is already exists",
+			"username_already_exists": "this username is already exists"
 		}
 	},
 	"manager": {

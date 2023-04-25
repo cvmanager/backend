@@ -8,6 +8,7 @@ import LoginLog from '../../models/loginLog.model.js';
 import Controller from './controller.js';
 import { events } from '../../events/subscribers/user.subscriber.js';
 import bcrypt from 'bcrypt'
+import { exit } from 'process';
 import { mergeQuery } from '../../helper/mergeQuery.js';
 import userService from '../../helper/service/user.service.js';
 
@@ -290,6 +291,46 @@ class UserController extends Controller {
             });
 
             AppResponse.builder(res).data(user).message('user.messages.companies_founded').data(userCompanies).send();
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
+     * PATCH /users/{id}
+     * 
+     * @summary edit user info
+     * @tags User
+     * @security BearerAuth
+     *
+     * @param {string } id.path.required - user id
+     * @param {string} request.body          - edit info - application/json
+     * 
+     * @return { user.success }                 200 - edit successfuly 
+     * @return { message.badrequest_error }     400 - Bad Request
+     * @return { message.badrequest_error }     401 - UnauthorizedError
+     * @return { message.server_error  }        500 - Server Error
+     */
+    async edit(req, res, next) {
+        try {
+
+            let user = await User.findById(req.params.id);
+            if (!user) throw new NotFoundError('user.errors.user_notfound')
+            let userByUserName = await User.findOne({ '_id': { $ne: user._id }, 'username': req.body.username });
+            if (userByUserName) throw new BadRequestError('user.errors.username_already_exists');
+
+            let userByEmail = await User.findOne({ '_id': { $ne: user._id }, 'email': req.body.email });
+            if (userByEmail) throw new BadRequestError('user.errors.email_already_exists');
+
+            user.firstname = req.body.firstname
+            user.lastname = req.body.lastname
+            user.username = req.body.username
+            user.email = req.body.email
+            await user.save();
+
+            EventEmitter.emit(events.EDIT_USER, user);
+
+            AppResponse.builder(res).status(200).data(user).message('user.messages.user_successfuly_edited').send();
         } catch (err) {
             next(err);
         }
