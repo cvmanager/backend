@@ -115,7 +115,7 @@ class CompanyController extends Controller {
 
             EventEmitter.emit(events.CREATE, company);
 
-            AppResponse.builder(res).status(201).message('company.messages.company_successfuly_created').data(company).send();
+            AppResponse.builder(res).status(201).message('company.messages.company_successfully_created').data(company).send();
         } catch (err) {
             next(err)
         }
@@ -147,7 +147,7 @@ class CompanyController extends Controller {
 
             company = await companyService.updateOne({ '_id': req.params.id }, req.body)
             EventEmitter.emit(events.UPDATE, company);
-            AppResponse.builder(res).message("company.messages.company_successfuly_updated").data(company).send()
+            AppResponse.builder(res).message("company.messages.company_successfully_updated").data(company).send()
         } catch (err) {
             next(err);
         }
@@ -174,7 +174,7 @@ class CompanyController extends Controller {
             await company.delete(req.user._id);
 
             EventEmitter.emit(events.DELETE, company);
-            AppResponse.builder(res).message("company.messages.company_successfuly_deleted").data(company).send();
+            AppResponse.builder(res).message("company.messages.company_successfully_deleted").data(company).send();
         } catch (err) {
             next(err);
         }
@@ -199,10 +199,9 @@ class CompanyController extends Controller {
         try {
 
             let company = await companyService.findByParamId(req)
-            if (!company.is_active) throw new BadRequestError('company.errors.company_deactive_cant_set_manager');
+            if (!company.is_active) throw new BadRequestError('company.errors.company_deactivate_cant_set_manager');
 
             let user = await userService.findOne({ _id: req.body.manager_id });
-            if (!user) throw new NotFoundError('user.errors.user_notfound');
 
             let manager = await managerService.findOne({ 'entity': "companies", 'entity_id': company.id, 'user_id': user.id });
             if (manager) throw new BadRequestError("company.errors.the_user_is_currently_an_manager_for_company");
@@ -256,7 +255,7 @@ class CompanyController extends Controller {
 
             EventEmitter.emit(events.UNSET_MANAGER, company);
 
-            AppResponse.builder(res).message("company.messages.company_id_successfuly_updated").data(company).send()
+            AppResponse.builder(res).message("company.messages.company_manager_successfully_removed").data(company).send()
         } catch (err) {
             next(err);
         }
@@ -381,7 +380,7 @@ class CompanyController extends Controller {
                 await company.save();
             }
 
-            AppResponse.builder(res).message("company.messages.company_successfuly_updated").data(company).send()
+            AppResponse.builder(res).message("company.messages.company_successfully_updated").data(company).send()
         } catch (err) {
             next(err);
         }
@@ -405,12 +404,12 @@ class CompanyController extends Controller {
         try {
             let company = await companyService.findByParamId(req)
 
-            if (company.is_active == true) throw new BadRequestError('company.errors.company_activated_alredy');
+            if (company.is_active == true) throw new BadRequestError('company.errors.company_activated_already');
             company.is_active = true;
             await company.save();
 
             EventEmitter.emit(events.ACTIVE_COMPANY, company);
-            AppResponse.builder(res).message("company.messages.company_successfuly_activated").data(company).send()
+            AppResponse.builder(res).message("company.messages.company_successfully_activated").data(company).send()
         } catch (err) {
             next(err);
         }
@@ -433,12 +432,12 @@ class CompanyController extends Controller {
         try {
             let company = await companyService.findByParamId(req)
 
-            if (company.is_active == false) throw new BadRequestError('company.errors.company_deactivated_alredy');
+            if (company.is_active == false) throw new BadRequestError('company.errors.company_deactivated_already');
             company.is_active = false;
             await company.save();
 
             EventEmitter.emit(events.DEACTIVE_COMPANY, company);
-            AppResponse.builder(res).message("company.messages.company_successfuly_deactivated").data(company).send()
+            AppResponse.builder(res).message("company.messages.company_successfully_deactivated").data(company).send()
         } catch (err) {
             next(err);
         }

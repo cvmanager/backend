@@ -15,6 +15,7 @@ import { mergeQuery } from '../../helper/mergeQuery.js';
 import projectService from '../../helper/service/project.service.js';
 import roleService from '../../helper/service/role.service.js';
 import userService from '../../helper/service/user.service.js';
+import managerService from '../../helper/service/manager.service.js';
 
 class ProjectController extends Controller {
     /**
@@ -103,7 +104,7 @@ class ProjectController extends Controller {
             let company = await Company.findOne({ '_id': req.body.company_id });
             if (!company) throw new NotFoundError('company.errors.company_notfound');
 
-            if (!company.is_active) throw new BadRequestError('project.errors.disabled_companey_create_project_error')
+            if (!company.is_active) throw new BadRequestError('project.errors.disabled_company_create_project_error')
 
             let project = await Project.findOne({ 'name': req.body.name, 'company_id': company._id });
             if (project) throw new AlreadyExists('project.errors.project_already_attached_company');
@@ -193,15 +194,12 @@ class ProjectController extends Controller {
     async manager(req, res, next) {
         try {
             let project = await projectService.findByParamId(req)
-            if (!project.is_active) throw new BadRequestError('project.errors.project_deactive_cant_set_manager');
+            let user = await userService.findOne({ _id: req.body.manager_id });
 
-            let user = await User.findById(req.body.manager_id);
-            if (!user) throw new NotFoundError("user.errors.user_notfound");
-
-            let manager = await Manager.findOne({ 'entity': "projects", 'entity_id': project.id, 'user_id': user.id });
+            let manager = await managerService.findOne({ 'entity': "projects", 'entity_id': project.id, 'user_id': user.id });
             if (manager) throw new BadRequestError("project.errors.the_user_is_currently_an_manager_for_project");
 
-            await Manager.create({ user_id: user._id, entity: "projects", entity_id: project._id, created_by: req.user._id });
+            await managerService.create({ user_id: user._id, entity: "projects", entity_id: project._id, created_by: req.user._id });
 
             const projectManagerRole = await roleService.findOne({ name: "Project Manager" })
             await userService.addRole(user._id, projectManagerRole._id)
@@ -352,13 +350,13 @@ class ProjectController extends Controller {
         try {
             let project = await projectService.findByParamId(req)
 
-            if (project.is_active == true) throw new BadRequestError('project.errors.project_activated_alredy');
+            if (project.is_active == true) throw new BadRequestError('project.errors.project_activated_already');
 
             project.is_active = true;
             await project.save();
 
             EventEmitter.emit(events.ACTIVE, project)
-            AppResponse.builder(res).message("project.messages.project_successfuly_activated").data(project).send()
+            AppResponse.builder(res).message("project.messages.project_successfully_activated").data(project).send()
         } catch (err) {
             next(err);
         }
@@ -381,13 +379,13 @@ class ProjectController extends Controller {
         try {
             let project = await projectService.findByParamId(req)
 
-            if (project.is_active == false) throw new BadRequestError('project.errors.project_deactivated_alredy');
+            if (project.is_active == false) throw new BadRequestError('project.errors.project_deactivated_already');
 
             project.is_active = false;
             await project.save();
 
             EventEmitter.emit(events.DEACTIVE, project)
-            AppResponse.builder(res).message("project.messages.project_successfuly_deactivated").data(project).send()
+            AppResponse.builder(res).message("project.messages.project_successfully_deactivated").data(project).send()
         } catch (err) {
             next(err);
         }
@@ -416,7 +414,7 @@ class ProjectController extends Controller {
                 await project.save();
             }
 
-            AppResponse.builder(res).message("project.messages.project_successfuly_updated").data(project).send()
+            AppResponse.builder(res).message("project.messages.project_successfully_updated").data(project).send()
         } catch (err) {
             next(err);
         }

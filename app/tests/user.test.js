@@ -249,6 +249,32 @@ describe('User Routes', () => {
     })
   })
 
+  describe(`POST /:id/unban`, () => {
+    it(`should get ${httpStatus.BAD_REQUEST} user id is not a mongo id`, async () => {
+      const response = await request(app)
+        .post(`/api/V1/users/fakeID/unban`)
+        .set(`Authorization`, token)
+        .send();
+      expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+    })
+
+    it(`should get ${httpStatus.NOT_FOUND} user id is not valid`, async () => {
+      const response = await request(app)
+        .post(`/api/V1/users/${Types.ObjectId()}/unban`)
+        .set(`Authorization`, token)
+        .send();
+      expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+    })
+
+    it(`should get ${httpStatus.OK} if user unbanned `, async () => {
+      const response = await request(app)
+        .post(`/api/V1/users/${user._id}/unban`)
+        .set(`Authorization`, token)
+        .send();
+      expect(response.statusCode).toBe(httpStatus.OK);
+    })
+  })
+
   describe(`PATCH /users/change-password`, () => {
     let params
 
@@ -342,7 +368,7 @@ describe('User Routes', () => {
       expect(response.statusCode).toBe(httpStatus.BAD_REQUEST)
     })
 
-    it(`should get ${httpStatus.OK} password successfuly changed `, async () => {
+    it(`should get ${httpStatus.OK} password successfully changed `, async () => {
       const response = await request(app)
         .patch(`/api/V1/users/change-password`)
         .set(`Authorization`, token)

@@ -1,4 +1,13 @@
 
 let mobileFormat = /^98\d{10}\s*?$/;
 
-export { mobileFormat }
+function getRandomColor() {
+    var letters = '0123456789ABCDEF';
+    var color = '#';
+    for (var i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+}
+
+export { mobileFormat, getRandomColor }

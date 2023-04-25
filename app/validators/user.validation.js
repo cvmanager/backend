@@ -39,6 +39,18 @@ class UserValidation {
         return [
             param('id')
                 .notEmpty()
+                .withMessage('user.validations.user_id_required_ban')
+                .isMongoId()
+                .withMessage('user.validations.user_id_invalid_ban')
+                .trim(),
+            generalValidator
+        ];
+    }
+
+    unban() {
+        return [
+            param('id')
+                .notEmpty()
                 .withMessage('user.validations.user_id_required')
                 .isMongoId()
                 .withMessage('user.validations.user_id_invalid')

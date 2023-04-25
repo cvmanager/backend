@@ -4,8 +4,11 @@ import app from '../app.js'
 
 import prepareDB from './utils/prepareDB'
 import UserData from './data/user.data';
+import ProvinceData from './data/province.data';
+import { Types } from 'mongoose';
 
 let token;
+let province;
 prepareDB();
 
 describe('Province routes', () => {
@@ -13,42 +16,20 @@ describe('Province routes', () => {
     beforeEach(async () => {
         let userData = new UserData();
         token = userData.getAccessToken();
+
+        let provinceData = new ProvinceData();
+        province = await provinceData.getProvince();
     })
 
     describe('GET /', () => {
 
-        it(`should get ${httpStatus.BAD_REQUEST} page is not number`, async () => {
-            const response = await request(app)
-                .get("/api/V1/provinces?page=string")
-                .set('Authorization', token)
-                .send();
-            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
-        })
-
-        it(`should get ${httpStatus.BAD_REQUEST} size is not number`, async () => {
-            const response = await request(app)
-                .get("/api/V1/provinces?page=1&size=string")
-                .set('Authorization', token)
-                .send();
-            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
-        })
-
         it('should get no item if name is not find', async () => {
             const response = await request(app)
-                .get("/api/V1/provinces?page=1&size=1&query=no item")
+                .get("/api/V1/provinces?query=no item")
                 .set('Authorization', token)
                 .send();
-            let data = response.body.data[0].docs;
+            let data = response.body.data;
             expect(data.length).toBe(0);
-        })
-
-        it('should get one item if page = 1 and size = 1', async () => {
-            const response = await request(app)
-                .get("/api/V1/provinces?page=1&size=1")
-                .set('Authorization', token)
-                .send();
-            let data = response.body.data[0].docs;
-            expect(data.length).toBe(1);
         })
 
         it("should check field of object returned", async () => {
@@ -57,7 +38,7 @@ describe('Province routes', () => {
                 .set('Authorization', token)
                 .send();
 
-            let data = response.body.data[0].docs[0];
+            let data = response.body.data[0];
             expect(data).toHaveProperty('_id')
             expect(data).toHaveProperty('name')
             expect(data).toHaveProperty('deleted')
@@ -74,6 +55,36 @@ describe('Province routes', () => {
             expect(response.statusCode).toBe(httpStatus.OK);
         })
 
+    })
+
+    describe(`GET /:id/cities`, () => {
+
+        it(`should get ${httpStatus.NOT_FOUND} province id is not valid`, async () => {
+            const response = await request(app)
+                .get(`/api/V1/provinces/${Types.ObjectId()}/cities`)
+                .set(`Authorization`, token)
+                .send();
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+
+        it(`should get ${httpStatus.OK} success if correct`, async () => {
+            console.log(province);
+            const response = await request(app)
+                .get(`/api/V1/provinces/${province._id}/cities`)
+                .set(`Authorization`, token)
+                .send();
+
+            let data = response.body.data[0];
+            expect(data).toHaveProperty('_id')
+            expect(data).toHaveProperty('province_id')
+            expect(data).toHaveProperty('name')
+            expect(data).toHaveProperty('latitude')
+            expect(data).toHaveProperty('longitude')
+            expect(data).toHaveProperty('deleted')
+            expect(data).toHaveProperty('createdAt')
+            expect(data).toHaveProperty('updatedAt')
+            expect(response.statusCode).toBe(httpStatus.OK)
+        })
     })
 });
 

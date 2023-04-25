@@ -8,11 +8,13 @@ export const events = {
     "LOGOUT": "Logout User",
     "BANNED": "Banned User",
     "EDIT_USER": "Edit User",
+    "UNBANNED": "UnBanned User"
 }
 
 EventEmitter.on(events.LOGIN, login);
 EventEmitter.on(events.SINGUP, signup);
 EventEmitter.on(events.BANNED, banned);
+EventEmitter.on(events.UNBANNED, unbanned);
 EventEmitter.on(events.LOGOUT, logout);
 EventEmitter.on(events.EDIT_USER, editUser);
 
@@ -31,6 +33,9 @@ function banned(user) {
 
 function editUser(user) {
     console.log(events.EDIT_USER + " event called", user)
+}
+function unbanned(user) {
+    console.log(events.UNBANNED + " event called", user)
 }
 
 function logout(access_token) {

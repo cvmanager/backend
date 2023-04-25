@@ -9,6 +9,8 @@ import constantRouter from './constant.route.js'
 import provinceRouter from './province.route.js'
 import cityRouter from './city.route.js'
 import positionRouter from './position.route.js'
+import interviewRouter from './interview.route.js'
+import interviewIdRouter from './interviewId.route.js'
 import { canAccess } from '../middlewares/rbac.middleware.js'
 import userIdRouter from './userId.route.js';
 import { userAccess } from '../middlewares/userAccess.middleware.js'
@@ -24,6 +26,7 @@ import { positionAccess } from '../middlewares/positionAccess.middleware.js'
 import positionIdRouter from './positionId.router.js'
 import { resumeAccess } from '../middlewares/resumeAccess.middleware.js'
 import resumeIdRouter from './resumeId.route.js'
+import provinceIdRouter from './provinceId.route.js'
 
 
 const router = express.Router({ mergeParams: true });
@@ -31,8 +34,8 @@ const router = express.Router({ mergeParams: true });
 
 router.use('/auth', authRouter)
 
-router.use('/users/:id', verifyToken, canAccess, userAccess, userIdRouter)
 router.use('/users', verifyToken, canAccess, userRouter)
+router.use('/users/:id', verifyToken, canAccess, userAccess, userIdRouter)
 
 router.use('/companies/:id', verifyToken, canAccess, companyAccess, companyIdRouter)
 router.use('/companies', verifyToken, canAccess, companyAccess, companyRouter)
@@ -46,6 +49,8 @@ router.use('/positions', verifyToken, canAccess, positionAccess, positionRouter)
 router.use('/permissions/:id', verifyToken, canAccess, permissionIdRouter)
 router.use('/permissions', verifyToken, canAccess, permissionRouter)
 
+router.use('/resumes/:resume_id/interviews/:id', verifyToken, interviewIdRouter)
+router.use('/resumes/:resume_id/interviews', verifyToken, interviewRouter)
 router.use('/resumes/:id', verifyToken, canAccess, resumeAccess, resumeIdRouter)
 router.use('/resumes', verifyToken, canAccess, resumeAccess, resumeRouter)
 
@@ -54,6 +59,7 @@ router.use('/roles', verifyToken, canAccess, roleRouter)
 
 router.use('/constant', verifyToken, constantRouter)
 
+router.use('/provinces/:id', verifyToken, canAccess, provinceIdRouter)
 router.use('/provinces', verifyToken, canAccess, provinceRouter)
 
 router.use('/cities', verifyToken, canAccess, cityRouter)

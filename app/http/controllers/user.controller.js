@@ -93,7 +93,7 @@ class UserController extends Controller {
             if (!user) throw new NotFoundError('user.errors.user_notfound');
 
             user = await User.findOneAndUpdate({ _id: req.user._id }, { avatar: req.body.avatar }, { new: true });
-            AppResponse.builder(res).message("user.messages.profile_image_successfuly_updated").data(user).send();
+            AppResponse.builder(res).message("user.messages.profile_image_successfully_updated").data(user).send();
         } catch (err) {
             next(err);
         }
@@ -101,13 +101,13 @@ class UserController extends Controller {
 
     /**
      * POST /users/{id}/ban
-     * @summary update user prifile image
+     * @summary ban user
      * @tags User
      * @security BearerAuth
      * 
-     * @param { user.avatar } id.path.required - user id - application/json
+     * @param { string } id.path.required - user id - application/json
      * 
-     * @return { user.success }             200 - user successfuly banded
+     * @return { user.success }             200 - user successfully banded
      * @return { message.badrequest_error }      400 - user not found
      * @return { message.badrequest_error }      401 - UnauthorizedError
      * @return { message.server_error}      500 - Server Error
@@ -133,12 +133,43 @@ class UserController extends Controller {
     }
 
     /**
+     * POST /users/{id}/unban
+     * @summary unban user
+     * @tags User
+     * @security BearerAuth
+     * 
+     * @param { string } id.path.required - user id - application/json
+     * 
+     * @return { user.success }             200 - user successfully unbanded
+     * @return { message.badrequest_error }      400 - user not found
+     * @return { message.badrequest_error }      401 - UnauthorizedError
+     * @return { message.server_error}      500 - Server Error
+     */
+    async unbanned(req, res, next) {
+        try {
+            let user = await User.findById(req.params.id);
+            if (!user) throw new NotFoundError('user.errors.user_notfound');
+
+            user.is_banned = 0;
+            user.banned_by = null;
+            user.banned_at = null;
+            await user.save();
+
+            EventEmitter.emit(events.UNBANNED, user)
+            AppResponse.builder(res).message('user.messages.user_successfully_unblocked').data(user).send();
+
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
      * GET /users/getMe
      * @summary Get authenticated user information
      * @tags User
      * @security BearerAuth
      * 
-     * @return { user.success }             200 - user successfuly found
+     * @return { user.success }             200 - user successfully found
      * @return { message.badrequest_error } 400 - user not found
      * @return { message.badrequest_error } 401 - UnauthorizedError
      * @return { message.server_error}      500 - Server Error
@@ -231,7 +262,7 @@ class UserController extends Controller {
      * 
      * @param  { string } id.path.required - user id
      *
-     * @return { user.success }             200 - user successfuly found
+     * @return { user.success }             200 - user successfully found
      * @return { message.badrequest_error } 400 - user not found
      * @return { message.badrequest_error } 401 - UnauthorizedError
      * @return { message.server_error}      500 - Server Error
