@@ -31,8 +31,8 @@ class UserController extends Controller {
             if (query.length > 0) {
                 searchQuery = {
                     $or: [
-                        { firstname: { '$regex': query } },
-                        { lastname: { '$regex': query } }
+                        { firstname: { '$regex': new RegExp(query, "i") } },
+                        { lastname: { '$regex': new RegExp(query, "i") } }
                     ]
                 }
             }

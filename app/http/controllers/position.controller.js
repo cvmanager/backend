@@ -38,7 +38,7 @@ class PositionController extends Controller {
         try {
             const { page = 1, size = 10, query = '' } = req.query
 
-            let searchQuery = (query.length > 0 ? { $or: [{ title: { '$regex': query } }] } : null);
+            let searchQuery = (query.length > 0 ? { $or: [{ title: { '$regex': new RegExp(query, "i") } }] } : null);
 
             searchQuery = mergeQuery(searchQuery, req.rbacQuery)
             const positionList = await Position.paginate(searchQuery, {
