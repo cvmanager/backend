@@ -442,7 +442,7 @@ class ResumeController extends Controller {
 
             let contributor = req.body.contributor;
             let contributors = [];
-            if(resume.contributors){
+            if (resume.contributors) {
                 contributors = resume.contributors;
             }
 
@@ -485,7 +485,7 @@ class ResumeController extends Controller {
 
             let contributor = req.body.contributor;
             let contributors = []
-            if(resume.contributors){
+            if (resume.contributors) {
                 contributors = resume.contributors;
             }
 
@@ -599,6 +599,44 @@ class ResumeController extends Controller {
             resume.tags = resume.tags.filter(e => e.id != tag)
             await resume.save();
 
+            AppResponse.builder(res).status(200).message("resume.messages.resume_tags_successfully_deleted").data(resume).send();
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
+    * PATCH /resumes/{id}/hired
+    * 
+    * @summary change status of resume to hired
+    * @tags Resume
+    * @security BearerAuth
+    * 
+    * @param  { string } id.path.required - resume id
+    * @param { resume.hired } request.body - application/json
+    * 
+    * @return { resume.success } 200 - success response
+    * @return { message.badrequest_error }  400 - bad request respone
+    * @return { message.badrequest_error }  404 - not found respone
+    * @return { message.badrequest_error }       401 - UnauthorizedError
+    * @return { message.server_error  }     500 - Server Error
+    */
+    async hired(req, res, next) {
+        try {
+            let resume = await resumeService.findByParamId(req);
+            let fromDate = new Date(req.body.from_date)
+            let toDate = new Date(req.body.to_date)
+
+            if (fromDate > toDate) {
+                throw new BadRequestError('from date must be before to date');
+            }
+
+            resume.status = 'hired'
+            resume.how_to_cooperate = req.body.how_to_cooperate
+            resume.from_date = fromDate
+            resume.to_date = toDate
+            resume.income = req.body.income
+            await resume.save();
             AppResponse.builder(res).status(200).message("resume.messages.resume_tags_successfully_deleted").data(resume).send();
         } catch (err) {
             next(err);

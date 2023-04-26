@@ -250,6 +250,18 @@ const schema = new mongoose.Schema(
             type: Number,
             default: null,
             length: 1
+        },
+        how_to_cooperate: {
+            type: String,
+            default: null
+        },
+        to_date: {
+            type: mongoose.Schema.Types.Date,
+            default: null
+        },
+        from_date: {
+            type: mongoose.Schema.Types.Date,
+            default: null
         }
     }
 );

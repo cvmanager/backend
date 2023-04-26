@@ -131,6 +131,7 @@ for (i = 0; i < numberRowInsert; i++) {
         "type": "person",
         "description": faker.random.alpha(50),
         "contribution": [],
+        "rating": 3,
         "created_by": users[i]._id,
     })
 }
