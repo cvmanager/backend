@@ -17,12 +17,24 @@ class PositionValidation {
 
     create() {
         return [
-            body('project_id').notEmpty().isMongoId().withMessage('position.validations.project_id_invalid').trim(),
-            body('title').notEmpty().isLength({ min: 3, max: 50 }).withMessage('position.validations.position_title_length').trim(),
+            body('project_id')
+                .notEmpty()
+                .withMessage('position.validations.project_id_invalid')
+                .isMongoId()
+                .withMessage('position.validations.project_id_invalid')
+                .trim(),
+            body('title')
+                .notEmpty()
+                .withMessage('position.validations.position_title_required')
+                .isLength({ min: 3, max: 50 })
+                .withMessage('position.validations.position_title_length')
+                .trim(),
             body('level')
-                .optional({ nullable: true, checkFalsy: true })
-                .notEmpty().isIn(i18n.__("position.enums.level"))
-                .withMessage('position.validations.position_level_incorrect').trim(),
+                .notEmpty()
+                .withMessage('position.validations.position_level_required')
+                .isIn(i18n.__("position.enums.level"))
+                .withMessage('position.validations.position_level_incorrect')
+                .trim(),
             body('description')
                 .optional({ nullable: true, checkFalsy: true })
                 .isLength({ min: 10, max: 100 }).withMessage('position.validations.position_description_length').trim(),
@@ -61,10 +73,12 @@ class PositionValidation {
                 .withMessage('position.validations.project_id_invalid')
                 .trim(),
             body('title')
-                .optional({ nullable: true, checkFalsy: true }).isLength({ min: 3, max: 50 })
+                .optional({ nullable: true, checkFalsy: true })
+                .isLength({ min: 3, max: 50 })
                 .withMessage('position.validations.position_title_length').trim(),
             body('level')
-                .optional({ nullable: true, checkFalsy: true }).isIn(i18n.__("position.enums.level"))
+                .optional({ nullable: true, checkFalsy: true })
+                .isIn(i18n.__("position.enums.level"))
                 .withMessage('position.validations.position_level_incorrect')
                 .trim(),
             body('description')
