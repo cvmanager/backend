@@ -69,7 +69,7 @@
 				"token_not_same": "Token not same",
 				"token_not_sended": "Authentication key not sent",
 				"token_not_stored": "Authentication key not stored",
-				"forbidden_access" : "Forbidden Access!"
+				"forbidden_access": "Forbidden Access!"
 			}
 		},
 		"constant": {
@@ -101,7 +101,7 @@
 				"company_manager_successfully_created": "company manager successfully created",
 				"company_successfully_activated": "company  successfully activated",
 				"company_successfully_deactivated": "company  successfully deactivated",
-				"company_manager_successfully_removed" : "company manager successfully removed"
+				"company_manager_successfully_removed": "company manager successfully removed"
 			},
 			"errors": {
 				"the_user_is_currently_an_manager_for_company": "The user is currently an manager for company",
@@ -200,7 +200,7 @@
 					"wrong-number",
 					"recall"
 				],
-				"hire_status":[
+				"hire_status": [
 					"not_employed",
 					"hired_on"
 				]
@@ -239,7 +239,9 @@
 				"calling_date_must_be_date": "calling_date must be date",
 				"description_length": "description length must be between 0 and 1000",
 				"call_history_recall_at_required": "recall_at is required",
-				"call_history_recall_at_invalid": "recall_at must be date"
+				"call_history_recall_at_invalid": "recall_at must be date",
+				"reject_reason_value_not_valid": "reject reason value is not valid",
+				"reject_reason": "reject reason is required"
 			},
 			"messages": {
 				"resume_successfully_created": "resume successfully created",
@@ -402,7 +404,7 @@
 			"position_resumes_found": "Position resumes successfully founded",
 			"position_successfully_deactivated": "position status successfully deactivated",
 			"position_successfully_activated": "position status successfully activated",
-			"position_successfully_created" : "position successfully created"
+			"position_successfully_created": "position successfully created"
 		},
 		"errors": {
 			"position_notfound": "position not found",
@@ -448,7 +450,7 @@
 			"project_deactivated_already": "project has deactivated already",
 			"project_activated_already": "project has activated already",
 			"disabled_company_create_project_error": "The selected company is currently deactivated and it is not possible to define a new project",
-			"company_is_not_active" : "The selected project company is currently disabled and it is not possible to define a new project"
+			"company_is_not_active": "The selected project company is currently disabled and it is not possible to define a new project"
 		}
 	},
 	"resume": {
@@ -472,6 +474,14 @@
 			"hire_status": [
 				"not_employed",
 				"hired_on"
+			],
+			"reject_reason": [
+				"user_busy_working",
+				"user_withdrawal",
+				"technically_rejected",
+				"rejected_initial_interview",
+				"not_matching_salary_with_position",
+				"unresponsive_user"
 			]
 		},
 		"validations": {
@@ -521,7 +531,9 @@
 			"resume_status_successfully_updated": "resume successfully updated",
 			"resume_call_history_successfully_created": "resume call history successfully created",
 			"resume_tags_successfully_updated": "resume tags successfully updated",
-			"resume_tags_successfully_deleted": "resume tags successfully deleted"
+			"resume_tags_successfully_deleted": "resume tags successfully deleted",
+			"resume_successfully_rejected": "resume successfully rejected",
+			"resume_already_rejected": "resume already rejected"
 		},
 		"errors": {
 			"resume_notfound": "Sorry, Resume not found",

@@ -20,5 +20,6 @@ resumeIdRouter
     .patch('/remove_contributor', ResumeValidation.removeContributor(), ResumeController.removeContributor)
     .patch('/add_tags', ResumeValidation.addTags(), ResumeController.addTags)
     .patch('/remove_tags', ResumeValidation.removeTags(), ResumeController.removeTags)
+    .patch('/reject', ResumeValidation.reject(), ResumeController.reject)
 
 export default resumeIdRouter

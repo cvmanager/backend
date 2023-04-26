@@ -132,6 +132,7 @@ for (i = 0; i < numberRowInsert; i++) {
         "description": faker.random.alpha(50),
         "contribution": [],
         "created_by": users[i]._id,
+        "rating": 4
     })
 }
 

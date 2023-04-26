@@ -109,6 +109,13 @@
 */
 
 /**
+* reject resume
+* @typedef { object } resume.reject
+* @property { string } reject_reason.required - reject_reason
+* @property { string } reject_description.required - reject_description
+*/
+
+/**
 * resume success response
 * @typedef { object } resume.call_history_success
 * @property { string }         message
