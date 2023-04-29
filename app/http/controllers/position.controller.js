@@ -264,7 +264,6 @@ class PositionController extends Controller {
             let statuses = i18n.__("resume.enums.status");
             for (let status of statuses) {
                 let resumeList = Resume.find({ 'position_id': position._id, 'status': status })
-                    .select(['name', 'avatar', 'summary_count', 'rating', 'tags.name', 'contributors', 'index'])
                     .limit(size)
                     .sort([['index', 1]])
                     .populate([

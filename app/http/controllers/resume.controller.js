@@ -122,8 +122,8 @@ class ResumeController extends Controller {
             req.body.company_id = position.company_id;
 
             let resume = await Resume.create(req.body)
-
-            EventEmitter.emit(events.NEW_RESUME, resume)
+            
+            EventEmitter.emit(events.CREATE, resume)
 
             AppResponse.builder(res).status(201).message("resume.messages.resume_successfully_created").data(resume).send();
         } catch (err) {
@@ -442,7 +442,7 @@ class ResumeController extends Controller {
 
             let contributor = req.body.contributor;
             let contributors = [];
-            if(resume.contributors){
+            if (resume.contributors) {
                 contributors = resume.contributors;
             }
 
@@ -485,7 +485,7 @@ class ResumeController extends Controller {
 
             let contributor = req.body.contributor;
             let contributors = []
-            if(resume.contributors){
+            if (resume.contributors) {
                 contributors = resume.contributors;
             }
 

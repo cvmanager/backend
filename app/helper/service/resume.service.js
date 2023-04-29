@@ -68,6 +68,12 @@ class ResumeService extends ServiceBase {
         resume.rating = parseFloat(rating).toFixed(2);
         await resume.save();
     }
+
+    async fillIndexOfResume(resume) {
+        let lastIndex = await Resume.findOne({ 'position_id': resume.position_id }, {}, { sort: { 'index': -1 } })
+        resume.index = lastIndex.index + 1;
+        await resume.save();
+    }
 }
 
 export default new ResumeService(Resume);
