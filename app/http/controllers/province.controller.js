@@ -22,7 +22,7 @@ class ProvinceController extends Controller {
     async index(req, res, next) {
         try {
             const { query = '' } = req.query
-            const provinceList = await Province.find({ name: { '$regex': query } });
+            const provinceList = await Province.find({ name: { '$regex': new RegExp(query, "i") } });
             AppResponse.builder(res).message("province.message.province_list_found").data(provinceList).send();
         } catch (err) {
             next(err);

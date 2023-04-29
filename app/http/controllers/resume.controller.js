@@ -41,8 +41,8 @@ class ResumeController extends Controller {
             if (query.length > 0) {
                 searchQuery = {
                     $or: [
-                        { firstname: { '$regex': query } },
-                        { lastname: { '$regex': query } },
+                        { firstname: { '$regex': new RegExp(query, "i") } },
+                        { lastname: { '$regex': new RegExp(query, "i") } },
                         { email: { '$regex': query } },
                         { mobile: { '$regex': query } },
                         { education: { '$regex': query } },
