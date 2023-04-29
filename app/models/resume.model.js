@@ -250,6 +250,10 @@ const schema = new mongoose.Schema(
             type: Number,
             default: null,
             length: 1
+        }, 
+        fullname: {
+            type: String,
+            default: null
         }
     }
 );
