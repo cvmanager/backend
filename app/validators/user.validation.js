@@ -27,9 +27,11 @@ class UserValidation {
 
     updateProfileImage() {
         return [
-            body('avatar')
+            param('id')
                 .notEmpty()
-                .withMessage('user.validations.avatar_required')
+                .withMessage('user.validations.user_id_required')
+                .isMongoId()
+                .withMessage('user.validations.user_id_invalid')
                 .trim(),
             generalValidator
         ];
@@ -124,7 +126,7 @@ class UserValidation {
             generalValidator
         ]
     }
-    
+
     companies() {
         return [
             param('id')

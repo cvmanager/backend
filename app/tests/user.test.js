@@ -164,39 +164,36 @@ describe('User Routes', () => {
     })
   })
 
-  describe(`post /avatar`, () => {
+  describe(`post /:id/avatar`, () => {
     let avatar
     beforeEach(async () => {
       avatar = path.join(__dirname, '/data/file/avatar.png')
     })
-    it(
-      'should return ' + httpStatus.BAD_REQUEST + ' error if avatar empty',
-      async () => {
-        const response = await request(app)
-          .post(`/api/V1/users/avatar`)
-          .set('Authorization', token)
-          .attach('avatar', '')
-        expect(response.statusCode).toBe(httpStatus.BAD_REQUEST)
-      },
-    )
-    it(`should get ${httpStatus.NOT_FOUND} user not found`, async () => {
-      let fakeToken = userData.getFakeAccessToken(Types.ObjectId())
+    it(`should get ${httpStatus.BAD_REQUEST} user id is not a mongo id`, async () => {
       const response = await request(app)
-        .post(`/api/V1/users/avatar`)
-        .set(`Authorization`, fakeToken)
-        .attach('avatar', avatar)
+        .patch(`/api/V1/users/fakeID/avatar`)
+        .set(`Authorization`, token)
+        .send()
+      expect(response.statusCode).toBe(httpStatus.BAD_REQUEST)
+    })
+
+    it(`should get ${httpStatus.NOT_FOUND} user id is not valid`, async () => {
+      const response = await request(app)
+        .patch(`/api/V1/users/${Types.ObjectId()}/avatar`)
+        .set(`Authorization`, token)
+        .send()
       expect(response.statusCode).toBe(httpStatus.NOT_FOUND)
     })
     it(`should get ${httpStatus.BAD_REQUEST} avatar is wrong`, async () => {
       const response = await request(app)
-        .post(`/api/V1/users/avatar`)
+        .patch(`/api/V1/users/${user._id}/avatar`)
         .set(`Authorization`, token)
         .attach('avatar', path.join(__dirname, '/data/file/avatar.zip'))
       expect(response.statusCode).toBe(httpStatus.BAD_REQUEST)
     })
     it(`should get ${httpStatus.OK} user avatar changed`, async () => {
       const response = await request(app)
-        .post(`/api/V1/users/avatar`)
+        .patch(`/api/V1/users/${user._id}/avatar`)
         .set(`Authorization`, token)
         .attach('avatar', avatar)
       expect(response.statusCode).toBe(httpStatus.OK)
