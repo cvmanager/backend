@@ -4,13 +4,13 @@ import CompanyController from '../http/controllers/company.controller.js'
 import CompanyValidation from '../validators/company.validation.js'
 import { Upload } from '../helper/upload.js';
 import { banUserCantSetForManager } from '../middlewares/manager.middleware.js'
-import { convertCompanyFieldToLowerCase } from '../middlewares/lowerCase.middleware.js';
+import { companyLowerCase } from '../middlewares/lowerCase.middleware.js';
 
 const companyIdRouter = express.Router({ mergeParams: true });
 
 companyIdRouter
     .get('', CompanyValidation.find(), CompanyController.find)
-    .patch('', CompanyValidation.update(), convertCompanyFieldToLowerCase, CompanyController.update)
+    .patch('', CompanyValidation.update(), companyLowerCase, CompanyController.update)
     .delete('', CompanyValidation.remove(), CompanyController.delete)
     .patch('/manager', CompanyValidation.manager(), banUserCantSetForManager, CompanyController.manager)
     .delete('/manager', CompanyValidation.deleteManager(), CompanyController.deleteManager)

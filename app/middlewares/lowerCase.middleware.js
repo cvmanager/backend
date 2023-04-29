@@ -10,7 +10,7 @@ async function fillFullName(req, res, next) {
     }
 }
 
-async function convertCompanyFieldToLowerCase(req, res, next) {
+async function companyLowerCase(req, res, next) {
     try {
         if (req.body.name != undefined) req.body.name = req.body.name.toLowerCase();
         next();
@@ -19,7 +19,7 @@ async function convertCompanyFieldToLowerCase(req, res, next) {
     }
 }
 
-async function convertProjectFieldToLowerCase(req, res, next) {
+async function projectLowerCase(req, res, next) {
     try {
         if (req.body.name != undefined) req.body.name = req.body.name.toLowerCase();
         next();
@@ -29,4 +29,4 @@ async function convertProjectFieldToLowerCase(req, res, next) {
 }
 
 
-export { fillFullName, convertCompanyFieldToLowerCase, convertProjectFieldToLowerCase }
+export { fillFullName, companyLowerCase, projectLowerCase }
