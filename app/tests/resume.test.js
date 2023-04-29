@@ -1668,6 +1668,33 @@ describe("Resumes Routes", () => {
                 .send(hiredResume);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
+        it(`should get ${httpStatus.BAD_REQUEST} if resume status alredy hired`, async () => {
+            resumeItem = {
+                "_id": Types.ObjectId(),
+                "company_id": company._id,
+                "project_id": project._id,
+                "position_id": position._id,
+                "firstname": faker.name.firstName(),
+                "lastname": faker.name.lastName(),
+                "gender": "men",
+                "email": faker.internet.email(),
+                "birth_year": "1370",
+                "marital_status": "married",
+                "military_status": "included",
+                "mobile": faker.phone.number('989#########'),
+                "residence_city": Types.ObjectId(),
+                "work_city": Types.ObjectId(),
+                "education": "diploma",
+                "created_by": user._id,
+                "status": 'hired'
+            }
+            resumeData.addResume([resumeItem])
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${resumeItem._id}/hired`)
+                .set(`Authorization`, token)
+                .send(rejectResume);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
         it(`should get ${httpStatus.OK} if all data correct `, async () => {
             const response = await request(app)
             .patch(`/api/V1/resumes/${resume._id}/hired`)

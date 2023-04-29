@@ -624,12 +624,18 @@ class ResumeController extends Controller {
     async hired(req, res, next) {
         try {
             let resume = await resumeService.findByParamId(req);
+            if(resume.status === 'hired') throw new BadRequestError('resume.errors.resume_already_hired')
+
             let fromDate = new Date(req.body.from_date)
             let toDate = new Date(req.body.to_date)
-
-            if (fromDate > toDate) {
-                throw new BadRequestError('from date must be before to date');
-            }
+            if (fromDate > toDate) throw new BadRequestError('resume.errors.from_date_must_be_before_to_date');
+            
+            resume.status_history.push({
+                old_status: resume.status,
+                new_status: 'hired',
+                createdAt: new Date(),
+                created_by: req.user._id
+            });
 
             resume.status = 'hired'
             resume.how_to_cooperate = req.body.how_to_cooperate

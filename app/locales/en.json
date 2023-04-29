@@ -544,7 +544,9 @@
 			"resume_comments_notfound": "Sorry, Resume not have any comment",
 			"can_not_update_status_to_current": "It is not possible to update the status to the current status",
 			"tag_could_not_be_duplicate": "tag could not be duplicate",
-			"tag_not_exists": "tag not exists"
+			"tag_not_exists": "tag not exists",
+			"from_date_must_be_before_to_date" : "from date must be before to date",
+			"resume_already_hired" : "resume already hired"
 		}
 	},
 	"user": {
