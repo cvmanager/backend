@@ -208,6 +208,7 @@ const schema = new mongoose.Schema(
         contributors: {
             type: Array,
             default: null,
+            ref: 'users'
         },
         summary_count: {
             type:
