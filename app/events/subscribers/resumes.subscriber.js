@@ -23,8 +23,10 @@ EventEmitter.on(events.ADD_CALL_HISTORY, addCallHistory)
 EventEmitter.on(events.ADD_FILE, addFile)
 EventEmitter.on(events.ADD_TAG, addTag)
 
-function find(Resume) {
-    viewlogService.setViewlog('resume', Resume._id, Resume.created_by)
+async function find(Resume) {
+    await viewlogService.setViewlog('resume', Resume._id, Resume.created_by)
+    let viewlogCount = await resumeService.getResumeViewCount(Resume);
+    await resumeService.updateSummeryCount(Resume, 'view', viewlogCount)
 }
 
 async function create(Resume) {
@@ -46,7 +48,7 @@ function updateStatus(Resume) {
 
 async function addComment(Resume) {
     let commentCount = await resumeService.getResumeCommentCount(Resume);
-    resumeService.updateSummeryCount(Resume, 'comment', commentCount)
+    await resumeService.updateSummeryCount(Resume, 'comment', commentCount)
 }
 
 async function addCallHistory(Resume) {
@@ -54,10 +56,10 @@ async function addCallHistory(Resume) {
     await resumeService.updateRating(Resume)
 }
 
-function addFile(Resume) {
-    resumeService.updateSummeryCount(Resume, 'file', Resume.call_history.length)
+async function addFile(Resume) {
+    await resumeService.updateSummeryCount(Resume, 'file', Resume.call_history.length)
 }
 
-function addTag(Resume) {
-    resumeService.updateSummeryCount(Resume, 'tag', Resume.tags.length)
+async function addTag(Resume) {
+    await resumeService.updateSummeryCount(Resume, 'tag', Resume.tags.length)
 }

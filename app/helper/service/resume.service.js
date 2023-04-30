@@ -4,6 +4,7 @@ import Resume from "../../models/resume.model.js";
 import ServiceBase from "./base.service.js";
 import ResumeComments from '../../models/resumeComment.model.js';
 import Interview from "../../models/interview.model.js";
+import Viewlog from "../../models/viewlog.model.js";
 
 const endOfResumeStatus = ['rejected', 'hired'];
 
@@ -27,6 +28,11 @@ class ResumeService extends ServiceBase {
     async getResumeCommentCount(resume) {
         let commentCount = await ResumeComments.find({ 'resume_id': resume._id }).count();
         return commentCount;
+    }
+
+    async getResumeViewCount(resume) {
+        let viewCount = await Viewlog.find({ 'entity': 'resume', 'entityId': resume.resume_id }).count();
+        return viewCount;
     }
 
     async updateSummeryCount(resume, field, count) {

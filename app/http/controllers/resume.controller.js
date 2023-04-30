@@ -94,7 +94,7 @@ class ResumeController extends Controller {
 
             EventEmitter.emit(events.FIND, resume)
 
-            AppResponse.builder(res).message("resume.messages.project_found").data('test').send();
+            AppResponse.builder(res).message("resume.messages.project_found").data(resume).send();
         } catch (err) {
             next(err);
         }
