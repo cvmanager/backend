@@ -9,6 +9,7 @@ import { Types } from 'mongoose';
 import ResumeData from './data/resume.data';
 import { faker } from '@faker-js/faker';
 
+import TagData from './data/tag.data';
 import CompanyData from './data/company.data';
 import ProjectData from './data/project.data';
 import PositionData from './data/position.data';
@@ -22,6 +23,8 @@ let resume;
 let position;
 let company;
 let project;
+let tagData;
+let tag;
 let resumeData;
 let companyData;
 let projectData;
@@ -41,6 +44,9 @@ describe("Resumes Routes", () => {
 
         resumeData = new ResumeData();
         resume = resumeData.getResume();
+
+        tagData = new TagData();
+        tag = tagData.getTag();
 
         companyData = new CompanyData();
         company = companyData.getCompany();
@@ -124,6 +130,8 @@ describe("Resumes Routes", () => {
             expect(data).toHaveProperty('created_by')
             expect(data).toHaveProperty('deleted')
             expect(data).toHaveProperty('status_history')
+            expect(data).toHaveProperty('summary_count')
+            expect(data).toHaveProperty('fullname')
             expect(data).toHaveProperty('createdAt')
             expect(data).toHaveProperty('updatedAt')
             expect(data).toHaveProperty('id')
@@ -188,6 +196,8 @@ describe("Resumes Routes", () => {
             expect(data).toHaveProperty('created_by')
             expect(data).toHaveProperty('deleted')
             expect(data).toHaveProperty('status_history')
+            expect(data).toHaveProperty('summary_count')
+            expect(data).toHaveProperty('fullname')
             expect(data).toHaveProperty('createdAt')
             expect(data).toHaveProperty('updatedAt')
             expect(response.statusCode).toBe(httpStatus.OK)
@@ -532,7 +542,8 @@ describe("Resumes Routes", () => {
                 .send(newResume);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
-        it(`should get ${httpStatus.BAD_REQUEST} if military_status is not in ${i18n.__("system.enums.military_status")}`, async () => {
+        it(`should get ${httpStatus.BAD_REQUEST} if gender is men and military_status is not in ${i18n.__("system.enums.military_status")}`, async () => {
+            newResume.gender = 'men'
             newResume.military_status = faker.random.alpha(5);
             const response = await request(app)
                 .post(`/api/V1/resumes`)
@@ -783,7 +794,7 @@ describe("Resumes Routes", () => {
         let updateResumeStatus;
         beforeEach(() => {
             updateResumeStatus = {
-                'status': 'hired',
+                'status': 'wait_hire',
                 'index': 1,
             }
         })
@@ -803,6 +814,22 @@ describe("Resumes Routes", () => {
         })
         it(`should get ${httpStatus.BAD_REQUEST} if status is not send`, async () => {
             delete updateResumeStatus.status;
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${resume._id}/status`)
+                .set(`Authorization`, token)
+                .send(updateResumeStatus);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if status is hired`, async () => {
+            updateResumeStatus.status = 'hired';
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${resume._id}/status`)
+                .set(`Authorization`, token)
+                .send(updateResumeStatus);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if status is rejected`, async () => {
+            updateResumeStatus.status = 'rejected';
             const response = await request(app)
                 .patch(`/api/V1/resumes/${resume._id}/status`)
                 .set(`Authorization`, token)
@@ -1246,11 +1273,142 @@ describe("Resumes Routes", () => {
         })
 
 
-        it(`should get ${httpStatus.OK} hire status updated successfuly`, async () => {
+        it(`should get ${httpStatus.OK} hire status updated successfully`, async () => {
             const response = await request(app)
                 .patch(`/api/V1/resumes/${resume._id}/hire_status`)
                 .set(`Authorization`, token)
                 .send(hireParams);
+            expect(response.statusCode).toBe(httpStatus.OK);
+        })
+
+    })
+
+    describe(`PATCH /:id/add_contributor`, () => {
+
+        let contributor;
+        beforeEach(() => {
+            contributor = {
+                contributor: user._id,
+            }
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} if resume id is not MongoId`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/resumes/fakeId/add_contributor`)
+                .set(`Authorization`, token)
+                .send(contributor);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.NOT_FOUND} if resume id is not valid`, async () => {
+            let invalidResumeId = Types.ObjectId();
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${invalidResumeId}/add_contributor`)
+                .set(`Authorization`, token)
+                .send(contributor);
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+
+        it(`should get ${httpStatus.NOT_FOUND} if contributor id is not valid`, async () => {
+            let invalidContributor = {
+                contributor: Types.ObjectId()
+            }
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${resume._id}/add_contributor`)
+                .set(`Authorization`, token)
+                .send(invalidContributor);
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} contributor is required`, async () => {
+            delete contributor.contributor
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${resume._id}/add_contributor`)
+                .set(`Authorization`, token)
+                .send(contributor);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} contributor is not valid`, async () => {
+            contributor.contributor = 'test'
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${resume._id}/add_contributor`)
+                .set(`Authorization`, token)
+                .send(contributor);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.OK} contributor added successfully`, async () => {
+            contributor.contributor = users[2]._id;
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${resume._id}/add_contributor`)
+                .set(`Authorization`, token)
+                .send(contributor);
+            expect(response.statusCode).toBe(httpStatus.OK);
+        })
+
+    })
+
+    describe(`PATCH /:id/remove_contributor`, () => {
+
+        let contributor;
+        beforeEach(() => {
+            contributor = {
+                contributor: resume.created_by,
+            }
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} if resume id is not MongoId`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/resumes/fakeId/remove_contributor`)
+                .set(`Authorization`, token)
+                .send(contributor);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.NOT_FOUND} if resume id is not valid`, async () => {
+            let invalidResumeId = Types.ObjectId();
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${invalidResumeId}/remove_contributor`)
+                .set(`Authorization`, token)
+                .send(contributor);
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+
+        it(`should get ${httpStatus.NOT_FOUND} if contributor id is not valid`, async () => {
+            let invalidContributor = {
+                contributor: Types.ObjectId()
+            }
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${resume._id}/remove_contributor`)
+                .set(`Authorization`, token)
+                .send(invalidContributor);
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} contributor is required`, async () => {
+            delete contributor.contributor
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${resume._id}/remove_contributor`)
+                .set(`Authorization`, token)
+                .send(contributor);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} contributor is not valid`, async () => {
+            contributor.contributor = 'test'
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${resume._id}/remove_contributor`)
+                .set(`Authorization`, token)
+                .send(contributor);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.OK} contributor remove successfully`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${resume._id}/remove_contributor`)
+                .set(`Authorization`, token)
+                .send(contributor);
             expect(response.statusCode).toBe(httpStatus.OK);
         })
 
@@ -1289,6 +1447,129 @@ describe("Resumes Routes", () => {
                 .attach('avatar', avatar);
             expect(response.statusCode).toBe(httpStatus.OK);
         })
+    })
+
+    describe(`PATCH /:id/add_tags`, () => {
+
+        let newTag;
+        beforeEach(() => {
+            newTag = {
+                tag: faker.random.alpha(5),
+            }
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} if resume id is not MongoId`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/resumes/fakeId/add_tags`)
+                .set(`Authorization`, token)
+                .send(newTag);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.NOT_FOUND} if resume id is not valid`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${Types.ObjectId()}/add_tags`)
+                .set(`Authorization`, token)
+                .send(newTag);
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} if name is less than 3 character`, async () => {
+            newTag.tag = faker.random.alpha(2);
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${resume._id}/add_tags`)
+                .set(`Authorization`, token)
+                .send(newTag);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if name is grather than 100 character`, async () => {
+            newTag.tag = faker.random.alpha(101);
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${resume._id}/add_tags`)
+                .set(`Authorization`, token)
+                .send(newTag);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} if tag already saved`, async () => {
+            newTag.tag = tagData.getTagById(resume.tags[0].id).name;
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${resume._id}/add_tags`)
+                .set(`Authorization`, token)
+                .send(newTag);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.OK} tag added successfully`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${resume._id}/add_tags`)
+                .set(`Authorization`, token)
+                .send(newTag);
+            expect(response.statusCode).toBe(httpStatus.OK);
+        })
+
+    })
+
+    describe(`PATCH /:id/remove_tags`, () => {
+
+        let removeTag;
+        beforeEach(() => {
+            removeTag = {
+                tag_id: resume.tags[0].id,
+            }
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} if resume id is not MongoId`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/resumes/fakeId/remove_tags`)
+                .set(`Authorization`, token)
+                .send(removeTag);
+                expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.NOT_FOUND} if resume id is not valid`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${Types.ObjectId()}/remove_tags`)
+                .set(`Authorization`, token)
+                .send(removeTag);
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} if tag_id is not send`, async () => {
+            delete removeTag.tag_id;
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${resume._id}/remove_tags`)
+                .set(`Authorization`, token)
+                .send(removeTag);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} if tag_id is not not valid`, async () => {
+            removeTag.tag_id = 'fakeId';
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${resume._id}/remove_tags`)
+                .set(`Authorization`, token)
+                .send(removeTag);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} if tag not exists`, async () => {
+            removeTag.tag_id = Types.ObjectId();
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${resume._id}/remove_tags`)
+                .set(`Authorization`, token)
+                .send(removeTag);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.OK} tag added successfully`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${resume._id}/remove_tags`)
+                .set(`Authorization`, token)
+                .send(removeTag);
+            expect(response.statusCode).toBe(httpStatus.OK);
+        })
+
     })
 })
 

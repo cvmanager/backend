@@ -23,7 +23,7 @@ class AuthController extends Controller {
      * 
      * @param  { auth.login } request.body - login info - application/json
      * 
-     * @return { auth.success_response }    200 - signup successfuly 
+     * @return { auth.success_response }    200 - signup successfully 
      * @return { auth.user_notfound }       400 - user not found || username or password incorrect
      * @return { message.server_error  }    500 - Server Error
      */
@@ -61,7 +61,7 @@ class AuthController extends Controller {
     *
     * @param { auth.signup } request.body - signup info - application/json
     * 
-    * @return { auth.success_response }        201 - signup successfuly 
+    * @return { auth.success_response }        201 - signup successfully 
     * @return { message.badrequest_error }     400 - Bad Request
     * @return { message.server_error  }        500 - Server Error
     */
@@ -88,7 +88,7 @@ class AuthController extends Controller {
             const refresh_token = await generateJwtRefeshToken({ _id: user._id, role: [ownerRole._id]});
 
             EventEmitter.emit(events.SINGUP, user, access_token, refresh_token);
-            AppResponse.builder(res).status(201).message("auth.messages.user_successfuly_created").data({ access_token, refresh_token }).send();
+            AppResponse.builder(res).status(201).message("auth.messages.user_successfully_created").data({ access_token, refresh_token }).send();
         } catch (err) {
             next(err);
         }
@@ -103,7 +103,7 @@ class AuthController extends Controller {
      *
      * @param { auth.refresh } request.body - refresh info - application/json
      * 
-     * @return { auth.success_signup }          200 - refresh successfuly 
+     * @return { auth.success_signup }          200 - refresh successfully 
      * @return { message.badrequest_error }     400 - Bad Request
      * @return { message.server_error  }        500 - Server Error
      */
@@ -130,7 +130,7 @@ class AuthController extends Controller {
      *
      * @param { auth.refresh } request.body - refresh info - application/json
      * 
-     * @return { auth.success_signup }          200 - logout successfuly 
+     * @return { auth.success_signup }          200 - logout successfully 
      * @return { message.badrequest_error }     400 - Bad Request
      * @return { message.server_error  }        500 - Server Error
      */
@@ -157,7 +157,7 @@ class AuthController extends Controller {
      *
      * @param { auth.refresh } request.body - refresh info - application/json
      * 
-     * @return { auth.success_signup }              200 - logout successfuly 
+     * @return { auth.success_signup }              200 - logout successfully 
      * @return { message.unauthorized_error }       401 - UnauthorizedError
      * @return { message.server_error  }            500 - Server Error
      */
@@ -170,12 +170,10 @@ class AuthController extends Controller {
      * 
      * @summary Check and confirm username
      * @tags Auth 
-     * @security BearerAuth
      *
      * @param { auth.checkUsername }                request.body - refresh info - application/json
      * 
-     * @return { auth.success }                     200 - found successfuly 
-     * @return { message.UserNotFoundError }        404 - not found 
+     * @return { auth.success }                     200 - found successfully 
      * @return { message.server_error  }            500 - Server Error
      */
     async checkusername(req, res, next) {
@@ -183,7 +181,7 @@ class AuthController extends Controller {
             let user = await User.findOne({ username: req.body.username });
             if (user) throw new BadRequestError('auth.errors.username_exist');
 
-            AppResponse.builder(res).message("auth.messages.username_isavailable").send();
+            AppResponse.builder(res).message("auth.messages.username_is_available").send();
         } catch (err) {
             next(err);
         }

@@ -27,15 +27,29 @@ class UserValidation {
 
     updateProfileImage() {
         return [
-            body('avatar')
+            param('id')
                 .notEmpty()
-                .withMessage('user.validations.avatar_required')
+                .withMessage('user.validations.user_id_required')
+                .isMongoId()
+                .withMessage('user.validations.user_id_invalid')
                 .trim(),
             generalValidator
         ];
     }
 
     ban() {
+        return [
+            param('id')
+                .notEmpty()
+                .withMessage('user.validations.user_id_required_ban')
+                .isMongoId()
+                .withMessage('user.validations.user_id_invalid_ban')
+                .trim(),
+            generalValidator
+        ];
+    }
+
+    unban() {
         return [
             param('id')
                 .notEmpty()
@@ -81,6 +95,36 @@ class UserValidation {
                 .isNumeric().withMessage('user.validations.user_size_number').trim(),
             generalValidator
         ];
+    }
+
+    edit() {
+        return [
+            param('id')
+                .notEmpty()
+                .withMessage('user.validations.user_id_required')
+                .isMongoId()
+                .withMessage('user.validations.user_id_invalid')
+                .trim(),
+            body('firstname')
+                .isLength({ min: 3, max: 80 })
+                .withMessage('auth.validations.firstname_length')
+                .trim(),
+            body('lastname')
+                .isLength({ min: 3, max: 80 })
+                .withMessage('auth.validations.lastname_length')
+                .trim(),
+            body('username')
+                .notEmpty()
+                .withMessage('auth.validations.username_required')
+                .trim(),
+            body('email')
+                .notEmpty()
+                .withMessage('auth.validations.email_required')
+                .isEmail()
+                .withMessage('auth.validations.email_invalid')
+                .trim(),
+            generalValidator
+        ]
     }
 
     companies() {

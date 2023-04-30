@@ -4,6 +4,8 @@ import jsonwebtoken from 'jsonwebtoken';
 import env from '../../helper/env.js';
 import User from '../../models/user.model';
 import bcrypt from 'bcrypt';
+import { faker } from '@faker-js/faker';
+import { Types } from 'mongoose';
 
 class UserData {
     mobile = Object.values(users)[0].mobile;
@@ -39,6 +41,25 @@ class UserData {
         await User.insertMany(users.map((user) => ({ ...user, password: bcrypt.hashSync(user.password, this.salt) })));
     }
 
+
+    addUser(users) {
+        User.insertMany(users);
+    }
+    
+    async saveBannedUser() {
+        let user = {
+            "_id": Types.ObjectId(),
+            "firstname": faker.name.firstName(),
+            "lastname": faker.name.lastName(),
+            "username": faker.random.alpha(9),
+            "is_banned": true,
+            "mobile": faker.phone.number('989#########'),
+            "email": faker.internet.email(),
+            "password": '12345678'
+        }
+        this.setUsers([user]);
+        return user;
+    }
 }
 
 export default UserData

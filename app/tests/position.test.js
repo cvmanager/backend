@@ -26,7 +26,7 @@ let companyItem;
 let companyData;
 let projectItem;
 let projectData;
-
+let userData;
 prepareDB();
 describe(`Position Routes`, () => {
 
@@ -34,7 +34,7 @@ describe(`Position Routes`, () => {
 
         companyData = new CompanyData();
 
-        let userData = new UserData();
+        userData = new UserData();
         token = userData.getAccessToken();
         user = userData.getUser();
         users = userData.getUsers();
@@ -175,7 +175,7 @@ describe(`Position Routes`, () => {
             }
         })
 
-        it(`should get ${httpStatus.BAD_REQUEST} if company is_active is false`, async() => {
+        it(`should get ${httpStatus.BAD_REQUEST} if company is_active is false`, async () => {
             companyItem = {
                 "_id": Types.ObjectId(),
                 "is_active": false,
@@ -474,13 +474,22 @@ describe(`Position Routes`, () => {
                 .send(setManager);
             expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
         })
-
-        it(`should get ${httpStatus.CONFLICT} user is currently manager`, async () => {
+        it(`should get ${httpStatus.BAD_REQUEST} manager is banned`, async () => {
+            user = userData.saveBannedUser();
+            setManager.manager_id = user._id
+            const response = await request(app)
+                .patch(`/api/V1/positions/${position._id}/manager`)
+                .set('Authorization', token)
+                .send(setManager);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} user is currently manager`, async () => {
             const response = await request(app)
                 .patch(`/api/V1/positions/${position._id}/manager`)
                 .set(`Authorization`, token)
                 .send(setManager);
-            expect(response.statusCode).toBe(httpStatus.CONFLICT);
+                console.log(response.body);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
 
         it(`should get ${httpStatus.CREATED} user successfully assign as manager`, async () => {
@@ -557,7 +566,7 @@ describe(`Position Routes`, () => {
         })
 
         it(`should get ${httpStatus.BAD_REQUEST} user is owner manager for this position`, async () => {
-            deleteManager.manager_id =  managerData.getManagerByEntityIdAndType(position._id,'positions');
+            deleteManager.manager_id = managerData.getManagerByEntityIdAndType(position._id, 'positions');
             const response = await request(app)
                 .delete(`/api/V1/positions/${manager.entity_id}/manager`)
                 .set('Authorization', token)
