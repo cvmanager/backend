@@ -281,7 +281,7 @@ class ResumeController extends Controller {
     }
 
     /**
-    * GET /resumes/{ id } /comments
+    * GET /resumes/{id}/comments
     * 
     * @summary get resume comments list
     * @tags Resume
