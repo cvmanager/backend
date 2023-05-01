@@ -415,9 +415,9 @@ class ResumeValidation {
 
     set_tag() {
         return [
-            param('id')
+            param('resume_id')
                 .notEmpty().isMongoId().withMessage('resume.validations.resume_id_invalid').trim(),
-            param('tag_id')
+            param('id')
                 .notEmpty().isMongoId().withMessage('resume.validations.resume_id_invalid')
                 .trim(),
             generalValidator
@@ -426,9 +426,9 @@ class ResumeValidation {
 
     unset_tag() {
         return [
-            param('id')
+            param('resume_id')
                 .notEmpty().isMongoId().withMessage('resume.validations.resume_id_invalid').trim(),
-            body('tag_id')
+            param('id')
                 .notEmpty().isMongoId().withMessage('tag.validations.tag_id_invalid').trim(),
             generalValidator
         ];
