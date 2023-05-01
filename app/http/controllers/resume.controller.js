@@ -92,6 +92,8 @@ class ResumeController extends Controller {
                 ]);
             if (!resume) throw new NotFoundError('resume.error.resume_notfound');
 
+            EventEmitter.emit(events.FIND, resume)
+
             AppResponse.builder(res).message("resume.messages.project_found").data(resume).send();
         } catch (err) {
             next(err);
