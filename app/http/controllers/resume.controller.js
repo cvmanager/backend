@@ -1,5 +1,4 @@
-import { events } from '../../events/subscribers/resumes.subscriber.js';
-import AlreadyExists from '../../exceptions/AlreadyExists.js';
+import { ResumeEvents } from '../../events/subscribers/resumes.subscriber.js';
 import NotFoundError from '../../exceptions/NotFoundError.js';
 import Position from '../../models/position.model.js';
 import ResumeComments from '../../models/resumeComment.model.js';
@@ -92,7 +91,7 @@ class ResumeController extends Controller {
                 ]);
             if (!resume) throw new NotFoundError('resume.error.resume_notfound');
 
-            EventEmitter.emit(events.FIND, resume)
+            EventEmitter.emit(ResumeEvents.FIND, resume)
 
             AppResponse.builder(res).message("resume.messages.project_found").data(resume).send();
         } catch (err) {
@@ -130,7 +129,7 @@ class ResumeController extends Controller {
 
             let resume = await Resume.create(req.body)
 
-            EventEmitter.emit(events.CREATE, resume)
+            EventEmitter.emit(ResumeEvents.CREATE, resume)
 
             AppResponse.builder(res).status(201).message("resume.messages.resume_successfully_created").data(resume).send();
         } catch (err) {
@@ -162,7 +161,7 @@ class ResumeController extends Controller {
 
             await Resume.findByIdAndUpdate(req.params.id, req.body, { new: true })
                 .then(resume => {
-                    EventEmitter.emit(events.UPDATE, resume)
+                    EventEmitter.emit(ResumeEvents.UPDATE, resume)
                     AppResponse.builder(res).message("resume.messages.resume_successfully_updated").data(resume).send()
                 })
                 .catch(err => next(err));
@@ -196,7 +195,7 @@ class ResumeController extends Controller {
 
             await resume.save();
 
-            EventEmitter.emit(events.DELETE_RESUME, resume)
+            EventEmitter.emit(ResumeEvents.DELETE_RESUME, resume)
 
 
             AppResponse.builder(res).message("resume.messages.resume_successfully_deleted").data(resume).send();
@@ -235,7 +234,7 @@ class ResumeController extends Controller {
             resume.index = req.body.index;
             await resume.save();
 
-            EventEmitter.emit(events.UPDATE_STATUS, resume)
+            EventEmitter.emit(ResumeEvents.UPDATE_STATUS, resume)
 
             AppResponse.builder(res).message("resume.messages.resume_status_successfully_updated").data(resume).send();
         } catch (err) {
@@ -272,7 +271,7 @@ class ResumeController extends Controller {
             resume.file = files;
             await resume.save();
 
-            EventEmitter.emit(events.ADD_FILE, resume)
+            EventEmitter.emit(ResumeEvents.ADD_FILE, resume)
 
             AppResponse.builder(res).message("resume.message.resume_file_successfully_upload").data(resume).send()
         } catch (err) {
@@ -335,7 +334,7 @@ class ResumeController extends Controller {
             req.body.created_by = req.user._id
 
             let resumeCommentsRes = await ResumeComments.create(req.body)
-            EventEmitter.emit(events.ADD_COMMENT, resume)
+            EventEmitter.emit(ResumeEvents.ADD_COMMENT, resume)
 
             AppResponse.builder(res).status(201).message("resume.messages.resume_comment_successfully_created").data(resumeCommentsRes).send();
         } catch (err) {
@@ -383,7 +382,7 @@ class ResumeController extends Controller {
 
             resume.call_history.push(callHistory)
             await resume.save()
-            EventEmitter.emit(events.ADD_CALL_HISTORY, resume)
+            EventEmitter.emit(ResumeEvents.ADD_CALL_HISTORY, resume)
 
             AppResponse.builder(res).message("resume.messages.resume_call_history_successfully_created").data(resume).send();
         } catch (err) {
@@ -566,15 +565,12 @@ class ResumeController extends Controller {
             if (resume.tags) tags = resume.tags.filter(value => JSON.stringify(value) !== '{}');
             if (tags.some(value => value.id == tag._id)) throw new BadRequestError('resume.errors.tag_could_not_be_duplicate');
 
-            tags.push({
-                id: tag._id,
-                name: tag.name,
-                color: tag.color,
-            })
+            tags.push({ id: tag._id, name: tag.name, color: tag.color })
             resume.tags = tags;
             await resume.save();
 
-            EventEmitter.emit(events.ADD_TAG, resume)
+            EventEmitter.emit(ResumeEvents.ADD_TAG, resume)
+            EventEmitter.emit(TagEvent.TAG_USE, tag);
 
             AppResponse.builder(res).status(200).message("resume.messages.resume_tags_successfully_updated").data(resume).send();
         } catch (err) {
@@ -605,9 +601,10 @@ class ResumeController extends Controller {
             let tag = await TagService.findOne(req.body.tag_id);
 
             if (!resume.tags.some(value => value.id == tag)) throw new BadRequestError('resume.errors.tag_not_exists');
-            
+
             resume.tags = resume.tags.filter(e => e.id != tag)
             await resume.save();
+            EventEmitter.emit(ResumeEvents.REMOVE_TAG, resume)
 
             AppResponse.builder(res).status(200).message("resume.messages.resume_tags_successfully_deleted").data(resume).send();
         } catch (err) {

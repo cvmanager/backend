@@ -2,6 +2,9 @@ import Controller from "./controller.js";
 import Tag from "../../models/tag.model.js"
 import { mergeQuery } from '../../helper/mergeQuery.js';
 import AppResponse from "../../helper/response.js";
+import tagService from "../../helper/service/tag.service.js";
+import AlreadyExists from '../../exceptions/AlreadyExists.js';
+
 class TagController extends Controller {
 
     /**
@@ -39,6 +42,37 @@ class TagController extends Controller {
                 sort: { createdAt: -1 }
             });
             AppResponse.builder(res).message("tag.messages.tag_list_found").data(Tags).send();
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
+    /**
+    * POST /tags
+    * 
+    * @summary create new tag
+    * @tags Tag
+    * @security BearerAuth
+    * 
+    * @param { tag.create } request.body - tag info - application/json
+    * 
+    * @return { message.badrequest_error }  400 - bad request respone
+    * @return { message.NotFoundError }  404 - not found respone
+    * @return { message.badrequest_error }  401 - UnauthorizedError
+    * @return { message.server_error  }     500 - Server Error
+    */
+    async create(req, res, next) {
+        try {
+            let tag = await tagService.find({ name: req.body.name });
+            if (tag) throw new AlreadyExists('tag.errors.duplicate');
+
+            req.body.created_by = req.user._id;
+            req.body.color = tagService.getRandomColor();
+            tag = await tagService.create(req.body);
+
+            AppResponse.builder(res).status(201).message("tag.messages.tag_successfully_created").data(tag).send();
+
         } catch (err) {
             next(err);
         }

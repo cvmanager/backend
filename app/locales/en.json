@@ -655,8 +655,11 @@
 			"tag_id_invalid": "tag id invalid"
 		},
 		"messages": {
-			"tag_list_found" : "Tag list found"
+			"tag_list_found" : "Tag list found",
+			"tag_successfully_created" : "Tag successfully created"
 		},
-		"errors": {}
+		"errors": {
+			"duplicate": "Tag could not be duplicate"
+		}
 	}
 }

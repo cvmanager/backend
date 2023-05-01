@@ -11,20 +11,9 @@ class TagService extends ServiceBase {
         autoBind(this)
     }
 
-    async addCountOfTag(tag) {
+    async addCountTagUse(tag) {
         tag.count = ++tag.count;
         tag.save();
-    }
-
-    async checkAndReturnTag(name) {
-        let tag = await this.findOne({ name: name });
-        if (tag) {
-            await this.addCountOfTag(tag)
-            return tag;
-        }
-
-        tag = await this.create({ 'name': name, 'color': getRandomColor() });
-        return tag;
     }
 }
 

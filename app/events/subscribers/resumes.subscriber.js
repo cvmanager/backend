@@ -1,7 +1,7 @@
 import resumeService from '../../helper/service/resume.service.js'
 import viewlogService from '../../helper/service/viewlog.service.js'
 import EventEmitter from '../emitter.js'
-export const events = {
+export const ResumeEvents = {
     "FIND": "Find Resume",
     "CREATE": "New Resume",
     "DELETE": "Delete Resume",
@@ -13,15 +13,16 @@ export const events = {
     "ADD_TAG": "add tag to resume",
 }
 
-EventEmitter.on(events.FIND, find)
-EventEmitter.on(events.CREATE, create)
-EventEmitter.on(events.DELETE, softdelete)
-EventEmitter.on(events.UPDATE, update)
-EventEmitter.on(events.UPDATE_STATUS, updateStatus)
-EventEmitter.on(events.ADD_COMMENT, addComment)
-EventEmitter.on(events.ADD_CALL_HISTORY, addCallHistory)
-EventEmitter.on(events.ADD_FILE, addFile)
-EventEmitter.on(events.ADD_TAG, addTag)
+EventEmitter.on(ResumeEvents.FIND, find)
+EventEmitter.on(ResumeEvents.CREATE, create)
+EventEmitter.on(ResumeEvents.DELETE, softdelete)
+EventEmitter.on(ResumeEvents.UPDATE, update)
+EventEmitter.on(ResumeEvents.UPDATE_STATUS, updateStatus)
+EventEmitter.on(ResumeEvents.ADD_COMMENT, addComment)
+EventEmitter.on(ResumeEvents.ADD_CALL_HISTORY, addCallHistory)
+EventEmitter.on(ResumeEvents.ADD_FILE, addFile)
+EventEmitter.on(ResumeEvents.ADD_TAG, setTag)
+EventEmitter.on(ResumeEvents.REMOVE_TAG, unsetTag)
 
 async function find(Resume) {
     await viewlogService.setViewlog('resume', Resume._id, Resume.created_by)
@@ -60,6 +61,10 @@ async function addFile(Resume) {
     await resumeService.updateSummeryCount(Resume, 'file', Resume.call_history.length)
 }
 
-async function addTag(Resume) {
+async function setTag(Resume) {
+    await resumeService.updateSummeryCount(Resume, 'tag', Resume.tags.length)
+}
+
+async function unsetTag(Resume) {
     await resumeService.updateSummeryCount(Resume, 'tag', Resume.tags.length)
 }
