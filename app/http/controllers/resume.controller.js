@@ -426,9 +426,9 @@ class ResumeController extends Controller {
     }
 
     /**
-    * PATCH /resumes/{id}/add_contributor
+    * PATCH /resumes/{id}/contributor/{user_id}
     * 
-    * @summary add contributor
+    * @summary set contributor to resume
     * @tags Resume
     * @security BearerAuth
     * 
@@ -441,11 +441,11 @@ class ResumeController extends Controller {
     * @return { message.badrequest_error }  401 - UnauthorizedError
     * @return { message.server_error  }     500 - Server Error
     */
-    async addContributor(req, res, next) {
+    async setContributor(req, res, next) {
         try {
             let resume = await resumeService.findByParamId(req)
 
-            let user = await userService.findOne({ '_id': req.body.contributor })
+            let user = await userService.findOne({ '_id': req.params.user_id })
             if (!user) throw new NotFoundError('user.errors.user_notfound');
 
             let contributor = req.body.contributor;
@@ -454,9 +454,8 @@ class ResumeController extends Controller {
                 contributors = resume.contributors;
             }
 
-            if (contributors.includes(contributor)) {
-                throw new BadRequestError('resume.errors.contributor_could_not_be_duplicate');
-            }
+            if (contributors.includes(contributor)) throw new BadRequestError('resume.errors.contributor_could_not_be_duplicate');
+            
 
             contributors.push(req.body.contributor);
             resume.contributors = contributors;
@@ -469,9 +468,9 @@ class ResumeController extends Controller {
     }
 
     /**
-    * PATCH /resumes/{id}/remove_contributor
+    * DELETE /resumes/{id}/contributor/{user_id}
     * 
-    * @summary remove contributor
+    * @summary unset special contributor from resume
     * @tags Resume
     * @security BearerAuth
     * 
@@ -484,11 +483,11 @@ class ResumeController extends Controller {
     * @return { message.badrequest_error }  401 - UnauthorizedError
     * @return { message.server_error  }     500 - Server Error
     */
-    async removeContributor(req, res, next) {
+    async unsetContributor(req, res, next) {
         try {
             let resume = await resumeService.findByParamId(req)
 
-            let user = await userService.findOne({ '_id': req.body.contributor })
+            let user = await userService.findOne({ '_id': req.params.user_id })
             if (!user) throw new NotFoundError('user.errors.user_notfound');
 
             let contributor = req.body.contributor;
@@ -497,9 +496,8 @@ class ResumeController extends Controller {
                 contributors = resume.contributors;
             }
 
-            if (!contributors.includes(contributor)) {
-                throw new BadRequestError('resume.errors.contributor_not_exists');
-            }
+            if (!contributors.includes(contributor)) throw new BadRequestError('resume.errors.contributor_not_exists');
+            
 
             resume.contributors = contributors.filter(e => e != contributor)
             await resume.save();

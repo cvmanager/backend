@@ -389,7 +389,7 @@ class ResumeValidation {
                 .isMongoId()
                 .withMessage('resume.validations.resume_id_invalid')
                 .trim(),
-            body('contributor')
+            param('user_id')
                 .notEmpty()
                 .withMessage('resume.validations.hire_status_required')
                 .isMongoId()
@@ -407,7 +407,7 @@ class ResumeValidation {
                 .isMongoId()
                 .withMessage('resume.validations.resume_id_invalid')
                 .trim(),
-            body('contributor')
+            param('user_id')
                 .notEmpty()
                 .withMessage('resume.validations.hire_status_required')
                 .isMongoId()
