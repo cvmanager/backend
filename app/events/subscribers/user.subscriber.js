@@ -1,7 +1,7 @@
 import userService from "../../helper/service/user.service.js";
 import EventEmitter from "../emitter.js";
 
-export const events = {
+export const UserEvents = {
     "LOGIN": "Login User",
     "SINGUP": "Singup User",
     "REFRESH": "",
@@ -11,12 +11,12 @@ export const events = {
     "UNBANNED": "UnBanned User"
 }
 
-EventEmitter.on(events.LOGIN, login);
-EventEmitter.on(events.SINGUP, signup);
-EventEmitter.on(events.BANNED, banned);
-EventEmitter.on(events.UNBANNED, unbanned);
-EventEmitter.on(events.LOGOUT, logout);
-EventEmitter.on(events.EDIT_USER, editUser);
+EventEmitter.on(UserEvents.LOGIN, login);
+EventEmitter.on(UserEvents.SINGUP, signup);
+EventEmitter.on(UserEvents.BANNED, banned);
+EventEmitter.on(UserEvents.UNBANNED, unbanned);
+EventEmitter.on(UserEvents.LOGOUT, logout);
+EventEmitter.on(UserEvents.EDIT_USER, editUser);
 
 
 function login(user, access_token, refresh_token) {

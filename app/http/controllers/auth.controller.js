@@ -1,7 +1,6 @@
 import bcrypt from 'bcrypt'
 
 import { generateJwtToken, generateJwtRefeshToken } from '../../helper/jwt.js'
-import NotFoundError from '../../exceptions/NotFoundError.js';
 import BadRequestError from '../../exceptions/BadRequestError.js';
 import redisClient from '../../helper/redis_client.js';
 import AppResponse from '../../helper/response.js';
@@ -9,7 +8,7 @@ import User from '../../models/user.model.js';
 import Controller from './controller.js';
 import env from '../../helper/env.js';
 import EventEmitter from '../../events/emitter.js';
-import { events } from '../../events/subscribers/user.subscriber.js';
+import { UserEvents } from '../../events/subscribers/user.subscriber.js';
 import roleService from '../../helper/service/role.service.js';
 import userService from '../../helper/service/user.service.js';
 
@@ -46,7 +45,7 @@ class AuthController extends Controller {
             const access_token = await generateJwtToken({ _id: user._id, role: user.role })
             const refresh_token = await generateJwtRefeshToken({ _id: user._id, role: user.role });
 
-            EventEmitter.emit(events.LOGIN, user, access_token, refresh_token);
+            EventEmitter.emit(UserEvents.LOGIN, user, access_token, refresh_token);
             AppResponse.builder(res).message('auth.messages.success_login').data({ access_token, refresh_token }).send();
         } catch (err) {
             next(err);
@@ -87,7 +86,7 @@ class AuthController extends Controller {
             const access_token = await generateJwtToken({ _id: user._id, role: [ownerRole._id] })
             const refresh_token = await generateJwtRefeshToken({ _id: user._id, role: [ownerRole._id]});
 
-            EventEmitter.emit(events.SINGUP, user, access_token, refresh_token);
+            EventEmitter.emit(UserEvents.SINGUP, user, access_token, refresh_token);
             AppResponse.builder(res).status(201).message("auth.messages.user_successfully_created").data({ access_token, refresh_token }).send();
         } catch (err) {
             next(err);
@@ -141,7 +140,7 @@ class AuthController extends Controller {
             const redisKey = req.user._id.toString() + env("REDIS_KEY_REF_TOKENS")
             await redisClient.sRem(redisKey, token);
 
-            EventEmitter.emit(events.LOGOUT, token);
+            EventEmitter.emit(UserEvents.LOGOUT, token);
             AppResponse.builder(res).message("auth.messages.success_logout").send();
         } catch (err) {
             next(err);
