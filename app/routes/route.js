@@ -32,23 +32,30 @@ import provinceIdRouter from './provinceId.route.js'
 
 const router = express.Router({ mergeParams: true });
 
-
 router.use('/auth', authRouter)
 
-router.use('/users', verifyToken, canAccess, userRouter)
-router.use('/users/:id', verifyToken, canAccess, userAccess, userIdRouter)
+router.use('/cities', verifyToken, canAccess, cityRouter)
 
 router.use('/companies/:id', verifyToken, canAccess, companyAccess, companyIdRouter)
 router.use('/companies', verifyToken, canAccess, companyAccess, companyRouter)
 
-router.use('/projects/:id', verifyToken, canAccess, projectAccess, projectIdRouter)
-router.use('/projects', verifyToken, canAccess, projectAccess, projectRouter)
+router.use('/users', verifyToken, canAccess, userRouter)
+router.use('/users/:id', verifyToken, canAccess, userAccess, userIdRouter)
+
+router.use('/constant', verifyToken, constantRouter)
+
+router.use('/permissions/:id', verifyToken, canAccess, permissionIdRouter)
+router.use('/permissions', verifyToken, canAccess, permissionRouter)
 
 router.use('/positions/:id', verifyToken, canAccess, positionAccess, positionIdRouter)
 router.use('/positions', verifyToken, canAccess, positionAccess, positionRouter)
 
-router.use('/permissions/:id', verifyToken, canAccess, permissionIdRouter)
-router.use('/permissions', verifyToken, canAccess, permissionRouter)
+router.use('/projects/:id', verifyToken, canAccess, projectAccess, projectIdRouter)
+router.use('/projects', verifyToken, canAccess, projectAccess, projectRouter)
+
+router.use('/provinces/:id', verifyToken, canAccess, provinceIdRouter)
+router.use('/provinces', verifyToken, canAccess, provinceRouter)
+
 
 router.use('/resumes/:resume_id/interviews/:id', verifyToken, interviewIdRouter)
 router.use('/resumes/:resume_id/interviews', verifyToken, interviewRouter)
@@ -59,11 +66,8 @@ router.use('/roles/:id', verifyToken, canAccess, roleIdRouter)
 router.use('/roles', verifyToken, canAccess, roleRouter)
 
 router.use('/tags' ,  verifyToken,canAccess,TagRouter)
-router.use('/constant', verifyToken, constantRouter)
 
-router.use('/provinces/:id', verifyToken, canAccess, provinceIdRouter)
-router.use('/provinces', verifyToken, canAccess, provinceRouter)
 
-router.use('/cities', verifyToken, canAccess, cityRouter)
+
 
 export default router;
