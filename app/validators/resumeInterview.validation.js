@@ -5,7 +5,7 @@ import i18n from '../middlewares/lang.middleware.js';
 
 
 
-class InterviewValidation {
+class ResumeInterviewValidation {
 
     index() {
         return [
@@ -195,4 +195,4 @@ class InterviewValidation {
 
 }
 
-export default new InterviewValidation();
+export default new ResumeInterviewValidation();

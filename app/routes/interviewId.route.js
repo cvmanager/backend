@@ -1,12 +1,12 @@
 import express from 'express'
-import InterviewController from '../http/controllers/interview.controller.js';
-import InterviewValidation from '../validators/interview.validation.js';
+import ResumeInterviewController from '../http/controllers/resumeInterview.controller.js';
+import ResumeInterviewValidation from '../validators/resumeInterview.validation.js';
 
-const interviewIdRouter = express.Router({ mergeParams: true });
+const resumeInterviewIdRouter = express.Router({ mergeParams: true });
 
-interviewIdRouter
-    .get('/', InterviewValidation.find(), InterviewController.find)
-    .patch('/', InterviewValidation.update(), InterviewController.update)
-    .delete('/', InterviewValidation.remove(), InterviewController.delete)
+resumeInterviewIdRouter
+    .get('/', ResumeInterviewValidation.find(), ResumeInterviewController.find)
+    .patch('/', ResumeInterviewValidation.update(), ResumeInterviewController.update)
+    .delete('/', ResumeInterviewValidation.remove(), ResumeInterviewController.delete)
 
-export default interviewIdRouter
+export default resumeInterviewIdRouter

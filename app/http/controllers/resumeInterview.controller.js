@@ -7,7 +7,7 @@ import AppResponse from '../../helper/response.js';
 import Controller from './controller.js';
 import { mergeQuery } from '../../helper/mergeQuery.js';
 
-class InterviewController extends Controller {
+class ResumeInterviewController extends Controller {
 
     /**
     * GET /resumes/{resume_id}/interviews
@@ -190,4 +190,4 @@ class InterviewController extends Controller {
 
 }
 
-export default new InterviewController
+export default new ResumeInterviewController
