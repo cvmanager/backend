@@ -6,7 +6,7 @@ import User from '../../models/user.model.js';
 import Company from '../../models/company.model.js';
 import LoginLog from '../../models/loginLog.model.js';
 import Controller from './controller.js';
-import { events } from '../../events/subscribers/user.subscriber.js';
+import { UserEvents } from '../../events/subscribers/user.subscriber.js';
 import bcrypt from 'bcrypt'
 import { mergeQuery } from '../../helper/mergeQuery.js';
 import userService from '../../helper/service/user.service.js';
@@ -124,7 +124,7 @@ class UserController extends Controller {
             user.banned_at = new Date().toISOString();
             await user.save();
 
-            EventEmitter.emit(events.BANNED, user)
+            EventEmitter.emit(UserEvents.BANNED, user)
             AppResponse.builder(res).message('user.messages.user_successfully_blocked').data(user).send();
 
         } catch (err) {
@@ -155,7 +155,7 @@ class UserController extends Controller {
             user.banned_at = null;
             await user.save();
 
-            EventEmitter.emit(events.UNBANNED, user)
+            EventEmitter.emit(UserEvents.UNBANNED, user)
             AppResponse.builder(res).message('user.messages.user_successfully_unblocked').data(user).send();
 
         } catch (err) {
@@ -328,7 +328,7 @@ class UserController extends Controller {
             user.email = req.body.email
             await user.save();
 
-            EventEmitter.emit(events.EDIT_USER, user);
+            EventEmitter.emit(UserEvents.EDIT_USER, user);
 
             AppResponse.builder(res).status(200).data(user).message('user.messages.user_successfuly_edited').send();
         } catch (err) {

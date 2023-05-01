@@ -1,4 +1,4 @@
-import { events } from '../../events/subscribers/interviews.subscriber.js';
+import { ResumesInterviewEvents } from '../../events/subscribers/resumesInterviews.subscriber.js';
 import Interview from '../../models/interview.model.js';
 import Resume from '../../models/resume.model.js';
 import NotFoundError from '../../exceptions/NotFoundError.js';
@@ -103,7 +103,7 @@ class ResumeInterviewController extends Controller {
             req.body.event_time = new Date(req.body.event_time)
             req.body.resume_id = req.params.resume_id;
             let interview = await Interview.create(req.body)
-            EventEmitter.emit(events.CREATE, interview)
+            EventEmitter.emit(ResumesInterviewEvents.CREATE, interview)
 
             AppResponse.builder(res).status(201).message("interview.messages.interview_successfully_created").data(interview).send();
         } catch (err) {
@@ -142,7 +142,7 @@ class ResumeInterviewController extends Controller {
 
             await Interview.findByIdAndUpdate(req.params.id, req.body, { new: true })
                 .then(interview => {
-                    EventEmitter.emit(events.UPDATE, interview);
+                    EventEmitter.emit(ResumesInterviewEvents.UPDATE, interview);
                     AppResponse.builder(res).message("interview.messages.interview_successfully_updated").data(interview).send();
                 })
                 .catch(err => {
@@ -179,7 +179,7 @@ class ResumeInterviewController extends Controller {
             if (!interview) throw new NotFoundError('interview.errors.interview_notfound');
 
             await interview.delete(req.user._id);
-            EventEmitter.emit(events.DELETE, interview)
+            EventEmitter.emit(ResumesInterviewEvents.DELETE, interview)
 
 
             AppResponse.builder(res).message("interview.messages.interview_successfully_deleted").data(interview).send();

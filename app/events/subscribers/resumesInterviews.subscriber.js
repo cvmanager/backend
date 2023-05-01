@@ -1,15 +1,15 @@
 import EventEmitter from '../emitter.js'
 import resumeService from '../../helper/service/resume.service.js'
 
-export const events = {
+export const ResumesInterviewEvents = {
     "CREATE": "New Interview",
     "DELETE": "Delete Interview",
     "UPDATE": "Update Interview Info",
 }
 
-EventEmitter.on(events.CREATE, create)
-EventEmitter.on(events.DELETE, softdelete)
-EventEmitter.on(events.UPDATE, update)
+EventEmitter.on(ResumesInterviewEvents.CREATE, create)
+EventEmitter.on(ResumesInterviewEvents.DELETE, softdelete)
+EventEmitter.on(ResumesInterviewEvents.UPDATE, update)
 
 
 async function create(Interview) {
@@ -20,7 +20,7 @@ async function create(Interview) {
 
 
 function softdelete(Interview) {
-    console.log(events.DELETE + " event called", Interview)
+    console.log(ResumesInterviewEvents.DELETE + " event called", Interview)
 }
 
 

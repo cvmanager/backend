@@ -9,7 +9,7 @@ import AppResponse from '../../helper/response.js';
 import Controller from './controller.js';
 import Manager from '../../models/manager.model.js'
 import EventEmitter from '../../events/emitter.js';
-import { events } from '../../events/subscribers/projects.subscriber.js';
+import { ProjectEvents } from '../../events/subscribers/projects.subscriber.js';
 import Resume from '../../models/resume.model.js';
 import { mergeQuery } from '../../helper/mergeQuery.js';
 import projectService from '../../helper/service/project.service.js';
@@ -111,7 +111,7 @@ class ProjectController extends Controller {
 
             req.body.created_by = req.user._id;
             project = await Project.create(req.body);
-            EventEmitter.emit(events.CREATE, project)
+            EventEmitter.emit(ProjectEvents.CREATE, project)
 
             AppResponse.builder(res).status(201).message("project.messages.project_successfully_created").data(project).send();
         } catch (err) {
@@ -143,7 +143,7 @@ class ProjectController extends Controller {
 
             await Project.findByIdAndUpdate(req.params.id, req.body, { new: true })
                 .then(project => {
-                    EventEmitter.emit(events.UPDATE, project)
+                    EventEmitter.emit(ProjectEvents.UPDATE, project)
                     AppResponse.builder(res).message("project.messages.project_successfully_updated").data(project).send()
                 })
                 .catch(err => next(err));
@@ -169,7 +169,7 @@ class ProjectController extends Controller {
             let project = await projectService.findByParamId(req)
 
             await project.delete(req.user._id);
-            EventEmitter.emit(events.DELETE, project)
+            EventEmitter.emit(ProjectEvents.DELETE, project)
 
             AppResponse.builder(res).message("project.messages.project_successfully_deleted").data(project).send();
         } catch (err) {
@@ -204,7 +204,7 @@ class ProjectController extends Controller {
             const projectManagerRole = await roleService.findOne({ name: "Project Manager" })
             await userService.addRole(user._id, projectManagerRole._id)
 
-            EventEmitter.emit(events.SET_MANAGER, project)
+            EventEmitter.emit(ProjectEvents.SET_MANAGER, project)
             AppResponse.builder(res).status(201).message("project.messages.project_manager_successfully_updated").data(project).send();
         } catch (err) {
             next(err);
@@ -236,7 +236,7 @@ class ProjectController extends Controller {
             if (!manager) throw new BadRequestError("project.errors.the_user_is_not_an_manager_for_project");
             if (manager.type === 'owner') throw new BadRequestError("project.errors.the_owner_manager_cannot_be_deleted");
 
-            EventEmitter.emit(events.UNSET_MANAGER, project)
+            EventEmitter.emit(ProjectEvents.UNSET_MANAGER, project)
             await manager.delete(req.user._id);
 
             let isProjectManager = await Manager.findOne({ 'entity': "projects", 'user_id': user.id, type: 'moderator' });
@@ -355,7 +355,7 @@ class ProjectController extends Controller {
             project.is_active = true;
             await project.save();
 
-            EventEmitter.emit(events.ACTIVE, project)
+            EventEmitter.emit(ProjectEvents.ACTIVE, project)
             AppResponse.builder(res).message("project.messages.project_successfully_activated").data(project).send()
         } catch (err) {
             next(err);
@@ -384,7 +384,7 @@ class ProjectController extends Controller {
             project.is_active = false;
             await project.save();
 
-            EventEmitter.emit(events.DEACTIVE, project)
+            EventEmitter.emit(ProjectEvents.DEACTIVE, project)
             AppResponse.builder(res).message("project.messages.project_successfully_deactivated").data(project).send()
         } catch (err) {
             next(err);

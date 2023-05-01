@@ -28,14 +28,14 @@ function signup(user, access_token, refresh_token) {
 }
 
 function banned(user) {
-    console.log(events.BANNED + " event called", user)
+    console.log(UserEvents.BANNED + " event called", user)
 }
 
 function editUser(user) {
-    console.log(events.EDIT_USER + " event called", user)
+    console.log(UserEvents.EDIT_USER + " event called", user)
 }
 function unbanned(user) {
-    console.log(events.UNBANNED + " event called", user)
+    console.log(UserEvents.UNBANNED + " event called", user)
 }
 
 function logout(access_token) {
