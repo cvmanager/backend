@@ -15,78 +15,43 @@ class UserValidation {
     }
     find() {
         return [
-            param('id')
-                .notEmpty()
-                .withMessage('user.validations.user_id_required')
-                .isMongoId()
-                .withMessage('user.validations.user_id_invalid')
-                .trim(),
+            param('id').notEmpty().isMongoId().withMessage('user.validations.user_id_invalid').trim(),
             generalValidator
         ];
     }
 
     updateProfileImage() {
         return [
-            param('id')
-                .notEmpty()
-                .withMessage('user.validations.user_id_required')
-                .isMongoId()
-                .withMessage('user.validations.user_id_invalid')
-                .trim(),
+            param('id').notEmpty().isMongoId().withMessage('user.validations.user_id_invalid').trim(),
             generalValidator
         ];
     }
 
     ban() {
         return [
-            param('id')
-                .notEmpty()
-                .withMessage('user.validations.user_id_required_ban')
-                .isMongoId()
-                .withMessage('user.validations.user_id_invalid_ban')
-                .trim(),
+            param('id').notEmpty().isMongoId().withMessage('user.validations.user_id_invalid_ban').trim(),
             generalValidator
         ];
     }
 
     unban() {
         return [
-            param('id')
-                .notEmpty()
-                .withMessage('user.validations.user_id_required')
-                .isMongoId()
-                .withMessage('user.validations.user_id_invalid')
-                .trim(),
+            param('id').notEmpty().isMongoId().withMessage('user.validations.user_id_invalid').trim(),
             generalValidator
         ];
     }
 
     changePassword() {
         return [
-            body('old_password')
-                .notEmpty()
-                .withMessage('user.errors.old_password_cant_be_empty')
-                .isLength({ min: 8, max: 10 })
-                .withMessage('user.errors.old_password_length_not_confirm')
-                .trim(),
-            body('password')
-                .notEmpty()
-                .withMessage('user.errors.password_cant_be_empty')
-                .isLength({ min: 8, max: 10 })
-                .withMessage('user.errors.password_length_not_confirm')
-                .trim(),
+            body('old_password').isLength({ min: 8, max: 10 }).withMessage('user.errors.old_password_length_not_confirm').trim(),
+            body('password').isLength({ min: 8, max: 10 }).withMessage('user.errors.password_length_not_confirm').trim(),
             generalValidator
         ]
     }
 
     loginHistory() {
         return [
-            param('id')
-                .notEmpty()
-                .withMessage('user.validations.user_id_required')
-                .isMongoId()
-                .withMessage('user.validations.user_id_invalid')
-                .trim(),
+            param('id').notEmpty().isMongoId().withMessage('user.validations.user_id_invalid').trim(),
             query('page')
                 .optional({ nullable: true, checkFalsy: true })
                 .isNumeric().withMessage('user.validations.user_page_number').trim(),
@@ -99,42 +64,18 @@ class UserValidation {
 
     edit() {
         return [
-            param('id')
-                .notEmpty()
-                .withMessage('user.validations.user_id_required')
-                .isMongoId()
-                .withMessage('user.validations.user_id_invalid')
-                .trim(),
-            body('firstname')
-                .isLength({ min: 3, max: 80 })
-                .withMessage('auth.validations.firstname_length')
-                .trim(),
-            body('lastname')
-                .isLength({ min: 3, max: 80 })
-                .withMessage('auth.validations.lastname_length')
-                .trim(),
-            body('username')
-                .notEmpty()
-                .withMessage('auth.validations.username_required')
-                .trim(),
-            body('email')
-                .notEmpty()
-                .withMessage('auth.validations.email_required')
-                .isEmail()
-                .withMessage('auth.validations.email_invalid')
-                .trim(),
+            param('id').notEmpty().isMongoId().withMessage('user.validations.user_id_invalid').trim(),
+            body('firstname').isLength({ min: 3, max: 80 }).withMessage('auth.validations.firstname_length').trim(),
+            body('lastname').isLength({ min: 3, max: 80 }).withMessage('auth.validations.lastname_length').trim(),
+            body('username').notEmpty().withMessage('auth.validations.username_required').trim(),
+            body('email').notEmpty().isEmail().withMessage('auth.validations.email_invalid').trim(),
             generalValidator
         ]
     }
 
     companies() {
         return [
-            param('id')
-                .notEmpty()
-                .withMessage('user.validations.user_id_required')
-                .isMongoId()
-                .withMessage('user.validations.user_id_invalid')
-                .trim(),
+            param('id').notEmpty().isMongoId().withMessage('user.validations.user_id_invalid').trim(),
             query('page')
                 .optional({ nullable: true, checkFalsy: true })
                 .isNumeric().withMessage('user.validations.user_page_number').trim(),

@@ -245,12 +245,7 @@ class ResumeValidation {
 
     call_history() {
         return [
-            param('id')
-                .notEmpty()
-                .withMessage('resume.validations.resume_id_required')
-                .isMongoId()
-                .withMessage('resume.validations.resume_id_invalid')
-                .trim(),
+            param('id').notEmpty().isMongoId().withMessage('resume.validations.resume_id_invalid').trim(),
             body('result')
                 .notEmpty()
                 .withMessage('resume.validations.result_required')
@@ -291,12 +286,7 @@ class ResumeValidation {
 
     remove() {
         return [
-            param('id')
-                .notEmpty()
-                .withMessage('resume.validations.resume_id_required')
-                .isMongoId()
-                .withMessage('resume.validations.resume_id_invalid')
-                .trim(),
+            param('id').notEmpty().isMongoId().withMessage('resume.validations.resume_id_invalid').trim(),
             generalValidator
         ];
     }
@@ -304,52 +294,29 @@ class ResumeValidation {
 
     find() {
         return [
-            param('id')
-                .notEmpty()
-                .withMessage('resume.validations.resume_id_required')
-                .isMongoId()
-                .withMessage('resume.validations.resume_id_invalid')
-                .trim(),
+            param('id').notEmpty().isMongoId().withMessage('resume.validations.resume_id_invalid').trim(),
             generalValidator
         ];
     }
 
     upload_file() {
         return [
-            param('id')
-                .notEmpty()
-                .withMessage('resume.validation.resume_id_required')
-                .isMongoId()
-                .withMessage('resume.validation.resume_id_invalid')
-                .trim(),
-            body('file')
-                .notEmpty()
-                .withMessage('resume.validation.file_required')
-                .trim(),
+            param('id').notEmpty().isMongoId().withMessage('resume.validation.resume_id_invalid').trim(),
+            body('file').notEmpty().withMessage('resume.validation.file_required').trim(),
             generalValidator
         ];
     }
 
     comments() {
         return [
-            param('id')
-                .notEmpty()
-                .withMessage('resume.validations.resume_id_required')
-                .isMongoId()
-                .withMessage('resume.validations.resume_id_invalid')
-                .trim(),
+            param('id').notEmpty().isMongoId().withMessage('resume.validations.resume_id_invalid').trim(),
             generalValidator
         ];
     }
 
     addComments() {
         return [
-            param('id')
-                .notEmpty()
-                .withMessage('resume.validations.resume_id_required')
-                .isMongoId()
-                .withMessage('resume.validations.resume_id_invalid')
-                .trim(),
+            param('id').notEmpty().isMongoId().withMessage('resume.validations.resume_id_invalid').trim(),
             body('body')
                 .isLength({ min: 5, max: 1000 })
                 .withMessage('resume.validations.max_comment_length')
@@ -360,12 +327,7 @@ class ResumeValidation {
 
     hireStatus() {
         return [
-            param('id')
-                .notEmpty()
-                .withMessage('resume.validations.resume_id_required')
-                .isMongoId()
-                .withMessage('resume.validations.resume_id_invalid')
-                .trim(),
+            param('id').notEmpty().isMongoId().withMessage('resume.validations.resume_id_invalid').trim(),
             body('hire_status')
                 .isIn(i18n.__("resume.enums.hire_status"))
                 .withMessage('resume.validations.hire_status_value_not_valid')
@@ -383,24 +345,16 @@ class ResumeValidation {
 
     addContributor() {
         return [
-            param('id')
-                .notEmpty().isMongoId().withMessage('resume.validations.resume_id_invalid')
-                .trim(),
-            param('user_id')
-                .notEmpty().isMongoId().withMessage('resume.validation.contributor_id_invalid')
-                .trim(),
+            param('id').notEmpty().isMongoId().withMessage('resume.validations.resume_id_invalid').trim(),
+            param('user_id').notEmpty().isMongoId().withMessage('resume.validation.contributor_id_invalid').trim(),
             generalValidator
         ];
     }
 
     removeContributor() {
         return [
-            param('id')
-                .notEmpty().isMongoId().withMessage('resume.validations.resume_id_invalid')
-                .trim(),
-            param('user_id')
-                .notEmpty().isMongoId().withMessage('resume.validation.contributor_id_invalid')
-                .trim(),
+            param('id').notEmpty().isMongoId().withMessage('resume.validations.resume_id_invalid').trim(),
+            param('user_id').notEmpty().isMongoId().withMessage('resume.validation.contributor_id_invalid').trim(),
             generalValidator
         ];
     }
@@ -415,21 +369,16 @@ class ResumeValidation {
 
     set_tag() {
         return [
-            param('resume_id')
-                .notEmpty().isMongoId().withMessage('resume.validations.resume_id_invalid').trim(),
-            param('id')
-                .notEmpty().isMongoId().withMessage('resume.validations.resume_id_invalid')
-                .trim(),
+            param('resume_id').notEmpty().isMongoId().withMessage('resume.validations.resume_id_invalid').trim(),
+            param('id').notEmpty().isMongoId().withMessage('resume.validations.resume_id_invalid').trim(),
             generalValidator
         ];
     }
 
     unset_tag() {
         return [
-            param('resume_id')
-                .notEmpty().isMongoId().withMessage('resume.validations.resume_id_invalid').trim(),
-            param('id')
-                .notEmpty().isMongoId().withMessage('tag.validations.tag_id_invalid').trim(),
+            param('resume_id').notEmpty().isMongoId().withMessage('resume.validations.resume_id_invalid').trim(),
+            param('id').notEmpty().isMongoId().withMessage('tag.validations.tag_id_invalid').trim(),
             generalValidator
         ];
     }

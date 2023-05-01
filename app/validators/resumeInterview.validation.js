@@ -27,18 +27,8 @@ class ResumeInterviewValidation {
 
     create() {
         return [
-            param('resume_id')
-                .notEmpty()
-                .withMessage('interview.validations.resume_id_required')
-                .isMongoId()
-                .withMessage('interview.validations.resume_id_invalid')
-                .trim(),
-            body('event_time')
-                .notEmpty()
-                .withMessage('interview.validations.event_time_required')
-                .isDate()
-                .withMessage('interview.validations.event_time_invalid')
-                .trim(),
+            param('resume_id').notEmpty().isMongoId().withMessage('interview.validations.resume_id_invalid').trim(),
+            body('event_time').notEmpty().isDate().withMessage('interview.validations.event_time_invalid').trim(),
             body('event_time').toDate().custom((eventTime, { req }) => {
                 if (eventTime) {
                     let nextYear = new Date(new Date().setFullYear(new Date().getFullYear() + 1));
@@ -159,36 +149,16 @@ class ResumeInterviewValidation {
 
     find() {
         return [
-            param('resume_id')
-                .notEmpty()
-                .withMessage('interview.validations.resume_id_required')
-                .isMongoId()
-                .withMessage('interview.validations.resume_id_invalid')
-                .trim(),
-            param('id')
-                .notEmpty()
-                .withMessage('interview.validations.interview_id_required')
-                .isMongoId()
-                .withMessage('interview.validations.interview_id_invalid')
-                .trim(),
+            param('resume_id').notEmpty().isMongoId().withMessage('interview.validations.resume_id_invalid').trim(),
+            param('id').notEmpty().isMongoId().withMessage('interview.validations.interview_id_invalid').trim(),
             generalValidator
         ];
     }
 
     remove() {
         return [
-            param('resume_id')
-                .notEmpty()
-                .withMessage('interview.validations.resume_id_required')
-                .isMongoId()
-                .withMessage('interview.validations.resume_id_invalid')
-                .trim(),
-            param('id')
-                .notEmpty()
-                .withMessage('interview.validations.interview_id_required')
-                .isMongoId()
-                .withMessage('interview.validations.interview_id_invalid')
-                .trim(),
+            param('resume_id').notEmpty().isMongoId().withMessage('interview.validations.resume_id_invalid').trim(),
+            param('id').notEmpty().isMongoId().withMessage('interview.validations.interview_id_invalid').trim(),
             generalValidator
         ];
     }
