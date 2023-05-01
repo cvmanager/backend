@@ -384,16 +384,10 @@ class ResumeValidation {
     addContributor() {
         return [
             param('id')
-                .notEmpty()
-                .withMessage('resume.validations.resume_id_required')
-                .isMongoId()
-                .withMessage('resume.validations.resume_id_invalid')
+                .notEmpty().isMongoId().withMessage('resume.validations.resume_id_invalid')
                 .trim(),
             param('user_id')
-                .notEmpty()
-                .withMessage('resume.validations.hire_status_required')
-                .isMongoId()
-                .withMessage('resume.validation.contributor_id_invalid')
+                .notEmpty().isMongoId().withMessage('resume.validation.contributor_id_invalid')
                 .trim(),
             generalValidator
         ];
@@ -402,16 +396,10 @@ class ResumeValidation {
     removeContributor() {
         return [
             param('id')
-                .notEmpty()
-                .withMessage('resume.validations.resume_id_required')
-                .isMongoId()
-                .withMessage('resume.validations.resume_id_invalid')
+                .notEmpty().isMongoId().withMessage('resume.validations.resume_id_invalid')
                 .trim(),
             param('user_id')
-                .notEmpty()
-                .withMessage('resume.validations.hire_status_required')
-                .isMongoId()
-                .withMessage('resume.validation.contributor_id_invalid')
+                .notEmpty().isMongoId().withMessage('resume.validation.contributor_id_invalid')
                 .trim(),
             generalValidator
         ];

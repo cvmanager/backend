@@ -445,20 +445,14 @@ class ResumeController extends Controller {
         try {
             let resume = await resumeService.findByParamId(req)
 
-            let user = await userService.findOne({ '_id': req.params.user_id })
+            let contributor_id = req.params.contributor;
+            let user = await userService.findOne({ '_id': contributor_id })
             if (!user) throw new NotFoundError('user.errors.user_notfound');
 
-            let contributor = req.body.contributor;
-            let contributors = [];
-            if (resume.contributors) {
-                contributors = resume.contributors;
-            }
 
-            if (contributors.includes(contributor)) throw new BadRequestError('resume.errors.contributor_could_not_be_duplicate');
+            if (resume.contributors && resume.contributors.includes(contributor_id)) throw new BadRequestError('resume.errors.contributor_could_not_be_duplicate');
             
-
-            contributors.push(req.body.contributor);
-            resume.contributors = contributors;
+            resume.contributors.push(contributor_id) ;
             await resume.save();
 
             AppResponse.builder(res).message("resume.messages.contributor_successfully_added").data(resume).send();
@@ -557,13 +551,12 @@ class ResumeController extends Controller {
     async setTag(req, res, next) {
         try {
             let resume = await resumeService.findByParamId(req);
-            let tag = await TagService.findOne(req.body.tag_id);
+            let tag = await TagService.findOne(req.params.tag_id);
 
             let tags = [];
-            if (resume.tags) tags = resume.tags.filter(value => JSON.stringify(value) !== '{}');
             if (tags.some(value => value.id == tag._id)) throw new BadRequestError('resume.errors.tag_could_not_be_duplicate');
 
-            tags.push({ id: tag._id, name: tag.name, color: tag.color })
+            tags.push(req.params.tag_id)
             resume.tags = tags;
             await resume.save();
 
@@ -596,7 +589,7 @@ class ResumeController extends Controller {
     async unsetTag(req, res, next) {
         try {
             let resume = await resumeService.findByParamId(req);
-            let tag = await TagService.findOne(req.body.tag_id);
+            let tag = await TagService.findOne(req.params.tag_id);
 
             if (!resume.tags.some(value => value.id == tag)) throw new BadRequestError('resume.errors.tag_not_exists');
 
