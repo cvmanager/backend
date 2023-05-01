@@ -373,7 +373,7 @@ class ResumeController extends Controller {
             }
 
             let recall_at = null
-            if(req.body.recall_at !== undefined && req.body.recall_at !== ""){
+            if (req.body.recall_at !== undefined && req.body.recall_at !== "") {
                 recall_at = new Date(req.body.recall_at)
                 callHistory.recall_at = recall_at
             }
@@ -541,13 +541,14 @@ class ResumeController extends Controller {
     }
 
     /**
-    * PATCH /resumes/{id}/tag
+    * PATCH /resumes/{id}/tag/{tag_id}
     * 
     * @summary add comments for resume in table
     * @tags Resume
     * @security BearerAuth
     * 
     * @param  { string } id.path.required - resume id
+    * @param  { string } tag_id.path.required - tag id
     * @param { tag.create } request.body - resume info - application/json
     * 
     * @return { tag.success }     201 - success response
@@ -556,10 +557,10 @@ class ResumeController extends Controller {
     * @return { message.NotFoundError }     404 - not found respone
     * @return { message.server_error  }     500 - Server Error
     */
-    async addTags(req, res, next) {
+    async setTag(req, res, next) {
         try {
             let resume = await resumeService.findByParamId(req);
-            let tag = await TagService.checkAndReturnTag(req.body.tag);
+            let tag = await TagService.findOne(req.body.tag_id);
 
             let tags = [];
             if (resume.tags) tags = resume.tags.filter(value => JSON.stringify(value) !== '{}');
@@ -582,13 +583,14 @@ class ResumeController extends Controller {
     }
 
     /**
-    * DELETE /resumes/{id}/tag
+    * DELETE /resumes/{id}/tag/{tag_id}
     * 
     * @summary add comments for resume in table
     * @tags Resume
     * @security BearerAuth
     * 
     * @param  { string } id.path.required - resume id
+    * @param  { string } tag_id.path.required - tag id
     * @param { tag.remove } request.body - resume info - application/json
     * 
     * @return { tag.success }     201 - success response
@@ -597,14 +599,13 @@ class ResumeController extends Controller {
     * @return { message.NotFoundError }     404 - not found respone
     * @return { message.server_error  }     500 - Server Error
     */
-    async removeTags(req, res, next) {
+    async unsetTag(req, res, next) {
         try {
             let resume = await resumeService.findByParamId(req);
+            let tag = await TagService.findOne(req.body.tag_id);
 
-            let tag = req.body.tag_id;
-            if (!resume.tags.some(value => value.id == tag)) {
-                throw new BadRequestError('resume.errors.tag_not_exists');
-            }
+            if (!resume.tags.some(value => value.id == tag)) throw new BadRequestError('resume.errors.tag_not_exists');
+            
             resume.tags = resume.tags.filter(e => e.id != tag)
             await resume.save();
 
@@ -633,12 +634,12 @@ class ResumeController extends Controller {
     async hired(req, res, next) {
         try {
             let resume = await resumeService.findByParamId(req);
-            if(resume.status === 'hired') throw new BadRequestError('resume.errors.resume_already_hired')
+            if (resume.status === 'hired') throw new BadRequestError('resume.errors.resume_already_hired')
 
             let fromDate = new Date(req.body.hired_from_date)
             let toDate = new Date(req.body.hired_to_date)
             if (fromDate > toDate) throw new BadRequestError('resume.errors.from_date_must_be_before_to_date');
-            
+
             resume.status_history.push({
                 old_status: resume.status,
                 new_status: 'hired',

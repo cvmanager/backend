@@ -19,8 +19,8 @@ resumeIdRouter
     .patch('/hire_status', ResumeValidation.hireStatus(), ResumeController.hireStatus)
     .patch('/add_contributor', ResumeValidation.addContributor(), ResumeController.addContributor)
     .patch('/remove_contributor', ResumeValidation.removeContributor(), ResumeController.removeContributor)
-    .patch('/tag', ResumeValidation.addTags(), ResumeController.addTags)
-    .delete('/tag', ResumeValidation.removeTags(), ResumeController.removeTags)
+    .patch('/tag/:tag_id', ResumeValidation.set_tag(), ResumeController.setTag)
+    .delete('/tag/:tag_id', ResumeValidation.unset_tag(), ResumeController.unsetTag)
     .patch('/hired', ResumeValidation.hired(), ResumeController.hired)
 
 export default resumeIdRouter
