@@ -36,7 +36,7 @@ class ProjectController extends Controller {
             if (query.length > 0) {
                 searchQuery = {
                     $or: [
-                        { name: { '$regex': query } },
+                        { name: { '$regex': new RegExp(query, "i") } },
                         { description: { '$regex': query } }
                     ]
                 }

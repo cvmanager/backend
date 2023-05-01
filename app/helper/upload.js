@@ -6,7 +6,7 @@ import BadRequestError from '../exceptions/BadRequestError.js';
 
 const config = {
     'image': {
-        types: ['image/jpeg', 'image/jpg', 'image/png'],
+        types: ['image/jpeg', 'image/jpg', 'image/png', 'image/svg+xml', 'image/gif'],
         maxSize: 0.6 * 1048576, // 1048576 Bytes = 1 MB
     },
     'file': {

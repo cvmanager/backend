@@ -23,7 +23,7 @@ const schema = new mongoose.Schema(
             required: true,
             unique: true,
         },
-        email : {type: String, trim: true, index: true, unique: true, sparse: true},
+        email: { type: String, trim: true, index: true, unique: true, sparse: true },
         password: {
             type: String,
             required: true,
@@ -51,6 +51,10 @@ const schema = new mongoose.Schema(
         role: {
             type: [mongoose.Schema.Types.ObjectId],
             ref: Role
+        },
+        fullname: {
+            type: String,
+            default: null
         }
     }
 );

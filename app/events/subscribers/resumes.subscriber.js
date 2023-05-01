@@ -21,8 +21,9 @@ EventEmitter.on(events.ADD_FILE, addFile)
 EventEmitter.on(events.ADD_TAG, addTag)
 
 
-function create(Resume) {
-    console.log(events.DELETE + " event called", Resume)
+async function create(Resume) {
+    await resumeService.fillIndexOfResume(Resume);
+    
 }
 
 

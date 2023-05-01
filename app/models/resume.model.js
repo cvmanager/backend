@@ -27,6 +27,10 @@ const schema = new mongoose.Schema(
             type: String,
             required: true
         },
+        fullname: {
+            type: String,
+            default: null
+        },
         gender: {
             type: String,
             required: true,
@@ -208,6 +212,7 @@ const schema = new mongoose.Schema(
         contributors: {
             type: Array,
             default: null,
+            ref: 'users'
         },
         summary_count: {
             type:

@@ -41,8 +41,8 @@ class ResumeController extends Controller {
             if (query.length > 0) {
                 searchQuery = {
                     $or: [
-                        { firstname: { '$regex': query } },
-                        { lastname: { '$regex': query } },
+                        { firstname: { '$regex': new RegExp(query, "i") } },
+                        { lastname: { '$regex': new RegExp(query, "i") } },
                         { email: { '$regex': query } },
                         { mobile: { '$regex': query } },
                         { education: { '$regex': query } },
@@ -58,7 +58,8 @@ class ResumeController extends Controller {
                 populate: [
                     { path: 'company_id', select: 'name' },
                     { path: 'project_id', select: 'name' },
-                    { path: 'created_by', select: ['firstname', 'lastname'] }
+                    { path: 'created_by', select: ['firstname', 'lastname'] },
+                    { path: 'contributors', select: ['firstname', 'lastname', 'avatar'] }
                 ]
             });
             AppResponse.builder(res).message("project.messages.resume_list_found").data(resumeList).send();
@@ -84,7 +85,11 @@ class ResumeController extends Controller {
     */
     async find(req, res, next) {
         try {
-            let resume = await Resume.findById(req.params.id).populate('created_by')
+            let resume = await Resume.findById(req.params.id)
+                .populate([
+                    { path: 'created_by' },
+                    { path: 'contributors', select: ['firstname', 'lastname', 'avatar'] }
+                ]);
             if (!resume) throw new NotFoundError('resume.error.resume_notfound');
 
             AppResponse.builder(res).message("resume.messages.project_found").data(resume).send();
@@ -123,7 +128,7 @@ class ResumeController extends Controller {
 
             let resume = await Resume.create(req.body)
 
-            EventEmitter.emit(events.NEW_RESUME, resume)
+            EventEmitter.emit(events.CREATE, resume)
 
             AppResponse.builder(res).status(201).message("resume.messages.resume_successfully_created").data(resume).send();
         } catch (err) {

@@ -32,8 +32,8 @@ class UserController extends Controller {
             if (query.length > 0) {
                 searchQuery = {
                     $or: [
-                        { firstname: { '$regex': query } },
-                        { lastname: { '$regex': query } }
+                        { firstname: { '$regex': new RegExp(query, "i") } },
+                        { lastname: { '$regex': new RegExp(query, "i") } }
                     ]
                 }
             }
@@ -74,12 +74,13 @@ class UserController extends Controller {
     }
 
     /**
-     * POST /users/avatar
+     * PATCH /users/{id}/avatar
      * @summary update user prifile image
      * @tags User
      * @security BearerAuth
      * 
-     * @param { user.avatar } request.body - user info - multipart/form-data
+     * @param { string } id.path.required - user id - application/json
+     * @param { user.avatar } request.body - user avatar - multipart/form-data
      * 
      * @return { user.success }              200 - update user profile
      * @return { message.badrequest_error }      400 - user not found
@@ -89,10 +90,10 @@ class UserController extends Controller {
     async uploadProfileImage(req, res, next) {
 
         try {
-            let user = await User.findById(req.user._id);
+            let user = await User.findById(req.params.id);
             if (!user) throw new NotFoundError('user.errors.user_notfound');
 
-            user = await User.findOneAndUpdate({ _id: req.user._id }, { avatar: req.body.avatar }, { new: true });
+            user = await User.findOneAndUpdate({ _id: user._id }, { avatar: req.body.avatar }, { new: true });
             AppResponse.builder(res).message("user.messages.profile_image_successfully_updated").data(user).send();
         } catch (err) {
             next(err);

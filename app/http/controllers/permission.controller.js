@@ -24,7 +24,7 @@ class PermissionController extends Controller {
         try {
             const { page = 1, size = 100, query = '' } = req.query
 
-            let searchQuery = (query.length > 0 ? { $or: [{ name: { '$regex': query } }] } : null);
+            let searchQuery = (query.length > 0 ? { $or: [{ name: { '$regex': new RegExp(query, "i") } }] } : null);
 
             const permissionList = await Permission.paginate(searchQuery, {
                 page: (page) || 1,

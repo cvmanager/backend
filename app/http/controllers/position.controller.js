@@ -38,7 +38,7 @@ class PositionController extends Controller {
         try {
             const { page = 1, size = 10, query = '' } = req.query
 
-            let searchQuery = (query.length > 0 ? { $or: [{ title: { '$regex': query } }] } : null);
+            let searchQuery = (query.length > 0 ? { $or: [{ title: { '$regex': new RegExp(query, "i") } }] } : null);
 
             searchQuery = mergeQuery(searchQuery, req.rbacQuery)
             const positionList = await Position.paginate(searchQuery, {
@@ -264,7 +264,6 @@ class PositionController extends Controller {
             let statuses = i18n.__("resume.enums.status");
             for (let status of statuses) {
                 let resumeList = Resume.find({ 'position_id': position._id, 'status': status })
-                    .select(['name', 'avatar', 'summary_count', 'rating', 'tags.name', 'contributors', 'index'])
                     .limit(size)
                     .sort([['index', 1]])
                     .populate([
