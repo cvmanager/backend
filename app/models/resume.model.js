@@ -27,6 +27,10 @@ const schema = new mongoose.Schema(
             type: String,
             required: true
         },
+        fullname: {
+            type: String,
+            default: null
+        },
         gender: {
             type: String,
             required: true,
@@ -251,9 +255,17 @@ const schema = new mongoose.Schema(
             type: Number,
             default: null,
             length: 1
-        }, 
-        fullname: {
+        },
+        how_to_cooperate: {
             type: String,
+            default: null
+        },
+        hired_to_date: {
+            type: mongoose.Schema.Types.Date,
+            default: null
+        },
+        hired_from_date: {
+            type: mongoose.Schema.Types.Date,
             default: null
         }
     }

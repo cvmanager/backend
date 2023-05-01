@@ -1571,6 +1571,141 @@ describe("Resumes Routes", () => {
         })
 
     })
+
+    describe(`PATCH /:id/hired`, () => {
+
+        let hiredResume;
+        beforeEach(async () => {
+            hiredResume = {
+                "how_to_cooperate": "trial",
+                "hired_from_date": faker.date.recent(),
+                "hired_to_date": faker.date.future(1),
+                "income": 1000000
+            }
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} if resume id is not MongoId`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/resumes/fakeId/hired`)
+                .set(`Authorization`, token)
+                .send(hiredResume);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.NOT_FOUND} if resume id is not valid`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${Types.ObjectId()}/hired`)
+                .set(`Authorization`, token)
+                .send(hiredResume);
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if how_to_cooperate is not send`, async () => {
+            delete hiredResume.how_to_cooperate
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${resume._id}/hired`)
+                .set(`Authorization`, token)
+                .send(hiredResume);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if how_to_cooperate is not in ${i18n.__("resume.enums.how_to_cooperate")}`, async () => {
+            hiredResume.how_to_cooperate = faker.random.alpha(5);
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${resume._id}/hired`)
+                .set(`Authorization`, token)
+                .send(hiredResume);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if hired_from_date is not send`, async () => {
+            delete hiredResume.hired_from_date
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${resume._id}/hired`)
+                .set(`Authorization`, token)
+                .send(hiredResume);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if hired_from_date is not date`, async () => {
+            hiredResume.hired_from_date = faker.random.alpha(5);
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${resume._id}/hired`)
+                .set(`Authorization`, token)
+                .send(hiredResume);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if hired_to_date is not send`, async () => {
+            delete hiredResume.hired_to_date
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${resume._id}/hired`)
+                .set(`Authorization`, token)
+                .send(hiredResume);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if hired_to_date is not date`, async () => {
+            hiredResume.hired_to_date = faker.random.alpha(5);
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${resume._id}/hired`)
+                .set(`Authorization`, token)
+                .send(hiredResume);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if income is not send`, async () => {
+            delete hiredResume.income
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${resume._id}/hired`)
+                .set(`Authorization`, token)
+                .send(hiredResume);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if income is not number`, async () => {
+            hiredResume.income = faker.random.alpha(5);
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${resume._id}/hired`)
+                .set(`Authorization`, token)
+                .send(hiredResume);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if hired_from_date is before hired_to_date`, async () => {
+            hiredResume.hired_from_date = faker.date.future(1);
+            hiredResume.hired_to_date = faker.date.recent();
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${resume._id}/hired`)
+                .set(`Authorization`, token)
+                .send(hiredResume);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} if resume status alredy hired`, async () => {
+            resumeItem = {
+                "_id": Types.ObjectId(),
+                "company_id": company._id,
+                "project_id": project._id,
+                "position_id": position._id,
+                "firstname": faker.name.firstName(),
+                "lastname": faker.name.lastName(),
+                "gender": "men",
+                "email": faker.internet.email(),
+                "birth_year": "1370",
+                "marital_status": "married",
+                "military_status": "included",
+                "mobile": faker.phone.number('989#########'),
+                "residence_city": Types.ObjectId(),
+                "work_city": Types.ObjectId(),
+                "education": "diploma",
+                "created_by": user._id,
+                "status": 'hired'
+            }
+            resumeData.addResume([resumeItem])
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${resumeItem._id}/hired`)
+                .set(`Authorization`, token)
+                .send(rejectResume);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.OK} if all data correct `, async () => {
+            const response = await request(app)
+            .patch(`/api/V1/resumes/${resume._id}/hired`)
+            .set(`Authorization`, token)
+                .send(hiredResume);
+            expect(response.statusCode).toBe(httpStatus.OK);
+        })
+    })
 })
 
 

@@ -474,6 +474,11 @@
 			"hire_status": [
 				"not_employed",
 				"hired_on"
+			],
+			"how_to_cooperate": [
+				"trial",
+				"contractual",
+				"projection"
 			]
 		},
 		"validations": {
@@ -516,7 +521,15 @@
 			"max_tag_length": "tag has be between 5 and 100 character",
 			"max_comment_length": "Comment has be between 5 and 1000 character",
 			"resume_page_number": "resume page must by number",
-			"resume_size_number": "resume size must by number"
+			"resume_size_number": "resume size must by number",
+			"how_to_cooperate_required": "how to cooperate is required",
+			"how_to_cooperate_invalid": "how to cooperate is not valid",
+			"hired_from_date_required": "from date required",
+			"hired_from_date_must_be_date": "from date must be date",
+			"hired_to_date_required": "to date required",
+			"hired_to_date_must_be_date": "to date must be date",
+			"income_required": "income required",
+			"income_is_number": "income is number"
 		},
 		"messages": {
 			"resume_successfully_created": "resume successfully created",
@@ -531,7 +544,9 @@
 			"resume_comments_notfound": "Sorry, Resume not have any comment",
 			"can_not_update_status_to_current": "It is not possible to update the status to the current status",
 			"tag_could_not_be_duplicate": "tag could not be duplicate",
-			"tag_not_exists": "tag not exists"
+			"tag_not_exists": "tag not exists",
+			"from_date_must_be_before_to_date" : "from date must be before to date",
+			"resume_already_hired" : "resume already hired"
 		}
 	},
 	"user": {
