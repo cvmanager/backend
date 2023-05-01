@@ -541,7 +541,7 @@ class ResumeController extends Controller {
     }
 
     /**
-    * PATCH /resumes/{id}/add-tags
+    * PATCH /resumes/{id}/tag
     * 
     * @summary add comments for resume in table
     * @tags Resume
@@ -582,7 +582,7 @@ class ResumeController extends Controller {
     }
 
     /**
-    * PATCH /resumes/{id}/remove-tags
+    * DELETE /resumes/{id}/tag
     * 
     * @summary add comments for resume in table
     * @tags Resume
