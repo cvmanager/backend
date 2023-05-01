@@ -255,11 +255,11 @@ const schema = new mongoose.Schema(
             type: String,
             default: null
         },
-        to_date: {
+        hired_to_date: {
             type: mongoose.Schema.Types.Date,
             default: null
         },
-        from_date: {
+        hired_from_date: {
             type: mongoose.Schema.Types.Date,
             default: null
         }

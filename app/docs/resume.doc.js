@@ -126,7 +126,7 @@
 * create hired
 * @typedef { object } resume.hired
 * @property { string } how_to_cooperate.required - how_to_cooperate
-* @property { string } from_date.required - from_date
-* @property { string } to_date.required - to_date
+* @property { string } hired_from_date.required - hired_from_date
+* @property { string } hired_to_date.required - hired_to_date
 * @property { number } income.required - recall_at
 */

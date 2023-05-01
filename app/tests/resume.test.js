@@ -1575,8 +1575,8 @@ describe("Resumes Routes", () => {
         beforeEach(async () => {
             hiredResume = {
                 "how_to_cooperate": "trial",
-                "from_date": faker.date.recent(),
-                "to_date": faker.date.future(1),
+                "hired_from_date": faker.date.recent(),
+                "hired_to_date": faker.date.future(1),
                 "income": 1000000
             }
         })
@@ -1611,32 +1611,32 @@ describe("Resumes Routes", () => {
                 .send(hiredResume);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
-        it(`should get ${httpStatus.BAD_REQUEST} if from_date is not send`, async () => {
-            delete hiredResume.from_date
+        it(`should get ${httpStatus.BAD_REQUEST} if hired_from_date is not send`, async () => {
+            delete hiredResume.hired_from_date
             const response = await request(app)
                 .patch(`/api/V1/resumes/${resume._id}/hired`)
                 .set(`Authorization`, token)
                 .send(hiredResume);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
-        it(`should get ${httpStatus.BAD_REQUEST} if from_date is not date`, async () => {
-            hiredResume.from_date = faker.random.alpha(5);
+        it(`should get ${httpStatus.BAD_REQUEST} if hired_from_date is not date`, async () => {
+            hiredResume.hired_from_date = faker.random.alpha(5);
             const response = await request(app)
                 .patch(`/api/V1/resumes/${resume._id}/hired`)
                 .set(`Authorization`, token)
                 .send(hiredResume);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
-        it(`should get ${httpStatus.BAD_REQUEST} if to_date is not send`, async () => {
-            delete hiredResume.to_date
+        it(`should get ${httpStatus.BAD_REQUEST} if hired_to_date is not send`, async () => {
+            delete hiredResume.hired_to_date
             const response = await request(app)
                 .patch(`/api/V1/resumes/${resume._id}/hired`)
                 .set(`Authorization`, token)
                 .send(hiredResume);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
-        it(`should get ${httpStatus.BAD_REQUEST} if to_date is not date`, async () => {
-            hiredResume.to_date = faker.random.alpha(5);
+        it(`should get ${httpStatus.BAD_REQUEST} if hired_to_date is not date`, async () => {
+            hiredResume.hired_to_date = faker.random.alpha(5);
             const response = await request(app)
                 .patch(`/api/V1/resumes/${resume._id}/hired`)
                 .set(`Authorization`, token)
@@ -1659,9 +1659,9 @@ describe("Resumes Routes", () => {
                 .send(hiredResume);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
-        it(`should get ${httpStatus.BAD_REQUEST} if from_date is before to_date`, async () => {
-            hiredResume.from_date = faker.date.future(1);
-            hiredResume.to_date = faker.date.recent();
+        it(`should get ${httpStatus.BAD_REQUEST} if hired_from_date is before hired_to_date`, async () => {
+            hiredResume.hired_from_date = faker.date.future(1);
+            hiredResume.hired_to_date = faker.date.recent();
             const response = await request(app)
                 .patch(`/api/V1/resumes/${resume._id}/hired`)
                 .set(`Authorization`, token)
