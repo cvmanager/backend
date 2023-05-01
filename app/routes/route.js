@@ -4,6 +4,7 @@ import projectRouter from './project.route.js'
 import resumeRouter from './resume.route.js'
 import authRouter from './auth.route.js'
 import userRouter from './user.route.js'
+import TagRouter from './tag.route.js'
 import companyRouter from './company.route.js'
 import constantRouter from './constant.route.js'
 import provinceRouter from './province.route.js'
@@ -57,6 +58,7 @@ router.use('/resumes', verifyToken, canAccess, resumeAccess, resumeRouter)
 router.use('/roles/:id', verifyToken, canAccess, roleIdRouter)
 router.use('/roles', verifyToken, canAccess, roleRouter)
 
+router.use('/tags' ,  verifyToken,canAccess,TagRouter)
 router.use('/constant', verifyToken, constantRouter)
 
 router.use('/provinces/:id', verifyToken, canAccess, provinceIdRouter)

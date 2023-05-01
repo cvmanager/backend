@@ -654,7 +654,9 @@
 			"tag_id_required": "tag id required",
 			"tag_id_invalid": "tag id invalid"
 		},
-		"messages": {},
+		"messages": {
+			"tag_list_found" : "Tag list found"
+		},
 		"errors": {}
 	}
 }
