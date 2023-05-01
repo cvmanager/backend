@@ -364,22 +364,24 @@ class ResumeController extends Controller {
             let resume = await resumeService.findByParamId(req);
 
             let calling_date = new Date(req.body.calling_date)
-            let recall_at = new Date(req.body.recall_at)
-            resume.call_history.push({
+            let callHistory = {
                 result: req.body.result,
                 calling_date: calling_date,
                 description: req.body.description,
-                recall_at: recall_at,
                 rating: req.body.rating,
                 created_by: req.user._id
-            })
-            calling_date = calling_date.getTime()
-            recall_at = recall_at.getTime()
+            }
 
-            if (calling_date > recall_at) {
+            let recall_at = null
+            if(req.body.recall_at !== undefined && req.body.recall_at !== ""){
+                recall_at = new Date(req.body.recall_at)
+                callHistory.recall_at = recall_at
+            }
+            if (recall_at !== null && calling_date > recall_at) {
                 throw new BadRequestError('calling_date must be before recall_at');
             }
 
+            resume.call_history.push(callHistory)
             await resume.save()
             EventEmitter.emit(events.ADD_CALL_HISTORY, resume)
 
