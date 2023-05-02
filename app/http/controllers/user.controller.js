@@ -133,7 +133,7 @@ class UserController extends Controller {
     }
 
     /**
-     * POST /users/{id}/un-ban
+     * POST /users/{id}/unban
      * @summary unban user
      * @tags User
      * @security BearerAuth
