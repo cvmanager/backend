@@ -164,7 +164,7 @@ class UserController extends Controller {
     }
 
     /**
-     * GET /users/getMe
+     * GET /users/get-me
      * @summary Get authenticated user information
      * @tags User
      * @security BearerAuth
