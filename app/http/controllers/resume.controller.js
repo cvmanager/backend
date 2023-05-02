@@ -455,16 +455,10 @@ class ResumeController extends Controller {
             let user = await userService.findOne({ '_id': req.params.user_id })
             if (!user) throw new NotFoundError('user.errors.user_notfound');
 
-            let contributor = req.body.contributor;
-            let contributors = []
-            if (resume.contributors) {
-                contributors = resume.contributors;
-            }
+            let contributors = resume.contributors
+            if (!resume.contributors.includes(user._id)) throw new BadRequestError('resume.errors.contributor_not_exists');
 
-            if (!contributors.includes(contributor)) throw new BadRequestError('resume.errors.contributor_not_exists');
-            
-
-            resume.contributors = contributors.filter(e => e != contributor)
+            resume.contributors = contributors.filter(e => e != user._id)
             await resume.save();
 
             AppResponse.builder(res).message("resume.messages.contributor_successfully_removed").data(resume).send();
@@ -555,15 +549,18 @@ class ResumeController extends Controller {
     * @return { message.NotFoundError }     404 - not found respone
     * @return { message.server_error  }     500 - Server Error
     */
-     async unsetTag(req, res, next) {
+    async unsetTag(req, res, next) {
         try {
             let resume = await resumeService.findByParamId(req);
             let tag = await TagService.findOne(req.params.tag_id);
+            if (!tag) throw new NotFoundError('tag.errors.tag_notfound');
 
-            if (!resume.tags.some(value => value.id == tag)) throw new BadRequestError('resume.errors.tag_not_exists');
+            if (!resume.tags.includes(tag._id)) throw new BadRequestError('resume.errors.tag_not_exists');
 
-            resume.tags = resume.tags.filter(e => e.id != tag)
+            let tagIndex = resume.tags.indexOf(tag._id);
+            resume.tags.splice(tagIndex, 1)
             await resume.save();
+
             EventEmitter.emit(ResumeEvents.REMOVE_TAG, resume)
 
             AppResponse.builder(res).status(200).message("resume.messages.resume_tags_successfully_deleted").data(resume).send();
