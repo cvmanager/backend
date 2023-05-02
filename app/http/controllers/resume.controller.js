@@ -426,14 +426,14 @@ class ResumeController extends Controller {
     }
 
     /**
-    * PATCH /resumes/{resume_id}/contributor/{id}
+    * PATCH /resumes/{id}/contributor/{user_id}
     * 
     * @summary set contributor to resume
     * @tags Resume
     * @security BearerAuth
     * 
-    * @param { string } resume_id.path.required - resume id
-    * @param { string } id.path.required - user id
+    * @param { string } id.path.required - resume id
+    * @param { string } user_id.path.required - user id
     * @param { resume.contributor } request.body - application/json
     * 
     * @return { resume.success }            200 - success response
@@ -444,9 +444,9 @@ class ResumeController extends Controller {
     */
     async setContributor(req, res, next) {
         try {
-            let resume = await resumeService.findOne(req.params.resume_id)
+            let resume = await resumeService.findByParamId(req);
 
-            let contributor_id = req.params.id;
+            let contributor_id = req.params.user_id;
             let user = await userService.findOne({ '_id': contributor_id })
             if (!user) throw new NotFoundError('user.errors.user_notfound');
 
@@ -463,14 +463,14 @@ class ResumeController extends Controller {
     }
 
     /**
-    * DELETE /resumes/{resume_id}/contributor/{id}
+    * DELETE /resumes/{id}/contributor/{user_id}
     * 
     * @summary unset special contributor from resume
     * @tags Resume
     * @security BearerAuth
     * 
-    * @param { string } resume_id.path.required - resume id
-    * @param { string } id.path.required - user_id id
+    * @param { string } id.path.required - resume id
+    * @param { string } user_idid.path.required - user_id id
     * @param { resume.contributor } request.body - application/json
     * 
     * @return { resume.success }            200 - success response
@@ -481,9 +481,9 @@ class ResumeController extends Controller {
     */
     async unsetContributor(req, res, next) {
         try {
-            let resume = await resumeService.findByParamId(req.params.resume_id)
+            let resume = await resumeService.findByParamId(req)
 
-            let user = await userService.findOne({ '_id': req.params.id })
+            let user = await userService.findOne({ '_id': req.params.user_id })
             if (!user) throw new NotFoundError('user.errors.user_notfound');
 
             let contributor = req.body.contributor;
