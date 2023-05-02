@@ -213,7 +213,7 @@ class ResumeController extends Controller {
     }
 
     /**
-    * DELETE /resumes/{id}/status
+    * PATCH /resumes/{id}/status
     * 
     * @summary update status a resume by id
     * @tags Resume
