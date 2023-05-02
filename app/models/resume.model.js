@@ -257,8 +257,14 @@ const schema = new mongoose.Schema(
     }
 );
 
-schema.virtual("resumeComments", {
+schema.virtual("comments", {
     ref: 'resumeComments',
+    localField: "_id",
+    foreignField: "resume_id"
+});
+
+schema.virtual("interviews", {
+    ref: 'interviews',
     localField: "_id",
     foreignField: "resume_id"
 });

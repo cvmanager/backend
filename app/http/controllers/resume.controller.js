@@ -90,6 +90,7 @@ class ResumeController extends Controller {
                 .populate([
                     { path: 'created_by' },
                     { path: 'contributors', select: ['firstname', 'lastname', 'avatar'] },
+                    { path: 'interviews', select: ['event_time', 'event_type', 'status', 'type', 'result', 'description', 'rating', 'contribution'] },
                     { path: 'tags', select: ['name', 'color', 'count'] },
                     { path: 'project_id' },
                     { path: 'position_id' },
@@ -559,7 +560,7 @@ class ResumeController extends Controller {
     * @return { message.NotFoundError }     404 - not found respone
     * @return { message.server_error  }     500 - Server Error
     */
-     async unsetTag(req, res, next) {
+    async unsetTag(req, res, next) {
         try {
             let resume = await resumeService.findByParamId(req);
             let tag = await TagService.findOne(req.params.tag_id);
