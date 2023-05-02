@@ -193,6 +193,7 @@ const schema = new mongoose.Schema(
         tags: {
             type: Array,
             default: null,
+            ref: 'tags'
         },
         contributors: {
             type: Array,

@@ -16,7 +16,6 @@ resumeIdRouter
     .get('/comments', ResumeValidation.comments(), ResumeController.comments)
     .patch('/avatar', Upload('resumes', 'avatar', 'image'), ResumeValidation.avatar(), ResumeController.updateAvatar)
     .patch('/comments', ResumeValidation.addComments(), ResumeController.addComments)
-    .patch('/hire_status', ResumeValidation.hireStatus(), ResumeController.hireStatus)
     .patch('/contributor/:user_id', ResumeValidation.addContributor(), ResumeController.setContributor)
     .delete('/contributor/:user_id', ResumeValidation.removeContributor(), ResumeController.unsetContributor)
     .patch('/tag/:tag_id', ResumeValidation.set_tag(), ResumeController.setTag)
