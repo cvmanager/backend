@@ -442,7 +442,7 @@ class ResumeController extends Controller {
 
             let contributor = req.body.contributor;
             let contributors = [];
-            if(resume.contributors){
+            if (resume.contributors) {
                 contributors = resume.contributors;
             }
 
@@ -485,7 +485,7 @@ class ResumeController extends Controller {
 
             let contributor = req.body.contributor;
             let contributors = []
-            if(resume.contributors){
+            if (resume.contributors) {
                 contributors = resume.contributors;
             }
 
@@ -624,12 +624,16 @@ class ResumeController extends Controller {
     async reject(req, res, next) {
         try {
             let resume = await resumeService.findByParamId(req);
-            if (!resume) {
-                throw new BadRequestError('resume.errors.resume_notfound');
-            }
             if (resume.status == 'rejected') {
                 throw new BadRequestError('resume.errors.resume_already_rejected');
             }
+            resume.status_history.push({
+                old_status: resume.status,
+                new_status: 'rejected',
+                createdAt: new Date(),
+                created_by: req.user._id
+            });
+            
             resume.status = 'rejected';
             resume.reject_reason = req.body.reject_reason;
             resume.reject_description = req.body.reject_description;
