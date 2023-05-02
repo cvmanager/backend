@@ -90,7 +90,7 @@ class ResumeController extends Controller {
                 .populate([
                     { path: 'created_by' },
                     { path: 'contributors', select: ['firstname', 'lastname', 'avatar'] },
-                    { path: 'tags', select: ['name', 'color', 'count'] }
+                    { path: 'tags', select: ['name', 'color', 'count'] },
                     { path: 'project_id' },
                     { path: 'position_id' }
 
