@@ -89,13 +89,15 @@ class ResumeController extends Controller {
         try {
             let resume = await Resume.findById(req.params.id)
                 .populate([
-                    { path: 'created_by' },
+                    { path: 'company_id' },
+                    { path: 'project_id' },
+                    { path: 'position_id' },
                     { path: 'contributors', select: ['firstname', 'lastname', 'avatar'] },
                     { path: 'interviews', select: ['event_time', 'event_type', 'status', 'type', 'result', 'description', 'rating', 'contribution'] },
                     { path: 'tags', select: ['name', 'color', 'count'] },
-                    { path: 'project_id' },
-                    { path: 'position_id' },
-                    { path: 'company_id' },
+                    { path: 'views', select: ['created_by', 'createdAt'] },
+                    { path: 'created_by' },
+
 
                 ]);
             if (!resume) throw new NotFoundError('resume.error.resume_notfound');
