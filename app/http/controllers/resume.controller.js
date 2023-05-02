@@ -91,6 +91,9 @@ class ResumeController extends Controller {
                     { path: 'created_by' },
                     { path: 'contributors', select: ['firstname', 'lastname', 'avatar'] },
                     { path: 'tags', select: ['name', 'color', 'count'] }
+                    { path: 'project_id' },
+                    { path: 'position_id' }
+
                 ]);
             if (!resume) throw new NotFoundError('resume.error.resume_notfound');
 
@@ -421,8 +424,8 @@ class ResumeController extends Controller {
 
 
             if (resume.contributors && resume.contributors.includes(contributor_id)) throw new BadRequestError('resume.errors.contributor_could_not_be_duplicate');
-            
-            resume.contributors.push(contributor_id) ;
+
+            resume.contributors.push(contributor_id);
             await resume.save();
 
             AppResponse.builder(res).message("resume.messages.contributor_successfully_added").data(resume).send();
@@ -462,7 +465,7 @@ class ResumeController extends Controller {
             }
 
             if (!contributors.includes(contributor)) throw new BadRequestError('resume.errors.contributor_not_exists');
-            
+
 
             resume.contributors = contributors.filter(e => e != contributor)
             await resume.save();
