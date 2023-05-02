@@ -267,10 +267,14 @@ class PositionController extends Controller {
                     .limit(size)
                     .sort([['index', 1]])
                     .populate([
-                        { path: 'position_id' },
-                        { path: 'tags', select: ['name', 'color', 'count'] },
                         { path: 'interviews', select: ['event_time', 'event_type', 'status', 'type', 'result', 'description', 'rating', 'contribution'] },
-
+                        { path: 'created_by' },
+                        { path: 'contributors', select: ['firstname', 'lastname', 'avatar'] },
+                        { path: 'interviews', select: ['event_time', 'event_type', 'status', 'type', 'result', 'description', 'rating', 'contribution'] },
+                        { path: 'tags', select: ['name', 'color', 'count'] },
+                        { path: 'project_id' },
+                        { path: 'position_id' },
+                        { path: 'company_id' },
                     ]);
                 promiseResumes.push(resumeList)
             }
