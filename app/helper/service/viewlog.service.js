@@ -10,12 +10,12 @@ class ViewlogService extends ServiceBase {
         autoBind(this)
     }
 
-    async setViewlog(entity, entityId, userId) {
-        if (await this.allowSetViewlog(entity, entityId, userId)) {
+    async setViewlog(entity, entity_id) {
+        if (await this.allowSetViewlog(entity, entity_id)) {
             let data = {
                 "entity": entity,
-                "entity_id": entityId,
-                "created_by": userId,
+                "entity_id": entity_id,
+                "created_by": req.user._id,
             }
             await this.create(data)
         }
@@ -26,7 +26,7 @@ class ViewlogService extends ServiceBase {
         let date = new Date()
         let viewlogDuration = date.setMinutes(date.getMinutes() - setViewlogDurationInMinutes)
         viewlogDuration = new Date(viewlogDuration)
-        let lastViewlog = await this.findOne({ 'entity': entity, 'entityId': entityId, 'created_by': userId, 'createdAt': { $gte: viewlogDuration } })
+        let lastViewlog = await this.findOne({ 'entity': entity, 'entity_id': entityId, 'created_by': userId, 'createdAt': { $gte: viewlogDuration } })
 
         return (lastViewlog == null) ? true : false
     }
