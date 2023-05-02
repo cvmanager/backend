@@ -90,7 +90,12 @@ class ResumeController extends Controller {
                 .populate([
                     { path: 'created_by' },
                     { path: 'contributors', select: ['firstname', 'lastname', 'avatar'] },
-                    { path: 'tags', select: ['name', 'color', 'count'] }
+                    { path: 'tags', select: ['name', 'color', 'count'] },
+                    { path: 'project_id' },
+                    { path: 'position_id' },
+                    { path: 'company_id' },
+
+
                 ]);
             if (!resume) throw new NotFoundError('resume.error.resume_notfound');
 
@@ -421,8 +426,8 @@ class ResumeController extends Controller {
 
 
             if (resume.contributors && resume.contributors.includes(contributor_id)) throw new BadRequestError('resume.errors.contributor_could_not_be_duplicate');
-            
-            resume.contributors.push(contributor_id) ;
+
+            resume.contributors.push(contributor_id);
             await resume.save();
 
             AppResponse.builder(res).message("resume.messages.contributor_successfully_added").data(resume).send();
