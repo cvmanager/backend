@@ -354,7 +354,7 @@ class CompanyController extends Controller {
 
 
     /**
-    * PATCH /companies/:id/logo
+    * PATCH /companies/{id}/logo
     * @summary upload company logo
     * @tags Company
     * @security BearerAuth

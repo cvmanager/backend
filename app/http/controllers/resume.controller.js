@@ -251,7 +251,7 @@ class ResumeController extends Controller {
     }
 
     /**
-    * PATCH /resumes/:id/file
+    * PATCH /resumes/{id}/file
     * @summary upload resume file
     * @tags Resume
     * @security BearerAuth
@@ -473,7 +473,7 @@ class ResumeController extends Controller {
     }
 
     /**
-    * PATCH /resumes/:id/avatar
+    * PATCH /resumes/{id}/avatar
     * @summary upload resume avatar
     * @tags Resume
     * @security BearerAuth

@@ -392,7 +392,7 @@ class ProjectController extends Controller {
     }
 
     /**
-* PATCH /projects/:id/logo
+* PATCH /projects/{id}/logo
 * @summary upload project logo
 * @tags Project
 * @security BearerAuth
