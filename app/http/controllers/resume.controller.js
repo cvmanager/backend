@@ -59,7 +59,8 @@ class ResumeController extends Controller {
                     { path: 'company_id', select: 'name' },
                     { path: 'project_id', select: 'name' },
                     { path: 'created_by', select: ['firstname', 'lastname'] },
-                    { path: 'contributors', select: ['firstname', 'lastname', 'avatar'] }
+                    { path: 'contributors', select: ['firstname', 'lastname', 'avatar'] },
+                    { path: 'tags', select: ['name', 'color', 'count'] }
                 ]
             });
             AppResponse.builder(res).message("project.messages.resume_list_found").data(resumeList).send();
@@ -89,6 +90,7 @@ class ResumeController extends Controller {
                 .populate([
                     { path: 'created_by' },
                     { path: 'contributors', select: ['firstname', 'lastname', 'avatar'] },
+                    { path: 'tags', select: ['name', 'color', 'count'] },
                     { path: 'project_id' },
                     { path: 'position_id' }
 
@@ -394,40 +396,6 @@ class ResumeController extends Controller {
         }
     }
 
-    /**
-    * PATCH /resumes/{id}/hire_status
-    * 
-    * @summary update hire status
-    * @tags Resume
-    * @security BearerAuth
-    * 
-    * @param { string } id.path.required - resume id
-    * @param { resume.hire_status } request.body - application/json
-    * 
-    * @return { resume.success }            200 - success response
-    * @return { message.badrequest_error }  400 - bad request respone
-    * @return { message.badrequest_error }  404 - not found respone
-    * @return { message.badrequest_error }  401 - UnauthorizedError
-    * @return { message.server_error  }     500 - Server Error
-    */
-    async hireStatus(req, res, next) {
-        try {
-            let resume = await Resume.findById(req.params.id);
-            if (!resume) throw new NotFoundError('resume.errors.resume_notfound');
-
-            if (req.body.hire_status == 'hired_on' && (req.body.income == '' || req.body.income == undefined)) {
-                throw new BadRequestError('resume.errors.income_cant_be_empty');
-            }
-
-            resume.hire_status = req.body.hire_status;
-            resume.income = req.body.income;
-            await resume.save();
-
-            AppResponse.builder(res).message("resume.messages.hire_status_successfully_updated").data(resume).send();
-        } catch (err) {
-            next(err);
-        }
-    }
 
     /**
     * PATCH /resumes/{id}/contributor/{user_id}
@@ -558,11 +526,10 @@ class ResumeController extends Controller {
         try {
             let resume = await resumeService.findByParamId(req);
             let tag = await TagService.findOne(req.params.tag_id);
+            if (!tag) throw new NotFoundError('tag.errors.tag_notfound');
 
-            let tags = [];
-            if (tags.some(value => value.id == tag._id)) throw new BadRequestError('resume.errors.tag_could_not_be_duplicate');
-
-            tags.push(req.params.tag_id)
+            if (resume.tags && resume.tags.includes(tag._id)) throw new BadRequestError('resume.errors.tag_could_not_be_duplicate');
+            resume.tags.push(tag._id)
             await resume.save();
 
             EventEmitter.emit(ResumeEvents.ADD_TAG, resume)
@@ -591,7 +558,7 @@ class ResumeController extends Controller {
     * @return { message.NotFoundError }     404 - not found respone
     * @return { message.server_error  }     500 - Server Error
     */
-    async unsetTag(req, res, next) {
+     async unsetTag(req, res, next) {
         try {
             let resume = await resumeService.findByParamId(req);
             let tag = await TagService.findOne(req.params.tag_id);

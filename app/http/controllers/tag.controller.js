@@ -4,6 +4,7 @@ import { mergeQuery } from '../../helper/mergeQuery.js';
 import AppResponse from "../../helper/response.js";
 import tagService from "../../helper/service/tag.service.js";
 import AlreadyExists from '../../exceptions/AlreadyExists.js';
+import { getRandomColor } from "../../helper/helper.js";
 
 class TagController extends Controller {
 
@@ -64,11 +65,11 @@ class TagController extends Controller {
     */
     async create(req, res, next) {
         try {
-            let tag = await tagService.find({ name: req.body.name });
+            let tag = await tagService.findOne({ name: req.body.name });
             if (tag) throw new AlreadyExists('tag.errors.duplicate');
 
             req.body.created_by = req.user._id;
-            req.body.color = tagService.getRandomColor();
+            req.body.color = getRandomColor();
             tag = await tagService.create(req.body);
 
             AppResponse.builder(res).status(201).message("tag.messages.tag_successfully_created").data(tag).send();

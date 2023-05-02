@@ -6,6 +6,6 @@ import TagValidation from '../validators/tag.validation.js';
 
 const TagRouter = express.Router();
 TagRouter
-    .get('/', TagController.index)
+    .get('/', TagValidation.index(), TagController.index)
     .post('/', TagValidation.create(), TagController.create)
 export default TagRouter

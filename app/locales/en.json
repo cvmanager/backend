@@ -651,6 +651,8 @@
 	"tag": {
 		"enums": {},
 		"validations": {
+			"tag_page_number": "tag page must by number",
+			"tag_size_number": "tag size must by number",
 			"tag_id_required": "tag id required",
 			"tag_id_invalid": "tag id invalid"
 		},
