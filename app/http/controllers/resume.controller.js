@@ -95,6 +95,7 @@ class ResumeController extends Controller {
                     { path: 'project_id' },
                     { path: 'position_id' },
                     { path: 'company_id' },
+
                 ]);
             if (!resume) throw new NotFoundError('resume.error.resume_notfound');
 
