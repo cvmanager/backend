@@ -92,7 +92,9 @@ class ResumeController extends Controller {
                     { path: 'contributors', select: ['firstname', 'lastname', 'avatar'] },
                     { path: 'tags', select: ['name', 'color', 'count'] },
                     { path: 'project_id' },
-                    { path: 'position_id' }
+                    { path: 'position_id' },
+                    { path: 'company_id' },
+
 
                 ]);
             if (!resume) throw new NotFoundError('resume.error.resume_notfound');
