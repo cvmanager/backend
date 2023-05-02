@@ -7,6 +7,7 @@ const schema = new mongoose.Schema(
         entity: {
             type: String,
             required: true,
+            enum: ['resumes', 'positions', 'projects', 'companies']
         },
         entity_id: {
             type: mongoose.Schema.Types.ObjectId,
