@@ -560,11 +560,10 @@ class ResumeController extends Controller {
             if (tags.some(value => value.id == tag._id)) throw new BadRequestError('resume.errors.tag_could_not_be_duplicate');
 
             tags.push(req.params.tag_id)
-            resume.tags = tags;
             await resume.save();
 
             EventEmitter.emit(ResumeEvents.ADD_TAG, resume)
-            EventEmitter.emit(TagEvents.TAG_USE,tag);
+            // EventEmitter.emit(TagEvents.TAG_USE,tag); error when uncomment :/
 
             AppResponse.builder(res).status(200).message("resume.messages.resume_tags_successfully_updated").data(resume).send();
         } catch (err) {
