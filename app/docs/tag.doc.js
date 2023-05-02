@@ -11,7 +11,7 @@
 /**
 * create tag
 * @typedef { object } tag.create
-* @property { string } tag
+* @property { string } name
 */
 
 /**
