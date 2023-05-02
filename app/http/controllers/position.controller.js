@@ -268,6 +268,7 @@ class PositionController extends Controller {
                     .sort([['index', 1]])
                     .populate([
                         { path: 'position_id' },
+                        { path: 'tags', select: ['name', 'color', 'count'] }
                     ]);
                 promiseResumes.push(resumeList)
             }
