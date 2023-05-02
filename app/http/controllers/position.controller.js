@@ -408,7 +408,7 @@ class PositionController extends Controller {
     }
 
     /**
-   * PATCH /positions/:id/logo
+   * PATCH /positions/{id}/logo
    * @summary upload position logo
    * @tags Position
    * @security BearerAuth
