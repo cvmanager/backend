@@ -191,22 +191,7 @@ const schema = new mongoose.Schema(
             default: null,
         },
         tags: {
-            type: [
-                {
-                    id: {
-                        type: String,
-                        required: null,
-                    },
-                    name: {
-                        type: String,
-                        required: null,
-                    },
-                    color: {
-                        type: String,
-                        required: null,
-                    }
-                }
-            ],
+            type: Array,
             default: null,
         },
         contributors: {

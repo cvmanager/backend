@@ -1,4 +1,5 @@
 import { ResumeEvents } from '../../events/subscribers/resumes.subscriber.js';
+import { TagEvents } from '../../events/subscribers/tags.subscriber.js';
 import NotFoundError from '../../exceptions/NotFoundError.js';
 import Position from '../../models/position.model.js';
 import ResumeComments from '../../models/resumeComment.model.js';
@@ -563,7 +564,7 @@ class ResumeController extends Controller {
             await resume.save();
 
             EventEmitter.emit(ResumeEvents.ADD_TAG, resume)
-            EventEmitter.emit(TagEvent.TAG_USE, tag);
+            EventEmitter.emit(TagEvents.TAG_USE,tag);
 
             AppResponse.builder(res).status(200).message("resume.messages.resume_tags_successfully_updated").data(resume).send();
         } catch (err) {
