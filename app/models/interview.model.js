@@ -45,8 +45,8 @@ const schema = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             required: true,
             ref: 'users'
-        }
-        , rating: {
+        },
+        rating: {
             type: Number,
             required: true,
             length: 1
