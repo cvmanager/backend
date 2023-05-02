@@ -60,7 +60,8 @@ class ResumeController extends Controller {
                     { path: 'project_id', select: 'name' },
                     { path: 'created_by', select: ['firstname', 'lastname'] },
                     { path: 'contributors', select: ['firstname', 'lastname', 'avatar'] },
-                    { path: 'tags', select: ['name', 'color', 'count'] }
+                    { path: 'tags', select: ['name', 'color', 'count'] },
+                    { path: 'views', select: ['created_by', 'createdAt'] }
                 ]
             });
             AppResponse.builder(res).message("project.messages.resume_list_found").data(resumeList).send();

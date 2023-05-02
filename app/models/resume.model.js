@@ -269,6 +269,13 @@ schema.virtual("interviews", {
     foreignField: "resume_id"
 });
 
+schema.virtual("views", {
+    ref: 'viewlog',
+    localField: "_id",
+    foreignField: "entity_id"
+});
+
+
 schema.plugin(basePlugin)
 
 const Resume = mongoose.model("resumes", schema);

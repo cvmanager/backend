@@ -25,7 +25,7 @@ EventEmitter.on(ResumeEvents.ADD_TAG, setTag)
 EventEmitter.on(ResumeEvents.REMOVE_TAG, unsetTag)
 
 async function find(Resume) {
-    await viewlogService.setViewlog('resume', Resume._id, Resume.created_by)
+    await viewlogService.setViewlog('resumes', Resume._id, Resume.created_by)
     let viewlogCount = await resumeService.getResumeViewCount(Resume);
     await resumeService.updateSummeryCount(Resume, 'view', viewlogCount)
 }

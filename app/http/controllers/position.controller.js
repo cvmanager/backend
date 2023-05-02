@@ -275,6 +275,7 @@ class PositionController extends Controller {
                         { path: 'project_id' },
                         { path: 'position_id' },
                         { path: 'company_id' },
+                        { path: 'views', select: ['created_by', 'createdAt'] }
                     ]);
                 promiseResumes.push(resumeList)
             }
