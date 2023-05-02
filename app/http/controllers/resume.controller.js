@@ -522,12 +522,11 @@ class ResumeController extends Controller {
     async setTag(req, res, next) {
         try {
             let resume = await resumeService.findByParamId(req);
-            let tag = await TagService.findOneAndCheck(req.params.tag_id);
+            let tag = await TagService.findOne(req.params.tag_id);
+            if (!tag) throw new NotFoundError('tag.errors.tag_notfound');
 
-            let tags = [];
-            if (tags.some(value => value.id == tag._id)) throw new BadRequestError('resume.errors.tag_could_not_be_duplicate');
-
-            tags.push(req.params.tag_id)
+            if (resume.tags && resume.tags.includes(tag._id)) throw new BadRequestError('resume.errors.tag_could_not_be_duplicate');
+            resume.tags.push(tag._id)
             await resume.save();
 
             EventEmitter.emit(ResumeEvents.ADD_TAG, resume)
@@ -556,7 +555,7 @@ class ResumeController extends Controller {
     * @return { message.NotFoundError }     404 - not found respone
     * @return { message.server_error  }     500 - Server Error
     */
-    async unsetTag(req, res, next) {
+     async unsetTag(req, res, next) {
         try {
             let resume = await resumeService.findByParamId(req);
             let tag = await TagService.findOne(req.params.tag_id);

@@ -37,17 +37,6 @@ export default class ServiceBase {
         return document
     }
 
-    async findOneAndCheck(filter, populates = []) {
-        if (typeof filter === "string") {
-            filter = { _id: filter };
-        }
-
-        const document = await this.findOne(filter, populates)
-        if(!document) throw new NotFoundError(`${this.modelName}.errors.${this.modelName}_notfound`);
-
-        return document
-    }
-
     async create(data) {
         return _model.get(this).create(data);
     }
