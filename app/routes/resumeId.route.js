@@ -3,7 +3,8 @@ import ResumeController from '../http/controllers/resume.controller.js';
 import ResumeValidation from '../validators/resume.validation.js';
 import { Upload } from '../helper/upload.js';
 import { toLowerCase } from '../middlewares/lowerCase.middleware.js';
-
+import ResumeInterviewValidation from '../validators/resumeInterview.validation.js'
+import ResumeInterviewController from '../http/controllers/resumeInterview.controller.js'
 const resumeIdRouter = express.Router({ mergeParams: true });
 
 resumeIdRouter
@@ -21,5 +22,12 @@ resumeIdRouter
     .patch('/tag/:tag_id', ResumeValidation.set_tag(), ResumeController.setTag)
     .delete('/tag/:tag_id', ResumeValidation.unset_tag(), ResumeController.unsetTag)
     .patch('/hired', ResumeValidation.hired(), ResumeController.hired)
+    
+    .get('/interviews', ResumeInterviewValidation.index(), ResumeInterviewController.index)
+    .post('/interviews', ResumeInterviewValidation.create(), ResumeInterviewController.create)
+    .get('/interviews/:interview_id', ResumeInterviewValidation.find(), ResumeInterviewController.find)
+    .patch('/interviews/:interview_id', ResumeInterviewValidation.update(), ResumeInterviewController.update)
+    .delete('/interviews/:interview_id', ResumeInterviewValidation.remove(), ResumeInterviewController.delete)
+
 
 export default resumeIdRouter

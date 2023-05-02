@@ -10,8 +10,6 @@ import constantRouter from './constant.route.js'
 import provinceRouter from './province.route.js'
 import cityRouter from './city.route.js'
 import positionRouter from './position.route.js'
-import interviewRouter from './interview.route.js'
-import interviewIdRouter from './interviewId.route.js'
 import { canAccess } from '../middlewares/rbac.middleware.js'
 import userIdRouter from './userId.route.js';
 import { userAccess } from '../middlewares/userAccess.middleware.js'
@@ -57,8 +55,6 @@ router.use('/provinces/:id', verifyToken, canAccess, provinceIdRouter)
 router.use('/provinces', verifyToken, canAccess, provinceRouter)
 
 
-router.use('/resumes/:resume_id/interviews/:id', verifyToken, interviewIdRouter)
-router.use('/resumes/:resume_id/interviews', verifyToken, interviewRouter)
 router.use('/resumes/:id', verifyToken, canAccess, resumeAccess, resumeIdRouter)
 router.use('/resumes', verifyToken, canAccess, resumeAccess, resumeRouter)
 
