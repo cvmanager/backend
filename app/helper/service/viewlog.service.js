@@ -10,7 +10,7 @@ class ViewlogService extends ServiceBase {
         autoBind(this)
     }
 
-    async setViewlog(entity, entity_id) {
+    async setViewlog(entity, entity_id, req) {
         if (await this.allowSetViewlog(entity, entity_id)) {
             let data = {
                 "entity": entity,

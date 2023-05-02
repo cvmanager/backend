@@ -12,19 +12,19 @@ EventEmitter.on(ResumesInterviewEvents.DELETE, softdelete)
 EventEmitter.on(ResumesInterviewEvents.UPDATE, update)
 
 
-async function create(Interview) {
+async function create(Interview,req) {
     let resume = await resumeService.findOne({ '_id': Interview.resume_id })
     await resumeService.updateRating(resume)
 }
 
 
 
-function softdelete(Interview) {
+function softdelete(Interview,req) {
     console.log(ResumesInterviewEvents.DELETE + " event called", Interview)
 }
 
 
-async function update(Interview) {
+async function update(Interview,req) {
     let resume = await resumeService.findOne({ '_id': Interview.resume_id })
     await resumeService.updateRating(resume)
 }

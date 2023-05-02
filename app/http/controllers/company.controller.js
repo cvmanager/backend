@@ -79,7 +79,7 @@ class CompanyController extends Controller {
     async find(req, res, next) {
         try {
             let company = await companyService.findByParamId(req)
-
+            EventEmitter.emit(CompanyEvents.FIND, company, req);
             AppResponse.builder(res).message('company.messages.company_found').data(company).send();
         } catch (err) {
             next(err);
@@ -109,7 +109,7 @@ class CompanyController extends Controller {
             req.body.created_by = req.user._id;
             company = await companyService.create(req.body);
 
-            EventEmitter.emit(CompanyEvents.CREATE, company);
+            EventEmitter.emit(CompanyEvents.CREATE, company,req);
 
             AppResponse.builder(res).status(201).message('company.messages.company_successfully_created').data(company).send();
         } catch (err) {
@@ -142,7 +142,7 @@ class CompanyController extends Controller {
             }
 
             company = await companyService.updateOne({ '_id': req.params.id }, req.body)
-            EventEmitter.emit(CompanyEvents.UPDATE, company);
+            EventEmitter.emit(CompanyEvents.UPDATE,company,req);
             AppResponse.builder(res).message("company.messages.company_successfully_updated").data(company).send()
         } catch (err) {
             next(err);
@@ -169,7 +169,7 @@ class CompanyController extends Controller {
             let company = await companyService.findByParamId(req)
             await company.delete(req.user._id);
 
-            EventEmitter.emit(CompanyEvents.DELETE, company);
+            EventEmitter.emit(CompanyEvents.DELETE, company, req);
             AppResponse.builder(res).message("company.messages.company_successfully_deleted").data(company).send();
         } catch (err) {
             next(err);
@@ -207,7 +207,7 @@ class CompanyController extends Controller {
             const companyManagerRole = await roleService.findOne({ name: "Company Manager" })
             await userService.addRole(user._id, companyManagerRole._id)
 
-            EventEmitter.emit(CompanyEvents.SET_MANAGER, company);
+            EventEmitter.emit(CompanyEvents.SET_MANAGER, company, req);
 
             AppResponse.builder(res).status(201).message("company.messages.company_manager_successfully_created").data(company).send();
         } catch (err) {
@@ -249,7 +249,7 @@ class CompanyController extends Controller {
                 await userService.removeRole(user._id, companyManagerRole._id)
             }
 
-            EventEmitter.emit(CompanyEvents.UNSET_MANAGER, company);
+            EventEmitter.emit(CompanyEvents.UNSET_MANAGER, company, req);
 
             AppResponse.builder(res).message("company.messages.company_manager_successfully_removed").data(company).send()
         } catch (err) {
@@ -404,7 +404,7 @@ class CompanyController extends Controller {
             company.is_active = true;
             await company.save();
 
-            EventEmitter.emit(CompanyEvents.ACTIVE_COMPANY, company);
+            EventEmitter.emit(CompanyEvents.ACTIVE_COMPANY, company, req);
             AppResponse.builder(res).message("company.messages.company_successfully_activated").data(company).send()
         } catch (err) {
             next(err);
@@ -432,7 +432,7 @@ class CompanyController extends Controller {
             company.is_active = false;
             await company.save();
 
-            EventEmitter.emit(CompanyEvents.DEACTIVE_COMPANY, company);
+            EventEmitter.emit(CompanyEvents.DEACTIVE_COMPANY, company, req);
             AppResponse.builder(res).message("company.messages.company_successfully_deactivated").data(company).send()
         } catch (err) {
             next(err);

@@ -45,7 +45,7 @@ class AuthController extends Controller {
             const access_token = await generateJwtToken({ _id: user._id, role: user.role })
             const refresh_token = await generateJwtRefeshToken({ _id: user._id, role: user.role });
 
-            EventEmitter.emit(UserEvents.LOGIN, user, access_token, refresh_token);
+            EventEmitter.emit(UserEvents.LOGIN, user, req, access_token, refresh_token);
             AppResponse.builder(res).message('auth.messages.success_login').data({ access_token, refresh_token }).send();
         } catch (err) {
             next(err);
@@ -80,13 +80,13 @@ class AuthController extends Controller {
                 mobile: req.body.mobile,
                 username: req.body.username,
                 password: hash_password,
-                role: ((ownerRole && ownerRole._id )? [ownerRole._id] : [])
+                role: ((ownerRole && ownerRole._id) ? [ownerRole._id] : [])
             });
 
             const access_token = await generateJwtToken({ _id: user._id, role: [ownerRole._id] })
-            const refresh_token = await generateJwtRefeshToken({ _id: user._id, role: [ownerRole._id]});
+            const refresh_token = await generateJwtRefeshToken({ _id: user._id, role: [ownerRole._id] });
 
-            EventEmitter.emit(UserEvents.SINGUP, user, access_token, refresh_token);
+            EventEmitter.emit(UserEvents.SINGUP, user, req, access_token, refresh_token);
             AppResponse.builder(res).status(201).message("auth.messages.user_successfully_created").data({ access_token, refresh_token }).send();
         } catch (err) {
             next(err);

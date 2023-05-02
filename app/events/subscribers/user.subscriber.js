@@ -19,22 +19,22 @@ EventEmitter.on(UserEvents.LOGOUT, logout);
 EventEmitter.on(UserEvents.EDIT_USER, editUser);
 
 
-function login(user, access_token, refresh_token) {
+function login(user, req, access_token, refresh_token) {
     userService.setLogForLogin(user, access_token, refresh_token);
 }
 
-function signup(user, access_token, refresh_token) {
+function signup(user, req, access_token, refresh_token) {
     userService.setLogForLogin(user, access_token, refresh_token, 'register')
 }
 
-function banned(user) {
+function banned(user, req) {
     console.log(UserEvents.BANNED + " event called", user)
 }
 
-function editUser(user) {
+function editUser(user, req) {
     console.log(UserEvents.EDIT_USER + " event called", user)
 }
-function unbanned(user) {
+function unbanned(user, req) {
     console.log(UserEvents.UNBANNED + " event called", user)
 }
 

@@ -5,6 +5,6 @@ export const TagEvents = {
 
 EventEmitter.on(TagEvents.TAG_USE, tagUse)
 
-async function tagUse(Tag) {
+async function tagUse(Tag,req) {
 }
 

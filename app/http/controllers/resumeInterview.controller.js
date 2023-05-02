@@ -98,7 +98,7 @@ class ResumeInterviewController extends Controller {
             req.body.event_time = new Date(req.body.event_time)
             req.body.resume_id = req.params.id;
             let interview = await Interview.create(req.body)
-            EventEmitter.emit(ResumesInterviewEvents.CREATE, interview)
+            EventEmitter.emit(ResumesInterviewEvents.CREATE, interview,req)
 
             AppResponse.builder(res).status(201).message("interview.messages.interview_successfully_created").data(interview).send();
         } catch (err) {
@@ -136,7 +136,7 @@ class ResumeInterviewController extends Controller {
 
             await Interview.findByIdAndUpdate(req.params.interview_id, req.body, { new: true })
                 .then(interview => {
-                    EventEmitter.emit(ResumesInterviewEvents.UPDATE, interview);
+                    EventEmitter.emit(ResumesInterviewEvents.UPDATE, interview,req );
                     AppResponse.builder(res).message("interview.messages.interview_successfully_updated").data(interview).send();
                 })
                 .catch(err => {
@@ -172,7 +172,7 @@ class ResumeInterviewController extends Controller {
             if (!interview) throw new NotFoundError('interview.errors.interview_notfound');
 
             await interview.delete(req.user._id);
-            EventEmitter.emit(ResumesInterviewEvents.DELETE, interview)
+            EventEmitter.emit(ResumesInterviewEvents.DELETE, interview, req)
 
 
             AppResponse.builder(res).message("interview.messages.interview_successfully_deleted").data(interview).send();

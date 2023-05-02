@@ -102,7 +102,7 @@ class ResumeController extends Controller {
                 ]);
             if (!resume) throw new NotFoundError('resume.error.resume_notfound');
 
-            EventEmitter.emit(ResumeEvents.FIND, resume)
+            EventEmitter.emit(ResumeEvents.FIND, resume, req);
 
             AppResponse.builder(res).message("resume.messages.project_found").data(resume).send();
         } catch (err) {
@@ -140,7 +140,7 @@ class ResumeController extends Controller {
 
             let resume = await Resume.create(req.body)
 
-            EventEmitter.emit(ResumeEvents.CREATE, resume)
+            EventEmitter.emit( ResumeEvents.CREATE, resume,req)
 
             AppResponse.builder(res).status(201).message("resume.messages.resume_successfully_created").data(resume).send();
         } catch (err) {
@@ -172,7 +172,7 @@ class ResumeController extends Controller {
 
             await Resume.findByIdAndUpdate(req.params.id, req.body, { new: true })
                 .then(resume => {
-                    EventEmitter.emit(ResumeEvents.UPDATE, resume)
+                    EventEmitter.emit(ResumeEvents.UPDATE, resume, req)
                     AppResponse.builder(res).message("resume.messages.resume_successfully_updated").data(resume).send()
                 })
                 .catch(err => next(err));
@@ -206,7 +206,7 @@ class ResumeController extends Controller {
 
             await resume.save();
 
-            EventEmitter.emit(ResumeEvents.DELETE_RESUME, resume)
+            EventEmitter.emit(ResumeEvents.DELETE_RESUME, resume, req)
 
 
             AppResponse.builder(res).message("resume.messages.resume_successfully_deleted").data(resume).send();
@@ -245,7 +245,7 @@ class ResumeController extends Controller {
             resume.index = req.body.index;
             await resume.save();
 
-            EventEmitter.emit(ResumeEvents.UPDATE_STATUS, resume)
+            EventEmitter.emit(ResumeEvents.UPDATE_STATUS, resume,req)
 
             AppResponse.builder(res).message("resume.messages.resume_status_successfully_updated").data(resume).send();
         } catch (err) {
@@ -282,7 +282,7 @@ class ResumeController extends Controller {
             resume.file = files;
             await resume.save();
 
-            EventEmitter.emit(ResumeEvents.ADD_FILE, resume)
+            EventEmitter.emit(ResumeEvents.ADD_FILE, resume, req)
 
             AppResponse.builder(res).message("resume.message.resume_file_successfully_upload").data(resume).send()
         } catch (err) {
@@ -345,7 +345,7 @@ class ResumeController extends Controller {
             req.body.created_by = req.user._id
 
             let resumeCommentsRes = await ResumeComments.create(req.body)
-            EventEmitter.emit(ResumeEvents.ADD_COMMENT, resume)
+            EventEmitter.emit(ResumeEvents.ADD_COMMENT, resume,req)
 
             AppResponse.builder(res).status(201).message("resume.messages.resume_comment_successfully_created").data(resumeCommentsRes).send();
         } catch (err) {
@@ -393,7 +393,7 @@ class ResumeController extends Controller {
 
             resume.call_history.push(callHistory)
             await resume.save()
-            EventEmitter.emit(ResumeEvents.ADD_CALL_HISTORY, resume)
+            EventEmitter.emit(ResumeEvents.ADD_CALL_HISTORY, resume, req)
 
             AppResponse.builder(res).message("resume.messages.resume_call_history_successfully_created").data(resume).send();
         } catch (err) {
@@ -531,7 +531,7 @@ class ResumeController extends Controller {
             resume.tags.push(tag._id)
             await resume.save();
 
-            EventEmitter.emit(ResumeEvents.ADD_TAG, resume)
+            EventEmitter.emit(ResumeEvents.ADD_TAG, resume, req)
             // EventEmitter.emit(TagEvents.TAG_USE,tag); error when uncomment :/
 
             AppResponse.builder(res).status(200).message("resume.messages.resume_tags_successfully_updated").data(resume).send();
@@ -569,7 +569,7 @@ class ResumeController extends Controller {
             resume.tags.splice(tagIndex, 1)
             await resume.save();
 
-            EventEmitter.emit(ResumeEvents.REMOVE_TAG, resume)
+            EventEmitter.emit(ResumeEvents.REMOVE_TAG, resume, req)
 
             AppResponse.builder(res).status(200).message("resume.messages.resume_tags_successfully_deleted").data(resume).send();
         } catch (err) {
