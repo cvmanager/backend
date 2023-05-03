@@ -1,4 +1,5 @@
 import positionService from '../../helper/service/position.service.js'
+import viewlogService from '../../helper/service/viewlog.service.js'
 import EventEmitter from '../emitter.js'
 
 export const PositionEvents = {
