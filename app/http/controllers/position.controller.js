@@ -80,7 +80,7 @@ class PositionController extends Controller {
     async find(req, res, next) {
         try {
 
-            const position = positionService.findByParamId(req, [
+            const position = await positionService.findByParamId(req, [
                 { path: 'company_id', select: ['_id', 'name', 'logo'] },
                 { path: 'project_id', select: ['_id', 'name', 'logo'] },
                 { path: 'created_by', select: ['firstname', 'lastname', 'avatar'] }
