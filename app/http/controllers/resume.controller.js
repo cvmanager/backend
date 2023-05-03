@@ -620,6 +620,46 @@ class ResumeController extends Controller {
             next(err);
         }
     }
+
+    /**
+   * PATCH /resumes/{id}/reject
+   * 
+   * @summary reject  resume 
+   * @tags Resume
+   * @security BearerAuth
+   * 
+   * @param  { string } id.path.required - resume id
+   * @param { resume.reject } request.body - reject info - application/json
+   * 
+   * @return { resume.success }     200 - success response
+   * @return { message.badrequest_error }  400 - bad request respone
+   * @return { message.badrequest_error }  401 - UnauthorizedError
+   * @return { message.NotFoundError }     404 - not found respone
+   * @return { message.server_error  }     500 - Server Error
+   */
+    async reject(req, res, next) {
+        try {
+            let resume = await resumeService.findByParamId(req);
+            if (resume.status == 'rejected') {
+                throw new BadRequestError('resume.errors.resume_already_rejected');
+            }
+            resume.status_history.push({
+                old_status: resume.status,
+                new_status: 'rejected',
+                createdAt: new Date(),
+                created_by: req.user._id
+            });
+            
+            resume.status = 'rejected';
+            resume.reject_reason = req.body.reject_reason;
+            resume.reject_description = req.body.reject_description;
+            await resume.save();
+
+            AppResponse.builder(res).status(200).message("resume.messages.resume_successfully_rejected").data(resume).send();
+        } catch (err) {
+            next(err);
+        }
+    }
 }
 
 export default new ResumeController;

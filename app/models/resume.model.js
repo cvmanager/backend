@@ -55,6 +55,16 @@ const schema = new mongoose.Schema(
             default: 'pending',
             enum: i18n.__("resume.enums.status")
         },
+        reject_reason: {
+            type: String,
+            required: false,
+            default: null
+        },
+        reject_description: {
+            type: String,
+            required: false,
+            default: null
+        },
         mobile: {
             type: String,
             required: true

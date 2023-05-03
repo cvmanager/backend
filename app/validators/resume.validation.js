@@ -333,6 +333,30 @@ class ResumeValidation {
         ];
     }
 
+    reject() {
+        return [
+            param('id')
+                .notEmpty()
+                .withMessage('resume.validations.resume_id_required')
+                .isMongoId()
+                .withMessage('resume.validations.resume_id_invalid')
+                .trim(),
+            body('reject_reason')
+                .isIn(i18n.__("resume.enums.reject_reason"))
+                .withMessage('resume.validations.reject_reason_value_not_valid')
+                .notEmpty()
+                .withMessage('resume.validations.reject_reason')
+                .trim(),
+            body('reject_description')
+                .optional({ nullable: true, checkFalsy: true })
+                .isLength({ min: 0, max: 1000 })
+                .withMessage('resume.validations.description_length')
+                .trim(),
+            generalValidator
+        ];
+    }
+
+
     removeContributor() {
         return [
             param('id').notEmpty().isMongoId().withMessage('resume.validations.resume_id_invalid').trim(),

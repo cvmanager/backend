@@ -17,12 +17,14 @@ resumeIdRouter
     .get('/comments', ResumeValidation.comments(), ResumeController.comments)
     .patch('/avatar', Upload('resumes', 'avatar', 'image'), ResumeValidation.avatar(), ResumeController.updateAvatar)
     .patch('/comments', ResumeValidation.addComments(), ResumeController.addComments)
+
     .patch('/contributor/:user_id', ResumeValidation.addContributor(), ResumeController.setContributor)
     .delete('/contributor/:user_id', ResumeValidation.removeContributor(), ResumeController.unsetContributor)
     .patch('/tag/:tag_id', ResumeValidation.set_tag(), ResumeController.setTag)
     .delete('/tag/:tag_id', ResumeValidation.unset_tag(), ResumeController.unsetTag)
     .patch('/hired', ResumeValidation.hired(), ResumeController.hired)
-    
+    .patch('/reject', ResumeValidation.reject(), ResumeController.reject)
+
     .get('/interviews', ResumeInterviewValidation.index(), ResumeInterviewController.index)
     .post('/interviews', ResumeInterviewValidation.create(), ResumeInterviewController.create)
     .get('/interviews/:interview_id', ResumeInterviewValidation.find(), ResumeInterviewController.find)

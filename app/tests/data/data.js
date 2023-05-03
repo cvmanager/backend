@@ -129,6 +129,7 @@ for (i = 0; i < numberRowInsert; i++) {
         "contribution": [],
         "rating": 3,
         "created_by": users[i]._id,
+        "rating": 4
     })
 }
 
