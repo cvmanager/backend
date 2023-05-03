@@ -5,11 +5,11 @@ import i18n from '../middlewares/lang.middleware.js';
 
 
 
-class InterviewValidation {
+class ResumeInterviewValidation {
 
     index() {
         return [
-            param('resume_id')
+            param('id')
                 .notEmpty()
                 .withMessage('interview.validations.resume_id_required')
                 .isMongoId()
@@ -27,18 +27,8 @@ class InterviewValidation {
 
     create() {
         return [
-            param('resume_id')
-                .notEmpty()
-                .withMessage('interview.validations.resume_id_required')
-                .isMongoId()
-                .withMessage('interview.validations.resume_id_invalid')
-                .trim(),
-            body('event_time')
-                .notEmpty()
-                .withMessage('interview.validations.event_time_required')
-                .isDate()
-                .withMessage('interview.validations.event_time_invalid')
-                .trim(),
+            param('id').notEmpty().isMongoId().withMessage('interview.validations.resume_id_invalid').trim(),
+            body('event_time').notEmpty().isDate().withMessage('interview.validations.event_time_invalid').trim(),
             body('event_time').toDate().custom((eventTime, { req }) => {
                 if (eventTime) {
                     let nextYear = new Date(new Date().setFullYear(new Date().getFullYear() + 1));
@@ -87,13 +77,13 @@ class InterviewValidation {
 
     update() {
         return [
-            param('resume_id')
+            param('id')
                 .notEmpty()
                 .withMessage('interview.validations.resume_id_required')
                 .isMongoId()
                 .withMessage('interview.validations.resume_id_invalid')
                 .trim(),
-            param('id')
+            param('interview_id')
                 .notEmpty()
                 .isMongoId()
                 .withMessage('company.validations.company_id_invalid')
@@ -159,40 +149,20 @@ class InterviewValidation {
 
     find() {
         return [
-            param('resume_id')
-                .notEmpty()
-                .withMessage('interview.validations.resume_id_required')
-                .isMongoId()
-                .withMessage('interview.validations.resume_id_invalid')
-                .trim(),
-            param('id')
-                .notEmpty()
-                .withMessage('interview.validations.interview_id_required')
-                .isMongoId()
-                .withMessage('interview.validations.interview_id_invalid')
-                .trim(),
+            param('id').notEmpty().isMongoId().withMessage('interview.validations.resume_id_invalid').trim(),
+            param('interview_id').notEmpty().isMongoId().withMessage('interview.validations.interview_id_invalid').trim(),
             generalValidator
         ];
     }
 
     remove() {
         return [
-            param('resume_id')
-                .notEmpty()
-                .withMessage('interview.validations.resume_id_required')
-                .isMongoId()
-                .withMessage('interview.validations.resume_id_invalid')
-                .trim(),
-            param('id')
-                .notEmpty()
-                .withMessage('interview.validations.interview_id_required')
-                .isMongoId()
-                .withMessage('interview.validations.interview_id_invalid')
-                .trim(),
+            param('id').notEmpty().isMongoId().withMessage('interview.validations.resume_id_invalid').trim(),
+            param('interview_id').notEmpty().isMongoId().withMessage('interview.validations.interview_id_invalid').trim(),
             generalValidator
         ];
     }
 
 }
 
-export default new InterviewValidation();
+export default new ResumeInterviewValidation();

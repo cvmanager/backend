@@ -50,10 +50,7 @@ class PositionValidation {
     update() {
         return [
             param('id')
-                .notEmpty()
-                .withMessage('position.validations.position_id_required')
-                .isMongoId()
-                .withMessage('position.validations.position_id_invalid')
+                .notEmpty().isMongoId().withMessage('position.validations.position_id_invalid')
                 .trim(),
             body('project_id')
                 .optional({ nullable: true, checkFalsy: true })
@@ -82,9 +79,7 @@ class PositionValidation {
     manager() {
         return [
             param('id').isMongoId().withMessage('position.validations.position_id_invalid').trim(),
-            body('manager_id')
-                .notEmpty().isMongoId()
-                .withMessage('position.validations.manager_id_invalid').trim(),
+            body('manager_id').notEmpty().isMongoId().withMessage('position.validations.manager_id_invalid').trim(),
             generalValidator
         ];
     }
@@ -112,18 +107,15 @@ class PositionValidation {
 
     deleteManager() {
         return [
-            param('id')
-                .notEmpty().isMongoId().withMessage('position.validations.position_id_invalid').trim(),
-            body('manager_id')
-                .notEmpty().isMongoId().withMessage('position.validations.manager_id_invalid').trim(),
+            param('id').notEmpty().isMongoId().withMessage('position.validations.position_id_invalid').trim(),
+            body('manager_id').notEmpty().isMongoId().withMessage('position.validations.manager_id_invalid').trim(),
             generalValidator
         ]
     }
 
     logo() {
         return [
-            param('id')
-                .notEmpty().isMongoId().withMessage('position.validations.position_id_invalid').trim(),
+            param('id').notEmpty().isMongoId().withMessage('position.validations.position_id_invalid').trim(),
             generalValidator
         ];
     }

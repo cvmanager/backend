@@ -2,12 +2,14 @@ import express from 'express'
 import ResumeController from '../http/controllers/resume.controller.js';
 import ResumeValidation from '../validators/resume.validation.js';
 import { Upload } from '../helper/upload.js';
-
+import { toLowerCase } from '../middlewares/lowerCase.middleware.js';
+import ResumeInterviewValidation from '../validators/resumeInterview.validation.js'
+import ResumeInterviewController from '../http/controllers/resumeInterview.controller.js'
 const resumeIdRouter = express.Router({ mergeParams: true });
 
 resumeIdRouter
     .get('', ResumeValidation.find(), ResumeController.find)
-    .patch('', ResumeValidation.update(), ResumeController.update)
+    .patch('', ResumeValidation.update(), toLowerCase, ResumeController.update)
     .delete('', ResumeValidation.remove(), ResumeController.delete)
     .patch('/status', ResumeValidation.update_status(), ResumeController.updateStatus)
     .patch('/call-history', ResumeValidation.call_history(), ResumeController.callHistory)
@@ -15,11 +17,19 @@ resumeIdRouter
     .get('/comments', ResumeValidation.comments(), ResumeController.comments)
     .patch('/avatar', Upload('resumes', 'avatar', 'image'), ResumeValidation.avatar(), ResumeController.updateAvatar)
     .patch('/comments', ResumeValidation.addComments(), ResumeController.addComments)
-    .patch('/hire_status', ResumeValidation.hireStatus(), ResumeController.hireStatus)
-    .patch('/add_contributor', ResumeValidation.addContributor(), ResumeController.addContributor)
-    .patch('/remove_contributor', ResumeValidation.removeContributor(), ResumeController.removeContributor)
-    .patch('/add_tags', ResumeValidation.addTags(), ResumeController.addTags)
-    .patch('/remove_tags', ResumeValidation.removeTags(), ResumeController.removeTags)
+
+    .patch('/contributor/:user_id', ResumeValidation.addContributor(), ResumeController.setContributor)
+    .delete('/contributor/:user_id', ResumeValidation.removeContributor(), ResumeController.unsetContributor)
+    .patch('/tag/:tag_id', ResumeValidation.set_tag(), ResumeController.setTag)
+    .delete('/tag/:tag_id', ResumeValidation.unset_tag(), ResumeController.unsetTag)
+    .patch('/hired', ResumeValidation.hired(), ResumeController.hired)
     .patch('/reject', ResumeValidation.reject(), ResumeController.reject)
+
+    .get('/interviews', ResumeInterviewValidation.index(), ResumeInterviewController.index)
+    .post('/interviews', ResumeInterviewValidation.create(), ResumeInterviewController.create)
+    .get('/interviews/:interview_id', ResumeInterviewValidation.find(), ResumeInterviewController.find)
+    .patch('/interviews/:interview_id', ResumeInterviewValidation.update(), ResumeInterviewController.update)
+    .delete('/interviews/:interview_id', ResumeInterviewValidation.remove(), ResumeInterviewController.delete)
+
 
 export default resumeIdRouter

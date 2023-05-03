@@ -1,7 +1,9 @@
 import positionService from '../../helper/service/position.service.js'
+import viewlogService from '../../helper/service/viewlog.service.js'
 import EventEmitter from '../emitter.js'
 
-export const events = {
+export const PositionEvents = {
+    "FIND": "Find Position",
     "CREATE": "New Position",
     "DELETE": "Delete Position",
     "UPDATE": "Update Position Info",
@@ -11,42 +13,46 @@ export const events = {
     "DEACTIVE": "deactive Position status",
 }
 
-EventEmitter.on(events.CREATE, create)
-EventEmitter.on(events.DELETE, softdelete)
-EventEmitter.on(events.UPDATE, update)
-EventEmitter.on(events.SET_MANAGER, setManager)
-EventEmitter.on(events.UNSET_MANAGER, unsetManager)
-EventEmitter.on(events.ACTIVE, active)
-EventEmitter.on(events.DEACTIVE, deActive)
+EventEmitter.on(PositionEvents.FIND, find)
+EventEmitter.on(PositionEvents.CREATE, create)
+EventEmitter.on(PositionEvents.DELETE, softdelete)
+EventEmitter.on(PositionEvents.UPDATE, update)
+EventEmitter.on(PositionEvents.SET_MANAGER, setManager)
+EventEmitter.on(PositionEvents.UNSET_MANAGER, unsetManager)
+EventEmitter.on(PositionEvents.ACTIVE, active)
+EventEmitter.on(PositionEvents.DEACTIVE, deActive)
 
-
-function active(position) {
-    console.log(events.ACTIVE + " event called", position)
+async function find(position, req) {
+    await viewlogService.setViewlog('positions', position._id, req)
 }
 
-function deActive(position) {
-    console.log(events.DEACTIVE + " event called", position)
+function active(position, req) {
+    console.log(PositionEvents.ACTIVE + " event called", position)
 }
 
-function create(Position) {
-   positionService.addDefaultManagerForPosition(Position)
+function deActive(position, req) {
+    console.log(PositionEvents.DEACTIVE + " event called", position)
+}
+
+function create(Position, req) {
+    positionService.addDefaultManagerForPosition(Position)
 }
 
 
-function softdelete(Position) {
+function softdelete(Position, req) {
     positionService.deleteManagersFromPosition(Position)
 }
 
 
-function update(Position) {
-    console.log(events.UPDATE + " event called", Position)
+function update(Position, req) {
+    console.log(PositionEvents.UPDATE + " event called", Position)
 }
 
-function setManager(Position) {
-    console.log(events.SET_MANAGER + " event called", Position)
+function setManager(Position, req) {
+    console.log(PositionEvents.SET_MANAGER + " event called", Position)
 }
 
-function unsetManager(Position) {
-    console.log(events.UNSET_MANAGER + " event called", Position)
+function unsetManager(Position, req) {
+    console.log(PositionEvents.UNSET_MANAGER + " event called", Position)
 }
 

@@ -102,11 +102,7 @@ for (i = 0; i < numberRowInsert; i++) {
         "created_by": users[i]._id,
         "contributors": [users[i]._id],
         "index": i,
-        "tags": [{
-            "id": tags[i]._id,
-            "name": tags[i].name,
-            "color": tags[i].color
-        }],
+        "tags": [tags[i]._id],
     })
 }
 
@@ -131,6 +127,7 @@ for (i = 0; i < numberRowInsert; i++) {
         "type": "person",
         "description": faker.random.alpha(50),
         "contribution": [],
+        "rating": 3,
         "created_by": users[i]._id,
         "rating": 4
     })

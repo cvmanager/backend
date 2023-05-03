@@ -1,5 +1,5 @@
-import { events } from '../../events/subscribers/resumes.subscriber.js';
-import AlreadyExists from '../../exceptions/AlreadyExists.js';
+import { ResumeEvents } from '../../events/subscribers/resumes.subscriber.js';
+import { TagEvents } from '../../events/subscribers/tags.subscriber.js';
 import NotFoundError from '../../exceptions/NotFoundError.js';
 import Position from '../../models/position.model.js';
 import ResumeComments from '../../models/resumeComment.model.js';
@@ -41,8 +41,8 @@ class ResumeController extends Controller {
             if (query.length > 0) {
                 searchQuery = {
                     $or: [
-                        { firstname: { '$regex': query } },
-                        { lastname: { '$regex': query } },
+                        { firstname: { '$regex': new RegExp(query, "i") } },
+                        { lastname: { '$regex': new RegExp(query, "i") } },
                         { email: { '$regex': query } },
                         { mobile: { '$regex': query } },
                         { education: { '$regex': query } },
@@ -58,7 +58,10 @@ class ResumeController extends Controller {
                 populate: [
                     { path: 'company_id', select: 'name' },
                     { path: 'project_id', select: 'name' },
-                    { path: 'created_by', select: ['firstname', 'lastname'] }
+                    { path: 'created_by', select: ['firstname', 'lastname'] },
+                    { path: 'contributors', select: ['firstname', 'lastname', 'avatar'] },
+                    { path: 'tags', select: ['name', 'color', 'count'] },
+                    { path: 'views', select: ['created_by', 'createdAt'] }
                 ]
             });
             AppResponse.builder(res).message("project.messages.resume_list_found").data(resumeList).send();
@@ -84,8 +87,22 @@ class ResumeController extends Controller {
     */
     async find(req, res, next) {
         try {
-            let resume = await Resume.findById(req.params.id).populate('created_by')
+            let resume = await Resume.findById(req.params.id)
+                .populate([
+                    { path: 'company_id' },
+                    { path: 'project_id' },
+                    { path: 'position_id' },
+                    { path: 'contributors', select: ['firstname', 'lastname', 'avatar'] },
+                    { path: 'interviews', select: ['event_time', 'event_type', 'status', 'type', 'result', 'description', 'rating', 'contribution'] },
+                    { path: 'tags', select: ['name', 'color', 'count'] },
+                    { path: 'views', select: ['created_by', 'createdAt'] },
+                    { path: 'created_by' },
+
+
+                ]);
             if (!resume) throw new NotFoundError('resume.error.resume_notfound');
+
+            EventEmitter.emit(ResumeEvents.FIND, resume, req);
 
             AppResponse.builder(res).message("resume.messages.project_found").data(resume).send();
         } catch (err) {
@@ -123,7 +140,7 @@ class ResumeController extends Controller {
 
             let resume = await Resume.create(req.body)
 
-            EventEmitter.emit(events.NEW_RESUME, resume)
+            EventEmitter.emit( ResumeEvents.CREATE, resume,req)
 
             AppResponse.builder(res).status(201).message("resume.messages.resume_successfully_created").data(resume).send();
         } catch (err) {
@@ -155,7 +172,7 @@ class ResumeController extends Controller {
 
             await Resume.findByIdAndUpdate(req.params.id, req.body, { new: true })
                 .then(resume => {
-                    EventEmitter.emit(events.UPDATE, resume)
+                    EventEmitter.emit(ResumeEvents.UPDATE, resume, req)
                     AppResponse.builder(res).message("resume.messages.resume_successfully_updated").data(resume).send()
                 })
                 .catch(err => next(err));
@@ -189,7 +206,7 @@ class ResumeController extends Controller {
 
             await resume.save();
 
-            EventEmitter.emit(events.DELETE_RESUME, resume)
+            EventEmitter.emit(ResumeEvents.DELETE_RESUME, resume, req)
 
 
             AppResponse.builder(res).message("resume.messages.resume_successfully_deleted").data(resume).send();
@@ -199,7 +216,7 @@ class ResumeController extends Controller {
     }
 
     /**
-    * DELETE /resumes/{id}/status
+    * PATCH /resumes/{id}/status
     * 
     * @summary update status a resume by id
     * @tags Resume
@@ -228,7 +245,7 @@ class ResumeController extends Controller {
             resume.index = req.body.index;
             await resume.save();
 
-            EventEmitter.emit(events.UPDATE_STATUS, resume)
+            EventEmitter.emit(ResumeEvents.UPDATE_STATUS, resume,req)
 
             AppResponse.builder(res).message("resume.messages.resume_status_successfully_updated").data(resume).send();
         } catch (err) {
@@ -237,7 +254,7 @@ class ResumeController extends Controller {
     }
 
     /**
-    * PATCH /resumes/:id/file
+    * PATCH /resumes/{id}/file
     * @summary upload resume file
     * @tags Resume
     * @security BearerAuth
@@ -265,7 +282,7 @@ class ResumeController extends Controller {
             resume.file = files;
             await resume.save();
 
-            EventEmitter.emit(events.ADD_FILE, resume)
+            EventEmitter.emit(ResumeEvents.ADD_FILE, resume, req)
 
             AppResponse.builder(res).message("resume.message.resume_file_successfully_upload").data(resume).send()
         } catch (err) {
@@ -274,7 +291,7 @@ class ResumeController extends Controller {
     }
 
     /**
-    * GET /resumes/{ id } /comments
+    * GET /resumes/{id}/comments
     * 
     * @summary get resume comments list
     * @tags Resume
@@ -328,7 +345,7 @@ class ResumeController extends Controller {
             req.body.created_by = req.user._id
 
             let resumeCommentsRes = await ResumeComments.create(req.body)
-            EventEmitter.emit(events.ADD_COMMENT, resume)
+            EventEmitter.emit(ResumeEvents.ADD_COMMENT, resume,req)
 
             AppResponse.builder(res).status(201).message("resume.messages.resume_comment_successfully_created").data(resumeCommentsRes).send();
         } catch (err) {
@@ -357,24 +374,26 @@ class ResumeController extends Controller {
             let resume = await resumeService.findByParamId(req);
 
             let calling_date = new Date(req.body.calling_date)
-            let recall_at = new Date(req.body.recall_at)
-            resume.call_history.push({
+            let callHistory = {
                 result: req.body.result,
                 calling_date: calling_date,
                 description: req.body.description,
-                recall_at: recall_at,
                 rating: req.body.rating,
                 created_by: req.user._id
-            })
-            calling_date = calling_date.getTime()
-            recall_at = recall_at.getTime()
+            }
 
-            if (calling_date > recall_at) {
+            let recall_at = null
+            if (req.body.recall_at !== undefined && req.body.recall_at !== "") {
+                recall_at = new Date(req.body.recall_at)
+                callHistory.recall_at = recall_at
+            }
+            if (recall_at !== null && calling_date > recall_at) {
                 throw new BadRequestError('calling_date must be before recall_at');
             }
 
+            resume.call_history.push(callHistory)
             await resume.save()
-            EventEmitter.emit(events.ADD_CALL_HISTORY, resume)
+            EventEmitter.emit(ResumeEvents.ADD_CALL_HISTORY, resume, req)
 
             AppResponse.builder(res).message("resume.messages.resume_call_history_successfully_created").data(resume).send();
         } catch (err) {
@@ -382,49 +401,16 @@ class ResumeController extends Controller {
         }
     }
 
+
     /**
-    * PATCH /resumes/{id}/hire_status
+    * PATCH /resumes/{id}/contributor/{user_id}
     * 
-    * @summary update hire status
+    * @summary set contributor to resume
     * @tags Resume
     * @security BearerAuth
     * 
     * @param { string } id.path.required - resume id
-    * @param { resume.hire_status } request.body - application/json
-    * 
-    * @return { resume.success }            200 - success response
-    * @return { message.badrequest_error }  400 - bad request respone
-    * @return { message.badrequest_error }  404 - not found respone
-    * @return { message.badrequest_error }  401 - UnauthorizedError
-    * @return { message.server_error  }     500 - Server Error
-    */
-    async hireStatus(req, res, next) {
-        try {
-            let resume = await Resume.findById(req.params.id);
-            if (!resume) throw new NotFoundError('resume.errors.resume_notfound');
-
-            if (req.body.hire_status == 'hired_on' && (req.body.income == '' || req.body.income == undefined)) {
-                throw new BadRequestError('resume.errors.income_cant_be_empty');
-            }
-
-            resume.hire_status = req.body.hire_status;
-            resume.income = req.body.income;
-            await resume.save();
-
-            AppResponse.builder(res).message("resume.messages.hire_status_successfully_updated").data(resume).send();
-        } catch (err) {
-            next(err);
-        }
-    }
-
-    /**
-    * PATCH /resumes/{id}/add_contributor
-    * 
-    * @summary add contributor
-    * @tags Resume
-    * @security BearerAuth
-    * 
-    * @param { string } id.path.required - resume id
+    * @param { string } user_id.path.required - user id
     * @param { resume.contributor } request.body - application/json
     * 
     * @return { resume.success }            200 - success response
@@ -433,25 +419,18 @@ class ResumeController extends Controller {
     * @return { message.badrequest_error }  401 - UnauthorizedError
     * @return { message.server_error  }     500 - Server Error
     */
-    async addContributor(req, res, next) {
+    async setContributor(req, res, next) {
         try {
-            let resume = await resumeService.findByParamId(req)
+            let resume = await resumeService.findByParamId(req);
 
-            let user = await userService.findOne({ '_id': req.body.contributor })
+            let contributor_id = req.params.user_id;
+            let user = await userService.findOne({ '_id': contributor_id })
             if (!user) throw new NotFoundError('user.errors.user_notfound');
 
-            let contributor = req.body.contributor;
-            let contributors = [];
-            if (resume.contributors) {
-                contributors = resume.contributors;
-            }
 
-            if (contributors.includes(contributor)) {
-                throw new BadRequestError('resume.errors.contributor_could_not_be_duplicate');
-            }
+            if (resume.contributors && resume.contributors.includes(contributor_id)) throw new BadRequestError('resume.errors.contributor_could_not_be_duplicate');
 
-            contributors.push(req.body.contributor);
-            resume.contributors = contributors;
+            resume.contributors.push(contributor_id);
             await resume.save();
 
             AppResponse.builder(res).message("resume.messages.contributor_successfully_added").data(resume).send();
@@ -461,13 +440,14 @@ class ResumeController extends Controller {
     }
 
     /**
-    * PATCH /resumes/{id}/remove_contributor
+    * DELETE /resumes/{id}/contributor/{user_id}
     * 
-    * @summary remove contributor
+    * @summary unset special contributor from resume
     * @tags Resume
     * @security BearerAuth
     * 
     * @param { string } id.path.required - resume id
+    * @param { string } user_idid.path.required - user_id id
     * @param { resume.contributor } request.body - application/json
     * 
     * @return { resume.success }            200 - success response
@@ -476,24 +456,17 @@ class ResumeController extends Controller {
     * @return { message.badrequest_error }  401 - UnauthorizedError
     * @return { message.server_error  }     500 - Server Error
     */
-    async removeContributor(req, res, next) {
+    async unsetContributor(req, res, next) {
         try {
             let resume = await resumeService.findByParamId(req)
 
-            let user = await userService.findOne({ '_id': req.body.contributor })
+            let user = await userService.findOne({ '_id': req.params.user_id })
             if (!user) throw new NotFoundError('user.errors.user_notfound');
 
-            let contributor = req.body.contributor;
-            let contributors = []
-            if (resume.contributors) {
-                contributors = resume.contributors;
-            }
+            let contributors = resume.contributors
+            if (!resume.contributors.includes(user._id)) throw new BadRequestError('resume.errors.contributor_not_exists');
 
-            if (!contributors.includes(contributor)) {
-                throw new BadRequestError('resume.errors.contributor_not_exists');
-            }
-
-            resume.contributors = contributors.filter(e => e != contributor)
+            resume.contributors = contributors.filter(e => e != user._id)
             await resume.save();
 
             AppResponse.builder(res).message("resume.messages.contributor_successfully_removed").data(resume).send();
@@ -503,7 +476,7 @@ class ResumeController extends Controller {
     }
 
     /**
-    * PATCH /resumes/:id/avatar
+    * PATCH /resumes/{id}/avatar
     * @summary upload resume avatar
     * @tags Resume
     * @security BearerAuth
@@ -532,13 +505,14 @@ class ResumeController extends Controller {
     }
 
     /**
-    * PATCH /resumes/{id}/add-tags
+    * PATCH /resumes/{id}/tag/{tag_id}
     * 
     * @summary add comments for resume in table
     * @tags Resume
     * @security BearerAuth
     * 
     * @param  { string } id.path.required - resume id
+    * @param  { string } tag_id.path.required - tag id
     * @param { tag.create } request.body - resume info - application/json
     * 
     * @return { tag.success }     201 - success response
@@ -547,24 +521,18 @@ class ResumeController extends Controller {
     * @return { message.NotFoundError }     404 - not found respone
     * @return { message.server_error  }     500 - Server Error
     */
-    async addTags(req, res, next) {
+    async setTag(req, res, next) {
         try {
             let resume = await resumeService.findByParamId(req);
-            let tag = await TagService.checkAndReturnTag(req.body.tag);
+            let tag = await TagService.findOne(req.params.tag_id);
+            if (!tag) throw new NotFoundError('tag.errors.tag_notfound');
 
-            let tags = [];
-            if (resume.tags) tags = resume.tags.filter(value => JSON.stringify(value) !== '{}');
-            if (tags.some(value => value.id == tag._id)) throw new BadRequestError('resume.errors.tag_could_not_be_duplicate');
-
-            tags.push({
-                id: tag._id,
-                name: tag.name,
-                color: tag.color,
-            })
-            resume.tags = tags;
+            if (resume.tags && resume.tags.includes(tag._id)) throw new BadRequestError('resume.errors.tag_could_not_be_duplicate');
+            resume.tags.push(tag._id)
             await resume.save();
 
-            EventEmitter.emit(events.ADD_TAG, resume)
+            EventEmitter.emit(ResumeEvents.ADD_TAG, resume, req)
+            // EventEmitter.emit(TagEvents.TAG_USE,tag); error when uncomment :/
 
             AppResponse.builder(res).status(200).message("resume.messages.resume_tags_successfully_updated").data(resume).send();
         } catch (err) {
@@ -573,13 +541,14 @@ class ResumeController extends Controller {
     }
 
     /**
-    * PATCH /resumes/{id}/remove-tags
+    * DELETE /resumes/{id}/tag/{tag_id}
     * 
     * @summary add comments for resume in table
     * @tags Resume
     * @security BearerAuth
     * 
     * @param  { string } id.path.required - resume id
+    * @param  { string } tag_id.path.required - tag id
     * @param { tag.remove } request.body - resume info - application/json
     * 
     * @return { tag.success }     201 - success response
@@ -588,17 +557,64 @@ class ResumeController extends Controller {
     * @return { message.NotFoundError }     404 - not found respone
     * @return { message.server_error  }     500 - Server Error
     */
-    async removeTags(req, res, next) {
+    async unsetTag(req, res, next) {
         try {
             let resume = await resumeService.findByParamId(req);
+            let tag = await TagService.findOne(req.params.tag_id);
+            if (!tag) throw new NotFoundError('tag.errors.tag_notfound');
 
-            let tag = req.body.tag_id;
-            if (!resume.tags.some(value => value.id == tag)) {
-                throw new BadRequestError('resume.errors.tag_not_exists');
-            }
-            resume.tags = resume.tags.filter(e => e.id != tag)
+            if (!resume.tags.includes(tag._id)) throw new BadRequestError('resume.errors.tag_not_exists');
+
+            let tagIndex = resume.tags.indexOf(tag._id);
+            resume.tags.splice(tagIndex, 1)
             await resume.save();
 
+            EventEmitter.emit(ResumeEvents.REMOVE_TAG, resume, req)
+
+            AppResponse.builder(res).status(200).message("resume.messages.resume_tags_successfully_deleted").data(resume).send();
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
+    * PATCH /resumes/{id}/hired
+    * 
+    * @summary change status of resume to hired
+    * @tags Resume
+    * @security BearerAuth
+    * 
+    * @param  { string } id.path.required - resume id
+    * @param { resume.hired } request.body - application/json
+    * 
+    * @return { resume.success } 200 - success response
+    * @return { message.badrequest_error }  400 - bad request respone
+    * @return { message.badrequest_error }  404 - not found respone
+    * @return { message.badrequest_error }       401 - UnauthorizedError
+    * @return { message.server_error  }     500 - Server Error
+    */
+    async hired(req, res, next) {
+        try {
+            let resume = await resumeService.findByParamId(req);
+            if (resume.status === 'hired') throw new BadRequestError('resume.errors.resume_already_hired')
+
+            let fromDate = new Date(req.body.hired_from_date)
+            let toDate = new Date(req.body.hired_to_date)
+            if (fromDate > toDate) throw new BadRequestError('resume.errors.from_date_must_be_before_to_date');
+
+            resume.status_history.push({
+                old_status: resume.status,
+                new_status: 'hired',
+                createdAt: new Date(),
+                created_by: req.user._id
+            });
+
+            resume.status = 'hired'
+            resume.how_to_cooperate = req.body.how_to_cooperate
+            resume.hired_from_date = fromDate
+            resume.hired_to_date = toDate
+            resume.income = req.body.income
+            await resume.save();
             AppResponse.builder(res).status(200).message("resume.messages.resume_tags_successfully_deleted").data(resume).send();
         } catch (err) {
             next(err);

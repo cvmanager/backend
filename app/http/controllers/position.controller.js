@@ -7,7 +7,7 @@ import Manager from '../../models/manager.model.js';
 import AppResponse from '../../helper/response.js';
 import Controller from './controller.js';
 import EventEmitter from '../../events/emitter.js';
-import { events } from '../../events/subscribers/positions.subscriber.js'
+import { PositionEvents } from '../../events/subscribers/positions.subscriber.js'
 import Resume from '../../models/resume.model.js';
 import BadRequestError from '../../exceptions/BadRequestError.js';
 import Company from '../../models/company.model.js';
@@ -38,7 +38,7 @@ class PositionController extends Controller {
         try {
             const { page = 1, size = 10, query = '' } = req.query
 
-            let searchQuery = (query.length > 0 ? { $or: [{ title: { '$regex': query } }] } : null);
+            let searchQuery = (query.length > 0 ? { $or: [{ title: { '$regex': new RegExp(query, "i") } }] } : null);
 
             searchQuery = mergeQuery(searchQuery, req.rbacQuery)
             const positionList = await Position.paginate(searchQuery, {
@@ -79,13 +79,14 @@ class PositionController extends Controller {
     */
     async find(req, res, next) {
         try {
-            const position = await Position.findById(req.params.id)
-                .populate([
-                    { path: 'company_id', select: ['_id', 'name', 'logo'] },
-                    { path: 'project_id', select: ['_id', 'name', 'logo'] },
-                    { path: 'created_by', select: ['firstname', 'lastname', 'avatar'] }
-                ]);
-            if (!position) throw new NotFoundError('position.errors.position_notfound');
+
+            const position = await positionService.findByParamId(req, [
+                { path: 'company_id', select: ['_id', 'name', 'logo'] },
+                { path: 'project_id', select: ['_id', 'name', 'logo'] },
+                { path: 'created_by', select: ['firstname', 'lastname', 'avatar'] }
+            ]);
+
+            EventEmitter.emit(PositionEvents.FIND, position, req);
 
             AppResponse.builder(res).message('position.messages.position_found').data(position).send();
         } catch (err) {
@@ -123,7 +124,7 @@ class PositionController extends Controller {
             req.body.company_id = project.company_id;
             position = await Position.create(req.body);
 
-            EventEmitter.emit(events.CREATE, position);
+            EventEmitter.emit(PositionEvents.CREATE, position, req);
             AppResponse.builder(res).status(201).message('position.messages.position_successfully_created').data(position).send();
         } catch (err) {
             next(err)
@@ -159,7 +160,7 @@ class PositionController extends Controller {
             await Position.findByIdAndUpdate(req.params.id, req.body, { new: true })
                 .then(position => {
 
-                    EventEmitter.emit(events.UPDATE, position);
+                    EventEmitter.emit(PositionEvents.UPDATE, position, req);
                     AppResponse.builder(res).message("position.messages.position_successfully_updated").data(position).send()
                 })
                 .catch(err => next(err));
@@ -189,7 +190,7 @@ class PositionController extends Controller {
             if (!position) throw new NotFoundError('position.errors.position_notfound');
 
             await position.delete(req.user._id);
-            EventEmitter.emit(events.DELETE, position);
+            EventEmitter.emit(PositionEvents.DELETE, position, req);
 
             AppResponse.builder(res).message("position.messages.position_successfully_deleted").data(position).send();
         } catch (err) {
@@ -231,7 +232,7 @@ class PositionController extends Controller {
             const positionManagerRole = await roleService.findOne({ name: "Position Manager" })
             await userService.addRole(user._id, positionManagerRole._id)
 
-            EventEmitter.emit(events.SET_MANAGER, position);
+            EventEmitter.emit(PositionEvents.SET_MANAGER, position, req);
             AppResponse.builder(res).status(201).message('manager.messages.manager_successfully_created').data(manager).send();
         } catch (err) {
             next(err);
@@ -264,11 +265,17 @@ class PositionController extends Controller {
             let statuses = i18n.__("resume.enums.status");
             for (let status of statuses) {
                 let resumeList = Resume.find({ 'position_id': position._id, 'status': status })
-                    .select(['name', 'avatar', 'summary_count', 'rating', 'tags.name', 'contributors', 'index'])
                     .limit(size)
                     .sort([['index', 1]])
                     .populate([
+                        { path: 'interviews', select: ['event_time', 'event_type', 'status', 'type', 'result', 'description', 'rating', 'contribution'] },
+                        { path: 'created_by' },
+                        { path: 'contributors', select: ['firstname', 'lastname', 'avatar'] },
+                        { path: 'interviews', select: ['event_time', 'event_type', 'status', 'type', 'result', 'description', 'rating', 'contribution'] },
+                        { path: 'tags', select: ['name', 'color', 'count'] },
+                        { path: 'project_id' },
                         { path: 'position_id' },
+                        { path: 'company_id' },
                     ]);
                 promiseResumes.push(resumeList)
             }
@@ -335,7 +342,7 @@ class PositionController extends Controller {
             position.is_active = true;
             await position.save();
 
-            EventEmitter.emit(events.ACTIVE, position)
+            EventEmitter.emit(PositionEvents.ACTIVE, position, req)
             AppResponse.builder(res).message("position.messages.position_successfully_activated").data(position).send()
         } catch (err) {
             next(err);
@@ -365,7 +372,7 @@ class PositionController extends Controller {
             position.is_active = false;
             await position.save();
 
-            EventEmitter.emit(events.DEACTIVE, position)
+            EventEmitter.emit(PositionEvents.DEACTIVE, position, req)
             AppResponse.builder(res).message("position.messages.position_successfully_deactivated").data(position).send()
         } catch (err) {
             next(err);
@@ -400,7 +407,7 @@ class PositionController extends Controller {
             if (manager.type === 'owner') throw new BadRequestError("position.errors.the_owner_manager_cannot_be_deleted");
 
             await manager.delete(req.user._id);
-            EventEmitter.emit(events.UNSET_MANAGER, position);
+            EventEmitter.emit(PositionEvents.UNSET_MANAGER, position, req);
 
             AppResponse.builder(res).message("position.messages.position_manager_deleted").data(position).send()
         } catch (err) {
@@ -409,7 +416,7 @@ class PositionController extends Controller {
     }
 
     /**
-   * PATCH /positions/:id/logo
+   * PATCH /positions/{id}/logo
    * @summary upload position logo
    * @tags Position
    * @security BearerAuth

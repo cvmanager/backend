@@ -21,7 +21,7 @@ class CityController extends Controller {
     async index(req, res, next) {
         try {
             const { page = 1, size = 50, query = '' } = req.query
-            let searchQuery = (query.length > 0 ? { $or: [{ name: { '$regex': query } }] } : null);
+            let searchQuery = (query.length > 0 ? { $or: [{ name: { '$regex': new RegExp(query, "i") } }] } : null);
             const CityList = await City.paginate(searchQuery, {
                 page: (page) || 1,
                 limit: size,

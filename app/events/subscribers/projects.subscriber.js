@@ -1,7 +1,8 @@
 import projectService from '../../helper/service/project.service.js'
 import EventEmitter from '../emitter.js'
-
-export const events = {
+import viewlogService from '../../helper/service/viewlog.service.js'
+export const ProjectEvents = {
+    "FIND": "Find Project",
     "CREATE": "New Project",
     "DELETE": "Delete Project",
     "UPDATE": "Update Project Info",
@@ -10,40 +11,44 @@ export const events = {
     "ACTIVE": "active project status",
     "DEACTIVE": "deactive project status",
 }
+EventEmitter.on(ProjectEvents.FIND, find)
+EventEmitter.on(ProjectEvents.CREATE, create)
+EventEmitter.on(ProjectEvents.DELETE, softdelete)
+EventEmitter.on(ProjectEvents.UPDATE, update)
+EventEmitter.on(ProjectEvents.SET_MANAGER, setManager)
+EventEmitter.on(ProjectEvents.UNSET_MANAGER, unsetManager)
+EventEmitter.on(ProjectEvents.ACTIVE, active)
+EventEmitter.on(ProjectEvents.DEACTIVE, deActive)
 
-EventEmitter.on(events.CREATE, create)
-EventEmitter.on(events.DELETE, softdelete)
-EventEmitter.on(events.UPDATE, update)
-EventEmitter.on(events.SET_MANAGER, setManager)
-EventEmitter.on(events.UNSET_MANAGER, unsetManager)
-EventEmitter.on(events.ACTIVE, active)
-EventEmitter.on(events.DEACTIVE, deActive)
 
-function active(project) {
-    console.log(events.ACTIVE + " event called", project)
+async function find(Project, req) {
+    await viewlogService.setViewlog('projects', Project._id, req)
+}
+function active(project, req) {
+    console.log(ProjectEvents.ACTIVE + " event called", project)
 }
 
-function deActive(project) {
-    console.log(events.DEACTIVE + " event called", project)
+function deActive(project, req) {
+    console.log(ProjectEvents.DEACTIVE + " event called", project)
 }
 
-function create(project) {
-   projectService.addDefaultManagerForProject(project);
+function create(project, req) {
+    projectService.addDefaultManagerForProject(project);
 }
 
-function softdelete(project) {
+function softdelete(project, req) {
     projectService.deleteManagersFromProject(project);
 }
 
-function update(project) {
-    console.log(events.UPDATE + " event called", project)
+function update(project, req) {
+    console.log(ProjectEvents.UPDATE + " event called", project)
 }
 
-function setManager(project) {
-    console.log(events.SET_MANAGER + " event called", project)
+function setManager(project, req) {
+    console.log(ProjectEvents.SET_MANAGER + " event called", project)
 }
 
-function unsetManager(project) {
-    console.log(events.UNSET_MANAGER + " event called", project)
+function unsetManager(project, req) {
+    console.log(ProjectEvents.UNSET_MANAGER + " event called", project)
 }
 

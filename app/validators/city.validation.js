@@ -16,11 +16,7 @@ class CityValidation {
     find() {
         return [
             param('id')
-                .notEmpty()
-                .withMessage('city.validations.city_id_required')
-                .isMongoId()
-                .withMessage('city.validations.city_id_invalid')
-                .trim(),
+                .notEmpty().isMongoId().withMessage('city.validations.city_id_invalid').trim(),
             generalValidator
         ];
     }

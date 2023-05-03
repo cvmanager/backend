@@ -1,36 +1,41 @@
 import userService from "../../helper/service/user.service.js";
 import EventEmitter from "../emitter.js";
 
-export const events = {
+export const UserEvents = {
     "LOGIN": "Login User",
     "SINGUP": "Singup User",
     "REFRESH": "",
     "LOGOUT": "Logout User",
     "BANNED": "Banned User",
+    "EDIT_USER": "Edit User",
     "UNBANNED": "UnBanned User"
 }
 
-EventEmitter.on(events.LOGIN, login);
-EventEmitter.on(events.SINGUP, signup);
-EventEmitter.on(events.BANNED, banned);
-EventEmitter.on(events.UNBANNED, unbanned);
-EventEmitter.on(events.LOGOUT, logout);
+EventEmitter.on(UserEvents.LOGIN, login);
+EventEmitter.on(UserEvents.SINGUP, signup);
+EventEmitter.on(UserEvents.BANNED, banned);
+EventEmitter.on(UserEvents.UNBANNED, unbanned);
+EventEmitter.on(UserEvents.LOGOUT, logout);
+EventEmitter.on(UserEvents.EDIT_USER, editUser);
 
 
-function login(user, access_token, refresh_token) {
+function login(user, req, access_token, refresh_token) {
     userService.setLogForLogin(user, access_token, refresh_token);
 }
 
-function signup(user, access_token, refresh_token) {
+function signup(user, req, access_token, refresh_token) {
     userService.setLogForLogin(user, access_token, refresh_token, 'register')
 }
 
-function banned(user) {
-    console.log(events.BANNED + " event called", user)
+function banned(user, req) {
+    console.log(UserEvents.BANNED + " event called", user)
 }
 
-function unbanned(user) {
-    console.log(events.UNBANNED + " event called", user)
+function editUser(user, req) {
+    console.log(UserEvents.EDIT_USER + " event called", user)
+}
+function unbanned(user, req) {
+    console.log(UserEvents.UNBANNED + " event called", user)
 }
 
 function logout(access_token) {

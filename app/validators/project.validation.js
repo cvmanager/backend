@@ -44,67 +44,51 @@ class ProjectValidation {
 
     find() {
         return [
-            param('id')
-                .notEmpty().isMongoId().withMessage('project.validations.project_id_invalid').trim(),
+            param('id').notEmpty().isMongoId().withMessage('project.validations.project_id_invalid').trim(),
             generalValidator
         ];
     }
 
     remove() {
         return [
-            param('id')
-                .notEmpty().isMongoId()
-                .withMessage('project.validations.project_id_invalid').trim(),
+            param('id').notEmpty().isMongoId().withMessage('project.validations.project_id_invalid').trim(),
             generalValidator
         ];
     }
 
     manager() {
         return [
-            param('id')
-                .notEmpty().isMongoId()
-                .withMessage('project.validations.project_id_invalid')
-                .trim(),
-            body('manager_id')
-                .notEmpty().isMongoId()
-                .withMessage('company.validations.manager_id_invalid').trim(),
+            param('id').notEmpty().isMongoId().withMessage('project.validations.project_id_invalid').trim(),
+            body('manager_id').notEmpty().isMongoId().withMessage('company.validations.manager_id_invalid').trim(),
             generalValidator
         ]
     }
 
     deleteManager() {
         return [
-            param('id')
-                .notEmpty().isMongoId()
-                .withMessage('project.validations.project_id_invalid')
-                .trim(),
-            body('manager_id')
-                .notEmpty().isMongoId()
-                .withMessage('company.validations.manager_id_invalid').trim(),
+            param('id').notEmpty().isMongoId().withMessage('project.validations.project_id_invalid').trim(),
+            body('manager_id').notEmpty().isMongoId().withMessage('company.validations.manager_id_invalid').trim(),
             generalValidator
         ]
     }
 
     active() {
         return [
-            param('id')
-                .notEmpty().isMongoId().withMessage('project.validations.project_id_invalid').trim(),
+            param('id').notEmpty().isMongoId().withMessage('project.validations.project_id_invalid').trim(),
             generalValidator
         ];
     }
 
     deActive() {
         return [
-            param('id')
-                .notEmpty().isMongoId().withMessage('project.validations.project_id_invalid').trim(),
+            param('id').notEmpty().isMongoId().withMessage('project.validations.project_id_invalid').trim(),
             generalValidator
         ];
     }
 
     logo() {
         return [
-            param('id')
-                .notEmpty().isMongoId().withMessage('project.validations.project_id_invalid').trim(),
+            param('id').notEmpty().isMongoId().withMessage('project.validations.project_id_invalid').trim(),
             generalValidator
         ];
     }

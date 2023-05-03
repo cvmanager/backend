@@ -27,6 +27,10 @@ const schema = new mongoose.Schema(
             type: String,
             required: true
         },
+        fullname: {
+            type: String,
+            default: null
+        },
         gender: {
             type: String,
             required: true,
@@ -197,27 +201,14 @@ const schema = new mongoose.Schema(
             default: null,
         },
         tags: {
-            type: [
-                {
-                    id: {
-                        type: String,
-                        required: null,
-                    },
-                    name: {
-                        type: String,
-                        required: null,
-                    },
-                    color: {
-                        type: String,
-                        required: null,
-                    }
-                }
-            ],
+            type: Array,
             default: null,
+            ref: 'tags'
         },
         contributors: {
             type: Array,
             default: null,
+            ref: 'users'
         },
         summary_count: {
             type:
@@ -260,15 +251,40 @@ const schema = new mongoose.Schema(
             type: Number,
             default: null,
             length: 1
+        },
+        how_to_cooperate: {
+            type: String,
+            default: null
+        },
+        hired_to_date: {
+            type: mongoose.Schema.Types.Date,
+            default: null
+        },
+        hired_from_date: {
+            type: mongoose.Schema.Types.Date,
+            default: null
         }
     }
 );
 
-schema.virtual("resumeComments", {
+schema.virtual("comments", {
     ref: 'resumeComments',
     localField: "_id",
     foreignField: "resume_id"
 });
+
+schema.virtual("interviews", {
+    ref: 'interviews',
+    localField: "_id",
+    foreignField: "resume_id"
+});
+
+schema.virtual("views", {
+    ref: 'viewlog',
+    localField: "_id",
+    foreignField: "entity_id"
+});
+
 
 schema.plugin(basePlugin)
 

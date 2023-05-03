@@ -1,7 +1,9 @@
 import EventEmitter from '../emitter.js'
 import managerService from '../../helper/service/manager.service.js';
+import viewlogService from '../../helper/service/viewlog.service.js'
 
-export const events = {
+export const CompanyEvents = {
+    "FIND": "Find Company",
     "CREATE": "New Company",
     "DELETE": "Delete Company",
     "UPDATE": "Update Company Info",
@@ -11,40 +13,44 @@ export const events = {
     "DEACTIVE_COMPANY": "event after deactive company"
 }
 
-EventEmitter.on(events.CREATE, create)
-EventEmitter.on(events.DELETE, softdelete)
-EventEmitter.on(events.UPDATE, update)
-EventEmitter.on(events.SET_MANAGER, setManager)
-EventEmitter.on(events.UNSET_MANAGER, unsetManager)
-EventEmitter.on(events.ACTIVE_COMPANY, active)
-EventEmitter.on(events.DEACTIVE_COMPANY, deActive)
+EventEmitter.on(CompanyEvents.FIND, find)
+EventEmitter.on(CompanyEvents.CREATE, create)
+EventEmitter.on(CompanyEvents.DELETE, softdelete)
+EventEmitter.on(CompanyEvents.UPDATE, update)
+EventEmitter.on(CompanyEvents.SET_MANAGER, setManager)
+EventEmitter.on(CompanyEvents.UNSET_MANAGER, unsetManager)
+EventEmitter.on(CompanyEvents.ACTIVE_COMPANY, active)
+EventEmitter.on(CompanyEvents.DEACTIVE_COMPANY, deActive)
 
-function active(Company) {
-    console.log(events.ACTIVE_COMPANY + " event called", Company)
+async function find(Company, req) {
+    await viewlogService.setViewlog('companies', Company._id, req)
+}
+function active(Company, req) {
+    console.log(CompanyEvents.ACTIVE_COMPANY + " event called", Company)
 }
 
-function deActive(Company) {
-    console.log(events.DEACTIVE_COMPANY + " event called", Company)
+function deActive(Company, req) {
+    console.log(CompanyEvents.DEACTIVE_COMPANY + " event called", Company)
 }
 
-function create(Company) {
+function create(Company, req) {
     managerService.addDefaultManagerForCompany(Company)
 }
 
-function softdelete(Company) {
+function softdelete(Company, req) {
     managerService.deleteManagersFromCompany(Company)
 }
 
 
-function update(Company) {
-    console.log(events.UPDATE + " event called", Company)
+function update(Company, req) {
+    console.log(CompanyEvents.UPDATE + " event called", Company)
 }
 
-function setManager(Company) {
-    console.log(events.SET_MANAGER + " event called", Company)
+function setManager(Company, req) {
+    console.log(CompanyEvents.SET_MANAGER + " event called", Company)
 }
 
-function unsetManager(Company) {
-    console.log(events.UNSET_MANAGER + " event called", Company)
+function unsetManager(Company, req) {
+    console.log(CompanyEvents.UNSET_MANAGER + " event called", Company)
 }
 

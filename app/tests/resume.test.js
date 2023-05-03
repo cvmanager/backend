@@ -130,6 +130,8 @@ describe("Resumes Routes", () => {
             expect(data).toHaveProperty('created_by')
             expect(data).toHaveProperty('deleted')
             expect(data).toHaveProperty('status_history')
+            expect(data).toHaveProperty('summary_count')
+            expect(data).toHaveProperty('fullname')
             expect(data).toHaveProperty('createdAt')
             expect(data).toHaveProperty('updatedAt')
             expect(data).toHaveProperty('id')
@@ -195,6 +197,7 @@ describe("Resumes Routes", () => {
             expect(data).toHaveProperty('deleted')
             expect(data).toHaveProperty('status_history')
             expect(data).toHaveProperty('summary_count')
+            expect(data).toHaveProperty('fullname')
             expect(data).toHaveProperty('createdAt')
             expect(data).toHaveProperty('updatedAt')
             expect(response.statusCode).toBe(httpStatus.OK)
@@ -1564,88 +1567,6 @@ describe("Resumes Routes", () => {
                 .patch(`/api/V1/resumes/${resume._id}/remove_tags`)
                 .set(`Authorization`, token)
                 .send(removeTag);
-            expect(response.statusCode).toBe(httpStatus.OK);
-        })
-
-    })
-
-    describe(`PATCH /:id/reject`, () => {
-
-        let rejectResume;
-        beforeEach(() => {
-            rejectResume = {
-                reject_reason: 'user_busy_working',
-                reject_description: faker.random.alpha(50),
-            }
-        })
-
-        it(`should get ${httpStatus.BAD_REQUEST} if resume id is not MongoId`, async () => {
-            const response = await request(app)
-                .patch(`/api/V1/resumes/fakeId/reject`)
-                .set(`Authorization`, token)
-                .send(rejectResume);
-            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
-        })
-
-        it(`should get ${httpStatus.NOT_FOUND} if resume id is not valid`, async () => {
-            const response = await request(app)
-                .patch(`/api/V1/resumes/${Types.ObjectId()}/reject`)
-                .set(`Authorization`, token)
-                .send(rejectResume);
-            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
-        })
-
-        it(`should get ${httpStatus.BAD_REQUEST} if reject reason is not send`, async () => {
-            delete rejectResume.reject_reason;
-            const response = await request(app)
-                .patch(`/api/V1/resumes/${resume._id}/reject`)
-                .set(`Authorization`, token)
-                .send(rejectResume);
-            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
-        })
-
-        it(`should get ${httpStatus.BAD_REQUEST} if reject reason not valid`, async () => {
-            rejectResume.reject_reason = faker.random.alpha(10);
-            const response = await request(app)
-                .patch(`/api/V1/resumes/${resume._id}/reject`)
-                .set(`Authorization`, token)
-                .send(rejectResume);
-            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
-        })
-
-        it(`should get ${httpStatus.BAD_REQUEST} if resume status alredy rejected`, async () => {
-            resumeItem = {
-                "_id": Types.ObjectId(),
-                "company_id": company._id,
-                "project_id": project._id,
-                "position_id": position._id,
-                "firstname": faker.name.firstName(),
-                "lastname": faker.name.lastName(),
-                "gender": "men",
-                "email": faker.internet.email(),
-                "birth_year": "1370",
-                "marital_status": "married",
-                "military_status": "included",
-                "mobile": faker.phone.number('989#########'),
-                "residence_city": Types.ObjectId(),
-                "work_city": Types.ObjectId(),
-                "education": "diploma",
-                "created_by": user._id,
-                "status": 'rejected'
-            }
-            resumeData.addResume([resumeItem])
-            const response = await request(app)
-                .patch(`/api/V1/resumes/${resumeItem._id}/reject`)
-                .set(`Authorization`, token)
-                .send(rejectResume);
-            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
-        })
-
-        it(`should get ${httpStatus.OK} resume rejected successfully`, async () => {
-            const response = await request(app)
-                .patch(`/api/V1/resumes/${resume._id}/reject`)
-                .set(`Authorization`, token)
-                .send(rejectResume);
             expect(response.statusCode).toBe(httpStatus.OK);
         })
 

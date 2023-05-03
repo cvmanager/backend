@@ -323,7 +323,9 @@
 			"mobile_required": "The mobile field is required",
 			"mobile_pattern": "The mobile number entered is invalid",
 			"username_wrong": "The username is wrong",
-			"mobile_wrong": "The username is wrong"
+			"mobile_wrong": "The username is wrong",
+			"email_required": "email is required",
+			"email_invalid": "email is invalid"
 		},
 		"messages": {
 			"user_successfully_created": "The account was created successfully",
@@ -482,6 +484,11 @@
 				"rejected_initial_interview",
 				"not_matching_salary_with_position",
 				"unresponsive_user"
+			],
+			"how_to_cooperate": [
+				"trial",
+				"contractual",
+				"projection"
 			]
 		},
 		"validations": {
@@ -524,7 +531,15 @@
 			"max_tag_length": "tag has be between 5 and 100 character",
 			"max_comment_length": "Comment has be between 5 and 1000 character",
 			"resume_page_number": "resume page must by number",
-			"resume_size_number": "resume size must by number"
+			"resume_size_number": "resume size must by number",
+			"how_to_cooperate_required": "how to cooperate is required",
+			"how_to_cooperate_invalid": "how to cooperate is not valid",
+			"hired_from_date_required": "from date required",
+			"hired_from_date_must_be_date": "from date must be date",
+			"hired_to_date_required": "to date required",
+			"hired_to_date_must_be_date": "to date must be date",
+			"income_required": "income required",
+			"income_is_number": "income is number"
 		},
 		"messages": {
 			"resume_successfully_created": "resume successfully created",
@@ -541,7 +556,9 @@
 			"resume_comments_notfound": "Sorry, Resume not have any comment",
 			"can_not_update_status_to_current": "It is not possible to update the status to the current status",
 			"tag_could_not_be_duplicate": "tag could not be duplicate",
-			"tag_not_exists": "tag not exists"
+			"tag_not_exists": "tag not exists",
+			"from_date_must_be_before_to_date" : "from date must be before to date",
+			"resume_already_hired" : "resume already hired"
 		}
 	},
 	"user": {
@@ -564,7 +581,9 @@
 			"old_password_length_not_confirm": "old password length must be between 8-10",
 			"old_password_cant_be_empty": "old password cant be empty",
 			"incorrect_password": "The password is incorrect",
-			"duplicate_password": "New password cant be duplicate with old password"
+			"duplicate_password": "New password cant be duplicate with old password",
+			"email_already_exists": "this email is already exists",
+			"username_already_exists": "this username is already exists"
 		}
 	},
 	"manager": {
@@ -644,10 +663,17 @@
 	"tag": {
 		"enums": {},
 		"validations": {
+			"tag_page_number": "tag page must by number",
+			"tag_size_number": "tag size must by number",
 			"tag_id_required": "tag id required",
 			"tag_id_invalid": "tag id invalid"
 		},
-		"messages": {},
-		"errors": {}
+		"messages": {
+			"tag_list_found" : "Tag list found",
+			"tag_successfully_created" : "Tag successfully created"
+		},
+		"errors": {
+			"duplicate": "Tag could not be duplicate"
+		}
 	}
 }

@@ -85,13 +85,6 @@
 */
 
 /**
-* update hire status 
-* @typedef { object } resume.hire_status
-* @property { string } hire_status.required - hire status 
-* @property { number } income - income
-*/
-
-/**
 * resume success response
 * @typedef { object } resume.success
 * @property { string }         message
@@ -127,4 +120,13 @@
 * upload avatar resume
 * @typedef { object } resume.upload_avatar
 * @property { avatar } avatar.required - resume avatar
+*/
+
+/**
+* create hired
+* @typedef { object } resume.hired
+* @property { string } how_to_cooperate.required - how_to_cooperate
+* @property { string } hired_from_date.required - hired_from_date
+* @property { string } hired_to_date.required - hired_to_date
+* @property { number } income.required - recall_at
 */
