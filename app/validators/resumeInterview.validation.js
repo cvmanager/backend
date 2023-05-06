@@ -28,7 +28,7 @@ class ResumeInterviewValidation {
     create() {
         return [
             param('id').notEmpty().isMongoId().withMessage('interview.validations.resume_id_invalid').trim(),
-            body('event_time').notEmpty().isDate().withMessage('interview.validations.event_time_invalid').trim(),
+            body('event_time').notEmpty().isISO8601().isDate().withMessage('interview.validations.event_time_invalid').trim(),
             body('event_time').toDate().custom((eventTime, { req }) => {
                 if (eventTime) {
                     let nextYear = new Date(new Date().setFullYear(new Date().getFullYear() + 1));
@@ -89,6 +89,7 @@ class ResumeInterviewValidation {
                 .trim(),
             body('event_time')
                 .optional({ nullable: true, checkFalsy: true })
+                .isISO8601()
                 .isDate()
                 .withMessage('interview.validations.event_time_invalid')
                 .trim(),
