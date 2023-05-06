@@ -96,7 +96,7 @@ class ResumeController extends Controller {
                     { path: 'interviews', populate: { path: 'contribution', select: ['firstname', 'lastname', 'avatar'] }, select: ['event_time', 'event_type', 'status', 'type', 'result', 'description', 'rating', 'contribution', 'created_by', 'createdAt'] },
                     { path: 'tags', select: ['name', 'color', 'count'] },
                     { path: 'views', select: ['created_by', 'createdAt'] },
-                    { path: 'created_by' ,populate: { path: 'created_by', select: ['firstname', 'lastname', 'avatar'] }},
+                    { path: 'created_by', populate: { path: 'created_by', select: ['firstname', 'lastname', 'avatar'] } },
 
 
                 ]);
