@@ -48,7 +48,7 @@ const schema = new mongoose.Schema(
         },
         rating: {
             type: Number,
-            required: true,
+            default: null,
             length: 1
         }
     }

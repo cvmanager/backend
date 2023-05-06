@@ -64,7 +64,7 @@ class ResumeInterviewController extends Controller {
     */
     async find(req, res, next) {
         try {
-            await Resume.findByParamId(req);
+            await resumeService.findByParamId(req);
             let interview = await Interview.findById(req.params.interview_id).populate({ path: 'created_by', select: ['firstname', 'lastname', 'avatar'] }).exec();
             if (!interview) throw new NotFoundError('interview.errors.interview_notfound');
 
@@ -93,7 +93,7 @@ class ResumeInterviewController extends Controller {
     async create(req, res, next) {
         try {
 
-            await Resume.findByParamId(req);
+            await resumeService.findByParamId(req);
             req.body.created_by = req.user._id
             req.body.event_time = new Date(req.body.event_time)
             req.body.resume_id = req.params.id;
@@ -125,7 +125,7 @@ class ResumeInterviewController extends Controller {
     */
     async update(req, res, next) {
         try {
-            let resume = await Resume.findByParamId(req);
+            let resume = await resumeService.findByParamId(req);
 
             let interview = await Interview.findById(req.params.id);
             if (!interview) throw new NotFoundError('interview.errors.interview_notfound');

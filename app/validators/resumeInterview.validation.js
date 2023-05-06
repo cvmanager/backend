@@ -64,8 +64,7 @@ class ResumeInterviewValidation {
                 .withMessage('interview.validations.contribution_array')
                 .trim(),
             body('rating')
-                .notEmpty()
-                .withMessage('interview.validations.rating_is_required')
+                .optional({ nullable: true, checkFalsy: true })
                 .isNumeric()
                 .withMessage('interview.validations.rating_numeric')
                 .isInt({ min: 1, max: 5 })
