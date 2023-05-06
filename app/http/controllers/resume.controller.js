@@ -93,7 +93,7 @@ class ResumeController extends Controller {
                     { path: 'project_id' },
                     { path: 'position_id' },
                     { path: 'contributors', select: ['firstname', 'lastname', 'avatar'] },
-                    { path: 'interviews', select: ['event_time', 'event_type', 'status', 'type', 'result', 'description', 'rating', 'contribution'] },
+                    { path: 'interviews', select: ['event_time', 'event_type', 'status', 'type', 'result', 'description', 'rating', 'contribution', 'created_by', 'createdAt'] },
                     { path: 'tags', select: ['name', 'color', 'count'] },
                     { path: 'views', select: ['created_by', 'createdAt'] },
                     { path: 'created_by' },
@@ -140,7 +140,7 @@ class ResumeController extends Controller {
 
             let resume = await Resume.create(req.body)
 
-            EventEmitter.emit( ResumeEvents.CREATE, resume,req)
+            EventEmitter.emit(ResumeEvents.CREATE, resume, req)
 
             AppResponse.builder(res).status(201).message("resume.messages.resume_successfully_created").data(resume).send();
         } catch (err) {
@@ -245,7 +245,7 @@ class ResumeController extends Controller {
             resume.index = req.body.index;
             await resume.save();
 
-            EventEmitter.emit(ResumeEvents.UPDATE_STATUS, resume,req)
+            EventEmitter.emit(ResumeEvents.UPDATE_STATUS, resume, req)
 
             AppResponse.builder(res).message("resume.messages.resume_status_successfully_updated").data(resume).send();
         } catch (err) {
@@ -345,7 +345,7 @@ class ResumeController extends Controller {
             req.body.created_by = req.user._id
 
             let resumeCommentsRes = await ResumeComments.create(req.body)
-            EventEmitter.emit(ResumeEvents.ADD_COMMENT, resume,req)
+            EventEmitter.emit(ResumeEvents.ADD_COMMENT, resume, req)
 
             AppResponse.builder(res).status(201).message("resume.messages.resume_comment_successfully_created").data(resumeCommentsRes).send();
         } catch (err) {
@@ -649,7 +649,7 @@ class ResumeController extends Controller {
                 createdAt: new Date(),
                 created_by: req.user._id
             });
-            
+
             resume.status = 'rejected';
             resume.reject_reason = req.body.reject_reason;
             resume.reject_description = req.body.reject_description;
