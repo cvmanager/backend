@@ -32,18 +32,18 @@ class ResumeInterviewValidation {
                 .isISO8601()
                 .toDate()
                 .withMessage('interview.validations.event_time_invalid').trim(),
-            body('event_time').toDate().custom((eventTime, { req }) => {
-                if (eventTime) {
-                    let nextYear = new Date(new Date().setFullYear(new Date().getFullYear() + 1));
-                    if (
-                        Date.now() < eventTime.getTime() &&
-                        eventTime.getTime() < nextYear.getTime()
-                    ) {
-                        throw new Error('interview.validations.event_time_invalid');
-                    }
-                }
-                return true
-            }),
+            // body('event_time').toDate().custom((eventTime, { req }) => {
+            //     if (eventTime) {
+            //         let nextYear = new Date(new Date().setFullYear(new Date().getFullYear() + 1));
+            //         if (
+            //             Date.now() < eventTime.getTime() &&
+            //             eventTime.getTime() < nextYear.getTime()
+            //         ) {
+            //             throw new Error('interview.validations.event_time_invalid');
+            //         }
+            //     }
+            //     return true
+            // }),
             body('event_type')
                 .notEmpty()
                 .withMessage('interview.validations.event_type_required')
