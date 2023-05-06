@@ -39,6 +39,7 @@ const schema = new mongoose.Schema(
         },
         contribution: {
             type: Array,
+            ref: 'users',
             default: null
         },
         created_by: {
@@ -53,6 +54,7 @@ const schema = new mongoose.Schema(
         }
     }
 )
+
 
 schema.plugin(basePlugin)
 
