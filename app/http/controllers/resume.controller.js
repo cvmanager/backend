@@ -94,13 +94,27 @@ class ResumeController extends Controller {
                     { path: 'position_id' },
                     { path: 'contributors', select: ['firstname', 'lastname', 'avatar'] },
                     {
+                        path: 'call_history',
+                        populate: [
+                            { path: 'created_by', select: ['firstname', 'lastname', 'avatar'] }
+                        ],
+                    },
+                    {
                         path: 'interviews',
-                        populate: { path: 'created_by', select: ['firstname', 'lastname', 'avatar'] },
-                        populate: { path: 'contribution', select: ['firstname', 'lastname', 'avatar'] },
+                        populate: [
+                            { path: 'created_by', select: ['firstname', 'lastname', 'avatar'] },
+                            { path: 'contribution', select: ['firstname', 'lastname', 'avatar'] }
+                        ],
                         select: ['event_time', 'event_type', 'status', 'type', 'result', 'description', 'rating', 'contribution', 'created_by', 'createdAt']
                     },
                     { path: 'tags', select: ['name', 'color', 'count'] },
-                    { path: 'views', select: ['created_by', 'createdAt'] },
+                    {
+                        path: 'views',
+                        populate: [
+                            { path: 'created_by', select: ['firstname', 'lastname', 'avatar'] }
+                        ],
+                        select: ['created_by', 'createdAt']
+                    },
                     { path: 'created_by', select: ['firstname', 'lastname', 'avatar'] },
 
 
