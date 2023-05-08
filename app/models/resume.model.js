@@ -166,6 +166,10 @@ const schema = new mongoose.Schema(
                         required: true,
                         ref: 'users'
                     },
+                    createdAt : {
+                        type: Date,
+                        default: Date.now 
+                    }
                 }
             ],
             default: null
