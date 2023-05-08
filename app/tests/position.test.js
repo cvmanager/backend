@@ -261,6 +261,14 @@ describe(`Position Routes`, () => {
                 .send(newPosition);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
+        it(`should get ${httpStatus.BAD_REQUEST} if level is not send`, async () => {
+            delete newPosition.level;
+            const response = await request(app)
+                .post(`/api/V1/positions`)
+                .set(`Authorization`, token)
+                .send(newPosition);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
         it(`should get ${httpStatus.BAD_REQUEST} if level not in ${i18n.__('position.enums.level')}`, async () => {
             newPosition.level = 'wrong level';
             const response = await request(app)
