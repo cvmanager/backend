@@ -687,6 +687,7 @@ class ResumeController extends Controller {
         try {
             let resume = await resumeService.findByParamId(req);
             if (resume.status === 'end_cooperation') throw new BadRequestError('resume.errors.resume_already_end_cooperation')
+            if (resume.status !== 'hired') throw new BadRequestError('resume.errors.you_can_set_end_cooperation_just_for_hired_resume')
             let endCooperationDate = new Date(req.body.end_cooperation_date)
 
             let oldStatus = resume.status

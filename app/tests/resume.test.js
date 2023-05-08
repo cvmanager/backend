@@ -1838,6 +1838,13 @@ describe("Resumes Routes", () => {
                 .send(rejectResume);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
+        it(`should get ${httpStatus.BAD_REQUEST} if resume status not hired`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${resumeItem._id}/end-cooperation`)
+                .set(`Authorization`, token)
+                .send(endCooperationResume);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
         it(`should get ${httpStatus.OK} if all data correct `, async () => {
             const response = await request(app)
             .patch(`/api/V1/resumes/${resume._id}/end-cooperation`)

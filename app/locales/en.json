@@ -565,7 +565,8 @@
 			"tag_not_exists": "tag not exists",
 			"from_date_must_be_before_to_date": "from date must be before to date",
 			"resume_already_hired": "resume already hired",
-			"resume_already_end_cooperation": "resume already end of cooperation"
+			"resume_already_end_cooperation": "resume already end of cooperation",
+			"you_can_set_end_cooperation_just_for_hired_resume": "you can set end cooperation just for hired resume"
 		}
 	},
 	"user": {
