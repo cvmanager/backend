@@ -413,6 +413,36 @@ class ResumeValidation {
             generalValidator
         ];
     }
+
+    end_cooperation() {
+        return [
+            param('id')
+                .notEmpty()
+                .withMessage('resume.validations.resume_id_required')
+                .isMongoId()
+                .withMessage('resume.validations.resume_id_invalid')
+                .trim(),
+            body('end_cooperation_date')
+                .notEmpty()
+                .withMessage('resume.validations.end_cooperation_date_required')
+                .isISO8601()
+                .toDate()
+                .withMessage('resume.validations.end_cooperation_date_must_be_date')
+                .trim(),
+            body('end_cooperation_reason')
+                .notEmpty()
+                .withMessage('resume.validations.end_cooperation_reason_required')
+                .isIn(i18n.__("resume.enums.end_cooperation_reason"))
+                .withMessage('resume.validations.end_cooperation_reason_not_valid')
+                .trim(),
+            body('end_cooperation_description')
+                .optional({ nullable: true, checkFalsy: true })
+                .isLength({ max: 1000 })
+                .withMessage('resume.validations.end_cooperation_description_length')
+                .trim(),
+            generalValidator
+        ];
+    }
 }
 
 export default new ResumeValidation();
