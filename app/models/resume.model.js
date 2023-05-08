@@ -252,14 +252,6 @@ const schema = new mongoose.Schema(
             default: null,
             length: 1
         },
-        how_to_cooperate: {
-            type: String,
-            default: null
-        },
-        hired_to_date: {
-            type: mongoose.Schema.Types.Date,
-            default: null
-        },
         hired_from_date: {
             type: mongoose.Schema.Types.Date,
             default: null
