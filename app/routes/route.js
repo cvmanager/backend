@@ -40,7 +40,7 @@ router.use('/companies', verifyToken, canAccess, companyAccess, companyRouter)
 router.use('/users', verifyToken, canAccess, userRouter)
 router.use('/users/:id', verifyToken, canAccess, userAccess, userIdRouter)
 
-router.use('/constant', verifyToken, constantRouter)
+router.use('/constant', verifyToken, canAccess, constantRouter)
 
 router.use('/permissions/:id', verifyToken, canAccess, permissionIdRouter)
 router.use('/permissions', verifyToken, canAccess, permissionRouter)
@@ -61,7 +61,7 @@ router.use('/resumes', verifyToken, canAccess, resumeAccess, resumeRouter)
 router.use('/roles/:id', verifyToken, canAccess, roleIdRouter)
 router.use('/roles', verifyToken, canAccess, roleRouter)
 
-router.use('/tags' ,  verifyToken,canAccess,TagRouter)
+router.use('/tags', verifyToken, canAccess, TagRouter)
 
 
 

@@ -1,6 +1,8 @@
 import { Types } from 'mongoose';
 import { faker } from '@faker-js/faker';
 import { getRandomColor } from '../../helper/helper.js'
+import roles from "../../db/roles.js";
+let systemManager = roles.find(role => role.name === 'System Manager')
 
 const numberRowInsert = 3;
 let i = 0;
@@ -14,7 +16,7 @@ for (i = 0; i < numberRowInsert; i++) {
         "username": faker.random.alpha(9),
         "mobile": faker.phone.number('989#########'),
         "email": faker.internet.email(),
-        "role": ["636793ebed4e4ba2664f2cbe"],
+        "role": [systemManager._id],
         "password": '12345678'
     })
 }
