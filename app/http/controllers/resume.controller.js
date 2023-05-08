@@ -111,7 +111,7 @@ class ResumeController extends Controller {
                     {
                         path: 'views',
                         populate: [
-                            { path: 'created_by', select: ['firstname', 'lastname', 'avatar'] }
+                            { path: 'created_by', select: ['firstname', 'lastname', 'avatar', 'username'] }
                         ],
                         select: ['created_by', 'createdAt']
                     },
