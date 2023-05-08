@@ -37,6 +37,10 @@ export default class ServiceBase {
         return document
     }
 
+    async findById(id, populates = []) {
+        return _model.get(this).findById(id).populate(populates).exec()
+    }
+
     async create(data) {
         return _model.get(this).create(data);
     }
@@ -59,33 +63,32 @@ export default class ServiceBase {
 
     async find(filters, pagination, sort) { // pagination: {skip: number, limit: number }
         return _model.get(this).aggregate([
-                { '$match': filters },
-                {
-                    '$facet': {
-                        'meta': [
-                            {
-                                '$group': {
-                                    '_id': null,
-                                    'totalDocs': {
-                                        '$sum': 1
-                                    }
+            { '$match': filters },
+            {
+                '$facet': {
+                    'meta': [
+                        {
+                            '$group': {
+                                '_id': null,
+                                'totalDocs': {
+                                    '$sum': 1
                                 }
                             }
-                        ],
-                        'docs': [
-                            {
-                                '$sort': sort
-                            },
-                            {
-                                '$skip': pagination.skip
-                            },
-                            {
-                                '$limit': pagination.limit
-                            }
-                        ]
-                    }
+                        }
+                    ],
+                    'docs': [
+                        {
+                            '$sort': sort
+                        },
+                        {
+                            '$skip': pagination.skip
+                        },
+                        {
+                            '$limit': pagination.limit
+                        }
+                    ]
                 }
-            ])
+            }
+        ])
     }
 };
-  
