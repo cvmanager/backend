@@ -11,6 +11,7 @@ export const ResumeEvents = {
     "ADD_CALL_HISTORY": "add call history for resume",
     "ADD_FILE": "add file to resume",
     "ADD_TAG": "add tag to resume",
+    "UPDATE_STATUS_LOG": "Update Resume Status Log",
 }
 
 EventEmitter.on(ResumeEvents.FIND, find)
@@ -23,6 +24,7 @@ EventEmitter.on(ResumeEvents.ADD_CALL_HISTORY, addCallHistory)
 EventEmitter.on(ResumeEvents.ADD_FILE, addFile)
 EventEmitter.on(ResumeEvents.ADD_TAG, setTag)
 EventEmitter.on(ResumeEvents.REMOVE_TAG, unsetTag)
+EventEmitter.on(ResumeEvents.UPDATE_STATUS_LOG, updateStatusLog)
 
 async function find(Resume, req) {
     await viewlogService.setViewlog('resumes', Resume._id, req)
@@ -45,6 +47,10 @@ function update(Resume, req) {
 
 function updateStatus(Resume, req) {
     resumeService.setProccessDuration(Resume)
+}
+
+async function updateStatusLog(Resume, req, oldStatus) {
+    await resumeService.addUpdateStatusLog(Resume, req, oldStatus)
 }
 
 async function addComment(Resume, req) {

@@ -24,6 +24,7 @@ resumeIdRouter
     .delete('/tag/:tag_id', ResumeValidation.unset_tag(), ResumeController.unsetTag)
     .patch('/hired', ResumeValidation.hired(), ResumeController.hired)
     .patch('/reject', ResumeValidation.reject(), ResumeController.reject)
+    .patch('/end-cooperation', ResumeValidation.end_cooperation(), ResumeController.endCooperation)
 
     .get('/interviews', ResumeInterviewValidation.index(), ResumeInterviewController.index)
     .post('/interviews', ResumeInterviewValidation.create(), ResumeInterviewController.create)

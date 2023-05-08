@@ -254,17 +254,14 @@ class ResumeController extends Controller {
         try {
             let resume = await resumeService.findByParamId(req);
             if (resume.status == req.body.status) throw new BadRequestError('resume.errors.can_not_update_status_to_current')
-            resume.status_history.push({
-                old_status: resume.status,
-                new_status: req.body.status,
-                createdAt: new Date(),
-                created_by: req.user._id
-            });
+            let oldStatus = resume.status
+
             resume.status = req.body.status;
             resume.index = req.body.index;
             await resume.save();
 
             EventEmitter.emit(ResumeEvents.UPDATE_STATUS, resume, req)
+            EventEmitter.emit(ResumeEvents.UPDATE_STATUS_LOG, resume, req, oldStatus)
 
             AppResponse.builder(res).message("resume.messages.resume_status_successfully_updated").data(resume).send();
         } catch (err) {
@@ -618,19 +615,16 @@ class ResumeController extends Controller {
             if (resume.status === 'hired') throw new BadRequestError('resume.errors.resume_already_hired')
 
             let fromDate = new Date(req.body.hired_from_date)
-
-            resume.status_history.push({
-                old_status: resume.status,
-                new_status: 'hired',
-                createdAt: new Date(),
-                created_by: req.user._id
-            });
+            let oldStatus = resume.status
 
             resume.status = 'hired'
             resume.hired_from_date = fromDate
             resume.income = req.body.income
             await resume.save();
-            AppResponse.builder(res).status(200).message("resume.messages.resume_tags_successfully_deleted").data(resume).send();
+
+            EventEmitter.emit(ResumeEvents.UPDATE_STATUS_LOG, resume, req, oldStatus)
+
+            AppResponse.builder(res).status(200).message("resume.messages.resume_successfully_hired").data(resume).send();
         } catch (err) {
             next(err);
         }
@@ -658,19 +652,54 @@ class ResumeController extends Controller {
             if (resume.status == 'rejected') {
                 throw new BadRequestError('resume.errors.resume_already_rejected');
             }
-            resume.status_history.push({
-                old_status: resume.status,
-                new_status: 'rejected',
-                createdAt: new Date(),
-                created_by: req.user._id
-            });
+            let oldStatus = resume.status
 
             resume.status = 'rejected';
             resume.reject_reason = req.body.reject_reason;
             resume.reject_description = req.body.reject_description;
             await resume.save();
 
+            EventEmitter.emit(ResumeEvents.UPDATE_STATUS_LOG, resume, req, oldStatus)
+
             AppResponse.builder(res).status(200).message("resume.messages.resume_successfully_rejected").data(resume).send();
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
+    * PATCH /resumes/{id}/end-cooperation
+    * 
+    * @summary change status of resume to end-cooperation
+    * @tags Resume
+    * @security BearerAuth
+    * 
+    * @param  { string } id.path.required - resume id
+    * @param { resume.end_cooperation } request.body - application/json
+    * 
+    * @return { resume.success } 200 - success response
+    * @return { message.badrequest_error }  400 - bad request respone
+    * @return { message.badrequest_error }  404 - not found respone
+    * @return { message.badrequest_error }       401 - UnauthorizedError
+    * @return { message.server_error  }     500 - Server Error
+    */
+    async endCooperation(req, res, next) {
+        try {
+            let resume = await resumeService.findByParamId(req);
+            if (resume.status === 'end_cooperation') throw new BadRequestError('resume.errors.resume_already_end_cooperation')
+            let endCooperationDate = new Date(req.body.end_cooperation_date)
+
+            let oldStatus = resume.status
+
+            resume.status = 'end_cooperation'
+            resume.end_cooperation_date = endCooperationDate
+            resume.end_cooperation_reason = req.body.end_cooperation_reason
+            resume.end_cooperation_description = req.body.end_cooperation_description
+            await resume.save();
+
+            EventEmitter.emit(ResumeEvents.UPDATE_STATUS_LOG, resume, req, oldStatus)
+
+            AppResponse.builder(res).status(200).message("resume.messages.resume_successfully_end_cooperation").data(resume).send();
         } catch (err) {
             next(err);
         }

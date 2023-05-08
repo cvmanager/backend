@@ -128,3 +128,11 @@
 * @property { string } hired_to_date.required - hired_to_date
 * @property { number } income.required - recall_at
 */
+
+/**
+* create end_cooperation
+* @typedef { object } resume.end_cooperation
+* @property { string } end_cooperation_date.required - end_cooperation_date
+* @property { string } end_cooperation_reason.required - end_cooperation_reason
+* @property { string } end_cooperation_description - end_cooperation_description
+*/

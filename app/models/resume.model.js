@@ -255,6 +255,18 @@ const schema = new mongoose.Schema(
         hired_from_date: {
             type: mongoose.Schema.Types.Date,
             default: null
+        },
+        end_cooperation_date: {
+            type: mongoose.Schema.Types.Date,
+            default: null
+        },
+        end_cooperation_reason: {
+            type: String,
+            default: null
+        },
+        end_cooperation_description: {
+            type: String,
+            default: null
         }
     }
 );

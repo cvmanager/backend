@@ -464,7 +464,8 @@
 				"wait_reject",
 				"rejected",
 				"hired",
-				"wait_hire"
+				"wait_hire",
+				"end_cooperation"
 			],
 			"call_history_status": [
 				"rejected",
@@ -484,6 +485,10 @@
 				"rejected_initial_interview",
 				"not_matching_salary_with_position",
 				"unresponsive_user"
+			],
+			"end_cooperation_reason": [
+				"find_a_new_job",
+				"retrenchment"
 			]
 		},
 		"validations": {
@@ -534,7 +539,11 @@
 			"hired_to_date_required": "to date required",
 			"hired_to_date_must_be_date": "to date must be date",
 			"income_required": "income required",
-			"income_is_number": "income is number"
+			"end_cooperation_date_required": "end cooperation date required",
+			"end_cooperation_date_must_be_date": "end cooperation date must be date",
+			"end_cooperation_reason_required": "end cooperation reason",
+			"end_cooperation_reason_not_valid": "end cooperation reason not valid",
+			"end_cooperation_description_length": "end cooperation description length must less than 100"
 		},
 		"messages": {
 			"resume_successfully_created": "resume successfully created",
@@ -543,6 +552,8 @@
 			"resume_tags_successfully_updated": "resume tags successfully updated",
 			"resume_tags_successfully_deleted": "resume tags successfully deleted",
 			"resume_successfully_rejected": "resume successfully rejected",
+			"resume_successfully_hired": "resume successfully hired",
+			"resume_successfully_end_cooperation": "resume successfully end of cooperation",
 			"resume_already_rejected": "resume already rejected"
 		},
 		"errors": {
@@ -552,8 +563,9 @@
 			"can_not_update_status_to_current": "It is not possible to update the status to the current status",
 			"tag_could_not_be_duplicate": "tag could not be duplicate",
 			"tag_not_exists": "tag not exists",
-			"from_date_must_be_before_to_date" : "from date must be before to date",
-			"resume_already_hired" : "resume already hired"
+			"from_date_must_be_before_to_date": "from date must be before to date",
+			"resume_already_hired": "resume already hired",
+			"resume_already_end_cooperation": "resume already end of cooperation"
 		}
 	},
 	"user": {
@@ -664,8 +676,8 @@
 			"tag_id_invalid": "tag id invalid"
 		},
 		"messages": {
-			"tag_list_found" : "Tag list found",
-			"tag_successfully_created" : "Tag successfully created"
+			"tag_list_found": "Tag list found",
+			"tag_successfully_created": "Tag successfully created"
 		},
 		"errors": {
 			"duplicate": "Tag could not be duplicate"

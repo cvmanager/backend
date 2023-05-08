@@ -80,6 +80,18 @@ class ResumeService extends ServiceBase {
         resume.index = lastIndex.index + 1;
         await resume.save();
     }
+
+    async addUpdateStatusLog(resume, req, pervStatus) {
+        let statusHistoryLog = {
+            old_status: pervStatus,
+            new_status: resume.status,
+            createdAt: new Date(),
+            created_by: req.user._id
+        };
+
+        resume.status_history.push(statusHistoryLog)
+        await resume.save();
+    }
 }
 
 export default new ResumeService(Resume);
