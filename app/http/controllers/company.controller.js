@@ -15,6 +15,7 @@ import userService from '../../helper/service/user.service.js';
 import roleService from '../../helper/service/role.service.js';
 import managerService from '../../helper/service/manager.service.js';
 import projectService from '../../helper/service/project.service.js';
+import i18n from '../../middlewares/lang.middleware.js';
 
 class CompanyController extends Controller {
 
