@@ -599,8 +599,6 @@ class ResumeController extends Controller {
             if (resume.status === 'hired') throw new BadRequestError('resume.errors.resume_already_hired')
 
             let fromDate = new Date(req.body.hired_from_date)
-            let toDate = new Date(req.body.hired_to_date)
-            if (fromDate > toDate) throw new BadRequestError('resume.errors.from_date_must_be_before_to_date');
 
             resume.status_history.push({
                 old_status: resume.status,
@@ -610,9 +608,7 @@ class ResumeController extends Controller {
             });
 
             resume.status = 'hired'
-            resume.how_to_cooperate = req.body.how_to_cooperate
             resume.hired_from_date = fromDate
-            resume.hired_to_date = toDate
             resume.income = req.body.income
             await resume.save();
             AppResponse.builder(res).status(200).message("resume.messages.resume_tags_successfully_deleted").data(resume).send();

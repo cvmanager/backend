@@ -484,11 +484,6 @@
 				"rejected_initial_interview",
 				"not_matching_salary_with_position",
 				"unresponsive_user"
-			],
-			"how_to_cooperate": [
-				"trial",
-				"contractual",
-				"projection"
 			]
 		},
 		"validations": {

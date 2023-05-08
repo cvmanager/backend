@@ -397,25 +397,12 @@ class ResumeValidation {
                 .isMongoId()
                 .withMessage('resume.validations.resume_id_invalid')
                 .trim(),
-            body('how_to_cooperate')
-                .notEmpty()
-                .withMessage('resume.validations.how_to_cooperate_required')
-                .isIn(i18n.__("resume.enums.how_to_cooperate"))
-                .withMessage('resume.validations.how_to_cooperate_invalid')
-                .trim(),
             body('hired_from_date')
                 .notEmpty()
                 .withMessage('resume.validations.hired_from_date_required')
                 .isISO8601()
                 .toDate()
                 .withMessage('resume.validations.hired_from_date_must_be_date')
-                .trim(),
-            body('hired_to_date')
-                .notEmpty()
-                .withMessage('resume.validations.hired_to_date_required')
-                .isISO8601()
-                .toDate()
-                .withMessage('resume.validations.hired_to_date_must_be_date')
                 .trim(),
             body('income')
                 .notEmpty()
