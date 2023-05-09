@@ -10,6 +10,8 @@ import { UserEvents } from '../../events/subscribers/user.subscriber.js';
 import bcrypt from 'bcrypt'
 import { mergeQuery } from '../../helper/mergeQuery.js';
 import userService from '../../helper/service/user.service.js';
+import Role from '../../models/role.model.js';
+import roleService from '../../helper/service/role.service.js';
 
 class UserController extends Controller {
 
@@ -40,7 +42,9 @@ class UserController extends Controller {
                 page: (page) || 1,
                 limit: size,
                 sort: { createdAt: -1 },
-                // populate: 'likes'
+                populate: [
+                    { path: 'role', select: ['name'] }
+                ]
             });
             AppResponse.builder(res).message("user.messages.list_found").data(users).send();
         } catch (err) {
@@ -63,7 +67,9 @@ class UserController extends Controller {
      */
     async find(req, res, next) {
         try {
-            let user = await User.findById(req.params.id);
+            let user = await User.findById(req.params.id).populate([
+                { path: 'role', select: ['name'] }
+            ]);
             if (!user) throw new NotFoundError('user.errors.user_notfound');
 
             AppResponse.builder(res).message("user.messages.user_founded").data(user).send();
@@ -331,6 +337,41 @@ class UserController extends Controller {
             EventEmitter.emit(UserEvents.EDIT_USER, user, req);
 
             AppResponse.builder(res).status(200).data(user).message('user.messages.user_successfuly_edited').send();
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
+ * PATCH /users/{id}/role
+ * 
+ * @summary update user role
+ * @tags User
+ * @security BearerAuth
+ *
+ * @param {string } id.path.required - user id
+ * @param {string} request.body          - role id - application/json
+ * 
+ * @return { user.success }                 200 - role updated successfuly 
+ * @return { message.badrequest_error }     400 - Bad Request
+ * @return { message.badrequest_error }     401 - UnauthorizedError
+ * @return { message.server_error  }        500 - Server Error
+ */
+    async role(req, res, next) {
+        try {
+            let user = await userService.findByParamId(req);
+
+            let role = await roleService.findById(req.body.role_id);
+            if (!role) throw new NotFoundError('user.errors.role_notfound')
+
+            if (user.role.includes(role._id)) throw new BadRequestError('user.errors.role_already_exist')
+
+            user.role = [role._id]
+            await user.save();
+
+            EventEmitter.emit(UserEvents.ROLE, user, req);
+
+            AppResponse.builder(res).status(200).data(user).message('user.messages.user_role_successfuly_updated').send();
         } catch (err) {
             next(err);
         }

@@ -8,7 +8,8 @@ export const UserEvents = {
     "LOGOUT": "Logout User",
     "BANNED": "Banned User",
     "EDIT_USER": "Edit User",
-    "UNBANNED": "UnBanned User"
+    "UNBANNED": "UnBanned User",
+    "ROLE": "update User role"
 }
 
 EventEmitter.on(UserEvents.LOGIN, login);
@@ -17,6 +18,7 @@ EventEmitter.on(UserEvents.BANNED, banned);
 EventEmitter.on(UserEvents.UNBANNED, unbanned);
 EventEmitter.on(UserEvents.LOGOUT, logout);
 EventEmitter.on(UserEvents.EDIT_USER, editUser);
+EventEmitter.on(UserEvents.ROLE, role);
 
 
 function login(user, req, access_token, refresh_token) {
@@ -40,4 +42,8 @@ function unbanned(user, req) {
 
 function logout(access_token) {
     userService.setLogForLogout(access_token);
+}
+
+function role(access_token) {
+    console.log(UserEvents.ROLE + " event called", user)
 }

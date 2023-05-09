@@ -86,6 +86,15 @@ class UserValidation {
         ];
     }
 
+    role() {
+        return [
+            param('id')
+                .notEmpty().isMongoId().withMessage('user.validations.user_id_invalid').trim(),
+            body('role_id')
+                .notEmpty().isMongoId().withMessage('user.validations.role_id_invalid').trim(),
+            generalValidator
+        ];
+    }
 }
 
 

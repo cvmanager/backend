@@ -15,5 +15,6 @@ userRouter
     .post('/unban', UserValidation.unban(), UserController.unbanned)
     .get('/login-history', UserValidation.loginHistory(), UserController.loginHistory)
     .patch('/avatar', Upload('users/org/', 'avatar', 'image'), cropImage(avatar_size, cropEvents.Crop_Image), UserValidation.updateProfileImage(), UserController.uploadProfileImage)
-    .get('/companies', UserValidation.companies(), UserController.companies);
+    .get('/companies', UserValidation.companies(), UserController.companies)
+    .patch('/role', UserValidation.role(), UserController.role);
 export default userRouter

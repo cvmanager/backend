@@ -580,7 +580,8 @@
 			"list_found": "the list of users",
 			"password_changed": "User password successfully changed",
 			"user_login_history_list": "user login history list",
-			"companies_founded": "user companies successfully found"
+			"companies_founded": "user companies successfully found",
+			"user_role_successfuly_updated": "user role   successfully updated"
 		},
 		"errors": {
 			"user_notfound": "User not found",
@@ -628,6 +629,8 @@
 		"validations": {
 			"interview_id_required": "interview id required",
 			"interview_id_invalid": "interview id invalid",
+			"user_id_invalid": "user id invalid",
+			"role_id_invalid": "invalid id invalid",
 			"resume_id_required": "resume id required",
 			"resume_id_invalid": "resume id invalid",
 			"event_time_required": "event time required",
