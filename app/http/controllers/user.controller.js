@@ -10,6 +10,9 @@ import { UserEvents } from '../../events/subscribers/user.subscriber.js';
 import bcrypt from 'bcrypt'
 import { mergeQuery } from '../../helper/mergeQuery.js';
 import userService from '../../helper/service/user.service.js';
+import fcmTokenService from '../../helper/service/fcmtoken.service.js';
+import FCMToken from '../../models/fcmToken.model.js';
+import systemInfo from "systeminformation";
 
 class UserController extends Controller {
 
@@ -40,7 +43,9 @@ class UserController extends Controller {
                 page: (page) || 1,
                 limit: size,
                 sort: { createdAt: -1 },
-                // populate: 'likes'
+                populate: [
+                    { path: "fcmtokens", select: ['token'] }
+                ]
             });
             AppResponse.builder(res).message("user.messages.list_found").data(users).send();
         } catch (err) {
@@ -63,7 +68,9 @@ class UserController extends Controller {
      */
     async find(req, res, next) {
         try {
-            let user = await User.findById(req.params.id);
+            let user = await User.findById(req.params.id).populate([
+                { path: "fcmtokens", select: ['token'] }
+            ]);
             if (!user) throw new NotFoundError('user.errors.user_notfound');
 
             AppResponse.builder(res).message("user.messages.user_founded").data(user).send();
@@ -331,6 +338,107 @@ class UserController extends Controller {
             EventEmitter.emit(UserEvents.EDIT_USER, user, req);
 
             AppResponse.builder(res).status(200).data(user).message('user.messages.user_successfuly_edited').send();
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
+    * PATCH /users/{id}/fcm-token
+    * 
+    * @summary set user fcm token
+    * @tags User
+    * @security BearerAuth
+    *
+    * @param {string } id.path.required - user id
+    * @param {user.set_fcm_token } request.body          - fcm token info - application/json
+    * 
+    * @return { user.success }                 200 - edit successfuly 
+    * @return { message.badrequest_error }     400 - Bad Request
+    * @return { message.badrequest_error }     401 - UnauthorizedError
+    * @return { message.server_error  }        500 - Server Error
+    */
+    async setFCMToken(req, res, next) {
+        try {
+            let user = await userService.findByParamId(req)
+
+            let fcmToken = await fcmTokenService.findOne({ 'token': req.body.token });
+            if (fcmToken) throw new BadRequestError('user.errors.fcm_token_already_exist');
+
+            let os = '';
+            await systemInfo.osInfo()
+                .then(data => {
+                    os = data.platform + ' / ' + data.distro + ' / ' + data.release
+                })
+                .catch(error => console.error(error));
+
+            req.body.created_by = req.user._id;
+            req.body.os = os;
+            fcmToken = await FCMToken.create(req.body)
+
+            EventEmitter.emit(UserEvents.SET_FCM_TOKEN, user, req)
+
+            AppResponse.builder(res).status(200).message("user.messages.set_fcm_token_successfully").data(user).send();
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
+    * DELETE /users/{id}/fcm-token
+    * 
+    * @summary unset user fcm token
+    * @tags User
+    * @security BearerAuth
+    *
+    * @param {string } id.path.required - user id
+    * @param {user.set_fcm_token } request.body - fcm token - application/json
+    * 
+    * @return { user.success }                 200 - edit successfuly 
+    * @return { message.badrequest_error }     400 - Bad Request
+    * @return { message.badrequest_error }     401 - UnauthorizedError
+    * @return { message.server_error  }        500 - Server Error
+    */
+    async unsetFCMToken(req, res, next) {
+        try {
+            let user = await userService.findByParamId(req)
+
+            let fcmToken = await fcmTokenService.findOne({ 'token': req.body.token });
+            if (!fcmToken) throw new NotFoundError('user.errors.fcm_token_not_found');
+
+            await userService.delete(fcmToken, req.user._id);
+
+            EventEmitter.emit(UserEvents.UNSET_FCM_TOKEN, user, req)
+            AppResponse.builder(res).status(200).message("user.messages.unset_fcm_token_successfully").data(user).send();
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
+    * GET /users/{id}/fcm-token
+    * 
+    * @summary check user fcm token
+    * @tags User
+    * @security BearerAuth
+    *
+    * @param {string } id.path.required - user id
+    * @param {user.check_fcm_token } request.body - fcm token - application/json
+    * 
+    * @return { user.success }                 200 - edit successfuly 
+    * @return { message.badrequest_error }     400 - Bad Request
+    * @return { message.badrequest_error }     401 - UnauthorizedError
+    * @return { message.server_error  }        500 - Server Error
+    */
+    async checkFCMToken(req, res, next) {
+        try {
+            let user = await userService.findByParamId(req)
+
+            let fcmToken = await fcmTokenService.findOne({ 'token': req.body.token });
+            if (!fcmToken) throw new NotFoundError('user.errors.fcm_token_not_found');
+
+            EventEmitter.emit(UserEvents.CHECK_FCM_TOKEN, user, req)
+            AppResponse.builder(res).status(200).message("user.messages.fcm_token_not_valid").data(fcmToken).send();
         } catch (err) {
             next(err);
         }

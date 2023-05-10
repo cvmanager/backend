@@ -86,6 +86,60 @@ class UserValidation {
         ];
     }
 
+    check_fcm_token() {
+        return [
+            param('id')
+                .notEmpty()
+                .withMessage('user.validations.user_id_required')
+                .isMongoId()
+                .withMessage('user.validations.user_id_invalid')
+                .trim(),
+            body('token')
+                .notEmpty()
+                .withMessage('user.validations.fcm_token_required')
+                .isLength({ min: 5, max: 1000 })
+                .withMessage('user.validations.fcm_token_length')
+                .trim(),
+            generalValidator
+        ];
+    }
+
+    set_fcm_token() {
+        return [
+            param('id')
+                .notEmpty()
+                .withMessage('user.validations.user_id_required')
+                .isMongoId()
+                .withMessage('user.validations.user_id_invalid')
+                .trim(),
+            body('token')
+                .notEmpty()
+                .withMessage('user.validations.fcm_token_required')
+                .isLength({ min: 5, max: 1000 })
+                .withMessage('user.validations.fcm_token_length')
+                .trim(),
+            generalValidator
+        ];
+    }
+
+    unset_fcm_token() {
+        return [
+            param('id')
+                .notEmpty()
+                .withMessage('user.validations.user_id_required')
+                .isMongoId()
+                .withMessage('user.validations.user_id_invalid')
+                .trim(),
+            body('token')
+                .notEmpty()
+                .withMessage('user.validations.fcm_token_required')
+                .isLength({ min: 5, max: 1000 })
+                .withMessage('user.validations.fcm_token_length')
+                .trim(),
+            generalValidator
+        ];
+    }
+
 }
 
 

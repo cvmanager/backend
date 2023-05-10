@@ -59,6 +59,12 @@ const schema = new mongoose.Schema(
     }
 );
 
+schema.virtual("fcmtokens", {
+    ref: 'fcmTokens',
+    localField: "_id",
+    foreignField: "created_by"
+});
+
 let options = {
     transform: ['password']
 }

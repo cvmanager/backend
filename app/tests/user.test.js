@@ -2,6 +2,7 @@ import httpStatus from 'http-status'
 import request from 'supertest'
 import app from '../app.js'
 import UserData from './data/user.data'
+import FCMToken from './data/fcmToken.data'
 import prepareDB from './utils/prepareDB'
 import { Types } from 'mongoose'
 import { faker } from '@faker-js/faker'
@@ -12,6 +13,9 @@ let users
 let user
 let userData
 let userItem
+
+let FCMTokenData
+let fcmToken
 prepareDB()
 describe('User Routes', () => {
   beforeEach(async () => {
@@ -19,6 +23,9 @@ describe('User Routes', () => {
     token = userData.getAccessToken()
     users = userData.getUsers()
     user = userData.getUser()
+
+    FCMTokenData = new FCMToken()
+    fcmToken = FCMTokenData.getFCMTokensByUserId(user._id)
   })
 
   describe('GET /', () => {
@@ -505,6 +512,7 @@ describe('User Routes', () => {
       expect(data).toHaveProperty('id')
     })
   })
+
   describe(`PATCH /user/id`, () => {
     let params
     beforeEach(() => {
@@ -636,4 +644,209 @@ describe('User Routes', () => {
       expect(response.statusCode).toBe(httpStatus.OK)
     })
   })
+
+  describe(`GET /:id/fcm-token`, () => {
+
+    let checkFCMToken
+    beforeEach(async () => {
+      checkFCMToken = { token: fcmToken.token }
+    })
+
+    it(`should get ${httpStatus.BAD_REQUEST} user id is not a mongo id`, async () => {
+      const response = await request(app)
+        .get(`/api/V1/users/fakeID/fcm-token`)
+        .set(`Authorization`, token)
+        .send(checkFCMToken);
+      expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+    })
+
+    it(`should get ${httpStatus.NOT_FOUND} user id is not found`, async () => {
+      const response = await request(app)
+        .get(`/api/V1/users/${Types.ObjectId()}/fcm-token`)
+        .set(`Authorization`, token)
+        .send(checkFCMToken);
+      expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+    })
+
+    it(`should get ${httpStatus.BAD_REQUEST} fcm token dont send`, async () => {
+      delete checkFCMToken.token;
+      const response = await request(app)
+        .get(`/api/V1/users/${user._id}/fcm-token`)
+        .set(`Authorization`, token)
+        .send(checkFCMToken);
+      expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+    })
+
+    it(`should get ${httpStatus.BAD_REQUEST} fcm token less than 5`, async () => {
+      checkFCMToken.token = faker.random.alpha(3);
+      const response = await request(app)
+        .get(`/api/V1/users/${user._id}/fcm-token`)
+        .set(`Authorization`, token)
+        .send(checkFCMToken);
+      expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+    })
+
+    it(`should get ${httpStatus.BAD_REQUEST} fcm token grather than 1000`, async () => {
+      checkFCMToken.token = faker.random.alpha(1001);
+      const response = await request(app)
+        .get(`/api/V1/users/${user._id}/fcm-token`)
+        .set(`Authorization`, token)
+        .send(checkFCMToken);
+      expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+    })
+
+    it(`should get ${httpStatus.NOT_FOUND} fcm token not exist for this user`, async () => {
+      checkFCMToken.token = faker.random.alpha(50);
+      const response = await request(app)
+        .get(`/api/V1/users/${user._id}/fcm-token`)
+        .set(`Authorization`, token)
+        .send(checkFCMToken);
+      expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+    })
+
+    it(`should get ${httpStatus.OK} fcm token exist for this user`, async () => {
+      const response = await request(app)
+        .get(`/api/V1/users/${user._id}/fcm-token`)
+        .set(`Authorization`, token)
+        .send(checkFCMToken);
+      expect(response.statusCode).toBe(httpStatus.OK);
+    })
+  })
+
+  describe(`PATCH /:id/fcm-token`, () => {
+
+    let setFCMToken
+    beforeEach(async () => {
+      setFCMToken = { token: fcmToken.token }
+    })
+
+    it(`should get ${httpStatus.BAD_REQUEST} user id is not a mongo id`, async () => {
+      const response = await request(app)
+        .patch(`/api/V1/users/fakeID/fcm-token`)
+        .set(`Authorization`, token)
+        .send(setFCMToken);
+      expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+    })
+
+    it(`should get ${httpStatus.NOT_FOUND} user id is not found`, async () => {
+      const response = await request(app)
+        .patch(`/api/V1/users/${Types.ObjectId()}/fcm-token`)
+        .set(`Authorization`, token)
+        .send(setFCMToken);
+      expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+    })
+
+    it(`should get ${httpStatus.BAD_REQUEST} fcm token dont send`, async () => {
+      delete setFCMToken.token;
+      const response = await request(app)
+        .patch(`/api/V1/users/${user._id}/fcm-token`)
+        .set(`Authorization`, token)
+        .send(setFCMToken);
+      expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+    })
+
+    it(`should get ${httpStatus.BAD_REQUEST} fcm token less than 5`, async () => {
+      setFCMToken.token = faker.random.alpha(3);
+      const response = await request(app)
+        .patch(`/api/V1/users/${user._id}/fcm-token`)
+        .set(`Authorization`, token)
+        .send(setFCMToken);
+      expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+    })
+
+    it(`should get ${httpStatus.BAD_REQUEST} fcm token grather than 1000`, async () => {
+      setFCMToken.token = faker.random.alpha(1001);
+      const response = await request(app)
+        .patch(`/api/V1/users/${user._id}/fcm-token`)
+        .set(`Authorization`, token)
+        .send(setFCMToken);
+      expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+    })
+
+    it(`should get ${httpStatus.BAD_REQUEST} fcm token already exist for this user`, async () => {
+      const response = await request(app)
+        .patch(`/api/V1/users/${user._id}/fcm-token`)
+        .set(`Authorization`, token)
+        .send(setFCMToken);
+      expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+    })
+
+    it(`should get ${httpStatus.OK} fcm token set for this user`, async () => {
+      setFCMToken.token = faker.random.alpha(50);
+      const response = await request(app)
+        .patch(`/api/V1/users/${user._id}/fcm-token`)
+        .set(`Authorization`, token)
+        .send(setFCMToken);
+      expect(response.statusCode).toBe(httpStatus.OK);
+    })
+  })
+
+  describe(`DELETE /:id/fcm-token`, () => {
+
+    let deleteFCMToken
+    beforeEach(async () => {
+      deleteFCMToken = { token: fcmToken.token }
+    })
+
+    it(`should get ${httpStatus.BAD_REQUEST} user id is not a mongo id`, async () => {
+      const response = await request(app)
+        .delete(`/api/V1/users/fakeID/fcm-token`)
+        .set(`Authorization`, token)
+        .send(deleteFCMToken);
+      expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+    })
+
+    it(`should get ${httpStatus.NOT_FOUND} user id is not found`, async () => {
+      const response = await request(app)
+        .delete(`/api/V1/users/${Types.ObjectId()}/fcm-token`)
+        .set(`Authorization`, token)
+        .send(deleteFCMToken);
+      expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+    })
+
+    it(`should get ${httpStatus.BAD_REQUEST} fcm token dont send`, async () => {
+      delete deleteFCMToken.token;
+      const response = await request(app)
+        .delete(`/api/V1/users/${user._id}/fcm-token`)
+        .set(`Authorization`, token)
+        .send(deleteFCMToken);
+      expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+    })
+
+    it(`should get ${httpStatus.BAD_REQUEST} fcm token less than 5`, async () => {
+      deleteFCMToken.token = faker.random.alpha(3);
+      const response = await request(app)
+        .delete(`/api/V1/users/${user._id}/fcm-token`)
+        .set(`Authorization`, token)
+        .send(deleteFCMToken);
+      expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+    })
+
+    it(`should get ${httpStatus.BAD_REQUEST} fcm token grather than 1000`, async () => {
+      deleteFCMToken.token = faker.random.alpha(1001);
+      const response = await request(app)
+        .delete(`/api/V1/users/${user._id}/fcm-token`)
+        .set(`Authorization`, token)
+        .send(deleteFCMToken);
+      expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+    })
+
+    it(`should get ${httpStatus.NOT_FOUND} fcm token not exist for this user`, async () => {
+      deleteFCMToken.token = faker.random.alpha(50);
+      const response = await request(app)
+        .delete(`/api/V1/users/${user._id}/fcm-token`)
+        .set(`Authorization`, token)
+        .send(deleteFCMToken);
+      expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+    })
+
+    it(`should get ${httpStatus.OK} fcm token delete for this user`, async () => {
+      const response = await request(app)
+        .delete(`/api/V1/users/${user._id}/fcm-token`)
+        .set(`Authorization`, token)
+        .send(deleteFCMToken);
+      expect(response.statusCode).toBe(httpStatus.OK);
+    })
+  })
+
 })
