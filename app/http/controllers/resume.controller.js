@@ -13,6 +13,8 @@ import { mergeQuery } from '../../helper/mergeQuery.js';
 import resumeService from '../../helper/service/resume.service.js';
 import userService from '../../helper/service/user.service.js';
 import TagService from '../../helper/service/tag.service.js';
+import SkillService from '../../helper/service/skill.service.js';
+
 
 class ResumeController extends Controller {
 
@@ -61,6 +63,7 @@ class ResumeController extends Controller {
                     { path: 'created_by', select: ['firstname', 'lastname'] },
                     { path: 'contributors', select: ['firstname', 'lastname', 'avatar'] },
                     { path: 'tags', select: ['name', 'color', 'count'] },
+                    { path: 'skills', select: ['title', 'color'] },
                     { path: 'views', select: ['created_by', 'createdAt'] }
                 ]
             });
@@ -108,6 +111,7 @@ class ResumeController extends Controller {
                         select: ['event_time', 'event_type', 'status', 'type', 'result', 'description', 'rating', 'contribution', 'created_by', 'createdAt']
                     },
                     { path: 'tags', select: ['name', 'color', 'count'] },
+                    { path: 'skills', select: ['title', 'color'] },
                     {
                         path: 'views',
                         populate: [
@@ -701,6 +705,77 @@ class ResumeController extends Controller {
             EventEmitter.emit(ResumeEvents.UPDATE_STATUS_LOG, resume, req, oldStatus)
 
             AppResponse.builder(res).status(200).message("resume.messages.resume_successfully_end_cooperation").data(resume).send();
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
+    * PATCH /resumes/{id}/skill
+    * 
+    * @summary add skill for resume in table
+    * @tags Resume
+    * @security BearerAuth
+    * 
+    * @param  { string } id.path.required - resume id
+    * @param { resume.set_skill } request.body - resume info - application/json
+    * 
+    * @return { tag.success }     201 - success response
+    * @return { message.badrequest_error }  400 - bad request respone
+    * @return { message.badrequest_error }  401 - UnauthorizedError
+    * @return { message.NotFoundError }     404 - not found respone
+    * @return { message.server_error  }     500 - Server Error
+    */
+    async setSkill(req, res, next) {
+        try {
+            let resume = await resumeService.findByParamId(req);
+            
+            let skill = await SkillService.findOne(req.body.skill_id);
+            if (!skill) throw new NotFoundError('skill.errors.skill_notfound');
+
+            if (resume.skills && resume.skills.includes(skill._id)) throw new BadRequestError('resume.errors.skill_could_not_be_duplicate');
+            resume.skills.push(skill._id)
+            await resume.save();
+
+            EventEmitter.emit(ResumeEvents.ADD_SKILL, resume, req)
+
+            AppResponse.builder(res).status(200).message("resume.messages.resume_skills_successfully_updated").data(resume).send();
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
+    * DELETE /resumes/{id}/skill
+    * 
+    * @summary unset skill from resume in table
+    * @tags Resume
+    * @security BearerAuth
+    * 
+    * @param  { string } id.path.required - resume id
+    * @param { resume.unset_skill } request.body - resume info - application/json
+    * 
+    * @return { tag.success }     201 - success response
+    * @return { message.badrequest_error }  400 - bad request respone
+    * @return { message.badrequest_error }  401 - UnauthorizedError
+    * @return { message.NotFoundError }     404 - not found respone
+    * @return { message.server_error  }     500 - Server Error
+    */
+    async unsetSkill(req, res, next) {
+        try {
+            let resume = await resumeService.findByParamId(req);
+            let skill = await SkillService.findOne(req.body.skill_id);
+            if (!skill) throw new NotFoundError('skill.errors.skill_notfound');
+
+            if (!resume.skills.includes(skill._id)) throw new BadRequestError('resume.errors.skill_not_exists');
+
+            let skillIndex = resume.skills.indexOf(skill._id);
+            resume.skills.splice(skillIndex, 1)
+            await resume.save();
+
+            EventEmitter.emit(ResumeEvents.REMOVE_SKILL, resume, req)
+
+            AppResponse.builder(res).status(200).message("resume.messages.resume_skills_successfully_deleted").data(resume).send();
         } catch (err) {
             next(err);
         }

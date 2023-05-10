@@ -136,3 +136,15 @@
 * @property { string } end_cooperation_reason.required - end_cooperation_reason
 * @property { string } end_cooperation_description - end_cooperation_description
 */
+
+/**
+* set skill for resume
+* @typedef { object } resume.set_skill
+* @property { string } skill_id.required - skill_id
+*/
+
+/**
+* unset skill for resume
+* @typedef { object } resume.unset_skill
+* @property { string } skill_id.required - skill_id
+*/
