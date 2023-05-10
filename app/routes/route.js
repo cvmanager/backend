@@ -40,7 +40,7 @@ router.use('/companies', verifyToken, canAccess, companyAccess, companyRouter)
 router.use('/users', verifyToken, canAccess, userRouter)
 router.use('/users/:id', verifyToken, canAccess, userAccess, userIdRouter)
 
-router.use('/constant', verifyToken, canAccess, constantRouter)
+router.use('/constant', verifyToken, constantRouter)
 
 router.use('/permissions/:id', verifyToken, canAccess, permissionIdRouter)
 router.use('/permissions', verifyToken, canAccess, permissionRouter)

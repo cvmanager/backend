@@ -64,8 +64,7 @@ class ResumeInterviewValidation {
             body('contribution')
                 .optional({ nullable: true, checkFalsy: true })
                 .isArray()
-                .withMessage('interview.validations.contribution_array')
-                .trim(),
+                .withMessage('interview.validations.contribution_array'),
             body('rating')
                 .optional({ nullable: true, checkFalsy: true })
                 .isNumeric()
@@ -126,8 +125,7 @@ class ResumeInterviewValidation {
             body('contribution')
                 .optional({ nullable: true, checkFalsy: true })
                 .isArray()
-                .withMessage('interview.validations.contribution_array')
-                .trim(),
+                .withMessage('interview.validations.contribution_array'),
             body('status')
                 .notEmpty()
                 .isIn(i18n.__("interview.enums.status"))
