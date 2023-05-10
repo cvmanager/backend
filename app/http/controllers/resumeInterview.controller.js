@@ -7,6 +7,7 @@ import AppResponse from '../../helper/response.js';
 import Controller from './controller.js';
 import { mergeQuery } from '../../helper/mergeQuery.js';
 import resumeService from '../../helper/service/resume.service.js';
+import userService from '../../helper/service/user.service.js';
 
 class ResumeInterviewController extends Controller {
 
@@ -94,11 +95,21 @@ class ResumeInterviewController extends Controller {
         try {
 
             await resumeService.findByParamId(req);
+
+            let contribution = [];
+            if (req.body.contribution) {
+                for (let contributer of req.body.contribution) {
+                    let user = userService.findById(contributer)
+                    if (user) contribution.push(contributer);
+                }
+            }
+
+            req.body.contribution = contribution
             req.body.created_by = req.user._id
             req.body.event_time = new Date(req.body.event_time)
             req.body.resume_id = req.params.id;
             let interview = await Interview.create(req.body)
-            EventEmitter.emit(ResumesInterviewEvents.CREATE, interview,req)
+            EventEmitter.emit(ResumesInterviewEvents.CREATE, interview, req)
 
             AppResponse.builder(res).status(201).message("interview.messages.interview_successfully_created").data(interview).send();
         } catch (err) {
@@ -134,9 +145,19 @@ class ResumeInterviewController extends Controller {
                 req.body.event_time = new Date(req.body.event_time)
             }
 
+            if (req.body.contribution) {
+                contribution = [];
+                for (let contributer of req.body.contribution) {
+                    let user = userService.findById(contributer)
+                    if (user) contribution.push(contributer);
+                }
+                req.body.contribution = contribution
+            }
+
+
             await Interview.findByIdAndUpdate(req.params.interview_id, req.body, { new: true })
                 .then(interview => {
-                    EventEmitter.emit(ResumesInterviewEvents.UPDATE, interview,req );
+                    EventEmitter.emit(ResumesInterviewEvents.UPDATE, interview, req);
                     AppResponse.builder(res).message("interview.messages.interview_successfully_updated").data(interview).send();
                 })
                 .catch(err => {
