@@ -690,5 +690,16 @@
 		"errors": {
 			"duplicate": "Tag could not be duplicate"
 		}
+	},
+	"skill": {
+		"validations": {
+			"skill_page_number": "skill page must by number",
+			"skill_size_number": "skill size must by number",
+			"title_required": "skill title required",
+			"title_length": "skill title length must be between 1 and 100 character"
+		},
+		"messages": {
+			"skill_list_found": "skill list found"
+		}
 	}
 }

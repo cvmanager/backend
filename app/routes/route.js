@@ -6,6 +6,7 @@ import authRouter from './auth.route.js'
 import userRouter from './user.route.js'
 import TagRouter from './tag.route.js'
 import companyRouter from './company.route.js'
+import skillRouter from './skill.route.js'
 import constantRouter from './constant.route.js'
 import provinceRouter from './province.route.js'
 import cityRouter from './city.route.js'
@@ -63,6 +64,7 @@ router.use('/roles', verifyToken, canAccess, roleRouter)
 
 router.use('/tags', verifyToken, canAccess, TagRouter)
 
+router.use('/skills', verifyToken, skillRouter)
 
 
 
