@@ -350,7 +350,7 @@ class UserController extends Controller {
  * @security BearerAuth
  *
  * @param {string } id.path.required - user id
- * @param {string} request.body          - role id - application/json
+ * @param {user.role} request.body          - role id - application/json
  * 
  * @return { user.success }                 200 - role updated successfuly 
  * @return { message.badrequest_error }     400 - Bad Request

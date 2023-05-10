@@ -44,6 +44,6 @@ function logout(access_token) {
     userService.setLogForLogout(access_token);
 }
 
-function role(access_token) {
+function role(user) {
     console.log(UserEvents.ROLE + " event called", user)
 }

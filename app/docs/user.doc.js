@@ -35,3 +35,10 @@
 * @property { string } password.required - user profile password
 * @property { string } old_password.required - user profile password
 */
+
+
+/**
+* user update role
+* @typedef { object } user.role
+* @property { string } role_id.required
+*/
