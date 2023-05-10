@@ -8,7 +8,9 @@ export const UserEvents = {
     "LOGOUT": "Logout User",
     "BANNED": "Banned User",
     "EDIT_USER": "Edit User",
-    "UNBANNED": "UnBanned User"
+    "UNBANNED": "UnBanned User",
+    "SET_FCM_TOKEN": "Set FCM Token",
+    "UNSET_FCM_TOKEN": "Unset FCM Token"
 }
 
 EventEmitter.on(UserEvents.LOGIN, login);
@@ -17,6 +19,8 @@ EventEmitter.on(UserEvents.BANNED, banned);
 EventEmitter.on(UserEvents.UNBANNED, unbanned);
 EventEmitter.on(UserEvents.LOGOUT, logout);
 EventEmitter.on(UserEvents.EDIT_USER, editUser);
+EventEmitter.on(UserEvents.SET_FCM_TOKEN, setFCMToken);
+EventEmitter.on(UserEvents.UNSET_FCM_TOKEN, unsetFCMToken);
 
 
 function login(user, req, access_token, refresh_token) {
@@ -40,4 +44,12 @@ function unbanned(user, req) {
 
 function logout(access_token) {
     userService.setLogForLogout(access_token);
+}
+
+function setFCMToken(user, req) {
+    console.log(UserEvents.UNBANNED + " event called", user)
+}
+
+function unsetFCMToken(user, req) {
+    console.log(UserEvents.UNBANNED + " event called", user)
 }

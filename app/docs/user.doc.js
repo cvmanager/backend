@@ -35,3 +35,22 @@
 * @property { string } password.required - user profile password
 * @property { string } old_password.required - user profile password
 */
+
+/**
+* ckeck user fcm token
+* @typedef { object } user.check_fcm_token
+* @property { string } token.required - token
+*/
+
+/**
+* set user fcm token
+* @typedef { object } user.set_fcm_token
+* @property { string } token.required - token
+*/
+
+/**
+* un set user fcm token
+* @typedef { object } user.unset_fcm_token
+* @property { string } token.required - token
+*/
+
