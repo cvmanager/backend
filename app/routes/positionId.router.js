@@ -17,5 +17,6 @@ positionIdRouter
     .patch('/deactive', PositionValidation.deActive(), PositionController.deActive)
     .get('/resumes', PositionValidation.getResumes(), PositionController.getResumes)
     .patch('/logo', Upload('positions', 'logo', 'image'), PositionValidation.logo(), PositionController.updateLogo)
+    .patch('/skill', PositionValidation.set_skill(), PositionController.setSkill)
 
 export default positionIdRouter;
