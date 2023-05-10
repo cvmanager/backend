@@ -437,6 +437,7 @@ class UserController extends Controller {
             let fcmToken = await fcmTokenService.findOne({ 'token': req.body.token });
             if (!fcmToken) throw new NotFoundError('user.errors.fcm_token_not_found');
 
+            EventEmitter.emit(UserEvents.CHECK_FCM_TOKEN, user, req)
             AppResponse.builder(res).status(200).message("user.messages.fcm_token_not_valid").data(fcmToken).send();
         } catch (err) {
             next(err);

@@ -21,6 +21,15 @@ for (i = 0; i < numberRowInsert; i++) {
     })
 }
 
+let fcmTokens = [];
+for (i = 0; i < numberRowInsert; i++) {
+    fcmTokens.push({
+        "_id": Types.ObjectId(),
+        "token": faker.random.alpha(50),
+        "created_by": users[i]._id,
+    })
+}
+
 let logHistory = [];
 for (i = 0; i < numberRowInsert; i++) {
     logHistory.push({
@@ -190,4 +199,4 @@ for (i = 0; i < numberRowInsert; i++) {
 
 }
 
-export { users, companies, projects, positions, managers, resumes, resumeComments, interviews, logHistory, tags };
+export { users, companies, projects, positions, managers, resumes, resumeComments, interviews, logHistory, tags, fcmTokens };
