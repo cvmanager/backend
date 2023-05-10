@@ -13,7 +13,7 @@ const schema = new mongoose.Schema(
         },
         icon: {
             type: String,
-            required: true
+            default: null
         },
         is_active: {
             type: Boolean,

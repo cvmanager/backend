@@ -69,6 +69,16 @@ for (i = 0; i < numberRowInsert; i++) {
     })
 }
 
+let skills = [];
+for (i = 0; i < numberRowInsert; i++) {
+    skills.push({
+        "_id": Types.ObjectId(),
+        "title": faker.random.alpha(5),
+        "color": getRandomColor(),
+        "created_by": users[i]._id
+    })
+}
+
 let positions = [];
 for (i = 0; i < numberRowInsert; i++) {
     positions.push({
@@ -199,4 +209,4 @@ for (i = 0; i < numberRowInsert; i++) {
 
 }
 
-export { users, companies, projects, positions, managers, resumes, resumeComments, interviews, logHistory, tags, fcmTokens };
+export { users, companies, projects, positions, managers, resumes, resumeComments, interviews, logHistory, tags, fcmTokens, skills };

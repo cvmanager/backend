@@ -6,10 +6,11 @@ import Position from '../../models/position.model.js';
 import LogHistory from '../../models/loginLog.model.js';
 import Tag from '../../models/tag.model.js';
 import Resume from '../../models/resume.model.js';
+import Skill from '../../models/skill.model.js';
 import ResumeComment from '../../models/resumeComment.model';
 import Interview from '../../models/interview.model.js';
 import FCMToken from '../../models/fcmToken.model.js'
-import { users, companies, projects, positions, managers, resumes, resumeComments, logHistory, interviews,  tags, fcmTokens } from '../data/data';
+import { users, companies, projects, positions, managers, resumes, resumeComments, logHistory, interviews, tags, fcmTokens, skills } from '../data/data';
 import bcrypt from 'bcrypt';
 import { fillProvinceTable } from "../../helper/service/province.service"
 import roleService from "../../helper/service/role.service.js";
@@ -31,6 +32,7 @@ class AllInit {
         await Manager.insertMany(managers);
         await Interview.insertMany(interviews);
         await FCMToken.insertMany(fcmTokens);
+        await Skill.insertMany(skills);
         await fillProvinceTable();
         await createPermissions(app)
         // await rbacConfig()
