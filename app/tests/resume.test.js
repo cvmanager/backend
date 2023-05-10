@@ -14,6 +14,7 @@ import CompanyData from './data/company.data';
 import ProjectData from './data/project.data';
 import PositionData from './data/position.data';
 import UsersData from './data/user.data';
+import SkillData from './data/skill.data';
 import i18n from '../middlewares/lang.middleware.js';
 import * as path from 'path';
 
@@ -31,6 +32,9 @@ let projectData;
 let positionData;
 let user;
 let usersData;
+let skillData;
+let skill
+let skills
 let users;
 let positionItem;
 let companyItem;
@@ -60,6 +64,10 @@ describe("Resumes Routes", () => {
         usersData = new UsersData();
         user = usersData.getUser();
         users = userData.getUsers();
+
+        skillData = new SkillData();
+        skill = skillData.getSkill();
+        skills = skillData.getSkills();
 
     })
 
@@ -1853,6 +1861,149 @@ describe("Resumes Routes", () => {
             expect(response.statusCode).toBe(httpStatus.OK);
         })
     })
+
+    describe(`PATCH /:id/skill`, () => {
+
+        let setSkill;
+        beforeEach(() => {
+            setSkill = {
+                skill_id: skills[2]._id,
+            }
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} if resume id is not MongoId`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/resumes/fakeId/skill`)
+                .set(`Authorization`, token)
+                .send(setSkill);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.NOT_FOUND} if resume id is not valid`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${Types.ObjectId()}/skill`)
+                .set(`Authorization`, token)
+                .send(setSkill);
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} if skill id is not send`, async () => {
+            delete setSkill.skill_id
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${resume._id}/skill`)
+                .set(`Authorization`, token)
+                .send(setSkill);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} if skill id is not MongoId`, async () => {
+            setSkill.skill_id = faker.random.alpha(5)
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${resume._id}/skill`)
+                .set(`Authorization`, token)
+                .send(setSkill);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.NOT_FOUND} if skill id is not found`, async () => {
+            setSkill.skill_id = Types.ObjectId()
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${resume._id}/skill`)
+                .set(`Authorization`, token)
+                .send(setSkill);
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} if skill already saved`, async () => {
+            setSkill.skill_id = resume.skills[0]._id;
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${resume._id}/skill`)
+                .set(`Authorization`, token)
+                .send(setSkill);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.OK} skill set successfully`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/resumes/${resume._id}/skill`)
+                .set(`Authorization`, token)
+                .send(setSkill);
+            expect(response.statusCode).toBe(httpStatus.OK);
+        })
+
+    })
+
+    describe(`PATCH /:id/skill`, () => {
+
+        let deleteSkill;
+        beforeEach(() => {
+            deleteSkill = {
+                skill_id: skill._id,
+            }
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} if resume id is not MongoId`, async () => {
+            const response = await request(app)
+                .delete(`/api/V1/resumes/fakeId/skill`)
+                .set(`Authorization`, token)
+                .send(deleteSkill);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.NOT_FOUND} if resume id is not valid`, async () => {
+            const response = await request(app)
+                .delete(`/api/V1/resumes/${Types.ObjectId()}/skill`)
+                .set(`Authorization`, token)
+                .send(deleteSkill);
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} if skill id is not send`, async () => {
+            delete deleteSkill.skill_id
+            const response = await request(app)
+                .delete(`/api/V1/resumes/${resume._id}/skill`)
+                .set(`Authorization`, token)
+                .send(deleteSkill);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} if skill id is not MongoId`, async () => {
+            deleteSkill.skill_id = faker.random.alpha(5)
+            const response = await request(app)
+                .delete(`/api/V1/resumes/${resume._id}/skill`)
+                .set(`Authorization`, token)
+                .send(deleteSkill);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.NOT_FOUND} if skill id is not found`, async () => {
+            deleteSkill.skill_id = Types.ObjectId()
+            const response = await request(app)
+                .delete(`/api/V1/resumes/${resume._id}/skill`)
+                .set(`Authorization`, token)
+                .send(deleteSkill);
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} if skill not exists`, async () => {
+            deleteSkill.skill_id = skills[2]._id;
+            const response = await request(app)
+                .delete(`/api/V1/resumes/${resume._id}/skill`)
+                .set(`Authorization`, token)
+                .send(deleteSkill);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.OK} skill unset successfully`, async () => {
+            const response = await request(app)
+                .delete(`/api/V1/resumes/${resume._id}/skill`)
+                .set(`Authorization`, token)
+                .send(deleteSkill);
+            expect(response.statusCode).toBe(httpStatus.OK);
+        })
+
+    })
+
 })
 
 
