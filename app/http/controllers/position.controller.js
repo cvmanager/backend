@@ -468,14 +468,51 @@ class PositionController extends Controller {
             let skill = await skillService.findOne(req.body.skill_id);
             if (!skill) throw new NotFoundError('skill.errors.skill_notfound');
 
-            if (position.skills && position.skills.includes(skill._id)) throw new BadRequestError('resume.errors.skill_could_not_be_duplicate');
+            if (position.skills && position.skills.includes(skill._id)) throw new BadRequestError('position.errors.skill_could_not_be_duplicate');
             position.skills.push(skill._id)
             await position.save();
 
-            // EventEmitter.emit(ResumeEvents.ADD_TAG, resume, req)
+            // EventEmitter.emit(ResumeEvents.ADD_TAG, position, req)
             // EventEmitter.emit(TagEvents.TAG_USE,tag); error when uncomment :/
 
             AppResponse.builder(res).status(200).message("position.messages.position_skills_successfully_updated").data(position).send();
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
+    * DELETE /positions/{id}/skill
+    * 
+    * @summary add skill for position in table
+    * @tags Position
+    * @security BearerAuth
+    * 
+    * @param  { string } id.path.required - position id
+    * @param  { string } skill_id.path.required - skill id
+    * @param { skill.remove } request.body - position info - application/json
+    * 
+    * @return { skill.success }     201 - success response
+    * @return { message.badrequest_error }  400 - bad request respone
+    * @return { message.badrequest_error }  401 - UnauthorizedError
+    * @return { message.NotFoundError }     404 - not found respone
+    * @return { message.server_error  }     500 - Server Error
+    */
+    async unsetSkill(req, res, next) {
+        try {
+            let position = await positionService.findByParamId(req);
+            let skill = await skillService.findOne(req.body.skill_id);
+            if (!skill) throw new NotFoundError('skill.errors.skill_notfound');
+
+            if (!position.skills.includes(skill._id)) throw new BadRequestError('position.errors.skill_not_exists');
+
+            let skillIndex = position.skills.indexOf(skill._id);
+            position.skills.splice(skillIndex, 1)
+            await position.save();
+
+            // EventEmitter.emit(PositionEvents.REMOVE_TAG, position, req)
+
+            AppResponse.builder(res).status(200).message("position.messages.position_skills_successfully_deleted").data(position).send();
         } catch (err) {
             next(err);
         }

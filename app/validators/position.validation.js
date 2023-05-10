@@ -141,6 +141,14 @@ class PositionValidation {
             generalValidator
         ];
     }
+
+    unset_skill() {
+        return [
+            param('id').isMongoId().withMessage('position.validations.position_id_invalid').trim(),
+            body('skill_id').notEmpty().isMongoId().withMessage('position.validations.skill_id_invalid').trim(),
+            generalValidator
+        ];
+    }
 }
 
 export default new PositionValidation();
