@@ -39,14 +39,19 @@ const schema = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             required: true,
             ref: 'users'
+        },
+        skills: {
+            type: Array,
+            default: null,
+            ref: 'skills'
         }
     }
 )
 
-schema.virtual("managers" , {
-    ref : 'managers',
-    localField : '_id',
-    foreignField : 'entity_id',
+schema.virtual("managers", {
+    ref: 'managers',
+    localField: '_id',
+    foreignField: 'entity_id',
 })
 
 schema.plugin(basePlugin)
