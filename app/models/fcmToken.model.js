@@ -7,10 +7,6 @@ const schema = new mongoose.Schema(
             type: String,
             required: true
         },
-        token: {
-            type: String,
-            default: null
-        },
         created_by: {
             type: mongoose.Schema.Types.ObjectId,
             required: true,

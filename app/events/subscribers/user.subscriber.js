@@ -10,6 +10,7 @@ export const UserEvents = {
     "EDIT_USER": "Edit User",
     "UNBANNED": "UnBanned User",
     "SET_FCM_TOKEN": "Set FCM Token",
+    "UNSET_FCM_TOKEN": "Uset FCM Token",
     "CHECK_FCM_TOKEN": "Check FCM Token"
 }
 
