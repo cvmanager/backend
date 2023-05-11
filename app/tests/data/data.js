@@ -124,6 +124,7 @@ for (i = 0; i < numberRowInsert; i++) {
         "contributors": [users[i]._id],
         "index": i,
         "tags": [tags[i]._id],
+        "skills": [skills[i]._id]
     })
 }
 

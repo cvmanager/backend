@@ -443,6 +443,22 @@ class ResumeValidation {
             generalValidator
         ];
     }
+
+    set_skill() {
+        return [
+            param('id').notEmpty().isMongoId().withMessage('resume.validations.resume_id_invalid').trim(),
+            body('skill_id').notEmpty().isMongoId().withMessage('resume.validations.skill_id_invalid').trim(),
+            generalValidator
+        ];
+    }
+
+    unset_skill() {
+        return [
+            param('id').notEmpty().isMongoId().withMessage('resume.validations.resume_id_invalid').trim(),
+            body('skill_id').notEmpty().isMongoId().withMessage('tag.validations.skill_id_invalid').trim(),
+            generalValidator
+        ];
+    }
 }
 
 export default new ResumeValidation();

@@ -26,6 +26,9 @@ resumeIdRouter
     .patch('/reject', ResumeValidation.reject(), ResumeController.reject)
     .patch('/end-cooperation', ResumeValidation.end_cooperation(), ResumeController.endCooperation)
 
+    .patch('/skill', ResumeValidation.set_skill(), ResumeController.setSkill)
+    .delete('/skill', ResumeValidation.unset_skill(), ResumeController.unsetSkill)
+
     .get('/interviews', ResumeInterviewValidation.index(), ResumeInterviewController.index)
     .post('/interviews', ResumeInterviewValidation.create(), ResumeInterviewController.create)
     .get('/interviews/:interview_id', ResumeInterviewValidation.find(), ResumeInterviewController.find)

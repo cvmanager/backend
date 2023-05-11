@@ -271,7 +271,12 @@ const schema = new mongoose.Schema(
         end_cooperation_description: {
             type: String,
             default: null
-        }
+        },
+        skills: {
+            type: Array,
+            default: null,
+            ref: 'skills'
+        },
     }
 );
 
