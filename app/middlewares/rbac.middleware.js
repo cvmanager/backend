@@ -10,7 +10,7 @@ export async function canAccess(req, res, next) {
         let userRoles = req.user.role
         let rolesChilds = await getRoleChilds(userRoles)
         userRoles = [...userRoles, ...rolesChilds]
-        
+
         req.roles = await canRole(userRoles, permissionName)
         next()
     } catch (error) {
@@ -62,7 +62,8 @@ async function getRoleChilds(roleIds) {
 }
 
 function getPermissionName(req) {
-    let path = req.baseUrl
+    // let path = req.baseUrl
+    let path = req.originalUrl
 
     for (let key of Object.keys(req.params)) {
         path = path.replace(req.params[key], ":" + key)
