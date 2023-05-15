@@ -312,7 +312,12 @@ class PositionController extends Controller {
     async getManagers(req, res, next) {
         try {
             const position = await positionService.findByParamId(req)
-            let managers = await Manager.find({ 'entity': "positions", 'entity_id': position.id }).populate('user_id');
+            let managers = await Manager.find({ 'entity': "positions", 'entity_id': position.id }).populate(
+                [
+                    { path: 'user_id' },
+                    { path: 'created_by' }
+                ]
+            );
             AppResponse.builder(res).message('position.messages.position_managers_found').data(managers).send();
         } catch (err) {
             next(err);
