@@ -12,6 +12,7 @@ import i18n from '../middlewares/lang.middleware.js'
 import * as path from 'path';
 import EventEmitter from '../events/emitter.js';
 import CompanyData from './data/company.data';
+import SkillData from './data/skill.data';
 
 let token;
 let user;
@@ -19,6 +20,8 @@ let users;
 let project;
 let position;
 let manager;
+let skill;
+let skills;
 let positionData;
 let positionItem;
 let managerData;
@@ -26,6 +29,7 @@ let companyItem;
 let companyData;
 let projectItem;
 let projectData;
+let skillData;
 let userData;
 prepareDB();
 describe(`Position Routes`, () => {
@@ -41,6 +45,13 @@ describe(`Position Routes`, () => {
 
         projectData = new ProjectData();
         project = projectData.getProject();
+
+        projectData = new ProjectData();
+        project = projectData.getProject();
+
+        skillData = new SkillData();
+        skill = skillData.getSkill();
+        skills = skillData.getSkills();
 
         positionData = new PositionData();
         position = positionData.getPosition();
@@ -496,7 +507,7 @@ describe(`Position Routes`, () => {
                 .patch(`/api/V1/positions/${position._id}/manager`)
                 .set(`Authorization`, token)
                 .send(setManager);
-                console.log(response.body);
+            console.log(response.body);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
 
@@ -587,6 +598,149 @@ describe(`Position Routes`, () => {
                 .delete(`/api/V1/positions/${position._id}/manager`)
                 .set('Authorization', token)
                 .send(deleteManager);
+            expect(response.statusCode).toBe(httpStatus.OK);
+        })
+
+    })
+
+    describe(`PATCH /positions/{id}/skill`, () => {
+
+        let setSkill;
+        beforeEach(() => {
+            setSkill = {
+                'skill_id': skill._id,
+            };
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} position id is not a mongo id`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/positions/fakeID/skill`)
+                .set(`Authorization`, token)
+                .send(setSkill);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.NOT_FOUND} position id is not valid`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/positions/${Types.ObjectId()}/skill`)
+                .set(`Authorization`, token)
+                .send(setSkill);
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} skill id is not sended`, async () => {
+            delete setSkill.skill_id
+            const response = await request(app)
+                .patch(`/api/V1/positions/${position._id}/skill`)
+                .set(`Authorization`, token)
+                .send(setSkill);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} skill id is not a mongo id`, async () => {
+            setSkill.skill_id = 'fakeid'
+            const response = await request(app)
+                .patch(`/api/V1/positions/${position._id}/skill`)
+                .set(`Authorization`, token)
+                .send(setSkill);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.NOT_FOUND} skill id is not valid`, async () => {
+            setSkill.skill_id = Types.ObjectId()
+            const response = await request(app)
+                .patch(`/api/V1/positions/${position._id}/skill`)
+                .set(`Authorization`, token)
+                .send(setSkill);
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} skill is banned`, async () => {
+            user = userData.saveBannedUser();
+            setSkill.skill_id = user._id
+            const response = await request(app)
+                .patch(`/api/V1/positions/${position._id}/skill`)
+                .set('Authorization', token)
+                .send(setSkill);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+        it(`should get ${httpStatus.BAD_REQUEST} user is currently skill`, async () => {
+            const response = await request(app)
+                .patch(`/api/V1/positions/${position._id}/skill`)
+                .set(`Authorization`, token)
+                .send(setSkill);
+            console.log(response.body);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.OK} user successfully assign as skill`, async () => {
+            setSkill.skill_id = skills[1]._id
+            const response = await request(app)
+                .patch(`/api/V1/positions/${position._id}/skill`)
+                .set(`Authorization`, token)
+                .send(setSkill);
+
+            expect(response.statusCode).toBe(httpStatus.OK);
+        })
+
+    })
+
+    describe("DELETE /positions/{id}/skill", () => {
+
+        let unsetSkill;
+        beforeEach(() => {
+            unsetSkill = {
+                'skill_id': skill._id,
+            };
+        })
+
+        it(`should get ${httpStatus.NOT_FOUND} position id is not valid`, async () => {
+            const response = await request(app)
+                .delete(`/api/V1/positions/${Types.ObjectId()}/skill`)
+                .set('Authorization', token)
+                .send(unsetSkill);
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} position id is not a mongo id`, async () => {
+            const response = await request(app)
+                .delete("/api/V1/positions/fakeID/skill")
+                .set('Authorization', token)
+                .send(unsetSkill);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} skill id is not sended`, async () => {
+            delete unsetSkill.skill_id
+            const response = await request(app)
+                .delete(`/api/V1/positions/${position._id}/skill`)
+                .set('Authorization', token)
+                .send(unsetSkill);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} skill id is not a mongo id`, async () => {
+            unsetSkill.skill_id = 'fake'
+            const response = await request(app)
+                .delete(`/api/V1/positions/${position._id}/skill`)
+                .set('Authorization', token)
+                .send(unsetSkill);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.NOT_FOUND} skill id is not valid`, async () => {
+            unsetSkill.skill_id = Types.ObjectId()
+            const response = await request(app)
+                .delete(`/api/V1/positions/${position._id}/skill`)
+                .set('Authorization', token)
+                .send(unsetSkill);
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+
+        it(`should get ${httpStatus.OK} skill successfully deleted`, async () => {
+            const response = await request(app)
+                .delete(`/api/V1/positions/${position._id}/skill`)
+                .set('Authorization', token)
+                .send(unsetSkill);
             expect(response.statusCode).toBe(httpStatus.OK);
         })
 

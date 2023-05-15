@@ -88,7 +88,8 @@ for (i = 0; i < numberRowInsert; i++) {
         "title": faker.random.alpha(15),
         "level": "mid",
         "description": faker.random.alpha(50),
-        "created_by": users[i]._id
+        "created_by": users[i]._id,
+        "skills": [skills[i]._id]
     })
 }
 
