@@ -18,16 +18,16 @@ resumeIdRouter
     .patch('/avatar', Upload('resumes', 'avatar', 'image'), ResumeValidation.avatar(), ResumeController.updateAvatar)
     .patch('/comments', ResumeValidation.addComments(), ResumeController.addComments)
 
-    .patch('/contributor/:user_id', ResumeValidation.addContributor(), ResumeController.setContributor)
-    .delete('/contributor/:user_id', ResumeValidation.removeContributor(), ResumeController.unsetContributor)
-    .patch('/tag/:tag_id', ResumeValidation.set_tag(), ResumeController.setTag)
-    .delete('/tag/:tag_id', ResumeValidation.unset_tag(), ResumeController.unsetTag)
+    .patch('/assigners', ResumeValidation.setAssigner(), ResumeController.setAssigner)
+    .delete('/assigners', ResumeValidation.unsetAssigner(), ResumeController.unsetAssigner)
+    .patch('/tags', ResumeValidation.set_tag(), ResumeController.setTag)
+    .delete('/tags', ResumeValidation.unset_tag(), ResumeController.unsetTag)
     .patch('/hired', ResumeValidation.hired(), ResumeController.hired)
     .patch('/reject', ResumeValidation.reject(), ResumeController.reject)
     .patch('/end-cooperation', ResumeValidation.end_cooperation(), ResumeController.endCooperation)
 
-    .patch('/skill', ResumeValidation.set_skill(), ResumeController.setSkill)
-    .delete('/skill', ResumeValidation.unset_skill(), ResumeController.unsetSkill)
+    .patch('/skills', ResumeValidation.set_skill(), ResumeController.setSkill)
+    .delete('/skills', ResumeValidation.unset_skill(), ResumeController.unsetSkill)
 
     .get('/interviews', ResumeInterviewValidation.index(), ResumeInterviewController.index)
     .post('/interviews', ResumeInterviewValidation.create(), ResumeInterviewController.create)

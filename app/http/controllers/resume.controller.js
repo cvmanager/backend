@@ -423,15 +423,14 @@ class ResumeController extends Controller {
 
 
     /**
-    * PATCH /resumes/{id}/contributor/{user_id}
+    * PATCH /resumes/{id}/assigners/
     * 
-    * @summary set contributor to resume
+    * @summary set assigner to resume
     * @tags Resume
     * @security BearerAuth
     * 
     * @param { string } id.path.required - resume id
-    * @param { string } user_id.path.required - user id
-    * @param { resume.contributor } request.body - application/json
+    * @param { resume.set_assigners } request.body - application/json
     * 
     * @return { resume.success }            200 - success response
     * @return { message.badrequest_error }  400 - bad request respone
@@ -439,18 +438,18 @@ class ResumeController extends Controller {
     * @return { message.badrequest_error }  401 - UnauthorizedError
     * @return { message.server_error  }     500 - Server Error
     */
-    async setContributor(req, res, next) {
+    async setAssigner(req, res, next) {
         try {
             let resume = await resumeService.findByParamId(req);
 
-            let contributor_id = req.params.user_id;
-            let user = await userService.findOne({ '_id': contributor_id })
+            let user_id = req.body.user_id;
+            let user = await userService.findOne({ '_id': user_id })
             if (!user) throw new NotFoundError('user.errors.user_notfound');
 
 
-            if (resume.assigners && resume.assigners.includes(contributor_id)) throw new BadRequestError('resume.errors.contributor_could_not_be_duplicate');
+            if (resume.assigners && resume.assigners.includes(user._id)) throw new BadRequestError('resume.errors.contributor_could_not_be_duplicate');
 
-            resume.assigners.push(contributor_id);
+            resume.assigners.push(user._id);
             await resume.save();
 
             AppResponse.builder(res).message("resume.messages.contributor_successfully_added").data(resume).send();
@@ -460,15 +459,14 @@ class ResumeController extends Controller {
     }
 
     /**
-    * DELETE /resumes/{id}/contributor/{user_id}
+    * DELETE /resumes/{id}/assigners/
     * 
-    * @summary unset special contributor from resume
+    * @summary unset special assigner from resume
     * @tags Resume
     * @security BearerAuth
     * 
     * @param { string } id.path.required - resume id
-    * @param { string } user_idid.path.required - user_id id
-    * @param { resume.contributor } request.body - application/json
+    * @param { resume.unset_assigners } request.body - application/json
     * 
     * @return { resume.success }            200 - success response
     * @return { message.badrequest_error }  400 - bad request respone
@@ -476,11 +474,11 @@ class ResumeController extends Controller {
     * @return { message.badrequest_error }  401 - UnauthorizedError
     * @return { message.server_error  }     500 - Server Error
     */
-    async unsetContributor(req, res, next) {
+    async unsetAssigner(req, res, next) {
         try {
             let resume = await resumeService.findByParamId(req)
 
-            let user = await userService.findOne({ '_id': req.params.user_id })
+            let user = await userService.findOne({ '_id': req.body.user_id })
             if (!user) throw new NotFoundError('user.errors.user_notfound');
 
             let assigners = resume.assigners
@@ -525,16 +523,14 @@ class ResumeController extends Controller {
     }
 
     /**
-    * PATCH /resumes/{id}/tag/{tag_id}
+    * PATCH /resumes/{id}/tags
     * 
     * @summary add comments for resume in table
     * @tags Resume
     * @security BearerAuth
     * 
     * @param  { string } id.path.required - resume id
-    * @param  { string } tag_id.path.required - tag id
-    * @param { tag.create } request.body - resume info - application/json
-    * 
+    * @param { resume.set_tag } request.body - tag info - application/json 
     * @return { tag.success }     201 - success response
     * @return { message.badrequest_error }  400 - bad request respone
     * @return { message.badrequest_error }  401 - UnauthorizedError
@@ -544,7 +540,7 @@ class ResumeController extends Controller {
     async setTag(req, res, next) {
         try {
             let resume = await resumeService.findByParamId(req);
-            let tag = await TagService.findOne(req.params.tag_id);
+            let tag = await TagService.findOne(req.body.tag_id);
             if (!tag) throw new NotFoundError('tag.errors.tag_notfound');
 
             if (resume.tags && resume.tags.includes(tag._id)) throw new BadRequestError('resume.errors.tag_could_not_be_duplicate');
@@ -561,15 +557,14 @@ class ResumeController extends Controller {
     }
 
     /**
-    * DELETE /resumes/{id}/tag/{tag_id}
+    * DELETE /resumes/{id}/tags
     * 
     * @summary add comments for resume in table
     * @tags Resume
     * @security BearerAuth
     * 
     * @param  { string } id.path.required - resume id
-    * @param  { string } tag_id.path.required - tag id
-    * @param { tag.remove } request.body - resume info - application/json
+    * @param { resume.unset_tag } request.body - tag info - application/json
     * 
     * @return { tag.success }     201 - success response
     * @return { message.badrequest_error }  400 - bad request respone
@@ -580,7 +575,7 @@ class ResumeController extends Controller {
     async unsetTag(req, res, next) {
         try {
             let resume = await resumeService.findByParamId(req);
-            let tag = await TagService.findOne(req.params.tag_id);
+            let tag = await TagService.findOne(req.body.tag_id);
             if (!tag) throw new NotFoundError('tag.errors.tag_notfound');
 
             if (!resume.tags.includes(tag._id)) throw new BadRequestError('resume.errors.tag_not_exists');
@@ -711,7 +706,7 @@ class ResumeController extends Controller {
     }
 
     /**
-    * PATCH /resumes/{id}/skill
+    * PATCH /resumes/{id}/skills
     * 
     * @summary add skill for resume in table
     * @tags Resume
@@ -729,7 +724,7 @@ class ResumeController extends Controller {
     async setSkill(req, res, next) {
         try {
             let resume = await resumeService.findByParamId(req);
-            
+
             let skill = await SkillService.findOne(req.body.skill_id);
             if (!skill) throw new NotFoundError('skill.errors.skill_notfound');
 
@@ -746,7 +741,7 @@ class ResumeController extends Controller {
     }
 
     /**
-    * DELETE /resumes/{id}/skill
+    * DELETE /resumes/{id}/skills
     * 
     * @summary unset skill from resume in table
     * @tags Resume

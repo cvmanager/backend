@@ -325,10 +325,18 @@ class ResumeValidation {
         ];
     }
 
-    addContributor() {
+    setAssigner() {
         return [
             param('id').notEmpty().isMongoId().withMessage('resume.validations.resume_id_invalid').trim(),
-            param('user_id').notEmpty().isMongoId().withMessage('resume.validation.contributor_id_invalid').trim(),
+            body('user_id').notEmpty().isMongoId().withMessage('resume.validation.contributor_id_invalid').trim(),
+            generalValidator
+        ];
+    }
+
+    unsetAssigner() {
+        return [
+            param('id').notEmpty().isMongoId().withMessage('resume.validations.resume_id_invalid').trim(),
+            body('user_id').notEmpty().isMongoId().withMessage('resume.validation.contributor_id_invalid').trim(),
             generalValidator
         ];
     }
@@ -357,13 +365,7 @@ class ResumeValidation {
     }
 
 
-    removeContributor() {
-        return [
-            param('id').notEmpty().isMongoId().withMessage('resume.validations.resume_id_invalid').trim(),
-            param('user_id').notEmpty().isMongoId().withMessage('resume.validation.contributor_id_invalid').trim(),
-            generalValidator
-        ];
-    }
+ 
 
     avatar() {
         return [
@@ -376,7 +378,7 @@ class ResumeValidation {
     set_tag() {
         return [
             param('id').notEmpty().isMongoId().withMessage('resume.validations.resume_id_invalid').trim(),
-            param('tag_id').notEmpty().isMongoId().withMessage('resume.validations.resume_id_invalid').trim(),
+            body('tag_id').notEmpty().isMongoId().withMessage('resume.validations.resume_id_invalid').trim(),
             generalValidator
         ];
     }
@@ -384,7 +386,7 @@ class ResumeValidation {
     unset_tag() {
         return [
             param('id').notEmpty().isMongoId().withMessage('resume.validations.resume_id_invalid').trim(),
-            param('tag_id').notEmpty().isMongoId().withMessage('tag.validations.tag_id_invalid').trim(),
+            body('tag_id').notEmpty().isMongoId().withMessage('tag.validations.tag_id_invalid').trim(),
             generalValidator
         ];
     }
