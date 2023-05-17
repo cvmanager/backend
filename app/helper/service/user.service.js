@@ -1,7 +1,7 @@
 import { detect } from "detect-browser"
 import autoBind from "auto-bind";
 import address from 'address';
-import LoginLog from '../../models/loginLog.model.js'
+import loginHistory from "../../models/loginHistory.model.js";
 import systemInfo from "systeminformation";
 import User from "../../models/user.model.js";
 import ServiceBase from "./base.service.js";
@@ -49,7 +49,7 @@ class UserService extends ServiceBase {
             })
             .catch(error => console.error(error));
     
-        await LoginLog.create({
+        await loginHistory.create({
             user_id: user._id,
             access_token: access_token,
             refresh_token: refresh_token,
@@ -64,10 +64,10 @@ class UserService extends ServiceBase {
     }
 
     async setLogForLogout(access_token) {
-        let loginLog = await LoginLog.findOne({ 'access_token': access_token });
-        if (loginLog) {
-            loginLog.logout_at = new Date();
-            await loginLog.save();
+        let loginHistory = await loginHistory.findOne({ 'access_token': access_token });
+        if (loginHistory) {
+            loginHistory.logout_at = new Date();
+            await loginHistory.save();
         }
     }
 
