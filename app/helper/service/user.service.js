@@ -30,25 +30,25 @@ class UserService extends ServiceBase {
         let os;
         let cpu;
         let mem;
-    
+
         await systemInfo.osInfo()
             .then(data => {
                 os = data.platform + ' / ' + data.distro + ' / ' + data.release
             })
             .catch(error => console.error(error));
-    
+
         await systemInfo.cpu()
             .then(data => {
                 cpu = data.brand + ' / ' + data.manufacturer + ' / core:' + data.cores
             })
             .catch(error => console.error(error));
-    
+
         await systemInfo.mem()
             .then(data => {
                 mem = 'total:' + data.total + ' / free:' + data.free
             })
             .catch(error => console.error(error));
-    
+
         await loginHistory.create({
             user_id: user._id,
             access_token: access_token,
@@ -64,10 +64,10 @@ class UserService extends ServiceBase {
     }
 
     async setLogForLogout(access_token) {
-        let loginHistory = await loginHistory.findOne({ 'access_token': access_token });
-        if (loginHistory) {
-            loginHistory.logout_at = new Date();
-            await loginHistory.save();
+        let loginLog = await loginHistory.findOne({ 'access_token': access_token });
+        if (loginLog) {
+            loginLog.logout_at = new Date();
+            await loginLog.save();
         }
     }
 
