@@ -155,16 +155,15 @@ class ResumeController extends Controller {
             let position = await Position.findById(req.body.position_id)
             if (!position) throw new NotFoundError('position.errors.position_not_found');
 
-            let company = await Company.findById(position.company_id)
-            if (!company.is_active) throw new BadRequestError('company.errors.company_is_not_active');
-
             req.body.created_by = req.user._id;
             req.body.project_id = position.project_id;
             req.body.company_id = position.company_id;
 
+            let company = await Company.findById(position.company_id)
+            if (!company.is_active) throw new BadRequestError('company.errors.company_is_not_active');
             let resume = await Resume.create(req.body)
 
-            EventEmitter.emit(ResumeEvents.CREATE, resume, req)
+            EventEmitter.emit(ResumeEvents.CREATE, resume, req) 
 
             AppResponse.builder(res).status(201).message("resume.messages.resume_successfully_created").data(resume).send();
         } catch (err) {

@@ -11,8 +11,8 @@ let users = [];
 for (i = 0; i < numberRowInsert; i++) {
     users.push({
         "_id": Types.ObjectId(),
-        "firstname": faker.name.firstName(),
-        "lastname": faker.name.lastName(),
+        "firstname": faker.name.firstName().toLocaleLowerCase(),
+        "lastname": faker.name.lastName().toLocaleLowerCase(),
         "username": faker.random.alpha(9),
         "mobile": faker.phone.number('989#########'),
         "email": faker.internet.email(),
@@ -50,7 +50,7 @@ let companies = [];
 for (i = 0; i < numberRowInsert; i++) {
     companies.push({
         "_id": Types.ObjectId(),
-        "name": faker.company.name(),
+        "name": faker.company.name().toLocaleLowerCase(),
         "description": faker.random.alpha(50),
         "phone": faker.phone.number('989#########'),
         "address": faker.random.alpha(100),
@@ -63,7 +63,7 @@ for (i = 0; i < numberRowInsert; i++) {
     projects.push({
         "_id": Types.ObjectId(),
         "company_id": companies[i]._id,
-        "name": faker.random.alpha(10),
+        "name": faker.random.alpha(10).toLocaleLowerCase(),
         "description": faker.random.alpha(50),
         "created_by": users[i]._id
     })
@@ -96,7 +96,7 @@ let tags = [];
 for (i = 0; i < numberRowInsert; i++) {
     tags.push({
         "_id": Types.ObjectId(),
-        "name": faker.random.alpha(5),
+        "name": faker.random.alpha(5).toLocaleLowerCase(),
         "color": getRandomColor(),
         "count": 1
     })
@@ -109,8 +109,8 @@ for (i = 0; i < numberRowInsert; i++) {
         "company_id": companies[i]._id,
         "project_id": projects[i]._id,
         "position_id": positions[i]._id,
-        "firstname": faker.name.firstName(),
-        "lastname": faker.name.lastName(),
+        "firstname": faker.name.firstName().toLocaleLowerCase(),
+        "lastname": faker.name.lastName().toLocaleLowerCase(),
         "gender": "men",
         "email": faker.internet.email(),
         "birth_year": "1370",

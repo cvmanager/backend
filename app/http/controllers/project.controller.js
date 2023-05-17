@@ -195,6 +195,8 @@ class ProjectController extends Controller {
     async manager(req, res, next) {
         try {
             let project = await projectService.findByParamId(req)
+            if (!project.is_active)  throw new BadRequestError("project.errors.project_deactivate_cant_set_manager");
+            
             let user = await userService.findOne({ _id: req.body.manager_id });
 
             let manager = await managerService.findOne({ 'entity': "projects", 'entity_id': project.id, 'user_id': user.id });

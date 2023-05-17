@@ -143,14 +143,14 @@ describe('User Routes', () => {
     it(`should get ${httpStatus.NOT_FOUND} user id is not valid`, async () => {
       let fakeToken = userData.getFakeAccessToken(Types.ObjectId())
       const response = await request(app)
-        .get(`/api/V1/users/getMe`)
+        .get(`/api/V1/users/get-me`)
         .set(`Authorization`, fakeToken)
         .send()
       expect(response.statusCode).toBe(httpStatus.NOT_FOUND)
     })
     it(`should get ${httpStatus.OK} success if correct`, async () => {
       const response = await request(app)
-        .get(`/api/V1/users/getMe`)
+        .get(`/api/V1/users/get-me`)
         .set(`Authorization`, token)
         .send()
 

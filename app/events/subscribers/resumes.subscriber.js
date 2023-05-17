@@ -37,16 +37,16 @@ async function create(Resume, req) {
 }
 
 function softdelete(Resume, req) {
-    console.log(events.DELETE + " event called", Resume)
+    console.log(ResumeEvents.DELETE + " event called", Resume)
 }
 
 
 function update(Resume, req) {
-    console.log(events.UPDATE + " event called", Resume)
+    console.log(ResumeEvents.UPDATE + " event called", Resume)
 }
 
-function updateStatus(Resume, req) {
-    resumeService.setProccessDuration(Resume)
+async function updateStatus(Resume, req) {
+    await resumeService.setProccessDuration(Resume)
 }
 
 async function updateStatusLog(Resume, req, oldStatus) {
