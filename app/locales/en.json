@@ -696,5 +696,18 @@
 		"errors": {
 			"duplicate": "Tag could not be duplicate"
 		}
+	},
+	"notification": {
+		"enums": {
+			"entity": [
+				"companies",
+				"projects",
+				"positions",
+				"resumes"
+			]
+		},
+		"validations": {},
+		"messages": {},
+		"errors": {}
 	}
 }

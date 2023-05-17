@@ -5,6 +5,7 @@ import ServiceBase from "./base.service.js";
 import ResumeComments from '../../models/resumeComment.model.js';
 import Interview from "../../models/interview.model.js";
 import Viewlog from "../../models/viewlog.model.js";
+import notificationService from './notification.service.js'
 
 const endOfResumeStatus = ['rejected', 'hired'];
 
@@ -92,6 +93,19 @@ class ResumeService extends ServiceBase {
         resume.status_history.push(statusHistoryLog)
         await resume.save();
     }
+
+    async getDefaultUserIdNotification(resume) {
+        let userIdList = [resume.created_by];
+        return userIdList;
+    }
+
+    async setNotificationWhenChangeContributor(resume, req, title, body) {
+        let userIdList = await this.getDefaultUserIdNotification(resume);
+        for (let userId of userIdList) {
+            await notificationService.setNotificationForResume(resume, req, userId, title, body);
+        }
+    }
+
 }
 
 export default new ResumeService(Resume);

@@ -12,6 +12,10 @@ export const ResumeEvents = {
     "ADD_FILE": "add file to resume",
     "ADD_TAG": "add tag to resume",
     "UPDATE_STATUS_LOG": "Update Resume Status Log",
+    "SET_CONTRIBUTER": "set contributor to resume",
+    "UNSET_CONTRIBUTER": "un set contributor to resume",
+    "SET_SKILL": "set skill to resume",
+    "UNSET_SKILL": "un set skill to resume"
 }
 
 EventEmitter.on(ResumeEvents.FIND, find)
@@ -25,6 +29,10 @@ EventEmitter.on(ResumeEvents.ADD_FILE, addFile)
 EventEmitter.on(ResumeEvents.ADD_TAG, setTag)
 EventEmitter.on(ResumeEvents.REMOVE_TAG, unsetTag)
 EventEmitter.on(ResumeEvents.UPDATE_STATUS_LOG, updateStatusLog)
+EventEmitter.on(ResumeEvents.SET_CONTRIBUTER, setContributor)
+EventEmitter.on(ResumeEvents.UNSET_CONTRIBUTER, unsetContributor)
+EventEmitter.on(ResumeEvents.SET_SKILL, setSkill)
+EventEmitter.on(ResumeEvents.UNSET_SKILL, unsetSkill)
 
 async function find(Resume, req) {
     await viewlogService.setViewlog('resumes', Resume._id, req)
@@ -37,12 +45,12 @@ async function create(Resume, req) {
 }
 
 function softdelete(Resume, req) {
-    console.log(events.DELETE + " event called", Resume)
+    console.log(ResumeEvents.DELETE + " event called", Resume)
 }
 
 
 function update(Resume, req) {
-    console.log(events.UPDATE + " event called", Resume)
+    console.log(ResumeEvents.UPDATE + " event called", Resume)
 }
 
 function updateStatus(Resume, req) {
@@ -73,4 +81,20 @@ async function setTag(Resume, req) {
 
 async function unsetTag(Resume, req) {
     await resumeService.updateSummeryCount(Resume, 'tag', Resume.tags.length)
+}
+
+async function setSkill(Resume, req) {
+    console.log(ResumeEvents.SET_SKILL + " event called", Resume)
+}
+
+async function unsetSkill(Resume, req) {
+    console.log(ResumeEvents.UNSET_SKILL + " event called", Resume)
+}
+
+async function setContributor(Resume, req) {
+    await resumeService.setNotificationWhenChangeContributor(Resume, req, ResumeEvents.SET_CONTRIBUTER, "");
+}
+
+async function unsetContributor(Resume, req) {
+    await resumeService.setNotificationWhenChangeContributor(Resume, req, ResumeEvents.UNSET_CONTRIBUTER, "");
 }

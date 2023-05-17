@@ -452,6 +452,7 @@ class ResumeController extends Controller {
 
             resume.contributors.push(contributor_id);
             await resume.save();
+            EventEmitter.emit(ResumeEvents.SET_CONTRIBUTER, resume, req)
 
             AppResponse.builder(res).message("resume.messages.contributor_successfully_added").data(resume).send();
         } catch (err) {
@@ -488,6 +489,7 @@ class ResumeController extends Controller {
 
             resume.contributors = contributors.filter(e => e != user._id)
             await resume.save();
+            EventEmitter.emit(ResumeEvents.UNSET_CONTRIBUTER, resume, req)
 
             AppResponse.builder(res).message("resume.messages.contributor_successfully_removed").data(resume).send();
         } catch (err) {
@@ -729,7 +731,7 @@ class ResumeController extends Controller {
     async setSkill(req, res, next) {
         try {
             let resume = await resumeService.findByParamId(req);
-            
+
             let skill = await SkillService.findOne(req.body.skill_id);
             if (!skill) throw new NotFoundError('skill.errors.skill_notfound');
 
@@ -737,7 +739,7 @@ class ResumeController extends Controller {
             resume.skills.push(skill._id)
             await resume.save();
 
-            EventEmitter.emit(ResumeEvents.ADD_SKILL, resume, req)
+            EventEmitter.emit(ResumeEvents.SET_SKILL, resume, req)
 
             AppResponse.builder(res).status(200).message("resume.messages.resume_skills_successfully_updated").data(resume).send();
         } catch (err) {
@@ -773,7 +775,7 @@ class ResumeController extends Controller {
             resume.skills.splice(skillIndex, 1)
             await resume.save();
 
-            EventEmitter.emit(ResumeEvents.REMOVE_SKILL, resume, req)
+            EventEmitter.emit(ResumeEvents.UNSET_SKILL, resume, req)
 
             AppResponse.builder(res).status(200).message("resume.messages.resume_skills_successfully_deleted").data(resume).send();
         } catch (err) {
