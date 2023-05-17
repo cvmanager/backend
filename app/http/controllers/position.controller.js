@@ -270,7 +270,7 @@ class PositionController extends Controller {
                     .populate([
                         { path: 'interviews', select: ['event_time', 'event_type', 'status', 'type', 'result', 'description', 'rating', 'contribution'] },
                         { path: 'created_by' },
-                        { path: 'contributors', select: ['firstname', 'lastname', 'avatar'] },
+                        { path: 'assigners', select: ['firstname', 'lastname', 'avatar'] },
                         { path: 'interviews', select: ['event_time', 'event_type', 'status', 'type', 'result', 'description', 'rating', 'contribution'] },
                         { path: 'tags', select: ['name', 'color', 'count'] },
                         { path: 'project_id' },

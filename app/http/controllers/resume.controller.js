@@ -61,7 +61,7 @@ class ResumeController extends Controller {
                     { path: 'company_id', select: 'name' },
                     { path: 'project_id', select: 'name' },
                     { path: 'created_by', select: ['firstname', 'lastname'] },
-                    { path: 'contributors', select: ['firstname', 'lastname', 'avatar'] },
+                    { path: 'assigners', select: ['firstname', 'lastname', 'avatar'] },
                     { path: 'tags', select: ['name', 'color', 'count'] },
                     { path: 'skills', select: ['title', 'color'] },
                     { path: 'views', select: ['created_by', 'createdAt'] }
@@ -95,7 +95,7 @@ class ResumeController extends Controller {
                     { path: 'company_id' },
                     { path: 'project_id' },
                     { path: 'position_id' },
-                    { path: 'contributors', select: ['firstname', 'lastname', 'avatar'] },
+                    { path: 'assigners', select: ['firstname', 'lastname', 'avatar'] },
                     {
                         path: 'call_history',
                         populate: [
@@ -448,9 +448,9 @@ class ResumeController extends Controller {
             if (!user) throw new NotFoundError('user.errors.user_notfound');
 
 
-            if (resume.contributors && resume.contributors.includes(contributor_id)) throw new BadRequestError('resume.errors.contributor_could_not_be_duplicate');
+            if (resume.assigners && resume.assigners.includes(contributor_id)) throw new BadRequestError('resume.errors.contributor_could_not_be_duplicate');
 
-            resume.contributors.push(contributor_id);
+            resume.assigners.push(contributor_id);
             await resume.save();
 
             AppResponse.builder(res).message("resume.messages.contributor_successfully_added").data(resume).send();
@@ -483,10 +483,10 @@ class ResumeController extends Controller {
             let user = await userService.findOne({ '_id': req.params.user_id })
             if (!user) throw new NotFoundError('user.errors.user_notfound');
 
-            let contributors = resume.contributors
-            if (!resume.contributors.includes(user._id)) throw new BadRequestError('resume.errors.contributor_not_exists');
+            let assigners = resume.assigners
+            if (!resume.assigners.includes(user._id)) throw new BadRequestError('resume.errors.contributor_not_exists');
 
-            resume.contributors = contributors.filter(e => e != user._id)
+            resume.assigners = assigners.filter(e => e != user._id)
             await resume.save();
 
             AppResponse.builder(res).message("resume.messages.contributor_successfully_removed").data(resume).send();
