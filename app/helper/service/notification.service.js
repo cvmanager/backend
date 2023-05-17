@@ -35,7 +35,7 @@ class NotificationService extends ServiceBase {
             if (fcmTokens.length > 0) {
                 const notificationData = {
                     title: notification.title,
-                    body: notification.body,
+                    body: notification.body
                 };
                 sendNotificationToClient(fcmTokens, notificationData);
             }
