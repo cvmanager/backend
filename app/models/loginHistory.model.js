@@ -48,6 +48,6 @@ const schema = new mongoose.Schema(
 
 schema.plugin(basePlugin)
 
-const loginLogs = mongoose.model('loginLog', schema);
+const loginHistory = mongoose.model('loginhistory', schema);
 
-export default loginLogs;
+export default loginHistory;

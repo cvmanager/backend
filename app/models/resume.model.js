@@ -209,7 +209,7 @@ const schema = new mongoose.Schema(
             default: null,
             ref: 'tags'
         },
-        contributors: {
+        assigners: {
             type: Array,
             default: null,
             ref: 'users'

@@ -12,8 +12,8 @@ export const ResumeEvents = {
     "ADD_FILE": "add file to resume",
     "ADD_TAG": "add tag to resume",
     "UPDATE_STATUS_LOG": "Update Resume Status Log",
-    "SET_CONTRIBUTER": "set contributor to resume",
-    "UNSET_CONTRIBUTER": "un set contributor to resume",
+    "SET_ASSIGNER": "set assigner to resume",
+    "UNSET_ASSIGNER": "un set assigner to resume",
     "SET_SKILL": "set skill to resume",
     "UNSET_SKILL": "un set skill to resume"
 }
@@ -29,8 +29,8 @@ EventEmitter.on(ResumeEvents.ADD_FILE, addFile)
 EventEmitter.on(ResumeEvents.ADD_TAG, setTag)
 EventEmitter.on(ResumeEvents.REMOVE_TAG, unsetTag)
 EventEmitter.on(ResumeEvents.UPDATE_STATUS_LOG, updateStatusLog)
-EventEmitter.on(ResumeEvents.SET_CONTRIBUTER, setContributor)
-EventEmitter.on(ResumeEvents.UNSET_CONTRIBUTER, unsetContributor)
+EventEmitter.on(ResumeEvents.SET_ASSIGNER, setAssigner)
+EventEmitter.on(ResumeEvents.UNSET_ASSIGNER, unsetAssigner)
 EventEmitter.on(ResumeEvents.SET_SKILL, setSkill)
 EventEmitter.on(ResumeEvents.UNSET_SKILL, unsetSkill)
 
@@ -93,10 +93,10 @@ async function unsetSkill(Resume, req) {
     console.log(ResumeEvents.UNSET_SKILL + " event called", Resume)
 }
 
-async function setContributor(Resume, req) {
-    console.log(ResumeEvents.SET_CONTRIBUTER + " event called", Resume)
+async function setAssigner(Resume, req) {
+    console.log(ResumeEvents.SET_ASSIGNER + " event called", Resume)
 }
 
-async function unsetContributor(Resume, req) {
-    console.log(ResumeEvents.UNSET_CONTRIBUTER + " event called", Resume)
+async function unsetAssigner(Resume, req) {
+    console.log(ResumeEvents.UNSET_ASSIGNER + " event called", Resume)
 }

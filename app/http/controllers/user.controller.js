@@ -4,7 +4,7 @@ import NotFoundError from '../../exceptions/NotFoundError.js';
 import AppResponse from '../../helper/response.js';
 import User from '../../models/user.model.js';
 import Company from '../../models/company.model.js';
-import LoginLog from '../../models/loginLog.model.js';
+import loginHistory from '../../models/loginHistory.model.js';
 import Controller from './controller.js';
 import { UserEvents } from '../../events/subscribers/user.subscriber.js';
 import bcrypt from 'bcrypt'
@@ -251,7 +251,7 @@ class UserController extends Controller {
             if (!user) throw new NotFoundError('user.errors.user_notfound');
 
             const { page = 1, size = 10 } = req.query
-            const loginLog = await LoginLog.paginate({ user_id: user._id }, {
+            const loginLog = await loginHistory.paginate({ user_id: user._id }, {
                 page: page,
                 limit: size,
                 sort: { createdAt: -1 }

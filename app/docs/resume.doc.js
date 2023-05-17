@@ -148,3 +148,35 @@
 * @typedef { object } resume.unset_skill
 * @property { string } skill_id.required - skill_id
 */
+
+/**
+* set tag for resume
+* @typedef { object } resume.set_tag
+* @property { string } tag_id.required - tag_id
+*/
+
+/**
+* unset tag for resume
+* @typedef { object } resume.unset_tag
+* @property { string } tag_id.required - tag_id
+*/
+
+
+/**
+* set assigner for resume
+* @typedef { object } resume.set_assigners
+* @property { string } user_id.required - user_id
+*/
+
+/**
+* unset assigner for resume
+* @typedef { object } resume.unset_assigners
+* @property { string } user_id.required - user_id
+*/
+
+/**
+* action_interview 
+* @typedef { object } resume.action_interview 
+* @property { string } interview_id.required - interview_id
+*/
+

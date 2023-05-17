@@ -325,10 +325,18 @@ class ResumeValidation {
         ];
     }
 
-    addContributor() {
+    setAssigner() {
         return [
             param('id').notEmpty().isMongoId().withMessage('resume.validations.resume_id_invalid').trim(),
-            param('user_id').notEmpty().isMongoId().withMessage('resume.validation.contributor_id_invalid').trim(),
+            body('user_id').notEmpty().isMongoId().withMessage('resume.validation.contributor_id_invalid').trim(),
+            generalValidator
+        ];
+    }
+
+    unsetAssigner() {
+        return [
+            param('id').notEmpty().isMongoId().withMessage('resume.validations.resume_id_invalid').trim(),
+            body('user_id').notEmpty().isMongoId().withMessage('resume.validation.contributor_id_invalid').trim(),
             generalValidator
         ];
     }
@@ -356,15 +364,6 @@ class ResumeValidation {
         ];
     }
 
-
-    removeContributor() {
-        return [
-            param('id').notEmpty().isMongoId().withMessage('resume.validations.resume_id_invalid').trim(),
-            param('user_id').notEmpty().isMongoId().withMessage('resume.validation.contributor_id_invalid').trim(),
-            generalValidator
-        ];
-    }
-
     avatar() {
         return [
             param('id')
@@ -376,7 +375,7 @@ class ResumeValidation {
     set_tag() {
         return [
             param('id').notEmpty().isMongoId().withMessage('resume.validations.resume_id_invalid').trim(),
-            param('tag_id').notEmpty().isMongoId().withMessage('resume.validations.resume_id_invalid').trim(),
+            body('tag_id').notEmpty().isMongoId().withMessage('resume.validations.resume_id_invalid').trim(),
             generalValidator
         ];
     }
@@ -384,7 +383,7 @@ class ResumeValidation {
     unset_tag() {
         return [
             param('id').notEmpty().isMongoId().withMessage('resume.validations.resume_id_invalid').trim(),
-            param('tag_id').notEmpty().isMongoId().withMessage('tag.validations.tag_id_invalid').trim(),
+            body('tag_id').notEmpty().isMongoId().withMessage('tag.validations.tag_id_invalid').trim(),
             generalValidator
         ];
     }
@@ -459,6 +458,148 @@ class ResumeValidation {
             generalValidator
         ];
     }
+
+    create_interview() {
+        return [
+            param('id').notEmpty().isMongoId().withMessage('interview.validations.resume_id_invalid').trim(),
+            body('event_time').notEmpty()
+                .isISO8601()
+                .toDate()
+                .withMessage('interview.validations.event_time_invalid').trim(),
+            // body('event_time').toDate().custom((eventTime, { req }) => {
+            //     if (eventTime) {
+            //         let nextYear = new Date(new Date().setFullYear(new Date().getFullYear() + 1));
+            //         if (
+            //             Date.now() < eventTime.getTime() &&
+            //             eventTime.getTime() < nextYear.getTime()
+            //         ) {
+            //             throw new Error('interview.validations.event_time_invalid');
+            //         }
+            //     }
+            //     return true
+            // }),
+            body('event_type')
+                .notEmpty()
+                .withMessage('interview.validations.event_type_required')
+                .isIn(i18n.__("interview.enums.event_type"))
+                .withMessage('interview.validations.event_type_incorrect')
+                .trim(),
+            body('type')
+                .notEmpty()
+                .withMessage('interview.validations.type_required')
+                .isIn(i18n.__("interview.enums.type"))
+                .withMessage('interview.validations.type_incorrect')
+                .trim(),
+            body('description')
+                .optional({ nullable: true, checkFalsy: true })
+                .isLength({ min: 2, max: 512 })
+                .withMessage('interview.validations.description_length')
+                .trim(),
+            body('contribution')
+                .optional({ nullable: true, checkFalsy: true })
+                .isArray()
+                .withMessage('interview.validations.contribution_array'),
+            body('rating')
+                .optional({ nullable: true, checkFalsy: true })
+                .isNumeric()
+                .withMessage('interview.validations.rating_numeric')
+                .isInt({ min: 1, max: 5 })
+                .withMessage('interview.validations.rating_number_not_correct')
+                .trim(),
+            generalValidator
+        ];
+    }
+
+    update_interview() {
+        return [
+            param('id')
+                .notEmpty()
+                .withMessage('interview.validations.resume_id_required')
+                .isMongoId()
+                .withMessage('interview.validations.resume_id_invalid')
+                .trim(),
+            body('interview_id')
+                .notEmpty()
+                .isMongoId()
+                .withMessage('company.validations.company_id_invalid')
+                .trim(),
+            body('event_time')
+                .optional({ nullable: true, checkFalsy: true })
+                .isISO8601()
+                .toDate()
+                .withMessage('interview.validations.event_time_invalid')
+                .trim(),
+            body('event_time').toDate().custom((eventTime, { req }) => {
+                if (eventTime) {
+                    let nextYear = new Date(new Date().setFullYear(new Date().getFullYear() + 1));
+                    if (
+                        Date.now() < eventTime.getTime() &&
+                        eventTime.getTime() < nextYear.getTime()
+                    ) {
+                        throw new Error('interview.validations.event_time_invalid');
+                    }
+                }
+                return true
+            }),
+            body('event_type')
+                .optional({ nullable: true, checkFalsy: true })
+                .isIn(i18n.__("interview.enums.event_type"))
+                .withMessage('interview.validations.event_type_incorrect')
+                .trim(),
+            body('type')
+                .optional({ nullable: true, checkFalsy: true })
+                .isIn(i18n.__("interview.enums.type"))
+                .withMessage('interview.validations.type_incorrect')
+                .trim(),
+            body('description')
+                .optional({ nullable: true, checkFalsy: true })
+                .isLength({ min: 2, max: 512 })
+                .withMessage('interview.validations.description_length')
+                .trim(),
+            body('contribution')
+                .optional({ nullable: true, checkFalsy: true })
+                .isArray()
+                .withMessage('interview.validations.contribution_array'),
+            body('status')
+                .notEmpty()
+                .isIn(i18n.__("interview.enums.status"))
+                .withMessage('interview.validations.status_incorrect')
+                .trim(),
+            body('result')
+                .notEmpty()
+                .isIn(i18n.__("interview.enums.result"))
+                .withMessage('interview.validations.result_incorrect')
+                .trim(),
+            body('rating')
+                .optional({ nullable: true, checkFalsy: true })
+                .isNumeric()
+                .withMessage('interview.validations.rating_numeric')
+                .isInt({ min: 1, max: 5 })
+                .withMessage('interview.validations.rating_number_not_correct')
+                .trim(),
+            generalValidator
+        ];
+
+    }
+
+    remove_interview() {
+        return [
+            param('id').notEmpty().isMongoId().withMessage('interview.validations.resume_id_invalid').trim(),
+            body('interview_id').notEmpty().isMongoId().withMessage('interview.validations.interview_id_invalid').trim(),
+            generalValidator
+        ];
+    }
+
+
+
+    get_interviews() {
+        return [
+            param('id').notEmpty().isMongoId().withMessage('interview.validations.resume_id_invalid').trim(),
+            body('interview_id').notEmpty().isMongoId().withMessage('interview.validations.interview_id_invalid').trim(),
+            generalValidator
+        ];
+    }
+
 }
 
 export default new ResumeValidation();
