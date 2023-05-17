@@ -1,20 +1,19 @@
 import { ResumeEvents } from '../../events/subscribers/resumes.subscriber.js';
-import { TagEvents } from '../../events/subscribers/tags.subscriber.js';
 import NotFoundError from '../../exceptions/NotFoundError.js';
-import Position from '../../models/position.model.js';
 import ResumeComments from '../../models/resumeComment.model.js';
 import Interview from '../../models/interview.model.js';
 import EventEmitter from '../../events/emitter.js';
 import AppResponse from '../../helper/response.js';
 import Resume from '../../models/resume.model.js';
-import Company from '../../models/company.model.js';
 import Controller from './controller.js';
 import BadRequestError from '../../exceptions/BadRequestError.js';
 import { mergeQuery } from '../../helper/mergeQuery.js';
-import resumeService from '../../helper/service/resume.service.js';
 import userService from '../../helper/service/user.service.js';
 import TagService from '../../helper/service/tag.service.js';
 import SkillService from '../../helper/service/skill.service.js';
+import resumeService from '../../helper/service/resume.service.js';
+import positionService from '../../helper/service/position.service.js';
+import companyService from '../../helper/service/company.service.js';
 
 
 class ResumeController extends Controller {
@@ -91,39 +90,37 @@ class ResumeController extends Controller {
     */
     async find(req, res, next) {
         try {
-            let resume = await Resume.findById(req.params.id)
-                .populate([
-                    { path: 'company_id' },
-                    { path: 'project_id' },
-                    { path: 'position_id' },
-                    { path: 'assigners', select: ['firstname', 'lastname', 'avatar'] },
-                    {
-                        path: 'call_history',
-                        populate: [
-                            { path: 'created_by', select: ['firstname', 'lastname', 'avatar'] }
-                        ],
-                    },
-                    {
-                        path: 'interviews',
-                        populate: [
-                            { path: 'created_by', select: ['firstname', 'lastname', 'avatar'] },
-                            { path: 'contribution', select: ['firstname', 'lastname', 'avatar'] }
-                        ],
-                        select: ['event_time', 'event_type', 'status', 'type', 'result', 'description', 'rating', 'contribution', 'created_by', 'createdAt']
-                    },
-                    { path: 'tags', select: ['name', 'color', 'count'] },
-                    { path: 'skills', select: ['title', 'color'] },
-                    {
-                        path: 'views',
-                        populate: [
-                            { path: 'created_by', select: ['firstname', 'lastname', 'avatar', 'username'] }
-                        ],
-                        select: ['created_by', 'createdAt']
-                    },
-                    { path: 'created_by', select: ['firstname', 'lastname', 'avatar'] },
+            let resume = await resumeService.findById(req.params.id, [
+                { path: 'company_id' },
+                { path: 'project_id' },
+                { path: 'position_id' },
+                { path: 'assigners', select: ['firstname', 'lastname', 'avatar'] },
+                {
+                    path: 'call_history',
+                    populate: [
+                        { path: 'created_by', select: ['firstname', 'lastname', 'avatar'] }
+                    ],
+                },
+                {
+                    path: 'interviews',
+                    populate: [
+                        { path: 'created_by', select: ['firstname', 'lastname', 'avatar'] },
+                        { path: 'contribution', select: ['firstname', 'lastname', 'avatar'] }
+                    ],
+                    select: ['event_time', 'event_type', 'status', 'type', 'result', 'description', 'rating', 'contribution', 'created_by', 'createdAt']
+                },
+                { path: 'tags', select: ['name', 'color', 'count'] },
+                { path: 'skills', select: ['title', 'color'] },
+                {
+                    path: 'views',
+                    populate: [
+                        { path: 'created_by', select: ['firstname', 'lastname', 'avatar', 'username'] }
+                    ],
+                    select: ['created_by', 'createdAt']
+                },
+                { path: 'created_by', select: ['firstname', 'lastname', 'avatar'] },
+            ])
 
-
-                ]);
             if (!resume) throw new NotFoundError('resume.error.resume_notfound');
 
             EventEmitter.emit(ResumeEvents.FIND, resume, req);
@@ -151,19 +148,18 @@ class ResumeController extends Controller {
     */
     async create(req, res, next) {
         try {
-
-            let position = await Position.findById(req.body.position_id)
+            let position = await positionService.findById(req.body.position_id);            
             if (!position) throw new NotFoundError('position.errors.position_not_found');
 
             req.body.created_by = req.user._id;
             req.body.project_id = position.project_id;
             req.body.company_id = position.company_id;
 
-            let company = await Company.findById(position.company_id)
+            let company =  await companyService.findById(position.company_id);
             if (!company.is_active) throw new BadRequestError('company.errors.company_is_not_active');
             let resume = await Resume.create(req.body)
 
-            EventEmitter.emit(ResumeEvents.CREATE, resume, req) 
+            EventEmitter.emit(ResumeEvents.CREATE, resume, req)
 
             AppResponse.builder(res).status(201).message("resume.messages.resume_successfully_created").data(resume).send();
         } catch (err) {
@@ -189,10 +185,7 @@ class ResumeController extends Controller {
     */
     async update(req, res, next) {
         try {
-            let resume = await Resume.findById(req.params.id);
-            if (!resume) throw new NotFoundError('resume.errors.resume_notfound');
-
-
+            let resume = resumeService.findByParamId(req);
             await Resume.findByIdAndUpdate(req.params.id, req.body, { new: true })
                 .then(resume => {
                     EventEmitter.emit(ResumeEvents.UPDATE, resume, req)
@@ -222,8 +215,7 @@ class ResumeController extends Controller {
     */
     async delete(req, res, next) {
         try {
-            let resume = await Resume.findById(req.params.id);
-            if (!resume) throw new NotFoundError('resume.errors.resume_notfound');
+            let resume = await resumeService.findByParamId(req);
             resume.deleted_at = Date.now();
             resume.deleted_by = req.user._id;
 
@@ -289,8 +281,7 @@ class ResumeController extends Controller {
     */
     async uploadFile(req, res, next) {
         try {
-            let resume = await Resume.findById(req.params.id);
-            if (!resume) throw new NotFoundError('resume.error.resume_notfound');
+            let resume = await resumeService.findByParamId(req);
 
             let files = [];
             if (resume.file) {
@@ -328,8 +319,7 @@ class ResumeController extends Controller {
     */
     async comments(req, res, next) {
         try {
-            let resume = await Resume.findById(req.params.id);
-            if (!resume) throw new NotFoundError('resume.errors.resume_notfound');
+            let resume = await resumeService.findByParamId(req);
 
             let resumeComments = await ResumeComments.find({ 'resume_id': resume._id });
 
@@ -357,8 +347,7 @@ class ResumeController extends Controller {
     */
     async addComments(req, res, next) {
         try {
-            let resume = await Resume.findById(req.params.id);
-            if (!resume) throw new NotFoundError('resume.errors.resume_notfound');
+            let resume = await resumeService.findByParamId(req);
 
             req.body.body = req.body.body
             req.body.resume_id = resume._id
@@ -451,6 +440,7 @@ class ResumeController extends Controller {
 
             resume.assigners.push(user._id);
             await resume.save();
+            EventEmitter.emit(ResumeEvents.SET_ASSIGNER, resume, req);
 
             AppResponse.builder(res).message("resume.messages.contributor_successfully_added").data(resume).send();
         } catch (err) {
@@ -487,6 +477,8 @@ class ResumeController extends Controller {
             resume.assigners = assigners.filter(e => e != user._id)
             await resume.save();
 
+            EventEmitter.emit(ResumeEvents.UNSET_ASSIGNER, resume, req);
+
             AppResponse.builder(res).message("resume.messages.contributor_successfully_removed").data(resume).send();
         } catch (err) {
             next(err);
@@ -514,6 +506,7 @@ class ResumeController extends Controller {
             if (req.body.avatar) {
                 resume.avatar = req.body.avatar;
                 await resume.save();
+                EventEmitter.emit(ResumeEvents.UPDATE_AVATAR, resume, req);
             }
 
             AppResponse.builder(res).message("resume.messages.resume_successfully_updated").data(resume).send()
@@ -794,9 +787,11 @@ class ResumeController extends Controller {
     */
     async getInterviews(req, res, next) {
         try {
-            await resumeService.findByParamId(req);
+            let resume = await resumeService.findByParamId(req);
             let interview = await Interview.findById(req.body.interview_id).populate({ path: 'created_by', select: ['firstname', 'lastname', 'avatar'] }).exec();
             if (!interview) throw new NotFoundError('interview.errors.interview_notfound');
+
+            EventEmitter.emit(ResumeEvents.GET_INTERVIEW, resume, req);
 
             AppResponse.builder(res).message("interview.messages.interview_found").data(interview).send();
         } catch (err) {

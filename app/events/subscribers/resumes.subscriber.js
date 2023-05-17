@@ -12,6 +12,10 @@ export const ResumeEvents = {
     "ADD_FILE": "add file to resume",
     "ADD_TAG": "add tag to resume",
     "UPDATE_STATUS_LOG": "Update Resume Status Log",
+    "SET_ASSIGNER": "SET_ASSIGNER",
+    "UNSET_ASSIGNER": "UNSET_ASSIGNER",
+    "UPDATE_AVATAR": "UPDATE_AVATAR",
+    "GET_INTERVIEW": "GET_INTERVIEW"
 }
 
 EventEmitter.on(ResumeEvents.FIND, find)
