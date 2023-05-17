@@ -9,7 +9,7 @@ class ManagerService extends ServiceBase {
         this.model = model
         autoBind(this)
     }
-
+    
     async getUserOwnCompanies(userId) {
         let companies = await super.getAll({ user_id: userId, entity: 'companies', type: 'owner' })
         return companies.map(entity => entity.entity_id)
@@ -47,21 +47,6 @@ class ManagerService extends ServiceBase {
 
     async addDefaultManagerForCompany(company) {
         await super.create({ user_id: company.created_by, entity: "companies", entity_id: company._id, created_by: company.created_by, type: "owner" });
-    }
-
-    async getManagersIdOfCompany(company) {
-        let companies = await super.getAll({ entity: 'companies', entity_id: company._id })
-        return companies.map(company => company.user_id)
-    }
-
-    async getManagersIdOfProject(project) {
-        let projects = await super.getAll({ entity: 'projects', entity_id: project._id })
-        return projects.map(project => project.user_id)
-    }
-
-    async getManagersIdOfPosition(position) {
-        let positions = await super.getAll({ entity: 'positions', entity_id: position._id })
-        return positions.map(position => position.user_id)
     }
 }
 

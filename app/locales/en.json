@@ -704,10 +704,20 @@
 				"projects",
 				"positions",
 				"resumes"
+			],
+			"step": [
+				"update_status"
 			]
 		},
 		"validations": {},
-		"messages": {},
+		"messages": {
+			"title": {
+				"update_status": "resume status changed"
+			},
+			"body": {
+				"update_status": "{{user}} change status to {{status}}"
+			}
+		},
 		"errors": {}
 	}
 }

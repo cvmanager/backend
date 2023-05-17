@@ -25,6 +25,11 @@ const schema = new mongoose.Schema(
             type: Date,
             required: null
         },
+        step: {
+            type: String,
+            required: true,
+            enum: i18n.__("notification.enums.step")
+        },
         entity: {
             type: String,
             required: true,

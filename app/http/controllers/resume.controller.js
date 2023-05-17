@@ -628,6 +628,7 @@ class ResumeController extends Controller {
             resume.income = req.body.income
             await resume.save();
 
+            EventEmitter.emit(ResumeEvents.UPDATE_STATUS, resume, req)
             EventEmitter.emit(ResumeEvents.UPDATE_STATUS_LOG, resume, req, oldStatus)
 
             AppResponse.builder(res).status(200).message("resume.messages.resume_successfully_hired").data(resume).send();
@@ -665,6 +666,7 @@ class ResumeController extends Controller {
             resume.reject_description = req.body.reject_description;
             await resume.save();
 
+            EventEmitter.emit(ResumeEvents.UPDATE_STATUS, resume, req)
             EventEmitter.emit(ResumeEvents.UPDATE_STATUS_LOG, resume, req, oldStatus)
 
             AppResponse.builder(res).status(200).message("resume.messages.resume_successfully_rejected").data(resume).send();
@@ -704,6 +706,7 @@ class ResumeController extends Controller {
             resume.end_cooperation_description = req.body.end_cooperation_description
             await resume.save();
 
+            EventEmitter.emit(ResumeEvents.UPDATE_STATUS, resume, req)
             EventEmitter.emit(ResumeEvents.UPDATE_STATUS_LOG, resume, req, oldStatus)
 
             AppResponse.builder(res).status(200).message("resume.messages.resume_successfully_end_cooperation").data(resume).send();

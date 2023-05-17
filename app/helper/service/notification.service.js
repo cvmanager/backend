@@ -9,11 +9,12 @@ class NotificationService extends ServiceBase {
         autoBind(this)
     }
 
-    async setNotificationForResume(resume, req, userId, title, body) {
+    async setNotificationForResume(resume, req, userId, step, title, body) {
         let params = {
             title: title,
             body: body,
             user_id: userId,
+            step: step,
             entity: 'resumes',
             entity_id: resume._id,
             created_by: req.user._id,

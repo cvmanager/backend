@@ -53,8 +53,10 @@ function update(Resume, req) {
     console.log(ResumeEvents.UPDATE + " event called", Resume)
 }
 
-function updateStatus(Resume, req) {
-    resumeService.setProccessDuration(Resume)
+async function updateStatus(Resume, req) {
+    await resumeService.setProccessDuration(Resume)
+    await resumeService.setNotificationWhenUpdateStatus(Resume, req, 'update_status');
+
 }
 
 async function updateStatusLog(Resume, req, oldStatus) {
@@ -62,7 +64,7 @@ async function updateStatusLog(Resume, req, oldStatus) {
 }
 
 async function addComment(Resume, req) {
-    let commentCount = await resumeService.getResumeCommentCount(Resume);
+    let commentCount = await resumeService.getResumeCommentCount(Resume)
     await resumeService.updateSummeryCount(Resume, 'comment', commentCount)
 }
 
@@ -92,9 +94,9 @@ async function unsetSkill(Resume, req) {
 }
 
 async function setContributor(Resume, req) {
-    await resumeService.setNotificationWhenChangeContributor(Resume, req, ResumeEvents.SET_CONTRIBUTER, "");
+    console.log(ResumeEvents.SET_CONTRIBUTER + " event called", Resume)
 }
 
 async function unsetContributor(Resume, req) {
-    await resumeService.setNotificationWhenChangeContributor(Resume, req, ResumeEvents.UNSET_CONTRIBUTER, "");
+    console.log(ResumeEvents.UNSET_CONTRIBUTER + " event called", Resume)
 }

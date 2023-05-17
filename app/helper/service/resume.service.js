@@ -6,6 +6,8 @@ import ResumeComments from '../../models/resumeComment.model.js';
 import Interview from "../../models/interview.model.js";
 import Viewlog from "../../models/viewlog.model.js";
 import notificationService from './notification.service.js'
+import i18n from '../../middlewares/lang.middleware.js'
+import userService from './user.service.js'
 
 const endOfResumeStatus = ['rejected', 'hired'];
 
@@ -99,13 +101,33 @@ class ResumeService extends ServiceBase {
         return userIdList;
     }
 
-    async setNotificationWhenChangeContributor(resume, req, title, body) {
-        let userIdList = await this.getDefaultUserIdNotification(resume);
-        for (let userId of userIdList) {
-            await notificationService.setNotificationForResume(resume, req, userId, title, body);
+    async getContributorsId(resume) {
+        let contributorsId = [];
+        if (resume.contributors.length === 0) return contributorsId
+
+        for (let contributor of resume.contributors) {
+            contributorsId.push(contributor);
         }
+        return contributorsId;
     }
 
+    async setNotificationWhenUpdateStatus(resume, req, step) {
+        let userIdList = await this.getDefaultUserIdNotification(resume);
+        let contributorIdList = await this.getContributorsId(resume);
+        userIdList = userIdList.concat(contributorIdList);
+        let user = await userService.findById(req.user._id);
+
+        let title = i18n.__(`notification.messages.title.${step}`)
+        let body = i18n.__(`notification.messages.body.${step}`, {
+            user: user.fullname,
+            status: resume.status
+        })
+
+        for (let userId of userIdList) {
+            await notificationService.setNotificationForResume(resume, req, userId, step, title, body);
+        }
+    }
+    
 }
 
 export default new ResumeService(Resume);
