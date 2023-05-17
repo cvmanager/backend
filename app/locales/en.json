@@ -133,14 +133,14 @@
 				"position_managers_found": "position managers successfully founded",
 				"position_resumes_found": "Position resumes successfully founded",
 				"position_successfully_deactivated": "position status successfully deactivated",
-				"position_successfully_activated": "position status successfully activated"
+				"position_successfully_activated": "position status successfully activated",
+				"position_successfully_created": "Position successfully created",
+				"position_successfully_updated": "Position successfully updated",
+				"position_successfully_deleted": "Position successfully deleted"
 			},
 			"errors": {
 				"position_notfound": "position not found",
 				"position_already_exists": "position already exists",
-				"position_successfully_created": "position successfully created",
-				"position_successfully_updated": "position successfully updated",
-				"position_successfully_deleted": "position successfully deleted",
 				"position_list_found": "position list",
 				"position_found": "position found",
 				"position_managers_found": "position managers successfully founded",
@@ -411,9 +411,6 @@
 		"errors": {
 			"position_notfound": "position not found",
 			"position_already_exists": "position already exists",
-			"position_successfully_created": "position successfully created",
-			"position_successfully_updated": "position successfully updated",
-			"position_successfully_deleted": "position successfully deleted",
 			"position_not_found": "position not found",
 			"position_list_found": "position list",
 			"position_found": "position found",

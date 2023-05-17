@@ -63,7 +63,7 @@ async function getRoleChilds(roleIds) {
 
 function getPermissionName(req) {
     // let path = req.baseUrl
-    let path = req.originalUrl
+    let path = req.originalUrl.split("?").shift()
 
     for (let key of Object.keys(req.params)) {
         path = path.replace(req.params[key], ":" + key)
