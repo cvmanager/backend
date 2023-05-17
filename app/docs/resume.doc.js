@@ -173,3 +173,10 @@
 * @typedef { object } resume.unset_assigners
 * @property { string } user_id.required - user_id
 */
+
+/**
+* action_interview 
+* @typedef { object } resume.action_interview 
+* @property { string } interview_id.required - interview_id
+*/
+

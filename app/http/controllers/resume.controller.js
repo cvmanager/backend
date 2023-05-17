@@ -3,6 +3,7 @@ import { TagEvents } from '../../events/subscribers/tags.subscriber.js';
 import NotFoundError from '../../exceptions/NotFoundError.js';
 import Position from '../../models/position.model.js';
 import ResumeComments from '../../models/resumeComment.model.js';
+import Interview from '../../models/interview.model.js';
 import EventEmitter from '../../events/emitter.js';
 import AppResponse from '../../helper/response.js';
 import Resume from '../../models/resume.model.js';
@@ -423,7 +424,7 @@ class ResumeController extends Controller {
 
 
     /**
-    * PATCH /resumes/{id}/assigners/
+    * PATCH /resumes/{id}/assigners
     * 
     * @summary set assigner to resume
     * @tags Resume
@@ -459,7 +460,7 @@ class ResumeController extends Controller {
     }
 
     /**
-    * DELETE /resumes/{id}/assigners/
+    * DELETE /resumes/{id}/assigners
     * 
     * @summary unset special assigner from resume
     * @tags Resume
@@ -771,6 +772,161 @@ class ResumeController extends Controller {
             EventEmitter.emit(ResumeEvents.REMOVE_SKILL, resume, req)
 
             AppResponse.builder(res).status(200).message("resume.messages.resume_skills_successfully_deleted").data(resume).send();
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
+    * GET /resumes/{id}/interviews
+    * 
+    * @summary gets a interview by id
+    * @tags Resume
+    * @security BearerAuth
+    * 
+    * @param { string } id.path.required - resume id
+    * @param  { resume.action_interview } request.body    application/json
+    * 
+    * @return { interview.success } 200 - success response
+    * @return { message.badrequest_error } 400 - bad request respone
+    * @return { message.badrequest_error } 404 - not found respone
+    * @return { message.unauthorized_error }     401 - UnauthorizedError
+    * @return { message.server_error  }    500 - Server Error
+    */
+    async getInterviews(req, res, next) {
+        try {
+            await resumeService.findByParamId(req);
+            let interview = await Interview.findById(req.body.interview_id).populate({ path: 'created_by', select: ['firstname', 'lastname', 'avatar'] }).exec();
+            if (!interview) throw new NotFoundError('interview.errors.interview_notfound');
+
+            AppResponse.builder(res).message("interview.messages.interview_found").data(interview).send();
+        } catch (err) {
+            next(err);
+        }
+    }
+
+
+    /**
+    * PATCH /resumes/{id}/interviews
+    * 
+    * @summary update interview info
+    * @tags Resume
+    * @security BearerAuth
+    * 
+    * @param { string } id.path.required - resume id
+    * @param  { resume.action_interview } request.body -  application/json
+    * 
+    * @return { interview.success }           200 - success response
+    * @return { message.badrequest_error }  400 - bad request respone
+    * @return { message.badrequest_error }  404 - not found respone
+    * @return { message.unauthorized_error }     401 - UnauthorizedError
+    * @return { message.server_error  }    500 - Server Error
+    */
+    async updateInterview(req, res, next) {
+        try {
+            let resume = await resumeService.findByParamId(req);
+
+            let interview = await Interview.findById(req.body.interview_id);
+            if (!interview) throw new NotFoundError('interview.errors.interview_notfound');
+
+            if (req.body.event_time) {
+                req.body.event_time = new Date(req.body.event_time)
+            }
+
+            if (req.body.contribution) {
+                contribution = [];
+                for (let contributer of req.body.contribution) {
+                    let user = userService.findById(contributer)
+                    if (user) contribution.push(contributer);
+                }
+                req.body.contribution = contribution
+            }
+
+
+            await Interview.findByIdAndUpdate(req.body.interview_id, req.body, { new: true })
+                .then(interview => {
+                    EventEmitter.emit(ResumesInterviewEvents.UPDATE, interview, req);
+                    AppResponse.builder(res).message("interview.messages.interview_successfully_updated").data(interview).send();
+                })
+                .catch(err => {
+                    next(err);
+                });
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
+    * POST /resumes/{id}/interviews
+    * 
+    * @summary create a interview for resume
+    * @tags Resume
+    * @security BearerAuth
+    * 
+    * @param { string } id.path.required - resume id
+    * @param  { interview.create } request.body -  application/json
+    * 
+    * @return { interview.success }         201 - success response
+    * @return { message.badrequest_error }  400 - bad request respone
+    * @return { message.badrequest_error }  404 - not found respone
+    * @return { message.badrequest_error }  401 - UnauthorizedError
+    * @return { message.server_error  }     500 - Server Error
+    */
+    async createInterview(req, res, next) {
+        try {
+
+            let resume = await resumeService.findByParamId(req);
+
+            let contribution = [];
+            if (req.body.contribution) {
+                for (let contributer of req.body.contribution) {
+                    let user = userService.findById(contributer)
+                    if (user) contribution.push(contributer);
+                }
+            }
+
+            req.body.resume_id = resume._id;
+            req.body.contribution = contribution
+            req.body.event_time = new Date(req.body.event_time)
+            req.body.created_by = req.user._id
+            let interview = await Interview.create(req.body)
+            EventEmitter.emit(ResumesInterviewEvents.CREATE, interview, req)
+
+            AppResponse.builder(res).status(201).message("interview.messages.interview_successfully_created").data(interview).send();
+        } catch (err) {
+            next(err);
+        }
+    }
+
+
+    /**
+    * DELETE /resumes/{id}/interviews
+    * 
+    * @summary delete a interview from resume
+    * @tags Resume
+    * @security BearerAuth
+    * 
+    * @param { string } id.path.required - resume id
+    * @param  { resume.action_interview } request.body -  application/json
+    * 
+    * @return { interview.success } 200 - success response
+    * @return { message.badrequest_error } 400 - bad request respone
+    * @return { message.badrequest_error } 404 - not found respone
+    * @return { message.unauthorized_error }     401 - UnauthorizedError
+    * @return { message.server_error  }    500 - Server Error
+    */
+    async removeInterview(req, res, next) {
+        try {
+            let resume = await resumeService.findByParamId(req);
+
+            let interview = await Interview.findById(req.body.interview_id);
+            if (!interview) throw new NotFoundError('interview.errors.interview_notfound');
+
+            await interview.delete(req.user._id);
+            EventEmitter.emit(ResumesInterviewEvents.DELETE, interview, req)
+
+
+            AppResponse.builder(res).message("interview.messages.interview_successfully_deleted").data(interview).send();
         } catch (err) {
             next(err);
         }
