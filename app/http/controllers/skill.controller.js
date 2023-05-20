@@ -77,7 +77,7 @@ class SkillController extends Controller {
 
             req.body.color = getRandomColor();
             req.body.created_by = req.user._id;
-            let skill = await Skill.create(req.body)
+            let skill = await skillService.create(req.body)
             EventEmitter.emit(SkillEvents.CREATE, skill, req)
 
             AppResponse.builder(res).status(201).message("skill.messages.skill_successfully_created").data(skill).send();
