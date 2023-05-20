@@ -20,11 +20,11 @@ class SkillController extends Controller {
     * 
     * @param  { string } query.path - search for special fields - application/json
     * 
-    * @return { resume.success } 200 - success response
-    * @return { message.badrequest_error } 400 - bad request respone
-    * @return { message.badrequest_error } 404 - not found respone
-    * @return { message.unauthorized_error }     401 - UnauthorizedError
-    * @return { message.server_error  }    500 - Server Error
+    * @return { skill.success }                200 - success response
+    * @return { message.badrequest_error }      400 - bad request respone
+    * @return { message.badrequest_error }      404 - not found respone
+    * @return { message.unauthorized_error }    401 - UnauthorizedError
+    * @return { message.server_error  }         500 - Server Error
     */
     async index(req, res, next) {
         try {
@@ -64,11 +64,11 @@ class SkillController extends Controller {
     * @tags Skill
     * @security BearerAuth
     * 
-    * @param { resume.create } request.body - skill info - application/json
+    * @param { skill.create } request.body - skill info - application/json
     * 
-    * @return { resume.success } 200 - success response
+    * @return { skill.success }             200 - success response
     * @return { message.badrequest_error }  400 - bad request respone
-    * @return { message.NotFoundError }  404 - not found respone
+    * @return { message.NotFoundError }     404 - not found respone
     * @return { message.badrequest_error }  401 - UnauthorizedError
     * @return { message.server_error  }     500 - Server Error
     */
