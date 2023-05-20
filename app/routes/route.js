@@ -64,7 +64,7 @@ router.use('/roles', verifyToken, canAccess, roleRouter)
 
 router.use('/tags', verifyToken, canAccess, TagRouter)
 
-router.use('/skills', verifyToken, skillRouter)
+router.use('/skills', verifyToken, canAccess, skillRouter)
 
 
 
