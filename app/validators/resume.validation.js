@@ -462,25 +462,10 @@ class ResumeValidation {
     create_interview() {
         return [
             param('id').notEmpty().isMongoId().withMessage('interview.validations.resume_id_invalid').trim(),
-            body('event_time').notEmpty()
-                .isISO8601()
+            body('event_time').notEmpty().isISO8601()
                 .toDate()
                 .withMessage('interview.validations.event_time_invalid').trim(),
-            // body('event_time').toDate().custom((eventTime, { req }) => {
-            //     if (eventTime) {
-            //         let nextYear = new Date(new Date().setFullYear(new Date().getFullYear() + 1));
-            //         if (
-            //             Date.now() < eventTime.getTime() &&
-            //             eventTime.getTime() < nextYear.getTime()
-            //         ) {
-            //             throw new Error('interview.validations.event_time_invalid');
-            //         }
-            //     }
-            //     return true
-            // }),
-            body('event_type')
-                .notEmpty()
-                .withMessage('interview.validations.event_type_required')
+            body('event_type').notEmpty().withMessage('interview.validations.event_type_required')
                 .isIn(i18n.__("interview.enums.event_type"))
                 .withMessage('interview.validations.event_type_incorrect')
                 .trim(),
