@@ -118,6 +118,13 @@ class ResumeController extends Controller {
                     ],
                     select: ['created_by', 'createdAt']
                 },
+                {
+                    path: 'comments',
+                    populate: [
+                        { path: 'created_by', select: ['firstname', 'lastname', 'avatar'] }
+                    ],
+                    select: ['resume_id', 'body', 'created_by', 'createdAt']
+                },
                 { path: 'created_by', select: ['firstname', 'lastname', 'avatar'] },
             ])
 
@@ -148,14 +155,14 @@ class ResumeController extends Controller {
     */
     async create(req, res, next) {
         try {
-            let position = await positionService.findById(req.body.position_id);            
+            let position = await positionService.findById(req.body.position_id);
             if (!position) throw new NotFoundError('position.errors.position_not_found');
 
             req.body.created_by = req.user._id;
             req.body.project_id = position.project_id;
             req.body.company_id = position.company_id;
 
-            let company =  await companyService.findById(position.company_id);
+            let company = await companyService.findById(position.company_id);
             if (!company.is_active) throw new BadRequestError('company.errors.company_is_not_active');
             let resume = await Resume.create(req.body)
 
