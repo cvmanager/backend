@@ -33,7 +33,7 @@ const schema = new mongoose.Schema(
             required: true,
         },
         mobile_verified_at: {
-            type: String,
+            type: Date,
             default: null,
         },
         avatar: {
