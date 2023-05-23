@@ -349,7 +349,8 @@
 			"authentication_has_already_been_done" : "Authentication has already been done",
 			"valid_authentication_code_was_not_found_for_you" :"A valid authentication code was not found for you",
 			"authentication_code_sent_is_invalid" :"The authentication code sent is invalid",
-			"your_mobile_has_been_successfully_verified":"Your mobile has been successfully verified"
+			"your_mobile_has_been_successfully_verified":"Your mobile has been successfully verified",
+			"error_sending_mobile_verification_code":"Error sending mobile verification code"
 		}
 	},
 	"constant": {

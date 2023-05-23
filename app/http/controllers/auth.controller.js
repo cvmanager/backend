@@ -209,6 +209,11 @@ class AuthController extends Controller {
 
             let currentTime = new Date();
             let verify_code = Math.floor(Math.random() * 90000 + 10000);
+            
+            let sendSmsResult = Kavenegar.builder(user).message(`Your authentication code :‌ ${verify_code} \nCV Manager`).receptor(user.mobile).send();
+            if(!sendSmsResult) new BadRequestError('auth.errors.error_sending_mobile_verification_code')
+
+
             await VerificationRequest.create({
                 user_id: req.user._id,
                 provider: 'sms',
@@ -217,7 +222,6 @@ class AuthController extends Controller {
                 expire_at: new Date(currentTime.getTime() + (env('SMS_EXPIRATION_TIME_IN_MINUTE') * 60 * 1000)),
             });
 
-            Kavenegar.builder(user).message(`Your authentication code :‌ ${verify_code} \nCV Manager`).receptor(user.mobile).send();
             AppResponse.builder(res).message('auth.messages.your_mobile_has_been_successfully_verified').send();
         } catch (err) {
             next(err);
