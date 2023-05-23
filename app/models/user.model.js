@@ -13,6 +13,10 @@ const schema = new mongoose.Schema(
             type: String,
             default: null,
         },
+        fullname: {
+            type: String,
+            default: null
+        },
         username: {
             type: String,
             required: true,
@@ -51,10 +55,6 @@ const schema = new mongoose.Schema(
         role: {
             type: [mongoose.Schema.Types.ObjectId],
             ref: Role
-        },
-        fullname: {
-            type: String,
-            default: null
         }
     }
 );
