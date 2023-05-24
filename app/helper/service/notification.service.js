@@ -26,23 +26,23 @@ class NotificationService extends ServiceBase {
 
     async sendNotification(limit) {
         let notifications = await Notification
-            .find({ "send_state": false })
+            .find({ "is_sent": null })
             .limit(limit)
-
         for (let notification of notifications) {
+            let request_data = null;
 
             let fcmTokens = await userService.getFCMTokensOfUser(notification.user_id);
             if (fcmTokens.length > 0) {
-                const notificationData = {
-                    title: notification.title,
-                    body: notification.body
-                };
-                sendNotificationToClient(fcmTokens, notificationData);
+                let notificationData = { title: notification.title, body: notification.body };
+                request_data = sendNotificationToClient(fcmTokens, notificationData);
             }
 
-            notification.send_state = true
-            notification.send_time = new Date()
-            notification.save()
+            notification.attempts += 1;
+            if (request_data.successes > 0) {
+                notification.is_sent = new Date()
+            }
+            notification.response = request_data.response.toString();
+            await notification.save()
 
         }
     }

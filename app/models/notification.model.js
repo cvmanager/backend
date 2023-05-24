@@ -8,6 +8,10 @@ const schema = new mongoose.Schema(
             type: String,
             required: true
         },
+        attempts : {
+            type : Number,
+            default:0
+        },
         body: {
             type: String,
             required: true
@@ -17,13 +21,9 @@ const schema = new mongoose.Schema(
             required: true,
             ref: 'users'
         },
-        send_state: {
-            type: Boolean,
-            default: false
-        },
-        send_time: {
+        is_sent: {
             type: Date,
-            required: null
+            default: null
         },
         step: {
             type: String,
@@ -38,6 +38,10 @@ const schema = new mongoose.Schema(
         entity_id: {
             type: mongoose.Schema.Types.ObjectId,
             required: true,
+        },
+        response: {
+            type: String,
+            default: null,
         },
         created_by: {
             type: mongoose.Schema.Types.ObjectId,

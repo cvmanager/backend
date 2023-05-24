@@ -7,16 +7,11 @@ export const sendNotificationToClient = (tokens, data) => {
         .sendMulticast({ tokens, data })
         .then(response => {
             // Response is an object of the form { responses: [] }
-            const successes = response.responses.filter(r => r.success === true)
-                .length;
-            const failures = response.responses.filter(r => r.success === false)
-                .length;
-            console.log(
-                'Notifications sent:',
-                `${successes} successful, ${failures} failed`
-            );
+            let successes = response.responses.filter(r => r.success === true).length;
+            let failures = response.responses.filter(r => r.success === false).length;
+            return { 'successes': successes, 'failures': failures, 'response': response };
         })
         .catch(error => {
-            console.log('Error sending message:', error);
+            return { 'successes': 0, 'failures': 0, 'response': error };
         });
 };
