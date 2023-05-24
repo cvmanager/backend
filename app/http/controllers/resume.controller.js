@@ -483,6 +483,7 @@ class ResumeController extends Controller {
 
             resume.assigners = assigners.filter(e => e != user._id)
             await resume.save();
+            EventEmitter.emit(ResumeEvents.UNSET_ASSIGNER, resume, req)
 
             EventEmitter.emit(ResumeEvents.UNSET_ASSIGNER, resume, req);
 
@@ -621,6 +622,7 @@ class ResumeController extends Controller {
             resume.income = req.body.income
             await resume.save();
 
+            EventEmitter.emit(ResumeEvents.UPDATE_STATUS, resume, req)
             EventEmitter.emit(ResumeEvents.UPDATE_STATUS_LOG, resume, req, oldStatus)
 
             AppResponse.builder(res).status(200).message("resume.messages.resume_successfully_hired").data(resume).send();
@@ -658,6 +660,7 @@ class ResumeController extends Controller {
             resume.reject_description = req.body.reject_description;
             await resume.save();
 
+            EventEmitter.emit(ResumeEvents.UPDATE_STATUS, resume, req)
             EventEmitter.emit(ResumeEvents.UPDATE_STATUS_LOG, resume, req, oldStatus)
 
             AppResponse.builder(res).status(200).message("resume.messages.resume_successfully_rejected").data(resume).send();
@@ -697,6 +700,7 @@ class ResumeController extends Controller {
             resume.end_cooperation_description = req.body.end_cooperation_description
             await resume.save();
 
+            EventEmitter.emit(ResumeEvents.UPDATE_STATUS, resume, req)
             EventEmitter.emit(ResumeEvents.UPDATE_STATUS_LOG, resume, req, oldStatus)
 
             AppResponse.builder(res).status(200).message("resume.messages.resume_successfully_end_cooperation").data(resume).send();
@@ -732,7 +736,7 @@ class ResumeController extends Controller {
             resume.skills.push(skill._id)
             await resume.save();
 
-            EventEmitter.emit(ResumeEvents.ADD_SKILL, resume, req)
+            EventEmitter.emit(ResumeEvents.SET_SKILL, resume, req)
 
             AppResponse.builder(res).status(200).message("resume.messages.resume_skills_successfully_updated").data(resume).send();
         } catch (err) {
@@ -768,7 +772,7 @@ class ResumeController extends Controller {
             resume.skills.splice(skillIndex, 1)
             await resume.save();
 
-            EventEmitter.emit(ResumeEvents.REMOVE_SKILL, resume, req)
+            EventEmitter.emit(ResumeEvents.UNSET_SKILL, resume, req)
 
             AppResponse.builder(res).status(200).message("resume.messages.resume_skills_successfully_deleted").data(resume).send();
         } catch (err) {

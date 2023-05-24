@@ -5,6 +5,7 @@ import loginHistory from "../../models/loginHistory.model.js";
 import systemInfo from "systeminformation";
 import User from "../../models/user.model.js";
 import ServiceBase from "./base.service.js";
+import FCMToken from "./fcmtoken.service.js";
 import user from "../../db/user.js";
 import bcrypt from 'bcrypt'
 const browser = detect();
@@ -75,6 +76,11 @@ class UserService extends ServiceBase {
         const salt = await bcrypt.genSalt(10)
         user.password = await bcrypt.hash("some-pass", salt);
         return super.createMany(user)
+    }
+
+    async getFCMTokensOfUser(userId) {
+        let fcmTokens = await FCMToken.getAll({ "created_by": userId });
+        return fcmTokens.map(fcmToken => fcmToken.token)
     }
 }
 
