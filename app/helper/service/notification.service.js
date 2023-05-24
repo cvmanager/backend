@@ -26,7 +26,7 @@ class NotificationService extends ServiceBase {
 
     async sendNotification(limit) {
         let notifications = await Notification
-            .find({ "is_sent": null })
+            .find({ "sent_at": null })
             .limit(limit)
         for (let notification of notifications) {
             let request_data = null;
@@ -39,7 +39,7 @@ class NotificationService extends ServiceBase {
 
             notification.attempts += 1;
             if (request_data.successes > 0) {
-                notification.is_sent = new Date()
+                notification.sent_at = new Date()
             }
             notification.response = request_data.response.toString();
             await notification.save()

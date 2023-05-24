@@ -201,8 +201,7 @@ class AuthController extends Controller {
     */
     async sendMobileVerificationCode(req, res, next) {
         try {
-            let user = await userService.findById(req.user._id);
-            if (user.mobile_verified_at) throw new BadRequestError('auth.errors.authentication_has_already_been_done')
+            if (req.user.mobile_verified_at) throw new BadRequestError('auth.errors.authentication_has_already_been_done')
 
             let log = await VerificationRequest.findOne({ 'user_id': req.user._id, 'veriffication_at': null, $or: [{ expire_at: null }, { expire_at: { $gt: new Date() } }] })
             if (log) throw new BadRequestError('auth.errors.authentication_code_has_already_been_sent')
@@ -242,8 +241,7 @@ class AuthController extends Controller {
       */
     async checkMobileVerificationCode(req, res, next) {
         try {
-            let user = await userService.findById(req.user._id);
-            if (user.mobile_verified_at) throw new BadRequestError('auth.errors.authentication_has_already_been_done')
+            if (req.user.mobile_verified_at) throw new BadRequestError('auth.errors.authentication_has_already_been_done')
 
             let log = await VerificationRequest.findOne({ 'user_id': req.user._id, 'veriffication_at': null, $or: [{ expire_at: null }, { expire_at: { $gt: new Date() } }] })
             if (!log) throw new BadRequestError('auth.errors.valid_authentication_code_was_not_found_for_you')
