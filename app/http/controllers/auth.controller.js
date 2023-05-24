@@ -11,6 +11,8 @@ import EventEmitter from '../../events/emitter.js';
 import { UserEvents } from '../../events/subscribers/user.subscriber.js';
 import roleService from '../../helper/service/role.service.js';
 import userService from '../../helper/service/user.service.js';
+import VerificationRequest from '../../models/verificationRequest.model.js';
+import Kavenegar from '../../helper/kavenegar.js';
 
 class AuthController extends Controller {
 
@@ -181,6 +183,81 @@ class AuthController extends Controller {
             if (user) throw new BadRequestError('auth.errors.username_exist');
 
             AppResponse.builder(res).message("auth.messages.username_is_available").send();
+        } catch (err) {
+            next(err);
+        }
+    }
+
+
+    /**
+       * POST /auth/send-verify
+       * 
+       * @summary create new request for validation mobile number
+       * @tags Auth 
+       * @security BearerAuth
+       *
+       * @return { message.badrequest_error }     400 - Bad Request
+       * @return { message.server_error  }        500 - Server Error
+    */
+    async sendMobileVerificationCode(req, res, next) {
+        try {
+            let user = await userService.findById(req.user._id);
+            if (user.mobile_verified_at) throw new BadRequestError('auth.errors.authentication_has_already_been_done')
+
+            let log = await VerificationRequest.findOne({ 'user_id': req.user._id, 'veriffication_at': null, $or: [{ expire_at: null }, { expire_at: { $gt: new Date() } }] })
+            if (log) throw new BadRequestError('auth.errors.authentication_code_has_already_been_sent')
+
+            let currentTime = new Date();
+            let verify_code = Math.floor(Math.random() * 90000 + 10000);
+            
+            let sendSmsResult = Kavenegar.builder(user).message(`Your authentication code :‌ ${verify_code} \nCV Manager`).receptor(user.mobile).send();
+            if(!sendSmsResult) new BadRequestError('auth.errors.error_sending_mobile_verification_code')
+
+
+            await VerificationRequest.create({
+                user_id: req.user._id,
+                provider: 'sms',
+                code: verify_code,
+                receiver: user.mobile,
+                expire_at: new Date(currentTime.getTime() + (env('SMS_EXPIRATION_TIME_IN_MINUTE') * 60 * 1000)),
+            });
+
+            AppResponse.builder(res).message('auth.messages.your_mobile_has_been_successfully_verified').send();
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /** 
+      * POST /auth/check-verify
+      * 
+      * @summary check mobile validation request
+      * @tags Auth 
+      * @security BearerAuth
+      * 
+      * @param { auth.checkVerify } request.body - refresh info - application/json
+      * 
+      * @return { message.badrequest_error }     400 - Bad Request
+      * @return { message.server_error  }        500 - Server Error
+      */
+    async checkMobileVerificationCode(req, res, next) {
+        try {
+            let user = await userService.findById(req.user._id);
+            if (user.mobile_verified_at) throw new BadRequestError('auth.errors.authentication_has_already_been_done')
+
+            let log = await VerificationRequest.findOne({ 'user_id': req.user._id, 'veriffication_at': null, $or: [{ expire_at: null }, { expire_at: { $gt: new Date() } }] })
+            if (!log) throw new BadRequestError('auth.errors.valid_authentication_code_was_not_found_for_you')
+
+            if (req.body.verify_code != log.code) {
+                log.attempts = log.attempts + 1;
+                await log.save();
+                throw new BadRequestError('auth.errors.authentication_code_sent_is_invalid')
+            }
+
+            log.veriffication_at = new Date();
+            await log.save();
+            EventEmitter.emit(UserEvents.MOBILDE_VERIFICATION, user, req);
+            AppResponse.builder(res).message('auth.messages.authentication_code_sent_successfully').send();
         } catch (err) {
             next(err);
         }

@@ -34,7 +34,7 @@ class ResumeService extends ServiceBase {
     }
 
     async getResumeViewCount(resume) {
-        let viewCount = await Viewlog.find({ 'entity': 'resume', 'entityId': resume.resume_id }).count();
+        let viewCount = await Viewlog.find({ 'entity': 'resumes', 'entityId': resume.resume_id }).count();
         return viewCount;
     }
 

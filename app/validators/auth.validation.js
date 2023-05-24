@@ -70,6 +70,15 @@ class AuthValidator {
             generalValidator
         ]
     }
+    checkVerifyMobileCode() {
+        return [
+            body('verify-code')
+                .notEmpty()
+                .withMessage('auth.validations.verifycode_required')
+                .trim(),
+            generalValidator
+        ]
+    }
 }
 
 export default new AuthValidator();

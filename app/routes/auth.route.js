@@ -13,5 +13,7 @@ authRouter
     .post('/refresh', verifyRefrshToken, AuthController.refresh)
     .post('/verify-token', verifyToken, AuthController.verifyToken)
     .post('/username-isavailable', AuthValidator.checkusername(), AuthController.checkusername)
+    .post('/send-verify', verifyToken, AuthController.sendMobileVerificationCode)
+    .post('/check-verify', AuthValidator.checkVerifyMobileCode(), verifyToken, AuthController.checkMobileVerificationCode)
 
 export default authRouter

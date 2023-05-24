@@ -46,6 +46,12 @@
  */
 
 /**
+ * check verify mobile code
+ * @typedef { object } auth.checkVerify
+ * @property { string } verify_code.required
+ */
+
+/**
  * sign-up success
  * @typedef  { object } auth.success
  * @property { string } access_token

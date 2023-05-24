@@ -11,6 +11,7 @@ import route from './routes/route.js'
 import rateLimiter from './middlewares/rate-limiter.js'
 import expressJSDocSwagger from 'express-jsdoc-swagger'
 import env from './helper/env.js'
+import stringTrim from './middlewares/stringTrim.middleware.js'
 
 
 const app = express();
@@ -29,7 +30,7 @@ expressJSDocSwagger(app)(swaggerOptions);
 
 if (env('NODE_ENV') == 'development') app.use(morgan('combined'))
 
-app.use('/api/v1/', route);
+app.use('/api/v1/', stringTrim, route);
 app.use('*', () => { throw new NotFoundError('system.errors.url_not_found') });
 app.use(errorHandler);
 

@@ -37,8 +37,8 @@ router.use('/cities', verifyToken, canAccess, cityRouter)
 router.use('/companies/:id', verifyToken, canAccess, companyAccess, companyIdRouter)
 router.use('/companies', verifyToken, canAccess, companyAccess, companyRouter)
 
-router.use('/users', verifyToken, canAccess, userRouter)
 router.use('/users/:id', verifyToken, canAccess, userAccess, userIdRouter)
+router.use('/users', verifyToken, canAccess, userRouter)
 
 router.use('/constant', verifyToken, constantRouter)
 

@@ -15,7 +15,9 @@ export const ResumeEvents = {
     "SET_ASSIGNER": "set assigner to resume",
     "UNSET_ASSIGNER": "un set assigner to resume",
     "SET_SKILL": "set skill to resume",
-    "UNSET_SKILL": "un set skill to resume"
+    "UNSET_SKILL": "un set skill to resume",
+    "UPDATE_AVATAR": "UPDATE_AVATAR",
+    "GET_INTERVIEW": "GET_INTERVIEW"
 }
 
 EventEmitter.on(ResumeEvents.FIND, find)

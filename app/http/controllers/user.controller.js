@@ -366,7 +366,9 @@ class UserController extends Controller {
             let user = await userService.findByParamId(req)
 
             let fcmToken = await fcmTokenService.findOne({ 'token': req.body.token });
-            if (fcmToken) throw new BadRequestError('user.errors.fcm_token_already_exist');
+            if (fcmToken) {
+                await userService.delete(fcmToken, req.user._id);
+            }
 
             let os = '';
             await systemInfo.osInfo()
