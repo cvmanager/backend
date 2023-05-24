@@ -96,8 +96,8 @@ class ResumeService extends ServiceBase {
         await resume.save();
     }
 
-    async getDefaultUserIdNotification(resume) {
-        let userIdList = [resume.created_by];
+    async getDefaultUserIdNotificationUpdateStatus(resume) {
+        let userIdList = [resume.created_by, resume.assigners];
         return userIdList;
     }
 
@@ -112,9 +112,7 @@ class ResumeService extends ServiceBase {
     }
 
     async setNotificationWhenUpdateStatus(resume, req, step) {
-        let userIdList = await this.getDefaultUserIdNotification(resume);
-        let contributorIdList = await this.getContributorsId(resume);
-        userIdList = userIdList.concat(contributorIdList);
+        let userIdList = await this.getDefaultUserIdNotificationUpdateStatus(resume);
         let user = await userService.findById(req.user._id);
 
         let title = i18n.__(`notification.messages.title.${step}`)
@@ -127,7 +125,7 @@ class ResumeService extends ServiceBase {
             await notificationService.setNotificationForResume(resume, req, userId, step, title, body);
         }
     }
-    
+
 }
 
 export default new ResumeService(Resume);

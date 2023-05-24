@@ -209,9 +209,9 @@ class AuthController extends Controller {
 
             let currentTime = new Date();
             let verify_code = Math.floor(Math.random() * 90000 + 10000);
-            
+
             let sendSmsResult = Kavenegar.builder(user).message(`Your authentication code :‌ ${verify_code} \nCV Manager`).receptor(user.mobile).send();
-            if(!sendSmsResult) new BadRequestError('auth.errors.error_sending_mobile_verification_code')
+            if (!sendSmsResult) new BadRequestError('auth.errors.error_sending_mobile_verification_code')
 
 
             await VerificationRequest.create({
@@ -258,6 +258,34 @@ class AuthController extends Controller {
             await log.save();
             EventEmitter.emit(UserEvents.MOBILDE_VERIFICATION, user, req);
             AppResponse.builder(res).message('auth.messages.authentication_code_sent_successfully').send();
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
+     * GET /auth/get-me
+     * @summary Get authenticated user information
+     * @tags Auth
+     * @security BearerAuth
+     * 
+     * @return { user.success }             200 - user successfully found
+     * @return { message.badrequest_error } 400 - user not found
+     * @return { message.badrequest_error } 401 - UnauthorizedError
+     * @return { message.server_error}      500 - Server Error
+     */
+    async getMe(req, res, next) {
+        try {
+            let user = await userService.findOne(req.user._id, [
+                { path: 'role', select: ['name', 'id', 'permissions'] },
+                { path: "fcmtokens", select: ['token'] }
+            ])
+            if (!user) throw new NotFoundError('user.errors.user_notfound');
+            await user.populate({
+                path: "role.permissions"
+            })
+
+            AppResponse.builder(res).data(user).message('user.messages.user_founded').send();
         } catch (err) {
             next(err);
         }

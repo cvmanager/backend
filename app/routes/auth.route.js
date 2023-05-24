@@ -7,6 +7,7 @@ import { toLowerCase } from '../middlewares/lowerCase.middleware.js';
 const authRouter = express.Router();
 
 authRouter
+    .get('/get-me', verifyToken, AuthController.getMe)
     .post('/signup', AuthValidator.signup(), toLowerCase, AuthController.signup)
     .post('/login', AuthValidator.login(), AuthController.login)
     .post('/logout', verifyToken, AuthController.logout)
