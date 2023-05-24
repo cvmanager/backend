@@ -4,31 +4,10 @@ import i18n from '../middlewares/lang.middleware.js'
 
 const schema = new mongoose.Schema(
     {
-        title: {
-            type: String,
-            required: true
-        },
-        attempts : {
-            type : Number,
-            default:0
-        },
-        body: {
-            type: String,
-            required: true
-        },
         user_id: {
             type: mongoose.Schema.Types.ObjectId,
             required: true,
             ref: 'users'
-        },
-        is_sent: {
-            type: Date,
-            default: null
-        },
-        step: {
-            type: String,
-            required: true,
-            enum: i18n.__("notification.enums.step")
         },
         entity: {
             type: String,
@@ -38,6 +17,31 @@ const schema = new mongoose.Schema(
         entity_id: {
             type: mongoose.Schema.Types.ObjectId,
             required: true,
+        },
+        title: {
+            type: String,
+            required: true
+        },
+        body: {
+            type: String,
+            required: true
+        },
+        attempts: {
+            type: Number,
+            default: 0
+        },
+        sent_at: {
+            type: Date,
+            default: null
+        },
+        seen_at: {
+            type: Date,
+            default: null
+        },
+        step: {
+            type: String,
+            required: true,
+            enum: i18n.__("notification.enums.step")
         },
         response: {
             type: String,
