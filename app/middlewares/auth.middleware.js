@@ -37,4 +37,15 @@ async function verifyRefrshToken(req, res, next) {
     }
 }
 
-export { verifyToken, verifyRefrshToken }
+async function checkVerifiedMobile(req, res, next) {
+    try {
+        let user = await userService.findOne({ _id: req.user._id });
+        if (!user) throw new NotFoundError('user.errors.user_notfound');
+        if (!user.mobile_verified_at) throw new BadRequestError("user.errors.mobile_not_veryfied");
+        next();
+    } catch (err) {
+        next(err);
+    }
+}
+
+export { verifyToken, verifyRefrshToken , checkVerifiedMobile }

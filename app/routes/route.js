@@ -1,5 +1,5 @@
 import express from 'express'
-import { verifyToken } from '../middlewares/auth.middleware.js'
+import { verifyToken, checkVerifiedMobile } from '../middlewares/auth.middleware.js'
 import projectRouter from './project.route.js'
 import resumeRouter from './resume.route.js'
 import authRouter from './auth.route.js'
@@ -55,8 +55,8 @@ router.use('/provinces/:id', verifyToken, canAccess, provinceIdRouter)
 router.use('/provinces', verifyToken, canAccess, provinceRouter)
 
 
-router.use('/resumes/:id', verifyToken, canAccess, resumeAccess, resumeIdRouter)
-router.use('/resumes', verifyToken, canAccess, resumeAccess, resumeRouter)
+router.use('/resumes/:id', verifyToken, checkVerifiedMobile, canAccess, resumeAccess, resumeIdRouter)
+router.use('/resumes', verifyToken, checkVerifiedMobile, canAccess, resumeAccess, resumeRouter)
 
 router.use('/roles/:id', verifyToken, canAccess, roleIdRouter)
 router.use('/roles', verifyToken, canAccess, roleRouter)
