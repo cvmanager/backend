@@ -8,9 +8,10 @@ export async function canAccess(req, res, next) {
     try {
         let permissionName = getPermissionName(req)
         let userRoles = req.user.role
+
         let rolesChilds = await getRoleChilds(userRoles)
         userRoles = [...userRoles, ...rolesChilds]
-
+        
         req.roles = await canRole(userRoles, permissionName)
         next()
     } catch (error) {
@@ -31,7 +32,7 @@ async function canRole(userRoles, permissionName) {
             }
         });
 
-        if (userRoles.includes(role._id.toString()) && hasPermission) {
+        if (userRoles.toString().includes(role._id.toString()) && hasPermission) {
             let role = await roleService.findById(userRoles[0])
             roles.push(role)
             break;

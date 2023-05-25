@@ -72,7 +72,7 @@ class AuthValidator {
     }
     checkVerifyMobileCode() {
         return [
-            body('verify-code')
+            body('verify_code')
                 .notEmpty()
                 .withMessage('auth.validations.verifycode_required')
                 .trim(),

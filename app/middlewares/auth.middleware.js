@@ -12,7 +12,8 @@ async function verifyToken(req, res, next) {
         }
         let token = req.headers.authorization.split(' ')[1];
         let payload = await jsonwebtoken.verify(token, env('JWT_SECRET_TOKEN'));
-        req.user  =  await userService.findById(payload.sub._id);
+        req.user = await userService.findById(payload.sub._id);
+
         next();
     } catch (err) {
         next(err);
@@ -25,7 +26,7 @@ async function verifyRefrshToken(req, res, next) {
         if (token === null) throw new BadRequestError('auth.errors.token_not_sended');
 
         let payload = await jsonwebtoken.verify(token, env('JWT_SECRET_REFRESH_TOKEN'));
-        req.user =  await userService.findById(payload.sub._id);
+        req.user = await userService.findById(payload.sub._id);
 
         const redisKey = payload.sub.toString() + env("REDIS_KEY_REF_TOKENS")
         const tokenExist = await redisClient.sIsMember(redisKey, token)
