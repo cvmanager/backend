@@ -209,7 +209,7 @@ class AuthController extends Controller {
             let currentTime = new Date();
             let verify_code = Math.floor(Math.random() * 90000 + 10000);
 
-            let sendSmsResult = Kavenegar.builder(user).message(`Your authentication code :‌ ${verify_code} \nCV Manager`).receptor(user.mobile).send();
+            let sendSmsResult = Kavenegar.builder(req.user).message(`Your authentication code :‌ ${verify_code} \nCV Manager`).receptor(req.user.mobile).send();
             if (!sendSmsResult) new BadRequestError('auth.errors.error_sending_mobile_verification_code')
 
 
@@ -217,7 +217,7 @@ class AuthController extends Controller {
                 user_id: req.user._id,
                 provider: 'sms',
                 code: verify_code,
-                receiver: user.mobile,
+                receiver: req.user.mobile,
                 expire_at: new Date(currentTime.getTime() + (env('SMS_EXPIRATION_TIME_IN_MINUTE') * 60 * 1000)),
             });
 
@@ -254,14 +254,14 @@ class AuthController extends Controller {
 
             log.veriffication_at = new Date();
             await log.save();
-            EventEmitter.emit(UserEvents.MOBILDE_VERIFICATION, user, req);
+            EventEmitter.emit(UserEvents.MOBILDE_VERIFICATION, req.user, req);
             AppResponse.builder(res).message('auth.messages.authentication_code_sent_successfully').send();
         } catch (err) {
             next(err);
         }
     }
 
-    /**
+    /**     
      * GET /auth/get-me
      * @summary Get authenticated user information
      * @tags Auth
