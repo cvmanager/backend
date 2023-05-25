@@ -36,7 +36,7 @@ const options = {
   // in the `example/configuration/swaggerOptions.js`
   swaggerUiOptions: {
     swaggerOptions: {
-      // defaultModelsExpandDepth: -1, hides all the schemas
+      defaultModelsExpandDepth: -1,  // hides all the schemas
     }
   },
   // multiple option in case you want more that one instance
