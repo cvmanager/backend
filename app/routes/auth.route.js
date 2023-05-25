@@ -13,7 +13,7 @@ authRouter
     .post('/logout', verifyToken, AuthController.logout)
     .post('/refresh', verifyRefreshToken, AuthController.refresh)
     .post('/verify-token', verifyToken, AuthController.verifyToken)
-    .post('/username-isavailable', AuthValidator.checkusername(), AuthController.checkusername)
+    .post('/username-isavailable', AuthValidator.checkUsername(), AuthController.checkUsername)
     .post('/send-verify', verifyToken, AuthController.sendMobileVerificationCode)
     .post('/check-verify', AuthValidator.checkVerifyMobileCode(), verifyToken, AuthController.checkMobileVerificationCode)
     .patch('/change-password', AuthValidator.changePassword(), AuthController.changePassword)

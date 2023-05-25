@@ -177,7 +177,7 @@ class AuthController extends Controller {
      * @return { auth.success }                     200 - found successfully 
      * @return { message.server_error  }            500 - Server Error
      */
-    async checkusername(req, res, next) {
+    async checkUsername(req, res, next) {
         try {
             let user = await User.findOne({ username: req.body.username });
             if (user) throw new BadRequestError('auth.errors.username_exist');

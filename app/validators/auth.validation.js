@@ -61,7 +61,7 @@ class AuthValidator {
         ]
     }
 
-    checkusername() {
+    checkUsername() {
         return [
             body('username')
                 .notEmpty()

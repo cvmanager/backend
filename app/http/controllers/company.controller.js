@@ -31,8 +31,8 @@ class CompanyController extends Controller {
     * @security BearerAuth
     * 
     * @return { company.success } 200 - success response
-    * @return { message.badrequest_error } 400 - bad request respone
-    * @return { message.badrequest_error } 404 - not found respone
+    * @return { message.badrequest_error } 400 - bad request response
+    * @return { message.badrequest_error } 404 - not found response
     * @return { message.unauthorized_error }     401 - UnauthorizedError
     * @return { message.server_error  }    500 - Server Error
     */
@@ -72,8 +72,8 @@ class CompanyController extends Controller {
     * @param  { string } id.path.required - company id
     * 
     * @return { company.success } 200 - success response
-    * @return { message.badrequest_error } 400 - bad request respone
-    * @return { message.badrequest_error } 404 - not found respone
+    * @return { message.badrequest_error } 400 - bad request response
+    * @return { message.badrequest_error } 404 - not found response
     * @return { message.unauthorized_error }     401 - UnauthorizedError
     * @return { message.server_error  }    500 - Server Error
     */
@@ -97,8 +97,8 @@ class CompanyController extends Controller {
     * @param { company.create } request.body - company info - application/json
     
     * @return { company.success }           201 - success response
-    * @return { message.badrequest_error }  400 - bad request respone
-    * @return { message.badrequest_error }  404 - not found respone
+    * @return { message.badrequest_error }  400 - bad request response
+    * @return { message.badrequest_error }  404 - not found response
     * @return { message.badrequest_error }       401 - UnauthorizedError
     * @return { message.server_error  }     500 - Server Error
     */
@@ -121,7 +121,7 @@ class CompanyController extends Controller {
     /**
     * PATCH /companies/{id}
     * 
-    * @summary updates a copmany
+    * @summary update a company
     * @tags Company
     * @security BearerAuth
     * 
@@ -129,8 +129,8 @@ class CompanyController extends Controller {
     * @param { company.create } request.body - company info - application/json
     * 
     * @return { company.success }           200 - success response
-    * @return { message.badrequest_error }  400 - bad request respone
-    * @return { message.badrequest_error }  404 - not found respone
+    * @return { message.badrequest_error }  400 - bad request response
+    * @return { message.badrequest_error }  404 - not found response
     * @return { message.unauthorized_error }     401 - UnauthorizedError
     * @return { message.server_error  }    500 - Server Error
     */
@@ -153,15 +153,15 @@ class CompanyController extends Controller {
     /**
     * DELETE /companies/{id}
     * 
-    * @summary deletes a copmany by id
+    * @summary delete a company
     * @tags Company
     * @security BearerAuth
     * 
     * @param  { string } id.path - company id
     * 
     * @return { company.success } 200 - success response
-    * @return { message.badrequest_error } 400 - bad request respone
-    * @return { message.badrequest_error } 404 - not found respone
+    * @return { message.badrequest_error } 400 - bad request response
+    * @return { message.badrequest_error } 404 - not found response
     * @return { message.unauthorized_error }     401 - UnauthorizedError
     * @return { message.server_error  }    500 - Server Error
     */
@@ -190,7 +190,7 @@ class CompanyController extends Controller {
     * @return { message.unauthorized_error }     401 - UnauthorizedError
     * @return { message.badrequest_error }       404 - NotFoundError
     * @return { message.server_error }           500 - Server Error
-    * @return { company.success }                201 - success respons
+    * @return { company.success }                201 - success response
     */
     async manager(req, res, next) {
         try {
@@ -229,7 +229,7 @@ class CompanyController extends Controller {
    * @return { message.unauthorized_error }     401 - UnauthorizedError
    * @return { message.badrequest_error }       404 - NotFoundError
    * @return { message.server_error }           500 - Server Error
-   * @return { company.success }                200 - success respons
+   * @return { company.success }                200 - Success response
    */
     async deleteManager(req, res, next) {
         try {
@@ -268,8 +268,8 @@ class CompanyController extends Controller {
     * @param  { string } id.path.required - company id
     * 
     * @return { company.success }               200 - success response
-    * @return { message.badrequest_error }      400 - bad request respone
-    * @return { message.badrequest_error }      404 - not found respone
+    * @return { message.badrequest_error }      400 - bad request response
+    * @return { message.badrequest_error }      404 - not found response
     * @return { message.unauthorized_error }    401 - UnauthorizedError
     * @return { message.server_error  }         500 - Server Error
     */
@@ -302,8 +302,8 @@ class CompanyController extends Controller {
  * @param  { string } id.path.required - company id
  * 
  * @return { company.success }               200 - success response
- * @return { message.badrequest_error }      400 - bad request respone
- * @return { message.badrequest_error }      404 - not found respone
+ * @return { message.badrequest_error }      400 - bad request response
+ * @return { message.badrequest_error }      404 - not found response
  * @return { message.unauthorized_error }    401 - UnauthorizedError
  * @return { message.server_error  }         500 - Server Error
  */
@@ -331,9 +331,9 @@ class CompanyController extends Controller {
     * 
     * @param  { string } id.path.required - company id
     * 
-    * @return { company.success }               200 - success response
-    * @return { message.badrequest_error }      400 - bad request respone
-    * @return { message.badrequest_error }      404 - not found respone
+    * @return { company.success }               200 - Success response
+    * @return { message.badrequest_error }      400 - BadRequest response
+    * @return { message.badrequest_error }      404 - NotFound response
     * @return { message.unauthorized_error }    401 - UnauthorizedError
     * @return { message.server_error  }         500 - Server Error
     */
@@ -450,7 +450,7 @@ class CompanyController extends Controller {
    * @param  { string } id.path.required - company id
    * 
    * @return { company.success } 200 - success response
-   * @return { message.badrequest_error } 400 - bad request respone
+   * @return { message.badrequest_error } 400 - bad request response
    * @return { message.unauthorized_error }     401 - UnauthorizedError
    * @return { message.server_error  }    500 - Server Error
    */
@@ -504,7 +504,7 @@ class CompanyController extends Controller {
    * @param  { string } id.path.required - company id
    * 
    * @return { company.success } 200 - success response
-   * @return { message.badrequest_error } 400 - bad request respone
+   * @return { message.badrequest_error } 400 - bad request response
    * @return { message.unauthorized_error }     401 - UnauthorizedError
    * @return { message.server_error  }    500 - Server Error
    */
@@ -573,7 +573,7 @@ class CompanyController extends Controller {
    * @param  { string } id.path.required - company id
    * 
    * @return { company.success } 200 - success response
-   * @return { message.badrequest_error } 400 - bad request respone
+   * @return { message.badrequest_error } 400 - bad request response
    * @return { message.unauthorized_error }     401 - UnauthorizedError
    * @return { message.server_error  }    500 - Server Error
    */
@@ -646,7 +646,7 @@ class CompanyController extends Controller {
    * @param  { string } id.path.required - company id
    * 
    * @return { company.success } 200 - success response
-   * @return { message.badrequest_error } 400 - bad request respone
+   * @return { message.badrequest_error } 400 - bad request response
    * @return { message.unauthorized_error }     401 - UnauthorizedError
    * @return { message.server_error  }    500 - Server Error
    */
