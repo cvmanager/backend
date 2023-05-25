@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt'
 
-import { generateJwtToken, generateJwtRefeshToken } from '../../helper/jwt.js'
+import { generateJwtToken, generateJwtRefreshToken } from '../../helper/jwt.js'
 import BadRequestError from '../../exceptions/BadRequestError.js';
 import redisClient from '../../helper/redis_client.js';
 import AppResponse from '../../helper/response.js';
@@ -24,8 +24,8 @@ class AuthController extends Controller {
      * 
      * @param  { auth.login } request.body - login info - application/json
      * 
-     * @return { auth.success_response }    200 - signup successfully 
-     * @return { auth.user_notfound }       400 - user not found || username or password incorrect
+     * @return { auth.success_response }    200 - Signup Successfully 
+     * @return { auth.user_notfound }       400 - User NotFound
      * @return { message.server_error  }    500 - Server Error
      */
     async login(req, res, next) {
@@ -45,7 +45,7 @@ class AuthController extends Controller {
             if (user.is_banned) throw new BadRequestError('auth.errors.user_is_banned');
 
             const access_token = await generateJwtToken({ _id: user._id, role: user.role })
-            const refresh_token = await generateJwtRefeshToken({ _id: user._id, role: user.role });
+            const refresh_token = await generateJwtRefreshToken({ _id: user._id, role: user.role });
 
             EventEmitter.emit(UserEvents.LOGIN, user, req, access_token, refresh_token);
             AppResponse.builder(res).message('auth.messages.success_login').data({ access_token, refresh_token }).send();
@@ -86,7 +86,7 @@ class AuthController extends Controller {
             });
 
             const access_token = await generateJwtToken({ _id: user._id, role: [ownerRole._id] })
-            const refresh_token = await generateJwtRefeshToken({ _id: user._id, role: [ownerRole._id] });
+            const refresh_token = await generateJwtRefreshToken({ _id: user._id, role: [ownerRole._id] });
 
             EventEmitter.emit(UserEvents.SINGUP, user, req, access_token, refresh_token);
             AppResponse.builder(res).status(201).message("auth.messages.user_successfully_created").data({ access_token, refresh_token }).send();
@@ -111,7 +111,7 @@ class AuthController extends Controller {
     async refresh(req, res, next) {
         try {
             const access_token = await generateJwtToken({ _id: req.user._id, role: req.user.role })
-            const refresh_token = await generateJwtRefeshToken({ _id: req.user._id, role: req.user.role });
+            const refresh_token = await generateJwtRefreshToken({ _id: req.user._id, role: req.user.role });
 
             const redisKey = req.user._id.toString() + env("REDIS_KEY_REF_TOKENS")
             redisClient.sRem(redisKey, req.body.token)
