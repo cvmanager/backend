@@ -20,7 +20,7 @@ async function verifyToken(req, res, next) {
     }
 }
 
-async function verifyRefrshToken(req, res, next) {
+async function verifyRefreshToken(req, res, next) {
     try {
         const token = req.body.token;
         if (token === null) throw new BadRequestError('auth.errors.token_not_sended');
@@ -39,4 +39,4 @@ async function verifyRefrshToken(req, res, next) {
     }
 }
 
-export { verifyToken, verifyRefrshToken }
+export { verifyToken, verifyRefreshToken }

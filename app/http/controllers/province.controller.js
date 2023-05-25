@@ -14,8 +14,8 @@ class ProvinceController extends Controller {
     * @security BearerAuth
     * 
     * @return { province.success } 200 - success response
-    * @return { message.badrequest_error } 400 - bad request respone
-    * @return { message.badrequest_error } 404 - not found respone
+    * @return { message.badrequest_error } 400 - bad request response
+    * @return { message.badrequest_error } 404 - not found response
     * @return { message.unauthorized_error }     401 - UnauthorizedError
     * @return { message.server_error  }    500 - Server Error
     */
@@ -39,8 +39,8 @@ class ProvinceController extends Controller {
 * @param  { string } id.path.required - province id
 * 
 * @return { province.success } 200 - success response
-* @return { message.badrequest_error } 400 - bad request respone
-* @return { message.badrequest_error } 404 - not found respone
+* @return { message.badrequest_error } 400 - bad request response
+* @return { message.badrequest_error } 404 - not found response
 * @return { message.unauthorized_error }     401 - UnauthorizedError
 * @return { message.server_error  }    500 - Server Error
 */

@@ -288,6 +288,37 @@ class AuthController extends Controller {
             next(err);
         }
     }
+
+    /**
+     * PATCH /auth/change-password
+     * @summary change user password
+     * @tags Auth
+     * @security BearerAuth
+     * 
+     * @param { auth.change-password }  request.body   - application/json
+     *  
+     * @return { user.success }                  200 - update user profile
+     * @return { message.badrequest_error }      401 - UnauthorizedError
+     * @return { message.NotFoundError }         404 - user not found
+     * @return { message.server_error}           500 - Server Error
+     */
+    async changePassword(req, res, next) {
+        try {
+            let validPassword = await bcrypt.compare(req.body.old_password, req.user.password)
+            if (!validPassword) throw new BadRequestError('user.errors.incorrect_password');
+
+            let duplicatePassword = await bcrypt.compare(req.body.password, req.user.password)
+            if (duplicatePassword) throw new BadRequestError('user.errors.duplicate_password');
+
+            let salt = await bcrypt.genSalt(10);
+            let hash_password = await bcrypt.hash(req.body.password, salt);
+            let user = await User.findOneAndUpdate({ _id: req.user._id }, { password: hash_password });
+
+            AppResponse.builder(res).data(user).message('user.messages.password_changed').send();
+        } catch (err) {
+            next(err);
+        }
+    }
 }
 
 

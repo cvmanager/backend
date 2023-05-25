@@ -7,7 +7,6 @@ import Company from '../../models/company.model.js';
 import loginHistory from '../../models/loginHistory.model.js';
 import Controller from './controller.js';
 import { UserEvents } from '../../events/subscribers/user.subscriber.js';
-import bcrypt from 'bcrypt'
 import { mergeQuery } from '../../helper/mergeQuery.js';
 import userService from '../../helper/service/user.service.js';
 import fcmTokenService from '../../helper/service/fcmtoken.service.js';
@@ -81,7 +80,7 @@ class UserController extends Controller {
 
     /**
      * PATCH /users/{id}/avatar
-     * @summary update user prifile image
+     * @summary update user profile image
      * @tags User
      * @security BearerAuth
      * 
@@ -141,13 +140,13 @@ class UserController extends Controller {
 
     /**
      * POST /users/{id}/unban
-     * @summary unban user
+     * @summary un-ban user
      * @tags User
      * @security BearerAuth
      * 
      * @param { string } id.path.required - user id - application/json
      * 
-     * @return { user.success }             200 - user successfully unbanded
+     * @return { user.success }             200 - user successfully un banded
      * @return { message.badrequest_error }      400 - user not found
      * @return { message.badrequest_error }      401 - UnauthorizedError
      * @return { message.server_error}      500 - Server Error
@@ -172,42 +171,8 @@ class UserController extends Controller {
 
 
     /**
-    * PATCH /users/change-password
-    * @summary change user prifile password
-    * @tags User
-    * @security BearerAuth
-    * 
-    * @param { user.change-password }  request.body   - application/json
-    *  
-    * @return { user.success }                  200 - update user profile
-    * @return { message.badrequest_error }      401 - UnauthorizedError
-    * @return { message.NotFoundError }         404 - user not found
-    * @return { message.server_error}           500 - Server Error
-    */
-    async changePassword(req, res, next) {
-        try {
-            let user = await User.findById(req.user._id);
-            if (!user) throw new NotFoundError('user.errors.user_notfound')
-
-            let validPassword = await bcrypt.compare(req.body.old_password, user.password)
-            if (!validPassword) throw new BadRequestError('user.errors.incorrect_password');
-
-            let duplicatePassword = await bcrypt.compare(req.body.password, user.password)
-            if (duplicatePassword) throw new BadRequestError('user.errors.duplicate_password');
-
-            let salt = await bcrypt.genSalt(10);
-            let hash_password = await bcrypt.hash(req.body.password, salt);
-            user = await User.findOneAndUpdate({ _id: user._id }, { password: hash_password });
-
-            AppResponse.builder(res).data(user).message('user.messages.password_changed').send(req.user._id);
-        } catch (err) {
-            next(err);
-        }
-    }
-
-    /**
     * GET /users/{id}/login-history
-    * @summary get login histiry 
+    * @summary get login history 
     * @tags User
     * @security BearerAuth
     * 
@@ -289,7 +254,7 @@ class UserController extends Controller {
      * @param {string } id.path.required - user id
      * @param {string} request.body          - edit info - application/json
      * 
-     * @return { user.success }                 200 - edit successfuly 
+     * @return { user.success }                 200 - edit successfully 
      * @return { message.badrequest_error }     400 - Bad Request
      * @return { message.badrequest_error }     401 - UnauthorizedError
      * @return { message.server_error  }        500 - Server Error
@@ -313,7 +278,7 @@ class UserController extends Controller {
 
             EventEmitter.emit(UserEvents.EDIT_USER, user, req);
 
-            AppResponse.builder(res).status(200).data(user).message('user.messages.user_successfuly_edited').send();
+            AppResponse.builder(res).status(200).data(user).message('user.messages.user_successfully_edited').send();
         } catch (err) {
             next(err);
         }
@@ -329,7 +294,7 @@ class UserController extends Controller {
     * @param {string } id.path.required - user id
     * @param {user.set_fcm_token } request.body          - fcm token info - application/json
     * 
-    * @return { user.success }                 200 - edit successfuly 
+    * @return { user.success }                 200 - edit successfully 
     * @return { message.badrequest_error }     400 - Bad Request
     * @return { message.badrequest_error }     401 - UnauthorizedError
     * @return { message.server_error  }        500 - Server Error
@@ -372,7 +337,7 @@ class UserController extends Controller {
     * @param {string } id.path.required - user id
     * @param {user.set_fcm_token } request.body - fcm token - application/json
     * 
-    * @return { user.success }                 200 - edit successfuly 
+    * @return { user.success }                 200 - edit successfully 
     * @return { message.badrequest_error }     400 - Bad Request
     * @return { message.badrequest_error }     401 - UnauthorizedError
     * @return { message.server_error  }        500 - Server Error
@@ -403,7 +368,7 @@ class UserController extends Controller {
     * @param {string } id.path.required - user id
     * @param {user.check_fcm_token } request.body - fcm token - application/json
     * 
-    * @return { user.success }                 200 - edit successfuly 
+    * @return { user.success }                 200 - edit successfully 
     * @return { message.badrequest_error }     400 - Bad Request
     * @return { message.badrequest_error }     401 - UnauthorizedError
     * @return { message.server_error  }        500 - Server Error

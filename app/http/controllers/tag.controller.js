@@ -18,8 +18,8 @@ class TagController extends Controller {
     * @param  { string } query.path - search for special fields - application/json
     * 
     * @return { tag.success } 200 - success response
-    * @return { message.badrequest_error } 400 - bad request respone
-    * @return { message.badrequest_error } 404 - not found respone
+    * @return { message.badrequest_error } 400 - bad request response
+    * @return { message.badrequest_error } 404 - not found response
     * @return { message.unauthorized_error }     401 - UnauthorizedError
     * @return { message.server_error  }    500 - Server Error
     */
@@ -58,8 +58,8 @@ class TagController extends Controller {
     * 
     * @param { tag.create } request.body - tag info - application/json
     * 
-    * @return { message.badrequest_error }  400 - bad request respone
-    * @return { message.NotFoundError }  404 - not found respone
+    * @return { message.badrequest_error }  400 - bad request response
+    * @return { message.NotFoundError }  404 - not found response
     * @return { message.badrequest_error }  401 - UnauthorizedError
     * @return { message.server_error  }     500 - Server Error
     */

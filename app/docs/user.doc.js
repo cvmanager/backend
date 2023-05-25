@@ -29,12 +29,6 @@
 * @property { string } avatar.required - user profile image
 */
 
-/**
-* change user password
-* @typedef { object } user.change-password
-* @property { string } password.required - user profile password
-* @property { string } old_password.required - user profile password
-*/
 
 /**
 * ckeck user fcm token

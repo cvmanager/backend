@@ -28,8 +28,8 @@ class ResumeController extends Controller {
     * @param  { string } query.path - search for special fields - application/json
     * 
     * @return { resume.success } 200 - success response
-    * @return { message.badrequest_error } 400 - bad request respone
-    * @return { message.badrequest_error } 404 - not found respone
+    * @return { message.badrequest_error } 400 - bad request response
+    * @return { message.badrequest_error } 404 - not found response
     * @return { message.unauthorized_error }     401 - UnauthorizedError
     * @return { message.server_error  }    500 - Server Error
     */
@@ -83,8 +83,8 @@ class ResumeController extends Controller {
     * @param  { string } id.path.required - resume id
     * 
     * @return { resume.success } 200 - success response
-    * @return { message.badrequest_error }  400 - bad request respone
-    * @return { message.badrequest_error }  404 - not found respone
+    * @return { message.badrequest_error }  400 - bad request response
+    * @return { message.badrequest_error }  404 - not found response
     * @return { message.badrequest_error }       401 - UnauthorizedError
     * @return { message.server_error  }     500 - Server Error
     */
@@ -148,8 +148,8 @@ class ResumeController extends Controller {
     * @param { resume.create } request.body - resume info - application/json
     * 
     * @return { resume.success } 200 - success response
-    * @return { message.badrequest_error }  400 - bad request respone
-    * @return { message.NotFoundError }  404 - not found respone
+    * @return { message.badrequest_error }  400 - bad request response
+    * @return { message.NotFoundError }  404 - not found response
     * @return { message.badrequest_error }  401 - UnauthorizedError
     * @return { message.server_error  }     500 - Server Error
     */
@@ -185,8 +185,8 @@ class ResumeController extends Controller {
     * @param { resume.update } request.body - resume info - application/json
     * 
     * @return { resume.success } 200 - success response
-    * @return { message.badrequest_error }  400 - bad request respone
-    * @return { message.badrequest_error }  404 - not found respone
+    * @return { message.badrequest_error }  400 - bad request response
+    * @return { message.badrequest_error }  404 - not found response
     * @return { message.badrequest_error }       401 - UnauthorizedError
     * @return { message.server_error  }     500 - Server Error
     */
@@ -215,8 +215,8 @@ class ResumeController extends Controller {
     * @param  { string } id.path.required - resume id
     * 
     * @return { resume.success } 200 - success response
-    * @return { message.badrequest_error }  400 - bad request respone
-    * @return { message.badrequest_error }  404 - not found respone
+    * @return { message.badrequest_error }  400 - bad request response
+    * @return { message.badrequest_error }  404 - not found response
     * @return { message.badrequest_error }       401 - UnauthorizedError
     * @return { message.server_error  }     500 - Server Error
     */
@@ -248,8 +248,8 @@ class ResumeController extends Controller {
     * @param { resume.update_status } request.body - resume info - application/json
     * 
     * @return { resume.success } 200 - success response
-    * @return { message.badrequest_error }  400 - bad request respone
-    * @return { message.NotFoundError }     404 - not found respone
+    * @return { message.badrequest_error }  400 - bad request response
+    * @return { message.NotFoundError }     404 - not found response
     * @return { message.badrequest_error }  401 - UnauthorizedError
     * @return { message.server_error  }     500 - Server Error
     */
@@ -319,9 +319,9 @@ class ResumeController extends Controller {
     * @param { resume.call_history } request.body - call history info - application/json
     * 
     * @return { resume.call_history_success } 200 - success response
-    * @return { message.badrequest_error }  400 - bad request respone
+    * @return { message.badrequest_error }  400 - bad request response
     * @return { message.badrequest_error }  401 - UnauthorizedError
-    * @return { message.NotFoundError }     404 - not found respone
+    * @return { message.NotFoundError }     404 - not found response
     * @return { message.server_error }     500 - Server Error
     */
     async comments(req, res, next) {
@@ -347,9 +347,9 @@ class ResumeController extends Controller {
     * @param { resumeComment.create} request.body - resume info - application/json
     * 
     * @return { resumeComment.success }     201 - success response
-    * @return { message.badrequest_error }  400 - bad request respone
+    * @return { message.badrequest_error }  400 - bad request response
     * @return { message.badrequest_error }  401 - UnauthorizedError
-    * @return { message.NotFoundError }     404 - not found respone
+    * @return { message.NotFoundError }     404 - not found response
     * @return { message.server_error  }     500 - Server Error
     */
     async addComments(req, res, next) {
@@ -380,8 +380,8 @@ class ResumeController extends Controller {
       * @param { resume.create } request.body - call history info - application/json
       * 
       * @return { resume.success } 200 - success response
-      * @return { message.badrequest_error }  400 - bad request respone
-      * @return { message.badrequest_error }  404 - not found respone
+      * @return { message.badrequest_error }  400 - bad request response
+      * @return { message.badrequest_error }  404 - not found response
       * @return { message.badrequest_error }       401 - UnauthorizedError
       * @return { message.server_error  }     500 - Server Error
       */
@@ -429,8 +429,8 @@ class ResumeController extends Controller {
     * @param { resume.set_assigners } request.body - application/json
     * 
     * @return { resume.success }            200 - success response
-    * @return { message.badrequest_error }  400 - bad request respone
-    * @return { message.badrequest_error }  404 - not found respone
+    * @return { message.badrequest_error }  400 - bad request response
+    * @return { message.badrequest_error }  404 - not found response
     * @return { message.badrequest_error }  401 - UnauthorizedError
     * @return { message.server_error  }     500 - Server Error
     */
@@ -466,8 +466,8 @@ class ResumeController extends Controller {
     * @param { resume.unset_assigners } request.body - application/json
     * 
     * @return { resume.success }            200 - success response
-    * @return { message.badrequest_error }  400 - bad request respone
-    * @return { message.badrequest_error }  404 - not found respone
+    * @return { message.badrequest_error }  400 - bad request response
+    * @return { message.badrequest_error }  404 - not found response
     * @return { message.badrequest_error }  401 - UnauthorizedError
     * @return { message.server_error  }     500 - Server Error
     */
@@ -533,9 +533,9 @@ class ResumeController extends Controller {
     * @param  { string } id.path.required - resume id
     * @param { resume.set_tag } request.body - tag info - application/json 
     * @return { tag.success }     201 - success response
-    * @return { message.badrequest_error }  400 - bad request respone
+    * @return { message.badrequest_error }  400 - bad request response
     * @return { message.badrequest_error }  401 - UnauthorizedError
-    * @return { message.NotFoundError }     404 - not found respone
+    * @return { message.NotFoundError }     404 - not found response
     * @return { message.server_error  }     500 - Server Error
     */
     async setTag(req, res, next) {
@@ -568,9 +568,9 @@ class ResumeController extends Controller {
     * @param { resume.unset_tag } request.body - tag info - application/json
     * 
     * @return { tag.success }     201 - success response
-    * @return { message.badrequest_error }  400 - bad request respone
+    * @return { message.badrequest_error }  400 - bad request response
     * @return { message.badrequest_error }  401 - UnauthorizedError
-    * @return { message.NotFoundError }     404 - not found respone
+    * @return { message.NotFoundError }     404 - not found response
     * @return { message.server_error  }     500 - Server Error
     */
     async unsetTag(req, res, next) {
@@ -604,8 +604,8 @@ class ResumeController extends Controller {
     * @param { resume.hired } request.body - application/json
     * 
     * @return { resume.success } 200 - success response
-    * @return { message.badrequest_error }  400 - bad request respone
-    * @return { message.badrequest_error }  404 - not found respone
+    * @return { message.badrequest_error }  400 - bad request response
+    * @return { message.badrequest_error }  404 - not found response
     * @return { message.badrequest_error }       401 - UnauthorizedError
     * @return { message.server_error  }     500 - Server Error
     */
@@ -642,9 +642,9 @@ class ResumeController extends Controller {
    * @param { resume.reject } request.body - reject info - application/json
    * 
    * @return { resume.success }     200 - success response
-   * @return { message.badrequest_error }  400 - bad request respone
+   * @return { message.badrequest_error }  400 - bad request response
    * @return { message.badrequest_error }  401 - UnauthorizedError
-   * @return { message.NotFoundError }     404 - not found respone
+   * @return { message.NotFoundError }     404 - not found response
    * @return { message.server_error  }     500 - Server Error
    */
     async reject(req, res, next) {
@@ -680,8 +680,8 @@ class ResumeController extends Controller {
     * @param { resume.end_cooperation } request.body - application/json
     * 
     * @return { resume.success } 200 - success response
-    * @return { message.badrequest_error }  400 - bad request respone
-    * @return { message.badrequest_error }  404 - not found respone
+    * @return { message.badrequest_error }  400 - bad request response
+    * @return { message.badrequest_error }  404 - not found response
     * @return { message.badrequest_error }       401 - UnauthorizedError
     * @return { message.server_error  }     500 - Server Error
     */
@@ -720,9 +720,9 @@ class ResumeController extends Controller {
     * @param { resume.set_skill } request.body - resume info - application/json
     * 
     * @return { tag.success }     201 - success response
-    * @return { message.badrequest_error }  400 - bad request respone
+    * @return { message.badrequest_error }  400 - bad request response
     * @return { message.badrequest_error }  401 - UnauthorizedError
-    * @return { message.NotFoundError }     404 - not found respone
+    * @return { message.NotFoundError }     404 - not found response
     * @return { message.server_error  }     500 - Server Error
     */
     async setSkill(req, res, next) {
@@ -755,9 +755,9 @@ class ResumeController extends Controller {
     * @param { resume.unset_skill } request.body - resume info - application/json
     * 
     * @return { tag.success }     201 - success response
-    * @return { message.badrequest_error }  400 - bad request respone
+    * @return { message.badrequest_error }  400 - bad request response
     * @return { message.badrequest_error }  401 - UnauthorizedError
-    * @return { message.NotFoundError }     404 - not found respone
+    * @return { message.NotFoundError }     404 - not found response
     * @return { message.server_error  }     500 - Server Error
     */
     async unsetSkill(req, res, next) {
@@ -791,8 +791,8 @@ class ResumeController extends Controller {
     * @param  { resume.action_interview } request.body    application/json
     * 
     * @return { interview.success } 200 - success response
-    * @return { message.badrequest_error } 400 - bad request respone
-    * @return { message.badrequest_error } 404 - not found respone
+    * @return { message.badrequest_error } 400 - bad request response
+    * @return { message.badrequest_error } 404 - not found response
     * @return { message.unauthorized_error }     401 - UnauthorizedError
     * @return { message.server_error  }    500 - Server Error
     */
@@ -822,8 +822,8 @@ class ResumeController extends Controller {
     * @param  { resume.action_interview } request.body -  application/json
     * 
     * @return { interview.success }           200 - success response
-    * @return { message.badrequest_error }  400 - bad request respone
-    * @return { message.badrequest_error }  404 - not found respone
+    * @return { message.badrequest_error }  400 - bad request response
+    * @return { message.badrequest_error }  404 - not found response
     * @return { message.unauthorized_error }     401 - UnauthorizedError
     * @return { message.server_error  }    500 - Server Error
     */
@@ -872,8 +872,8 @@ class ResumeController extends Controller {
     * @param  { interview.create } request.body -  application/json
     * 
     * @return { interview.success }         201 - success response
-    * @return { message.badrequest_error }  400 - bad request respone
-    * @return { message.badrequest_error }  404 - not found respone
+    * @return { message.badrequest_error }  400 - bad request response
+    * @return { message.badrequest_error }  404 - not found response
     * @return { message.badrequest_error }  401 - UnauthorizedError
     * @return { message.server_error  }     500 - Server Error
     */
@@ -915,8 +915,8 @@ class ResumeController extends Controller {
     * @param  { resume.action_interview } request.body -  application/json
     * 
     * @return { interview.success } 200 - success response
-    * @return { message.badrequest_error } 400 - bad request respone
-    * @return { message.badrequest_error } 404 - not found respone
+    * @return { message.badrequest_error } 400 - bad request response
+    * @return { message.badrequest_error } 404 - not found response
     * @return { message.unauthorized_error }     401 - UnauthorizedError
     * @return { message.server_error  }    500 - Server Error
     */

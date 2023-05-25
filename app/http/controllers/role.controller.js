@@ -18,8 +18,8 @@ class RoleController extends Controller {
     * @security BearerAuth
     * 
     * @return { role.success } 200 - success response
-    * @return { message.badrequest_error } 400 - bad request respone
-    * @return { message.badrequest_error } 404 - not found respone
+    * @return { message.badrequest_error } 400 - bad request response
+    * @return { message.badrequest_error } 404 - not found response
     * @return { message.unauthorized_error }     401 - UnauthorizedError
     * @return { message.server_error  }    500 - Server Error
     */
@@ -48,8 +48,8 @@ class RoleController extends Controller {
     * @security BearerAuth
     * 
     * @return { role.success } 200 - success response
-    * @return { message.badrequest_error } 400 - bad request respone
-    * @return { message.badrequest_error } 404 - not found respone
+    * @return { message.badrequest_error } 400 - bad request response
+    * @return { message.badrequest_error } 404 - not found response
     * @return { message.unauthorized_error }     401 - UnauthorizedError
     * @return { message.server_error  }    500 - Server Error
     */
@@ -73,8 +73,8 @@ class RoleController extends Controller {
     * @param  { string } id.path.required - role id
     * 
     * @return { role.success } 200 - success response
-    * @return { message.badrequest_error } 400 - bad request respone
-    * @return { message.badrequest_error } 404 - not found respone
+    * @return { message.badrequest_error } 400 - bad request response
+    * @return { message.badrequest_error } 404 - not found response
     * @return { message.unauthorized_error }     401 - UnauthorizedError
     * @return { message.server_error  }    500 - Server Error
     */
@@ -91,8 +91,8 @@ class RoleController extends Controller {
     * @param { role.create } request.body - role info - application/json
     
     * @return { role.success }           201 - success response
-    * @return { message.badrequest_error }  400 - bad request respone
-    * @return { message.badrequest_error }  404 - not found respone
+    * @return { message.badrequest_error }  400 - bad request response
+    * @return { message.badrequest_error }  404 - not found response
     * @return { message.badrequest_error }       401 - UnauthorizedError
     * @return { message.server_error  }     500 - Server Error
     */
@@ -135,8 +135,8 @@ class RoleController extends Controller {
     * @param { role.create } request.body - role info - application/json
     * 
     * @return { role.success }           200 - success response
-    * @return { message.badrequest_error }  400 - bad request respone
-    * @return { message.badrequest_error }  404 - not found respone
+    * @return { message.badrequest_error }  400 - bad request response
+    * @return { message.badrequest_error }  404 - not found response
     * @return { message.unauthorized_error }     401 - UnauthorizedError
     * @return { message.server_error  }    500 - Server Error
     */
@@ -174,8 +174,8 @@ class RoleController extends Controller {
     * @param  { string } id.path - role id
     * 
     * @return { role.success } 200 - success response
-    * @return { message.badrequest_error } 400 - bad request respone
-    * @return { message.badrequest_error } 404 - not found respone
+    * @return { message.badrequest_error } 400 - bad request response
+    * @return { message.badrequest_error } 404 - not found response
     * @return { message.unauthorized_error }     401 - UnauthorizedError
     * @return { message.server_error  }    500 - Server Error
     */
