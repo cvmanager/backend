@@ -23,7 +23,7 @@ class UserController extends Controller {
      * @security BearerAuth
      * 
      * @return { user.success }             200 - get list of all users
-     * @return { message.unauthorized_error }     401 - UnauthorizedError
+     * @return { message.unauthorized_error }     401 - Unauthorized
      * @return { message.server_error  }    500 - Server Error
      */
     async index(req, res, next) {
@@ -61,8 +61,8 @@ class UserController extends Controller {
      * @param {string} id.path.required user id
      * 
      * @return { user.success }              200 - find user data
-     * @return { message.badrequest_error }      400 - user not found
-     * @return { message.badrequest_error }      401 - UnauthorizedError
+     * @return { message.bad_request_error }      400 - user not found
+     * @return { message.bad_request_error }      401 - Unauthorized
      * @return { message.server_error}      500 - Server Error
      */
     async find(req, res, next) {
@@ -88,8 +88,8 @@ class UserController extends Controller {
      * @param { user.avatar } request.body - user avatar - multipart/form-data
      * 
      * @return { user.success }              200 - update user profile
-     * @return { message.badrequest_error }      400 - user not found
-     * @return { message.badrequest_error }      401 - UnauthorizedError
+     * @return { message.bad_request_error }      400 - user not found
+     * @return { message.bad_request_error }      401 - Unauthorized
      * @return { message.server_error}      500 - Server Error
      */
     async uploadProfileImage(req, res, next) {
@@ -114,8 +114,8 @@ class UserController extends Controller {
      * @param { string } id.path.required - user id - application/json
      * 
      * @return { user.success }             200 - user successfully banded
-     * @return { message.badrequest_error }      400 - user not found
-     * @return { message.badrequest_error }      401 - UnauthorizedError
+     * @return { message.bad_request_error }      400 - user not found
+     * @return { message.bad_request_error }      401 - Unauthorized
      * @return { message.server_error}      500 - Server Error
      */
     async banned(req, res, next) {
@@ -147,8 +147,8 @@ class UserController extends Controller {
      * @param { string } id.path.required - user id - application/json
      * 
      * @return { user.success }             200 - user successfully un banded
-     * @return { message.badrequest_error }      400 - user not found
-     * @return { message.badrequest_error }      401 - UnauthorizedError
+     * @return { message.bad_request_error }      400 - user not found
+     * @return { message.bad_request_error }      401 - Unauthorized
      * @return { message.server_error}      500 - Server Error
      */
     async unbanned(req, res, next) {
@@ -179,8 +179,8 @@ class UserController extends Controller {
     * @param  { string } id.path.required - user id
     *  
     * @return { user.success }                  200 - get login history
-    * @return { message.badrequest_error }      401 - UnauthorizedError
-    * @return { message.NotFoundError }         404 - user not found
+    * @return { message.bad_request_error }      401 - Unauthorized
+    * @return { message.notfound_error }         404 - user not found
     * @return { message.server_error}           500 - Server Error
     */
     async loginHistory(req, res, next) {
@@ -211,8 +211,8 @@ class UserController extends Controller {
      * @param  { string } id.path.required - user id
      *
      * @return { user.success }             200 - user successfully found
-     * @return { message.badrequest_error } 400 - user not found
-     * @return { message.badrequest_error } 401 - UnauthorizedError
+     * @return { message.bad_request_error } 400 - user not found
+     * @return { message.bad_request_error } 401 - Unauthorized
      * @return { message.server_error}      500 - Server Error
      */
     async companies(req, res, next) {
@@ -255,8 +255,8 @@ class UserController extends Controller {
      * @param {string} request.body          - edit info - application/json
      * 
      * @return { user.success }                 200 - edit successfully 
-     * @return { message.badrequest_error }     400 - Bad Request
-     * @return { message.badrequest_error }     401 - UnauthorizedError
+     * @return { message.bad_request_error }     400 - BadRequest
+     * @return { message.bad_request_error }     401 - Unauthorized
      * @return { message.server_error  }        500 - Server Error
      */
     async edit(req, res, next) {
@@ -295,8 +295,8 @@ class UserController extends Controller {
     * @param {user.set_fcm_token } request.body          - fcm token info - application/json
     * 
     * @return { user.success }                 200 - edit successfully 
-    * @return { message.badrequest_error }     400 - Bad Request
-    * @return { message.badrequest_error }     401 - UnauthorizedError
+    * @return { message.bad_request_error }     400 - BadRequest
+    * @return { message.bad_request_error }     401 - Unauthorized
     * @return { message.server_error  }        500 - Server Error
     */
     async setFCMToken(req, res, next) {
@@ -338,8 +338,8 @@ class UserController extends Controller {
     * @param {user.set_fcm_token } request.body - fcm token - application/json
     * 
     * @return { user.success }                 200 - edit successfully 
-    * @return { message.badrequest_error }     400 - Bad Request
-    * @return { message.badrequest_error }     401 - UnauthorizedError
+    * @return { message.bad_request_error }     400 - BadRequest
+    * @return { message.bad_request_error }     401 - Unauthorized
     * @return { message.server_error  }        500 - Server Error
     */
     async unsetFCMToken(req, res, next) {
@@ -369,8 +369,8 @@ class UserController extends Controller {
     * @param {user.check_fcm_token } request.body - fcm token - application/json
     * 
     * @return { user.success }                 200 - edit successfully 
-    * @return { message.badrequest_error }     400 - Bad Request
-    * @return { message.badrequest_error }     401 - UnauthorizedError
+    * @return { message.bad_request_error }     400 - BadRequest
+    * @return { message.bad_request_error }     401 - Unauthorized
     * @return { message.server_error  }        500 - Server Error
     */
     async checkFCMToken(req, res, next) {

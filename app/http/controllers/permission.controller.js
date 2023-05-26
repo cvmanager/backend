@@ -15,9 +15,9 @@ class PermissionController extends Controller {
     * @security BearerAuth
     * 
     * @return { permission.success } 200 - success response
-    * @return { message.badrequest_error } 400 - bad request respone
-    * @return { message.badrequest_error } 404 - not found respone
-    * @return { message.unauthorized_error }     401 - UnauthorizedError
+    * @return { message.bad_request_error } 400 - BadRequest respone
+    * @return { message.bad_request_error } 404 - not found respone
+    * @return { message.unauthorized_error }     401 - Unauthorized
     * @return { message.server_error  }    500 - Server Error
     */
     async index(req, res, next) {
@@ -45,9 +45,9 @@ class PermissionController extends Controller {
     * @security BearerAuth
     * 
     * @return { permission.success } 200 - success response
-    * @return { message.badrequest_error } 400 - bad request respone
-    * @return { message.badrequest_error } 404 - not found respone
-    * @return { message.unauthorized_error }     401 - UnauthorizedError
+    * @return { message.bad_request_error } 400 - BadRequest respone
+    * @return { message.bad_request_error } 404 - not found respone
+    * @return { message.unauthorized_error }     401 - Unauthorized
     * @return { message.server_error  }    500 - Server Error
     */
     async entities(req, res, next) {
@@ -69,9 +69,9 @@ class PermissionController extends Controller {
     * @param  { string } id.path.required - permission id
     * 
     * @return { permission.success } 200 - success response
-    * @return { message.badrequest_error } 400 - bad request respone
-    * @return { message.badrequest_error } 404 - not found respone
-    * @return { message.unauthorized_error }     401 - UnauthorizedError
+    * @return { message.bad_request_error } 400 - BadRequest respone
+    * @return { message.bad_request_error } 404 - not found respone
+    * @return { message.unauthorized_error }     401 - Unauthorized
     * @return { message.server_error  }    500 - Server Error
     */
 
@@ -86,9 +86,9 @@ class PermissionController extends Controller {
     * @param { permission.create } request.body - permission info - application/json
     
     * @return { permission.success }           201 - success response
-    * @return { message.badrequest_error }  400 - bad request respone
-    * @return { message.badrequest_error }  404 - not found respone
-    * @return { message.badrequest_error }       401 - UnauthorizedError
+    * @return { message.bad_request_error }  400 - BadRequest respone
+    * @return { message.bad_request_error }  404 - not found respone
+    * @return { message.bad_request_error }       401 - Unauthorized
     * @return { message.server_error  }     500 - Server Error
     */
     async create(req, res, next) {
@@ -116,9 +116,9 @@ class PermissionController extends Controller {
     * @param { permission.create } request.body - permission info - application/json
     * 
     * @return { permission.success }           200 - success response
-    * @return { message.badrequest_error }  400 - bad request respone
-    * @return { message.badrequest_error }  404 - not found respone
-    * @return { message.unauthorized_error }     401 - UnauthorizedError
+    * @return { message.bad_request_error }  400 - BadRequest respone
+    * @return { message.bad_request_error }  404 - not found respone
+    * @return { message.unauthorized_error }     401 - Unauthorized
     * @return { message.server_error  }    500 - Server Error
     */
     async update(req, res, next) {
@@ -148,9 +148,9 @@ class PermissionController extends Controller {
     * @param  { string } id.path - permission id
     * 
     * @return { permission.success } 200 - success response
-    * @return { message.badrequest_error } 400 - bad request respone
-    * @return { message.badrequest_error } 404 - not found respone
-    * @return { message.unauthorized_error }     401 - UnauthorizedError
+    * @return { message.bad_request_error } 400 - BadRequest respone
+    * @return { message.bad_request_error } 404 - not found respone
+    * @return { message.unauthorized_error }     401 - Unauthorized
     * @return { message.server_error  }    500 - Server Error
     */
     async delete(req, res, next) {

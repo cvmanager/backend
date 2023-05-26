@@ -14,9 +14,9 @@ class ProvinceController extends Controller {
     * @security BearerAuth
     * 
     * @return { province.success } 200 - success response
-    * @return { message.badrequest_error } 400 - bad request response
-    * @return { message.badrequest_error } 404 - not found response
-    * @return { message.unauthorized_error }     401 - UnauthorizedError
+    * @return { message.bad_request_error } 400 - BadRequest response
+    * @return { message.bad_request_error } 404 - not found response
+    * @return { message.unauthorized_error }     401 - Unauthorized
     * @return { message.server_error  }    500 - Server Error
     */
     async index(req, res, next) {
@@ -39,9 +39,9 @@ class ProvinceController extends Controller {
 * @param  { string } id.path.required - province id
 * 
 * @return { province.success } 200 - success response
-* @return { message.badrequest_error } 400 - bad request response
-* @return { message.badrequest_error } 404 - not found response
-* @return { message.unauthorized_error }     401 - UnauthorizedError
+* @return { message.bad_request_error } 400 - BadRequest response
+* @return { message.bad_request_error } 404 - not found response
+* @return { message.unauthorized_error }     401 - Unauthorized
 * @return { message.server_error  }    500 - Server Error
 */
     async cities(req, res, next) {

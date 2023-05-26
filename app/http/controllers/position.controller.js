@@ -29,9 +29,9 @@ class PositionController extends Controller {
     * @security BearerAuth
     * 
     * @return { position.success } 200 - success response
-    * @return { message.badrequest_error } 400 - bad request respone
-    * @return { message.badrequest_error } 404 - not found respone
-    * @return { message.unauthorized_error }     401 - UnauthorizedError
+    * @return { message.bad_request_error } 400 - BadRequest respone
+    * @return { message.bad_request_error } 404 - not found respone
+    * @return { message.unauthorized_error }     401 - Unauthorized
     * @return { message.server_error  }    500 - Server Error
     */
     async index(req, res, next) {
@@ -72,9 +72,9 @@ class PositionController extends Controller {
     * @param  { string } id.path.required - position id
     * 
     * @return { position.success } 200 - success response
-    * @return { message.badrequest_error } 400 - bad request respone
-    * @return { message.badrequest_error } 404 - not found respone
-    * @return { message.unauthorized_error }     401 - UnauthorizedError
+    * @return { message.bad_request_error } 400 - BadRequest respone
+    * @return { message.bad_request_error } 404 - not found respone
+    * @return { message.unauthorized_error }     401 - Unauthorized
     * @return { message.server_error  }    500 - Server Error
     */
     async find(req, res, next) {
@@ -104,9 +104,9 @@ class PositionController extends Controller {
     * @param { position.create } request.body - position info - application/json
     
     * @return { position.success }           201 - success response
-    * @return { message.badrequest_error }  400 - bad request respone
-    * @return { message.badrequest_error }  404 - not found respone
-    * @return { message.badrequest_error }       401 - UnauthorizedError
+    * @return { message.bad_request_error }  400 - BadRequest respone
+    * @return { message.bad_request_error }  404 - not found respone
+    * @return { message.bad_request_error }       401 - Unauthorized
     * @return { message.server_error  }     500 - Server Error
     */
     async create(req, res, next) {
@@ -142,9 +142,9 @@ class PositionController extends Controller {
     * @param { position.create } request.body - position info - application/json
     * 
     * @return { position.success }           200 - success response
-    * @return { message.badrequest_error }  400 - bad request respone
-    * @return { message.badrequest_error }  404 - not found respone
-    * @return { message.unauthorized_error }     401 - UnauthorizedError
+    * @return { message.bad_request_error }  400 - BadRequest respone
+    * @return { message.bad_request_error }  404 - not found respone
+    * @return { message.unauthorized_error }     401 - Unauthorized
     * @return { message.server_error  }    500 - Server Error
     */
     async update(req, res, next) {
@@ -179,9 +179,9 @@ class PositionController extends Controller {
     * @param  { string } id.path - position id
     * 
     * @return { position.success } 200 - success response
-    * @return { message.badrequest_error } 400 - bad request respone
-    * @return { message.badrequest_error } 404 - not found respone
-    * @return { message.unauthorized_error }     401 - UnauthorizedError
+    * @return { message.bad_request_error } 400 - BadRequest respone
+    * @return { message.bad_request_error } 404 - not found respone
+    * @return { message.unauthorized_error }     401 - Unauthorized
     * @return { message.server_error  }    500 - Server Error
     */
     async delete(req, res, next) {
@@ -209,9 +209,9 @@ class PositionController extends Controller {
     * @param { position.set_manager } request.body - position info - application/json
     *    
     * @return { manager.success }           201 - success response
-    * @return { message.badrequest_error } 400 - bad request respone
-    * @return { message.badrequest_error } 404 - not found respone
-    * @return { message.unauthorized_error }     401 - UnauthorizedError
+    * @return { message.bad_request_error } 400 - BadRequest respone
+    * @return { message.bad_request_error } 404 - not found respone
+    * @return { message.unauthorized_error }     401 - Unauthorized
     * @return { message.server_error  }    500 - Server Error
     *
     */
@@ -249,9 +249,9 @@ class PositionController extends Controller {
      * @param  { string } id.path.required - position id
      * 
      * @return { position.success }              200 - success response
-     * @return { message.badrequest_error }      400 - bad request respone
-     * @return { message.badrequest_error }      404 - not found respone
-     * @return { message.unauthorized_error }    401 - UnauthorizedError
+     * @return { message.bad_request_error }      400 - BadRequest respone
+     * @return { message.bad_request_error }      404 - not found respone
+     * @return { message.unauthorized_error }    401 - Unauthorized
      * @return { message.server_error  }         500 - Server Error
      */
     async getResumes(req, res, next) {
@@ -304,9 +304,9 @@ class PositionController extends Controller {
  * @param  { string } id.path.required - position id
  * 
  * @return { position.success }              200 - success response
- * @return { message.badrequest_error }      400 - bad request respone
- * @return { message.badrequest_error }      404 - not found respone
- * @return { message.unauthorized_error }    401 - UnauthorizedError
+ * @return { message.bad_request_error }      400 - BadRequest respone
+ * @return { message.bad_request_error }      404 - not found respone
+ * @return { message.unauthorized_error }    401 - Unauthorized
  * @return { message.server_error  }         500 - Server Error
  */
     async getManagers(req, res, next) {
@@ -328,8 +328,8 @@ class PositionController extends Controller {
   * @param { string } id.path.required - position id
   * 
   * @return { position.success }              200 - active positions
-  * @return { message.badrequest_error }      400 - positions not found
-  * @return { message.badrequest_error }      401 - UnauthorizedError
+  * @return { message.bad_request_error }      400 - positions not found
+  * @return { message.bad_request_error }      401 - Unauthorized
   * @return { message.server_error}           500 - Server Error
   */
     async active(req, res, next) {
@@ -358,8 +358,8 @@ class PositionController extends Controller {
     * @param { string } id.path.required - positions id
     * 
     * @return { position.success }              200 - deactive positions
-    * @return { message.badrequest_error }      400 - positions not found
-    * @return { message.badrequest_error }      401 - UnauthorizedError
+    * @return { message.bad_request_error }      400 - positions not found
+    * @return { message.bad_request_error }      401 - Unauthorized
     * @return { message.server_error}           500 - Server Error
     */
     async deActive(req, res, next) {
@@ -389,8 +389,8 @@ class PositionController extends Controller {
 * @param  { string } id.path.required - position id - application/json
 * @param  { position.delete_manager } request.body - position info - application/json
 *
-* @return { message.unauthorized_error }     401 - UnauthorizedError
-* @return { message.badrequest_error }       404 - NotFoundError
+* @return { message.unauthorized_error }     401 - Unauthorized
+* @return { message.bad_request_error }       404 - NotFoundError
 * @return { message.server_error }           500 - Server Error
 * @return { position.success }                200 - success respons
 */
@@ -425,8 +425,8 @@ class PositionController extends Controller {
    * @param { position.upload_logo } request.body - position info - multipart/form-data
    * 
    * @return { position.success }               200 - update resume profile
-   * @return { message.badrequest_error }      400 - resume not found
-   * @return { message.badrequest_error }      401 - UnauthorizedError
+   * @return { message.bad_request_error }      400 - resume not found
+   * @return { message.bad_request_error }      401 - Unauthorized
    * @return { message.server_error}           500 - Server Error
    */
     async updateLogo(req, res, next) {

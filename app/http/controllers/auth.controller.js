@@ -62,8 +62,8 @@ class AuthController extends Controller {
     *
     * @param { auth.signup } request.body - signup info - application/json
     * 
-    * @return { auth.success_response }        201 - signup successfully 
-    * @return { message.badrequest_error }     400 - Bad Request
+    * @return { auth.success_response }        201 - Signup Successfully 
+    * @return { message.bad_request_error }    400 - BadRequest
     * @return { message.server_error  }        500 - Server Error
     */
     async signup(req, res, next) {
@@ -104,8 +104,8 @@ class AuthController extends Controller {
      *
      * @param { auth.refresh } request.body - refresh info - application/json
      * 
-     * @return { auth.success_signup }          200 - refresh successfully 
-     * @return { message.badrequest_error }     400 - Bad Request
+     * @return { auth.auth.success }            200 - Refresh Successfully 
+     * @return { message.bad_request_error }    400 - BadRequest
      * @return { message.server_error  }        500 - Server Error
      */
     async refresh(req, res, next) {
@@ -132,7 +132,7 @@ class AuthController extends Controller {
      * @param { auth.refresh } request.body - refresh info - application/json
      * 
      * @return { auth.success_signup }          200 - logout successfully 
-     * @return { message.badrequest_error }     400 - Bad Request
+     * @return { message.bad_request_error }    400 - BadRequest
      * @return { message.server_error  }        500 - Server Error
      */
     async logout(req, res, next) {
@@ -158,8 +158,8 @@ class AuthController extends Controller {
      *
      * @param { auth.refresh } request.body - refresh info - application/json
      * 
-     * @return { auth.success_signup }              200 - logout successfully 
-     * @return { message.unauthorized_error }       401 - UnauthorizedError
+     * @return { auth.success }                     200 - Verify Token Successfully 
+     * @return { message.unauthorized_error }       401 - Unauthorized
      * @return { message.server_error  }            500 - Server Error
      */
     async verifyToken(req, res, next) {
@@ -196,7 +196,7 @@ class AuthController extends Controller {
        * @tags Auth 
        * @security BearerAuth
        *
-       * @return { message.badrequest_error }     400 - Bad Request
+       * @return { message.bad_request_error }    400 - BadRequest
        * @return { message.server_error  }        500 - Server Error
     */
     async sendMobileVerificationCode(req, res, next) {
@@ -236,8 +236,8 @@ class AuthController extends Controller {
       * 
       * @param { auth.checkVerify } request.body - refresh info - application/json
       * 
-      * @return { message.badrequest_error }     400 - Bad Request
-      * @return { message.server_error  }        500 - Server Error
+      * @return { message.bad_request_error }     400 - BadRequest
+      * @return { message.server_error  }         500 - Server Error
       */
     async checkMobileVerificationCode(req, res, next) {
         try {
@@ -267,10 +267,10 @@ class AuthController extends Controller {
      * @tags Auth
      * @security BearerAuth
      * 
-     * @return { user.success }             200 - user successfully found
-     * @return { message.badrequest_error } 400 - user not found
-     * @return { message.badrequest_error } 401 - UnauthorizedError
-     * @return { message.server_error}      500 - Server Error
+     * @return { user.success }              200 - User Successfully Found
+     * @return { message.bad_request_error } 400 - User NotFound
+     * @return { message.bad_request_error } 401 - Unauthorized
+     * @return { message.server_error}       500 - Server Error
      */
     async getMe(req, res, next) {
         try {
@@ -297,9 +297,9 @@ class AuthController extends Controller {
      * 
      * @param { auth.change-password }  request.body   - application/json
      *  
-     * @return { user.success }                  200 - update user profile
-     * @return { message.badrequest_error }      401 - UnauthorizedError
-     * @return { message.NotFoundError }         404 - user not found
+     * @return { user.success }                  200 - Update User Profile
+     * @return { message.bad_request_error }     401 - Unauthorized
+     * @return { message.notfound_error }        404 - User NotFound
      * @return { message.server_error}           500 - Server Error
      */
     async changePassword(req, res, next) {
