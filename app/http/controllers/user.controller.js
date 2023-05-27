@@ -301,7 +301,6 @@ class UserController extends Controller {
     */
     async setFCMToken(req, res, next) {
         try {
-            let user = await userService.findByParamId(req)
 
             let fcmToken = await fcmTokenService.findOne({ 'token': req.body.token });
             if (fcmToken) {
@@ -319,9 +318,9 @@ class UserController extends Controller {
             req.body.os = os;
             fcmToken = await FCMToken.create(req.body)
 
-            EventEmitter.emit(UserEvents.SET_FCM_TOKEN, user, req)
+            EventEmitter.emit(UserEvents.SET_FCM_TOKEN, req.user, req)
 
-            AppResponse.builder(res).status(200).message("user.messages.set_fcm_token_successfully").data(user).send();
+            AppResponse.builder(res).status(200).message("user.messages.set_fcm_token_successfully").data(req.user).send();
         } catch (err) {
             next(err);
         }
