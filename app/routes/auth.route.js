@@ -16,7 +16,7 @@ authRouter
     .post('/username-isavailable', AuthValidator.checkUsername(), AuthController.checkUsername)
     .post('/send-verify', verifyToken, AuthController.sendMobileVerificationCode)
     .post('/check-verify', AuthValidator.checkVerifyMobileCode(), verifyToken, AuthController.checkMobileVerificationCode)
-    .patch('/change-password', AuthValidator.changePassword(), AuthController.changePassword)
+    .patch('/change-password', verifyToken, AuthValidator.changePassword(), AuthController.changePassword)
 
 
 export default authRouter
