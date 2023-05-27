@@ -97,7 +97,8 @@ class ResumeService extends ServiceBase {
     }
 
     async getDefaultUserIdNotificationUpdateStatus(resume) {
-        let userIdList = [resume.created_by, resume.assigners];
+        let userIdList = resume.assigners;
+        userIdList.push(resume.created_by)
         return userIdList;
     }
 
