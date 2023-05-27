@@ -114,11 +114,10 @@ class ResumeService extends ServiceBase {
 
     async setNotificationWhenUpdateStatus(resume, req, step) {
         let userIdList = await this.getDefaultUserIdNotificationUpdateStatus(resume);
-        let user = await userService.findById(req.user._id);
 
         let title = i18n.__(`notification.messages.title.${step}`)
         let body = i18n.__(`notification.messages.body.${step}`, {
-            user: user.fullname,
+            user: req.user.fullname,
             status: resume.status
         })
 

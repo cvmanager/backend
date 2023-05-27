@@ -51,15 +51,15 @@ function logout(access_token) {
 }
 
 function setFCMToken(user, req) {
-    console.log(UserEvents.UNBANNED + " event called", user)
+    // console.log(UserEvents.SET_FCM_TOKEN + " event called", user)
 }
 
 function unsetFCMToken(user, req) {
-    console.log(UserEvents.UNBANNED + " event called", user)
+    // console.log(UserEvents.UNSET_FCM_TOKEN + " event called", user)
 }
 
 function checkFCMToken(user, req) {
-    console.log(UserEvents.UNBANNED + " event called", user)
+    // console.log(UserEvents.CHECK_FCM_TOKEN + " event called", user)
 }
 
 async function mobileVerification(user, req) {
