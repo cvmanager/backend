@@ -126,7 +126,7 @@ class UserController extends Controller {
             if (user.is_banned) throw new BadRequestError('user.errors.user_is_currently_blocked')
 
             user.is_banned = 1;
-            user.banned_by = req.user._id;
+            user.banned_by = req.user.id;
             user.banned_at = new Date().toISOString();
             await user.save();
 
@@ -304,7 +304,7 @@ class UserController extends Controller {
 
             let fcmToken = await fcmTokenService.findOne({ 'token': req.body.token });
             if (fcmToken) {
-                await userService.delete(fcmToken, req.user._id);
+                await userService.delete(fcmToken, req.user.id);
             }
 
             let os = '';
@@ -314,7 +314,7 @@ class UserController extends Controller {
                 })
                 .catch(error => console.error(error));
 
-            req.body.created_by = req.user._id;
+            req.body.created_by = req.user.id;
             req.body.os = os;
             fcmToken = await FCMToken.create(req.body)
 
@@ -348,7 +348,7 @@ class UserController extends Controller {
             let fcmToken = await fcmTokenService.findOne({ 'token': req.body.token });
             if (!fcmToken) throw new NotFoundError('user.errors.fcm_token_not_found');
 
-            await userService.delete(fcmToken, req.user._id);
+            await userService.delete(fcmToken, req.user.id);
 
             EventEmitter.emit(UserEvents.UNSET_FCM_TOKEN, user, req)
             AppResponse.builder(res).status(200).message("user.messages.unset_fcm_token_successfully").data(user).send();

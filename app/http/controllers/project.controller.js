@@ -110,7 +110,7 @@ class ProjectController extends Controller {
             let project = await Project.findOne({ 'name': req.body.name, 'company_id': company._id });
             if (project) throw new AlreadyExists('project.errors.project_already_attached_company');
 
-            req.body.created_by = req.user._id;
+            req.body.created_by = req.user.id;
             project = await Project.create(req.body);
             EventEmitter.emit(ProjectEvents.CREATE, project, req)
 
@@ -169,7 +169,7 @@ class ProjectController extends Controller {
         try {
             let project = await projectService.findByParamId(req)
 
-            await project.delete(req.user._id);
+            await project.delete(req.user.id);
             EventEmitter.emit(ProjectEvents.DELETE, project, req)
 
             AppResponse.builder(res).message("project.messages.project_successfully_deleted").data(project).send();
@@ -202,7 +202,7 @@ class ProjectController extends Controller {
             let manager = await managerService.findOne({ 'entity': "projects", 'entity_id': project.id, 'user_id': user.id });
             if (manager) throw new BadRequestError("project.errors.the_user_is_currently_an_manager_for_project");
 
-            await managerService.create({ user_id: user._id, entity: "projects", entity_id: project._id, created_by: req.user._id });
+            await managerService.create({ user_id: user._id, entity: "projects", entity_id: project._id, created_by: req.user.id });
 
             const projectManagerRole = await roleService.findOne({ name: "Project Manager" })
             await userService.addRole(user._id, projectManagerRole._id)
@@ -240,7 +240,7 @@ class ProjectController extends Controller {
             if (manager.type === 'owner') throw new BadRequestError("project.errors.the_owner_manager_cannot_be_deleted");
 
             EventEmitter.emit(ProjectEvents.UNSET_MANAGER, project, req)
-            await manager.delete(req.user._id);
+            await manager.delete(req.user.id);
 
             let isProjectManager = await Manager.findOne({ 'entity': "projects", 'user_id': user.id, type: 'moderator' });
             if (!isProjectManager) {

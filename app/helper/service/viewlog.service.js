@@ -15,7 +15,7 @@ class ViewlogService extends ServiceBase {
             let data = {
                 "entity": entity,
                 "entity_id": entity_id,
-                "created_by": req.user._id,
+                "created_by": req.user.id,
             }
             await this.create(data)
         }

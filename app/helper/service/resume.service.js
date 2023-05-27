@@ -89,7 +89,7 @@ class ResumeService extends ServiceBase {
             old_status: pervStatus,
             new_status: resume.status,
             createdAt: new Date(),
-            created_by: req.user._id
+            created_by: req.user.id
         };
 
         resume.status_history.push(statusHistoryLog)

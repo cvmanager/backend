@@ -19,7 +19,7 @@ class NotificationService extends ServiceBase {
             step: step,
             entity: 'resumes',
             entity_id: resume._id,
-            created_by: req.user._id,
+            created_by: req.user.id,
         };
         await this.create(params);
     }

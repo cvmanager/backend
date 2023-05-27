@@ -96,7 +96,7 @@ class PermissionController extends Controller {
             let permission = await permissionService.findOne({ $or: [{ 'name': req.body.name }, { 'action': req.body.action }] });
             if (permission) throw new AlreadyExists('permission.error.permission_already_exists');
 
-            req.body.created_by = req.user._id
+            req.body.created_by = req.user.id
             let createdPermission = await permissionService.create(req.body)
 
             AppResponse.builder(res).status(201).message("document.message.document_successfully_created").data(createdPermission).send();
@@ -157,7 +157,7 @@ class PermissionController extends Controller {
         let permission = await permissionService.findOne({ _id: req.params.id });
         if (!permission) throw new NotFoundError('document.error.document_notfound');
 
-        await permission.delete(req.user._id);
+        await permission.delete(req.user.id);
         // delete from cache
         const redisKey = env("REDIS_KEY_RBAC_PERMISSION") + permission._id.toString()
         await redisClient.del(redisKey)

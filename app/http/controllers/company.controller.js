@@ -107,7 +107,7 @@ class CompanyController extends Controller {
             let company = await companyService.findOne({ 'name': req.body.name })
             if (company) throw new AlreadyExists('company.errors.company_already_exists');
 
-            req.body.created_by = req.user._id;
+            req.body.created_by = req.user.id;
             company = await companyService.create(req.body);
 
             EventEmitter.emit(CompanyEvents.CREATE, company,req);
@@ -168,7 +168,7 @@ class CompanyController extends Controller {
     async delete(req, res, next) {
         try {
             let company = await companyService.findByParamId(req)
-            await company.delete(req.user._id);
+            await company.delete(req.user.id);
 
             EventEmitter.emit(CompanyEvents.DELETE, company, req);
             AppResponse.builder(res).message("company.messages.company_successfully_deleted").data(company).send();
@@ -203,7 +203,7 @@ class CompanyController extends Controller {
             let manager = await managerService.findOne({ 'entity': "companies", 'entity_id': company.id, 'user_id': user.id });
             if (manager) throw new BadRequestError("company.errors.the_user_is_currently_an_manager_for_company");
 
-            await managerService.create({ user_id: user._id, entity: "companies", entity_id: company._id, created_by: req.user._id });
+            await managerService.create({ user_id: user._id, entity: "companies", entity_id: company._id, created_by: req.user.id });
 
             const companyManagerRole = await roleService.findOne({ name: "Company Manager" })
             await userService.addRole(user._id, companyManagerRole._id)
@@ -242,7 +242,7 @@ class CompanyController extends Controller {
             if (!manager) throw new BadRequestError("company.errors.the_user_is_not_manager_for_this_company");
             if (manager.type === 'owner') throw new BadRequestError("company.errors.the_owner_manager_cannot_be_deleted");
 
-            await managerService.delete(manager, req.user._id);
+            await managerService.delete(manager, req.user.id);
 
             let isCompanyManager = await managerService.findOne({ 'entity': "companies", 'user_id': user.id, type: 'moderator' });
             if (!isCompanyManager) {

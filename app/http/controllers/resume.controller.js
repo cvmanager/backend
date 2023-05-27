@@ -158,7 +158,7 @@ class ResumeController extends Controller {
             let position = await positionService.findById(req.body.position_id);
             if (!position) throw new NotFoundError('position.errors.position_not_found');
 
-            req.body.created_by = req.user._id;
+            req.body.created_by = req.user.id;
             req.body.project_id = position.project_id;
             req.body.company_id = position.company_id;
 
@@ -224,7 +224,7 @@ class ResumeController extends Controller {
         try {
             let resume = await resumeService.findByParamId(req);
             resume.deleted_at = Date.now();
-            resume.deleted_by = req.user._id;
+            resume.deleted_by = req.user.id;
 
             await resume.save();
 
@@ -358,7 +358,7 @@ class ResumeController extends Controller {
 
             req.body.body = req.body.body
             req.body.resume_id = resume._id
-            req.body.created_by = req.user._id
+            req.body.created_by = req.user.id
 
             let resumeCommentsRes = await ResumeComments.create(req.body)
             EventEmitter.emit(ResumeEvents.ADD_COMMENT, resume, req)
@@ -395,7 +395,7 @@ class ResumeController extends Controller {
                 calling_date: calling_date,
                 description: req.body.description,
                 rating: req.body.rating,
-                created_by: req.user._id
+                created_by: req.user.id
             }
 
             let recall_at = null
@@ -893,7 +893,7 @@ class ResumeController extends Controller {
             req.body.resume_id = resume._id;
             req.body.contribution = contribution
             req.body.event_time = new Date(req.body.event_time)
-            req.body.created_by = req.user._id
+            req.body.created_by = req.user.id
             let interview = await Interview.create(req.body)
             EventEmitter.emit(ResumesInterviewEvents.CREATE, interview, req)
 
@@ -927,7 +927,7 @@ class ResumeController extends Controller {
             let interview = await Interview.findById(req.body.interview_id);
             if (!interview) throw new NotFoundError('interview.errors.interview_notfound');
 
-            await interview.delete(req.user._id);
+            await interview.delete(req.user.id);
             EventEmitter.emit(ResumesInterviewEvents.DELETE, interview, req)
 
 

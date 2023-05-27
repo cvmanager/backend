@@ -113,7 +113,7 @@ class RoleController extends Controller {
                 }
             }
 
-            req.body.created_by = req.user._id;
+            req.body.created_by = req.user.id;
             let createdRole = await roleService.create(req.body);
             await cacheRoles()
 
@@ -184,7 +184,7 @@ class RoleController extends Controller {
             let role = await roleService.findOne({ _id: req.params.id, ...req.query });
             if (!role) throw new NotFoundError('document.error.document_notfound');
     
-            await role.delete(req.user._id);
+            await role.delete(req.user.id);
             // delete from cache
             await cacheRoles()
             

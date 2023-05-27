@@ -11,11 +11,11 @@ export async function companyAccess(req, res, next) {
                 query.$or.push({})
                 break;
             case 'Company Manager':
-                const moderatorCompanies = await managerService.getUserModeratorCompanies(req.user._id)
+                const moderatorCompanies = await managerService.getUserModeratorCompanies(req.user.id)
                 query.$or.push({ _id: { $in: moderatorCompanies } })
                 break;
             case 'Owner':
-                const ownCompanies = await managerService.getUserOwnCompanies(req.user._id)
+                const ownCompanies = await managerService.getUserOwnCompanies(req.user.id)
                 query.$or.push({ _id: { $in: ownCompanies } })
                 break;
             default:

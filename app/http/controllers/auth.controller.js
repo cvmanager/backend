@@ -110,10 +110,10 @@ class AuthController extends Controller {
      */
     async refresh(req, res, next) {
         try {
-            const access_token = await generateJwtToken({ _id: req.user._id, role: req.user.role })
-            const refresh_token = await generateJwtRefreshToken({ _id: req.user._id, role: req.user.role });
+            const access_token = await generateJwtToken({ _id: req.user.id, role: req.user.role })
+            const refresh_token = await generateJwtRefreshToken({ _id: req.user.id, role: req.user.role });
 
-            const redisKey = req.user._id.toString() + env("REDIS_KEY_REF_TOKENS")
+            const redisKey = req.user.id + env("REDIS_KEY_REF_TOKENS")
             redisClient.sRem(redisKey, req.body.token)
 
             AppResponse.builder(res).message('auth.messages.success_login').data({ access_token, refresh_token }).send();
@@ -139,7 +139,7 @@ class AuthController extends Controller {
         try {
             const token = req.headers.authorization.split(' ')[1];
 
-            const redisKey = req.user._id.toString() + env("REDIS_KEY_REF_TOKENS")
+            const redisKey = req.user.id + env("REDIS_KEY_REF_TOKENS")
             await redisClient.sRem(redisKey, token);
 
             EventEmitter.emit(UserEvents.LOGOUT, token);
@@ -203,7 +203,7 @@ class AuthController extends Controller {
         try {
             if (req.user.mobile_verified_at) throw new BadRequestError('auth.errors.authentication_has_already_been_done')
 
-            let log = await VerificationRequest.findOne({ 'user_id': req.user._id, 'veriffication_at': null, $or: [{ expire_at: null }, { expire_at: { $gt: new Date() } }] })
+            let log = await VerificationRequest.findOne({ 'user_id': req.user.id, 'veriffication_at': null, $or: [{ expire_at: null }, { expire_at: { $gt: new Date() } }] })
             if (log) throw new BadRequestError('auth.errors.authentication_code_has_already_been_sent')
 
             let currentTime = new Date();
@@ -214,7 +214,7 @@ class AuthController extends Controller {
 
 
             await VerificationRequest.create({
-                user_id: req.user._id,
+                user_id: req.user.id,
                 provider: 'sms',
                 code: verify_code,
                 receiver: req.user.mobile,
@@ -243,7 +243,7 @@ class AuthController extends Controller {
         try {
             if (req.user.mobile_verified_at) throw new BadRequestError('auth.errors.authentication_has_already_been_done')
 
-            let log = await VerificationRequest.findOne({ 'user_id': req.user._id, 'veriffication_at': null, $or: [{ expire_at: null }, { expire_at: { $gt: new Date() } }] })
+            let log = await VerificationRequest.findOne({ 'user_id': req.user.id, 'veriffication_at': null, $or: [{ expire_at: null }, { expire_at: { $gt: new Date() } }] })
             if (!log) throw new BadRequestError('auth.errors.valid_authentication_code_was_not_found_for_you')
 
             if (req.body.verify_code != log.code) {
@@ -314,7 +314,7 @@ class AuthController extends Controller {
 
             let salt = await bcrypt.genSalt(10);
             let hash_password = await bcrypt.hash(req.body.password, salt);
-            let user = await User.findOneAndUpdate({ _id: req.user._id }, { password: hash_password });
+            let user = await User.findOneAndUpdate({ _id: req.user.id }, { password: hash_password });
 
             AppResponse.builder(res).data(user).message('user.messages.password_changed').send();
         } catch (err) {

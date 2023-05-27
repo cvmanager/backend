@@ -68,7 +68,7 @@ class TagController extends Controller {
             let tag = await tagService.findOne({ name: req.body.name });
             if (tag) throw new AlreadyExists('tag.errors.duplicate');
 
-            req.body.created_by = req.user._id;
+            req.body.created_by = req.user.id;
             req.body.color = getRandomColor();
             tag = await tagService.create(req.body);
 

@@ -120,7 +120,7 @@ class PositionController extends Controller {
             let position = await Position.findOne({ 'title': req.body.title, 'project_id': req.body.project_id, 'level': req.body.level });
             if (position) throw new AlreadyExists('position.errors.position_already_exists');
 
-            req.body.created_by = req.user._id;
+            req.body.created_by = req.user.id;
             req.body.company_id = project.company_id;
             position = await Position.create(req.body);
 
@@ -189,7 +189,7 @@ class PositionController extends Controller {
             const position = await positionService.findByParamId(req)
             if (!position) throw new NotFoundError('position.errors.position_notfound');
 
-            await position.delete(req.user._id);
+            await position.delete(req.user.id);
             EventEmitter.emit(PositionEvents.DELETE, position, req);
 
             AppResponse.builder(res).message("position.messages.position_successfully_deleted").data(position).send();
@@ -227,7 +227,7 @@ class PositionController extends Controller {
             let manager = await managerService.findOne({ 'entity': "positions", 'entity_id': position.id, 'user_id': user.id });
             if (manager) throw new BadRequestError("project.errors.the_user_is_currently_an_manager_for_position");
 
-            await managerService.create({ user_id: user._id, entity: "positions", entity_id: position._id, created_by: req.user._id });
+            await managerService.create({ user_id: user._id, entity: "positions", entity_id: position._id, created_by: req.user.id });
 
             const positionManagerRole = await roleService.findOne({ name: "Position Manager" })
             await userService.addRole(user._id, positionManagerRole._id)
@@ -406,7 +406,7 @@ class PositionController extends Controller {
             if (!manager) throw new BadRequestError("position.errors.the_user_is_not_manager_for_this_position");
             if (manager.type === 'owner') throw new BadRequestError("position.errors.the_owner_manager_cannot_be_deleted");
 
-            await manager.delete(req.user._id);
+            await manager.delete(req.user.id);
             EventEmitter.emit(PositionEvents.UNSET_MANAGER, position, req);
 
             AppResponse.builder(res).message("position.messages.position_manager_deleted").data(position).send()
