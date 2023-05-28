@@ -78,33 +78,7 @@ class UserController extends Controller {
         }
     }
 
-    /**
-     * PATCH /users/{id}/avatar
-     * @summary update user profile image
-     * @tags User
-     * @security BearerAuth
-     * 
-     * @param { string } id.path.required - user id - application/json
-     * @param { user.avatar } request.body - user avatar - multipart/form-data
-     * 
-     * @return { user.success }              200 - update user profile
-     * @return { message.bad_request_error }      400 - user not found
-     * @return { message.bad_request_error }      401 - Unauthorized
-     * @return { message.server_error}      500 - Server Error
-     */
-    async uploadProfileImage(req, res, next) {
-
-        try {
-            let user = await User.findById(req.params.id);
-            if (!user) throw new NotFoundError('user.errors.user_notfound');
-
-            user = await User.findOneAndUpdate({ _id: user._id }, { avatar: req.body.avatar }, { new: true });
-            AppResponse.builder(res).message("user.messages.profile_image_successfully_updated").data(user).send();
-        } catch (err) {
-            next(err);
-        }
-    }
-
+   
     /**
      * POST /users/{id}/ban
      * @summary ban user
@@ -244,46 +218,7 @@ class UserController extends Controller {
         }
     }
 
-    /**
-     * PATCH /users/{id}
-     * 
-     * @summary edit user info
-     * @tags User
-     * @security BearerAuth
-     *
-     * @param {string } id.path.required - user id
-     * @param {string} request.body          - edit info - application/json
-     * 
-     * @return { user.success }                 200 - edit successfully 
-     * @return { message.bad_request_error }     400 - BadRequest
-     * @return { message.bad_request_error }     401 - Unauthorized
-     * @return { message.server_error  }        500 - Server Error
-     */
-    async edit(req, res, next) {
-        try {
-
-            let user = await User.findById(req.params.id);
-            if (!user) throw new NotFoundError('user.errors.user_notfound')
-            let userByUserName = await User.findOne({ '_id': { $ne: user._id }, 'username': req.body.username });
-            if (userByUserName) throw new BadRequestError('user.errors.username_already_exists');
-
-            let userByEmail = await User.findOne({ '_id': { $ne: user._id }, 'email': req.body.email });
-            if (userByEmail) throw new BadRequestError('user.errors.email_already_exists');
-
-            user.firstname = req.body.firstname
-            user.lastname = req.body.lastname
-            user.username = req.body.username
-            user.email = req.body.email
-            await user.save();
-
-            EventEmitter.emit(UserEvents.EDIT_USER, user, req);
-
-            AppResponse.builder(res).status(200).data(user).message('user.messages.user_successfully_edited').send();
-        } catch (err) {
-            next(err);
-        }
-    }
-
+  
     /**
     * PATCH /users/{id}/fcm-token
     * 

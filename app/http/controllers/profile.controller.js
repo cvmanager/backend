@@ -66,6 +66,66 @@ class ProfileController extends Controller {
             next(err);
         }
     }
+
+    /**
+    * PATCH /profile/
+    * 
+    * @summary edit user info
+    * @tags Profile
+    * @security BearerAuth
+    *
+    * @param {string} request.body          - edit info - application/json
+    * 
+    * @return { user.success }                 200 - edit successfully 
+    * @return { message.bad_request_error }     400 - BadRequest
+    * @return { message.bad_request_error }     401 - Unauthorized
+    * @return { message.server_error  }        500 - Server Error
+    */
+    async edit(req, res, next) {
+        try {
+
+            let userByUserName = await User.findOne({ '_id': { $ne: rq.user.id }, 'username': req.body.username });
+            if (userByUserName) throw new BadRequestError('user.errors.username_already_exists');
+
+            let userByEmail = await User.findOne({ '_id': { $ne: req.user.id }, 'email': req.body.email });
+            if (userByEmail) throw new BadRequestError('user.errors.email_already_exists');
+
+     
+            req.user.firstname = req.body.firstname
+            req.user.lastname = req.body.lastname
+            req.user.username = req.body.username
+            req.user.email = req.body.email
+            await req.user.save();
+
+            EventEmitter.emit(UserEvents.EDIT_USER, req.user, req);
+
+            AppResponse.builder(res).status(200).data(req.user).message('user.messages.user_successfully_edited').send();
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
+    * PATCH /profile/avatar
+    * @summary update user profile image
+    * @tags Profile
+    * @security BearerAuth
+    * 
+    * @param { user.avatar } request.body - user avatar - multipart/form-data
+    * 
+    * @return { user.success }              200 - update user profile
+    * @return { message.bad_request_error }      400 - user not found
+    * @return { message.bad_request_error }      401 - Unauthorized
+    * @return { message.server_error}      500 - Server Error
+    */
+    async uploadProfileImage(req, res, next) {
+        try {
+            let user = await User.findOneAndUpdate({ _id: req.user.id }, { avatar: req.body.avatar }, { new: true });
+            AppResponse.builder(res).message("user.messages.profile_image_successfully_updated").data(user).send();
+        } catch (err) {
+            next(err);
+        }
+    }
 }
 
 

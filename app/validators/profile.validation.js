@@ -11,6 +11,18 @@ class ProfileValidator {
             generalValidator
         ]
     }
+
+
+
+    edit() {
+        return [
+            body('firstname').isLength({ min: 3, max: 80 }).withMessage('auth.validations.firstname_length').trim(),
+            body('lastname').isLength({ min: 3, max: 80 }).withMessage('auth.validations.lastname_length').trim(),
+            body('username').notEmpty().withMessage('auth.validations.username_required').trim(),
+            body('email').notEmpty().isEmail().withMessage('auth.validations.email_invalid').trim(),
+            generalValidator
+        ]
+    }
 }
 
 export default new ProfileValidator();
