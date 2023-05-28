@@ -26,6 +26,7 @@ import positionIdRouter from './positionId.router.js'
 import { resumeAccess } from '../middlewares/resumeAccess.middleware.js'
 import resumeIdRouter from './resumeId.route.js'
 import provinceIdRouter from './provinceId.route.js'
+import profileRouter from './profile.route.js'
 
 
 const router = express.Router({ mergeParams: true });
@@ -62,6 +63,8 @@ router.use('/roles/:id', verifyToken, canAccess, roleIdRouter)
 router.use('/roles', verifyToken, canAccess, roleRouter)
 
 router.use('/tags', verifyToken, canAccess, TagRouter)
+
+router.use('/profile', verifyToken, canAccess, profileRouter);
 
 
 
