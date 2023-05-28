@@ -11,7 +11,6 @@ export const ResumeEvents = {
     "ADD_CALL_HISTORY": "add call history for resume",
     "ADD_FILE": "add file to resume",
     "ADD_TAG": "add tag to resume",
-    "UPDATE_STATUS_LOG": "Update Resume Status Log",
     "SET_ASSIGNER": "set assigner to resume",
     "UNSET_ASSIGNER": "un set assigner to resume",
     "SET_SKILL": "set skill to resume",
@@ -30,14 +29,13 @@ EventEmitter.on(ResumeEvents.ADD_CALL_HISTORY, addCallHistory)
 EventEmitter.on(ResumeEvents.ADD_FILE, addFile)
 EventEmitter.on(ResumeEvents.ADD_TAG, setTag)
 EventEmitter.on(ResumeEvents.REMOVE_TAG, unsetTag)
-EventEmitter.on(ResumeEvents.UPDATE_STATUS_LOG, updateStatusLog)
 EventEmitter.on(ResumeEvents.SET_ASSIGNER, setAssigner)
 EventEmitter.on(ResumeEvents.UNSET_ASSIGNER, unsetAssigner)
 EventEmitter.on(ResumeEvents.SET_SKILL, setSkill)
 EventEmitter.on(ResumeEvents.UNSET_SKILL, unsetSkill)
 
 async function find(Resume, req) {
-    await viewlogService.setViewlog('resumes', Resume._id, req)
+    await viewlogService.setViewlog('resumes', Resume.id, req)
     let viewlogCount = await resumeService.getResumeViewCount(Resume);
     await resumeService.updateSummeryCount(Resume, 'view', viewlogCount)
 }
@@ -55,15 +53,13 @@ function update(Resume, req) {
     console.log(ResumeEvents.UPDATE + " event called", Resume)
 }
 
-async function updateStatus(Resume, req) {
+async function updateStatus(Resume, req, oldStatus) {
+    await resumeService.addUpdateStatusLog(Resume, req, oldStatus)
     await resumeService.setProccessDuration(Resume)
     await resumeService.setNotificationWhenUpdateStatus(Resume, req, 'update_status');
 
 }
 
-async function updateStatusLog(Resume, req, oldStatus) {
-    await resumeService.addUpdateStatusLog(Resume, req, oldStatus)
-}
 
 async function addComment(Resume, req) {
     let commentCount = await resumeService.getResumeCommentCount(Resume)

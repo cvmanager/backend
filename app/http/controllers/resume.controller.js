@@ -263,8 +263,7 @@ class ResumeController extends Controller {
             resume.index = req.body.index;
             await resume.save();
 
-            EventEmitter.emit(ResumeEvents.UPDATE_STATUS, resume, req)
-            EventEmitter.emit(ResumeEvents.UPDATE_STATUS_LOG, resume, req, oldStatus)
+            EventEmitter.emit(ResumeEvents.UPDATE_STATUS, resume, req,oldStatus)
 
             AppResponse.builder(res).message("resume.messages.resume_status_successfully_updated").data(resume).send();
         } catch (err) {
@@ -622,8 +621,7 @@ class ResumeController extends Controller {
             resume.income = req.body.income
             await resume.save();
 
-            EventEmitter.emit(ResumeEvents.UPDATE_STATUS, resume, req)
-            EventEmitter.emit(ResumeEvents.UPDATE_STATUS_LOG, resume, req, oldStatus)
+            EventEmitter.emit(ResumeEvents.UPDATE_STATUS, resume, req,oldStatus)
 
             AppResponse.builder(res).status(200).message("resume.messages.resume_successfully_hired").data(resume).send();
         } catch (err) {
@@ -650,9 +648,7 @@ class ResumeController extends Controller {
     async reject(req, res, next) {
         try {
             let resume = await resumeService.findByParamId(req);
-            if (resume.status == 'rejected') {
-                throw new BadRequestError('resume.errors.resume_already_rejected');
-            }
+            if (resume.status == 'rejected') throw new BadRequestError('resume.errors.resume_already_rejected');
             let oldStatus = resume.status
 
             resume.status = 'rejected';
@@ -660,8 +656,7 @@ class ResumeController extends Controller {
             resume.reject_description = req.body.reject_description;
             await resume.save();
 
-            EventEmitter.emit(ResumeEvents.UPDATE_STATUS, resume, req)
-            EventEmitter.emit(ResumeEvents.UPDATE_STATUS_LOG, resume, req, oldStatus)
+            EventEmitter.emit(ResumeEvents.UPDATE_STATUS, resume, req, oldStatus)
 
             AppResponse.builder(res).status(200).message("resume.messages.resume_successfully_rejected").data(resume).send();
         } catch (err) {
@@ -700,8 +695,7 @@ class ResumeController extends Controller {
             resume.end_cooperation_description = req.body.end_cooperation_description
             await resume.save();
 
-            EventEmitter.emit(ResumeEvents.UPDATE_STATUS, resume, req)
-            EventEmitter.emit(ResumeEvents.UPDATE_STATUS_LOG, resume, req, oldStatus)
+            EventEmitter.emit(ResumeEvents.UPDATE_STATUS, resume, req,oldStatus)
 
             AppResponse.builder(res).status(200).message("resume.messages.resume_successfully_end_cooperation").data(resume).send();
         } catch (err) {

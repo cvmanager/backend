@@ -550,17 +550,17 @@
 			"end_cooperation_description_length": "end cooperation description length must less than 100"
 		},
 		"messages": {
-			"resume_successfully_created": "resume successfully created",
-			"resume_status_successfully_updated": "resume successfully updated",
-			"resume_call_history_successfully_created": "resume call history successfully created",
-			"resume_tags_successfully_updated": "resume tags successfully updated",
-			"resume_tags_successfully_deleted": "resume tags successfully deleted",
-			"resume_skills_successfully_updated": "resume skills successfully updated",
-			"resume_skills_successfully_deleted": "resume skills successfully deleted",
-			"resume_successfully_rejected": "resume successfully rejected",
-			"resume_successfully_hired": "resume successfully hired",
-			"resume_successfully_end_cooperation": "resume successfully end of cooperation",
-			"resume_already_rejected": "resume already rejected"
+			"resume_successfully_created": "Resume successfully created",
+			"resume_status_successfully_updated": "Resume successfully updated",
+			"resume_call_history_successfully_created": "Resume call history successfully created",
+			"resume_tags_successfully_updated": "Resume tags successfully updated",
+			"resume_tags_successfully_deleted": "Resume tags successfully deleted",
+			"resume_skills_successfully_updated": "Resume skills successfully updated",
+			"resume_skills_successfully_deleted": "Resume skills successfully deleted",
+			"resume_successfully_rejected": "Resume successfully rejected",
+			"resume_successfully_hired": "Resume successfully hired",
+			"resume_successfully_end_cooperation": "Resume successfully end of cooperation",
+			"resume_already_rejected": "Resume already rejected"
 		},
 		"errors": {
 			"resume_notfound": "Sorry, Resume not found",
@@ -657,21 +657,21 @@
 			"result_incorrect": "result incorrect",
 			"type_required": "type required",
 			"type_invalid": "type invalid",
-			"description_invalid": "description most greater than 2 and less than 512 character",
-			"contribution_invalid": "contribution most array of id",
-			"interview_page_number": "interview page must by number",
-			"interview_size_number": "interview size must by number",
-			"rating_numeric": "rating must be number",
-			"rating_number_not_correct": "rating number must be between 1 and 5",
-			"rating_is_required": "rating is reauired"
+			"description_invalid": "Description most greater than 2 and less than 512 character",
+			"contribution_invalid": "Contribution most array of id",
+			"interview_page_number": "Intervciew page must by number",
+			"interview_size_number": "Intervciew size must by number",
+			"rating_numeric": "Rating must be number",
+			"rating_number_not_correct": "Rating number must be between 1 and 5",
+			"rating_is_required": "Rating is reauired"
 		},
 		"messages": {
-			"interview_found": "interview found",
-			"interview_successfully_updated": "interview successfully updated",
-			"interview_successfully_deleted": "interview successfully deleted"
+			"interview_found": "Intervciew found",
+			"interview_successfully_updated": "Intervciew successfully updated",
+			"interview_successfully_deleted": "Intervciew successfully deleted"
 		},
 		"errors": {
-			"interview_notfound": "interview not found"
+			"interview_notfound": "Intervciew not found"
 		}
 	},
 	"province": {
@@ -690,8 +690,8 @@
 			"tag_size_number": "tag size must by number",
 			"tag_id_required": "tag id required",
 			"tag_id_invalid": "tag id invalid",
-			"skill_id_required": "skill id required",
-			"skill_id_invalid": "skill id invalid"
+			"skill_id_required": "Skill id required",
+			"skill_id_invalid": "Skill id invalid"
 		},
 		"messages": {
 			"tag_list_found": "Tag list found",
@@ -716,7 +716,7 @@
 		"validations": {},
 		"messages": {
 			"title": {
-				"update_status": "resume status changed"
+				"update_status": "Resume status changed"
 			},
 			"body": {
 				"update_status": "{{user}} change status to {{status}}"

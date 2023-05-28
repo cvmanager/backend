@@ -13,12 +13,12 @@ class NotificationService extends ServiceBase {
 
     async setNotificationForResume(resume, req, userId, step, title, body) {
         let params = {
-            title: title,
-            body: body,
+            title,
+            body,
             user_id: userId,
-            step: step,
+            step,
             entity: 'resumes',
-            entity_id: resume._id,
+            entity_id: resume.id,
             created_by: req.user.id,
         };
         await this.create(params);
@@ -35,14 +35,19 @@ class NotificationService extends ServiceBase {
             if (fcmTokens.length > 0) {
                 let notificationData = { title: notification.title, body: notification.body };
                 request_data = sendNotificationToClient(fcmTokens, notificationData);
+                notification.attempts += 1;
+                
+                if (request_data && typeof request_data.successes !== 'undefined' && request_data.successes > 0) {
+                    notification.sent_at = new Date()
+                }
+                if (request_data && typeof request_data.response !== 'undefined') {
+                    notification.response = request_data.response.toString();
+                }
+
+                await notification.save()
             }
 
-            notification.attempts += 1;
-            if (request_data.successes > 0) {
-                notification.sent_at = new Date()
-            }
-            notification.response = request_data.response.toString();
-            await notification.save()
+
 
         }
     }

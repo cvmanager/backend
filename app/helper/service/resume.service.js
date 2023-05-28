@@ -34,7 +34,7 @@ class ResumeService extends ServiceBase {
     }
 
     async getResumeViewCount(resume) {
-        let viewCount = await Viewlog.find({ 'entity': 'resumes', 'entityId': resume.resume_id }).count();
+        let viewCount = await Viewlog.find({ 'entity': 'resumes', 'entity_id': resume.id }).count();
         return viewCount;
     }
 
@@ -99,7 +99,7 @@ class ResumeService extends ServiceBase {
     async getDefaultUserIdNotificationUpdateStatus(resume) {
         let userIdList = resume.assigners;
         userIdList.push(resume.created_by)
-        return userIdList;
+        return [resume.created_by];
     }
 
     async getContributorsId(resume) {
