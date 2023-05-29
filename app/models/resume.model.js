@@ -74,7 +74,7 @@ const schema = new mongoose.Schema(
             required: true
         },
         work_city: {
-            type: mongoose.Schema.Types.ObjectId,
+            type: String,
             required: false,
             default: null
         },
