@@ -4,6 +4,9 @@ import AppResponse from '../../helper/response.js';
 import userService from '../../helper/service/user.service.js';
 import User from '../../models/user.model.js';
 import Controller from './controller.js';
+import { UserEvents } from '../../events/subscribers/user.subscriber.js';
+import EventEmitter from '../../events/emitter.js';
+
 
 
 class ProfileController extends Controller {
@@ -84,7 +87,7 @@ class ProfileController extends Controller {
     async edit(req, res, next) {
         try {
 
-            let userByUserName = await User.findOne({ '_id': { $ne: rq.user.id }, 'username': req.body.username });
+            let userByUserName = await User.findOne({ '_id': { $ne: req.user.id }, 'username': req.body.username });
             if (userByUserName) throw new BadRequestError('user.errors.username_already_exists');
 
             let userByEmail = await User.findOne({ '_id': { $ne: req.user.id }, 'email': req.body.email });
