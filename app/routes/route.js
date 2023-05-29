@@ -52,8 +52,8 @@ router.use('/positions', verifyToken, canAccess, positionAccess, positionRouter)
 router.use('/projects/:id', verifyToken, canAccess, projectAccess, projectIdRouter)
 router.use('/projects', verifyToken, canAccess, projectAccess, projectRouter)
 
-router.use('/provinces/:id', verifyToken, canAccess, provinceIdRouter)
-router.use('/provinces', verifyToken, canAccess, provinceRouter)
+router.use('/provinces/:id', verifyToken, provinceIdRouter)
+router.use('/provinces', verifyToken, provinceRouter)
 
 
 router.use('/resumes/:id', verifyToken, canAccess, resumeAccess, resumeIdRouter)
@@ -64,7 +64,7 @@ router.use('/roles', verifyToken, canAccess, roleRouter)
 
 router.use('/tags', verifyToken, canAccess, TagRouter)
 
-router.use('/profile', verifyToken, canAccess, profileRouter);
+router.use('/profile', verifyToken, profileRouter);
 
 
 
