@@ -1,4 +1,5 @@
-import { body } from 'express-validator';
+import { body, param, query } from 'express-validator'
+import i18n from '../middlewares/lang.middleware.js';
 
 import generalValidator from '../helper/validator.js';
 
@@ -22,6 +23,21 @@ class ProfileValidator {
             body('email').notEmpty().isEmail().withMessage('auth.validations.email_invalid').trim(),
             generalValidator
         ]
+    }
+
+    notifications() {
+        return [
+            query('page')
+                .optional({ nullable: true, checkFalsy: true })
+                .isNumeric().withMessage('notification.validations.notification_page_number').trim(),
+            query('size')
+                .optional({ nullable: true, checkFalsy: true })
+                .isNumeric().withMessage('notification.validations.notification_size_number').trim(),
+            query('state')
+                .optional({ nullable: true, checkFalsy: true })
+                .isIn(i18n.__("notification.enums.list_state")).withMessage('notification.validations.notification_unvalid_state_send').trim(),
+            generalValidator
+        ];
     }
 }
 
