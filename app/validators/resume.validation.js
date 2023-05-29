@@ -75,12 +75,12 @@ class ResumeValidation {
                 .isMongoId()
                 .withMessage('resume.validations.residence_city_id_invalid')
                 .trim(),
-            body('work_city')
-                .notEmpty()
-                .withMessage('resume.validations.work_city_required')
-                .isMongoId()
-                .withMessage('resume.validations.work_city_id_invalid')
-                .trim(),
+            // body('work_city')
+            //     .notEmpty()
+            //     .withMessage('resume.validations.work_city_required')
+            //     .isMongoId()
+            //     .withMessage('resume.validations.work_city_id_invalid')
+            //     .trim(),
             body('education')
                 .notEmpty()
                 .withMessage('resume.validations.education_required')
