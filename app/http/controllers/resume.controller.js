@@ -14,6 +14,7 @@ import SkillService from '../../helper/service/skill.service.js';
 import resumeService from '../../helper/service/resume.service.js';
 import positionService from '../../helper/service/position.service.js';
 import companyService from '../../helper/service/company.service.js';
+import i18n from '../../middlewares/lang.middleware.js';
 
 
 class ResumeController extends Controller {
@@ -38,6 +39,9 @@ class ResumeController extends Controller {
             const { page = 1, size = 10, query = '' } = req.query
 
             let searchQuery = {}
+            let resumes = [], promiseResumes = []
+
+            let resumeStates = i18n.__('resume.enums.status')
 
             searchQuery = mergeQuery(searchQuery, req.rbacQuery)
             if (query.length > 0) {
@@ -52,22 +56,32 @@ class ResumeController extends Controller {
                     ]
                 }
             }
+            
+            resumeStates.map((status) => {
+                let resumeList = Resume.find({status, ...searchQuery})
+                .sort([['index', 1]])
+                .populate([
+                    {path: 'interviews', select: ['event_time', 'event_type', 'status', 'type', 'result', 'description', 'rating', 'contribution']},
+                    { path: 'created_by' },
+                        { path: 'assigners', select: ['firstname', 'lastname', 'avatar'] },
+                        { path: 'interviews', select: ['event_time', 'event_type', 'status', 'type', 'result', 'description', 'rating', 'contribution'] },
+                        { path: 'tags', select: ['name', 'color', 'count'] },
+                        { path: 'project_id' },
+                        { path: 'position_id' },
+                        { path: 'company_id' },
+                ])
+                promiseResumes.push(resumeList)
+            })
 
-            const resumeList = await Resume.paginate(searchQuery, {
-                page: (page) || 1,
-                limit: size,
-                sort: { createdAt: -1 },
-                populate: [
-                    { path: 'company_id', select: 'name' },
-                    { path: 'project_id', select: 'name' },
-                    { path: 'created_by', select: ['firstname', 'lastname'] },
-                    { path: 'assigners', select: ['firstname', 'lastname', 'avatar'] },
-                    { path: 'tags', select: ['name', 'color', 'count'] },
-                    { path: 'skills', select: ['title', 'color'] },
-                    { path: 'views', select: ['created_by', 'createdAt'] }
-                ]
-            });
-            AppResponse.builder(res).message("project.messages.resume_list_found").data(resumeList).send();
+            let results = await Promise.all(promiseResumes)
+            
+            for (let i = 0; i < resumeStates.length; i++) {
+                let resume = {}
+                resume[resumeStates[i]] = results[i]
+                resumes.push(resume)
+            }
+
+            AppResponse.builder(res).message("project.messages.resume_list_found").data(resumes).send();
         } catch (err) {
             next(err);
         }
