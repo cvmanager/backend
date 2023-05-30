@@ -149,10 +149,10 @@ class ProfileController extends Controller {
 
             let searchQuery = { 'user_id': req.user.id };
             switch (state) {
-                case 'unseen':
+                case 'unread':
                     searchQuery = { ...searchQuery, 'seen_at': null }
                     break;
-                case 'observed':
+                case 'read':
                     searchQuery = { ...searchQuery, 'seen_at': { $ne: null } }
                     break;
             }
@@ -183,14 +183,7 @@ class ProfileController extends Controller {
     */
     async observedNotifications(req, res, next) {
         try {
-
-            let notifications = await notificationService.getAll({ 'user_id': req.user.id, 'seen_at': null })
-
-            for (let notification of notifications) {
-                if (!notification.sent_at) notification.sent_at = new Date();
-                notification.seen_at = new Date();
-                await notification.save();
-            }
+            let notifications = await Notification.updateMany({ 'user_id': req.user.id, 'seen_at': null }, { $set: { seen_at: new Date() } });
 
             AppResponse.builder(res).message("notification.messages.notification_list_seen").data(notifications).send();
         } catch (err) {

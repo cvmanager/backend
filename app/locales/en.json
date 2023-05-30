@@ -714,8 +714,8 @@
 			],
 			"list_state": [
 				"all",
-				"unseen",
-				"observed"
+				"read",
+				"unread"
 			]
 		},
 		"validations": {
