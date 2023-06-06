@@ -1,14 +1,11 @@
 import httpStatus from 'http-status'
 import request from 'supertest'
 import app from '../app.js'
-
 import UserData from './data/user.data';
-
 import prepareDB from './utils/prepareDB'
 import { Types } from 'mongoose';
 import ResumeData from './data/resume.data';
 import { faker } from '@faker-js/faker';
-
 import TagData from './data/tag.data';
 import CompanyData from './data/company.data';
 import ProjectData from './data/project.data';
@@ -17,6 +14,9 @@ import UsersData from './data/user.data';
 import SkillData from './data/skill.data';
 import i18n from '../middlewares/lang.middleware.js';
 import * as path from 'path';
+import InterviewData from './data/interview.data.js';
+import ManagerData from './data/manager.data';
+import { resumes } from './data/data.js';
 
 let token;
 let resumeItem;
@@ -38,12 +38,22 @@ let skills
 let users;
 let positionItem;
 let companyItem;
+let manager;
+let userData;
+let interview;
+let interviewData;
+let newInterview;
+
+
+
+
+
 
 prepareDB();
 describe("Resumes Routes", () => {
 
     beforeEach(async () => {
-        let userData = new UserData();
+        userData = new UserData();
         token = userData.getAccessToken();
 
         resumeData = new ResumeData();
@@ -68,6 +78,8 @@ describe("Resumes Routes", () => {
         skillData = new SkillData();
         skill = skillData.getSkill();
         skills = skillData.getSkills();
+        interviewData = new InterviewData();
+        interview = interviewData.getInterview();
 
     })
 
@@ -1933,7 +1945,7 @@ describe("Resumes Routes", () => {
 
     })
 
-    describe(`PATCH /:id/skill`, () => {
+    describe(`DELETE /:id/skill`, () => {
 
         let deleteSkill;
         beforeEach(() => {
@@ -1999,6 +2011,217 @@ describe("Resumes Routes", () => {
                 .delete(`/api/V1/resumes/${resume._id}/skill`)
                 .set(`Authorization`, token)
                 .send(deleteSkill);
+            expect(response.statusCode).toBe(httpStatus.OK);
+        })
+
+    })
+
+    describe('GET /:id/interviews', () => {
+
+        it(`should get ${httpStatus.BAD_REQUEST} resume id is not a mongo id`, async () => {
+            let interviewParam = {
+                interview_id: Types.ObjectId()
+            }
+            const response = await request(app)
+                .get(`/api/V1/resumes/fakeID/interviews`)
+                .set('Authorization', token)
+                .send(interviewParam);
+            expect(true).toBe(true);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.NOT_FOUND} resume is not exist `, async () => {
+            let interviewParam = {
+                interview_id: Types.ObjectId()
+            }
+            const response = await request(app)
+                .get(`/api/V1/resumes/${Types.ObjectId()}/interviews`)
+                .set('Authorization', token)
+                .send(interviewParam);
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} interview_id id is not a mongo id`, async () => {
+            let interviewParam = {
+                interview_id: 'fake id'
+            }
+            const response = await request(app)
+                .get(`/api/V1/resumes/fakeID/interviews`)
+                .set('Authorization', token)
+                .send(interviewParam);
+            expect(true).toBe(true);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.NOT_FOUND} interview_id is not exist `, async () => {
+            let interviewParam = {
+                interview_id: Types.ObjectId()
+            }
+            const response = await request(app)
+                .get(`/api/V1/resumes/${Types.ObjectId()}/interviews`)
+                .set('Authorization', token)
+                .send(interviewParam);
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} interview_id is not send `, async () => {
+            let interviewParam = {
+                interview_id: Types.ObjectId()
+            }
+            delete interviewParam.interview_id;
+
+            const response = await request(app)
+                .get(`/api/V1/resumes/${Types.ObjectId()}/interviews`)
+                .set('Authorization', token)
+                .send(interviewParam);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it("should check field of object returned", async () => {
+
+            const response = await request(app)
+                .get(`/api/V1/resumes/${resume._id}/interviews`)
+                .set('Authorization', token)
+                .send({ "interview_id": interview._id });
+            expect(response.statusCode).toBe(httpStatus.OK);
+
+            let data = response.body.data[0];
+            expect(data).toHaveProperty("_id");
+            expect(data).toHaveProperty("resume_id");
+            expect(data).toHaveProperty("event_time");
+            expect(data).toHaveProperty("event_type");
+            expect(data).toHaveProperty("status");
+            expect(data).toHaveProperty("type");
+            expect(data).toHaveProperty("description");
+            expect(data).toHaveProperty("contribution");
+            expect(data).toHaveProperty("created_by");
+            expect(data).toHaveProperty("deleted");
+            expect(data).toHaveProperty("createdAt");
+            expect(data).toHaveProperty("updatedAt");
+            expect(data).toHaveProperty("id");
+        })
+
+    })
+
+    describe(`POST /:id/interviews`, () => {
+
+        let param = {
+            _id: Types.ObjectId(),
+            rating: 3,
+            description: 'tyasudtaksdlas',
+            type: 'person',
+            event_type: 'online',
+            event_time: new Date()
+        }
+
+        it(`should get ${httpStatus.BAD_REQUEST} resume id is not a mongo id`, async () => {
+
+            const response = await request(app)
+                .post(`/api/V1/resumes/fakeID/interviews`)
+                .set('Authorization', token)
+                .send(param);
+            expect(true).toBe(true);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.NOT_FOUND} resume is not exist `, async () => {
+            const response = await request(app)
+                .post(`/api/V1/resumes/646a1ff0024d373068d84fad/interviews`)
+                .set('Authorization', token)
+                .send(param);
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} interview id is not a mongo id`, async () => {
+            const response = await request(app)
+                .post(`/api/V1/resumes/${resume._id}/interviews`)
+                .set(`Authorization`, token)
+                .send(param);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} interview_id is not send `, async () => {
+            const response = await request(app)
+                .post(`/api/V1/resumes/${Types.ObjectId()}/interviews`)
+                .set('Authorization', token)
+                .send(param);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.NOT_FOUND} interview id is not valid`, async () => {
+
+            const response = await request(app)
+                .post(`/api/V1/resumes/${resume._id}/interviews/${Types.ObjectId()}`)
+                .set(`Authorization`, token)
+                .send(param);
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+
+        it(`should get ${httpStatus.OK} success if correct`, async () => {
+            const response = await request(app)
+                .post(`/api/V1/resumes/${resume._id}/interviews/${interview._id}`)
+                .set(`Authorization`, token)
+                .send(param);
+
+            let data = response.body.data[0];
+            console.log(data);
+            expect(data).toHaveProperty("_id");
+            expect(data).toHaveProperty("resume_id");
+            expect(data).toHaveProperty("event_time");
+            expect(data).toHaveProperty("event_type");
+            expect(data).toHaveProperty("status");
+            expect(data).toHaveProperty("type");
+            expect(data).toHaveProperty("description");
+            expect(data).toHaveProperty("contribution");
+            expect(data).toHaveProperty("created_by");
+            expect(data).toHaveProperty("deleted");
+            expect(data).toHaveProperty("createdAt");
+            expect(data).toHaveProperty("updatedAt");
+            expect(data).toHaveProperty("id");
+            expect(response.statusCode).toBe(httpStatus.OK)
+        })
+    })
+
+    describe(`DELETE /:id/interviews`, () => {
+
+        it(`should get ${httpStatus.BAD_REQUEST} resume id is not a mongo id`, async () => {
+            const response = await request(app)
+                .delete(`/api/V1/resumes/fakeID/interviews`)
+                .set('Authorization', token)
+                .send({ "interview_id": interview._id });
+            expect(true).toBe(true);
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.NOT_FOUND} resume is not exist `, async () => {
+            const response = await request(app)
+                .delete(`/api/V1/resumes/${Types.ObjectId()}/interviews`)
+                .set('Authorization', token)
+                .send({ "interview_id": interview._id });
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+
+        it(`should get ${httpStatus.BAD_REQUEST} if interview id is not valid`, async () => {
+            const response = await request(app)
+                .delete(`/api/V1/resumes/${resume._id}/interviews`)
+                .set(`Authorization`, token)
+                .send({ "interview_id": 'fakeId' });
+            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
+        })
+
+        it(`should get ${httpStatus.NOT_FOUND} if interview not found `, async () => {
+            const response = await request(app)
+                .delete(`/api/V1/resumes/${resume._id}/interviews`)
+                .set(`Authorization`, token)
+                .send({ "interview_id": Types.ObjectId() });
+            expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        })
+
+        it(`should get ${httpStatus.OK} if all data correct `, async () => {
+            const response = await request(app)
+                .delete(`/api/V1/resumes/${resume._id}/interviews`)
+                .set(`Authorization`, token)
+                .send({ "interview_id": interview._id });
             expect(response.statusCode).toBe(httpStatus.OK);
         })
 
