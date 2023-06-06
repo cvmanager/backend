@@ -2,7 +2,7 @@ import redis from 'redis';
 import env from './env.js';
 
 let redisClient;
-const salam = async () => {
+const connect = async () => {
      redisClient = redis.createClient({
         socket: {
             host: env('REDIS_HOST'),
@@ -15,6 +15,6 @@ const salam = async () => {
     })
     await redisClient.connect();
 }
-salam();
+connect();
 
 export default redisClient

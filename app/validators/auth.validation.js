@@ -61,7 +61,7 @@ class AuthValidator {
         ]
     }
 
-    checkusername() {
+    checkUsername() {
         return [
             body('username')
                 .notEmpty()
@@ -72,13 +72,14 @@ class AuthValidator {
     }
     checkVerifyMobileCode() {
         return [
-            body('verify-code')
+            body('verify_code')
                 .notEmpty()
                 .withMessage('auth.validations.verifycode_required')
                 .trim(),
             generalValidator
         ]
     }
+
 }
 
 export default new AuthValidator();

@@ -52,6 +52,10 @@ const schema = new mongoose.Schema(
             type: Date,
             default: null,
         },
+        last_visit: {
+            type: Date,
+            default: null,
+        },
         role: {
             type: [mongoose.Schema.Types.ObjectId],
             ref: Role

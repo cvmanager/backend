@@ -31,9 +31,9 @@ class CompanyController extends Controller {
     * @security BearerAuth
     * 
     * @return { company.success } 200 - success response
-    * @return { message.badrequest_error } 400 - bad request respone
-    * @return { message.badrequest_error } 404 - not found respone
-    * @return { message.unauthorized_error }     401 - UnauthorizedError
+    * @return { message.bad_request_error } 400 - BadRequest response
+    * @return { message.bad_request_error } 404 - not found response
+    * @return { message.unauthorized_error }     401 - Unauthorized
     * @return { message.server_error  }    500 - Server Error
     */
     async index(req, res, next) {
@@ -72,9 +72,9 @@ class CompanyController extends Controller {
     * @param  { string } id.path.required - company id
     * 
     * @return { company.success } 200 - success response
-    * @return { message.badrequest_error } 400 - bad request respone
-    * @return { message.badrequest_error } 404 - not found respone
-    * @return { message.unauthorized_error }     401 - UnauthorizedError
+    * @return { message.bad_request_error } 400 - BadRequest response
+    * @return { message.bad_request_error } 404 - not found response
+    * @return { message.unauthorized_error }     401 - Unauthorized
     * @return { message.server_error  }    500 - Server Error
     */
     async find(req, res, next) {
@@ -97,9 +97,9 @@ class CompanyController extends Controller {
     * @param { company.create } request.body - company info - application/json
     
     * @return { company.success }           201 - success response
-    * @return { message.badrequest_error }  400 - bad request respone
-    * @return { message.badrequest_error }  404 - not found respone
-    * @return { message.badrequest_error }       401 - UnauthorizedError
+    * @return { message.bad_request_error }  400 - BadRequest response
+    * @return { message.bad_request_error }  404 - not found response
+    * @return { message.bad_request_error }       401 - Unauthorized
     * @return { message.server_error  }     500 - Server Error
     */
     async create(req, res, next) {
@@ -107,7 +107,7 @@ class CompanyController extends Controller {
             let company = await companyService.findOne({ 'name': req.body.name })
             if (company) throw new AlreadyExists('company.errors.company_already_exists');
 
-            req.body.created_by = req.user._id;
+            req.body.created_by = req.user.id;
             company = await companyService.create(req.body);
 
             EventEmitter.emit(CompanyEvents.CREATE, company,req);
@@ -121,7 +121,7 @@ class CompanyController extends Controller {
     /**
     * PATCH /companies/{id}
     * 
-    * @summary updates a copmany
+    * @summary update a company
     * @tags Company
     * @security BearerAuth
     * 
@@ -129,9 +129,9 @@ class CompanyController extends Controller {
     * @param { company.create } request.body - company info - application/json
     * 
     * @return { company.success }           200 - success response
-    * @return { message.badrequest_error }  400 - bad request respone
-    * @return { message.badrequest_error }  404 - not found respone
-    * @return { message.unauthorized_error }     401 - UnauthorizedError
+    * @return { message.bad_request_error }  400 - BadRequest response
+    * @return { message.bad_request_error }  404 - not found response
+    * @return { message.unauthorized_error }     401 - Unauthorized
     * @return { message.server_error  }    500 - Server Error
     */
     async update(req, res, next) {
@@ -153,22 +153,22 @@ class CompanyController extends Controller {
     /**
     * DELETE /companies/{id}
     * 
-    * @summary deletes a copmany by id
+    * @summary delete a company
     * @tags Company
     * @security BearerAuth
     * 
     * @param  { string } id.path - company id
     * 
     * @return { company.success } 200 - success response
-    * @return { message.badrequest_error } 400 - bad request respone
-    * @return { message.badrequest_error } 404 - not found respone
-    * @return { message.unauthorized_error }     401 - UnauthorizedError
+    * @return { message.bad_request_error } 400 - BadRequest response
+    * @return { message.bad_request_error } 404 - not found response
+    * @return { message.unauthorized_error }     401 - Unauthorized
     * @return { message.server_error  }    500 - Server Error
     */
     async delete(req, res, next) {
         try {
             let company = await companyService.findByParamId(req)
-            await company.delete(req.user._id);
+            await company.delete(req.user.id);
 
             EventEmitter.emit(CompanyEvents.DELETE, company, req);
             AppResponse.builder(res).message("company.messages.company_successfully_deleted").data(company).send();
@@ -187,10 +187,10 @@ class CompanyController extends Controller {
     * @param  { string } id.path - company id - application/json
     * @param  { Company.set_manager } request.body - company info - application/json
     *
-    * @return { message.unauthorized_error }     401 - UnauthorizedError
-    * @return { message.badrequest_error }       404 - NotFoundError
+    * @return { message.unauthorized_error }     401 - Unauthorized
+    * @return { message.bad_request_error }       404 - NotFoundError
     * @return { message.server_error }           500 - Server Error
-    * @return { company.success }                201 - success respons
+    * @return { company.success }                201 - success response
     */
     async manager(req, res, next) {
         try {
@@ -203,7 +203,7 @@ class CompanyController extends Controller {
             let manager = await managerService.findOne({ 'entity': "companies", 'entity_id': company.id, 'user_id': user.id });
             if (manager) throw new BadRequestError("company.errors.the_user_is_currently_an_manager_for_company");
 
-            await managerService.create({ user_id: user._id, entity: "companies", entity_id: company._id, created_by: req.user._id });
+            await managerService.create({ user_id: user._id, entity: "companies", entity_id: company._id, created_by: req.user.id });
 
             const companyManagerRole = await roleService.findOne({ name: "Company Manager" })
             await userService.addRole(user._id, companyManagerRole._id)
@@ -226,10 +226,10 @@ class CompanyController extends Controller {
    * @param  { string } id.path - company id - application/json
    * @param  { Company.set_manager } request.body - company info - application/json
    *
-   * @return { message.unauthorized_error }     401 - UnauthorizedError
-   * @return { message.badrequest_error }       404 - NotFoundError
+   * @return { message.unauthorized_error }     401 - Unauthorized
+   * @return { message.bad_request_error }       404 - NotFoundError
    * @return { message.server_error }           500 - Server Error
-   * @return { company.success }                200 - success respons
+   * @return { company.success }                200 - Success response
    */
     async deleteManager(req, res, next) {
         try {
@@ -242,7 +242,7 @@ class CompanyController extends Controller {
             if (!manager) throw new BadRequestError("company.errors.the_user_is_not_manager_for_this_company");
             if (manager.type === 'owner') throw new BadRequestError("company.errors.the_owner_manager_cannot_be_deleted");
 
-            await managerService.delete(manager, req.user._id);
+            await managerService.delete(manager, req.user.id);
 
             let isCompanyManager = await managerService.findOne({ 'entity': "companies", 'user_id': user.id, type: 'moderator' });
             if (!isCompanyManager) {
@@ -268,9 +268,9 @@ class CompanyController extends Controller {
     * @param  { string } id.path.required - company id
     * 
     * @return { company.success }               200 - success response
-    * @return { message.badrequest_error }      400 - bad request respone
-    * @return { message.badrequest_error }      404 - not found respone
-    * @return { message.unauthorized_error }    401 - UnauthorizedError
+    * @return { message.bad_request_error }      400 - BadRequest response
+    * @return { message.bad_request_error }      404 - not found response
+    * @return { message.unauthorized_error }    401 - Unauthorized
     * @return { message.server_error  }         500 - Server Error
     */
     async getProjects(req, res, next) {
@@ -302,9 +302,9 @@ class CompanyController extends Controller {
  * @param  { string } id.path.required - company id
  * 
  * @return { company.success }               200 - success response
- * @return { message.badrequest_error }      400 - bad request respone
- * @return { message.badrequest_error }      404 - not found respone
- * @return { message.unauthorized_error }    401 - UnauthorizedError
+ * @return { message.bad_request_error }      400 - BadRequest response
+ * @return { message.bad_request_error }      404 - not found response
+ * @return { message.unauthorized_error }    401 - Unauthorized
  * @return { message.server_error  }         500 - Server Error
  */
     async getManagers(req, res, next) {
@@ -331,10 +331,10 @@ class CompanyController extends Controller {
     * 
     * @param  { string } id.path.required - company id
     * 
-    * @return { company.success }               200 - success response
-    * @return { message.badrequest_error }      400 - bad request respone
-    * @return { message.badrequest_error }      404 - not found respone
-    * @return { message.unauthorized_error }    401 - UnauthorizedError
+    * @return { company.success }               200 - Success response
+    * @return { message.bad_request_error }      400 - BadRequest response
+    * @return { message.bad_request_error }      404 - NotFound response
+    * @return { message.unauthorized_error }    401 - Unauthorized
     * @return { message.server_error  }         500 - Server Error
     */
     async getResumes(req, res, next) {
@@ -364,8 +364,8 @@ class CompanyController extends Controller {
     * @param { company.upload_logo } request.body - company info - multipart/form-data
     * 
     * @return { company.success }               200 - update resume profile
-    * @return { message.badrequest_error }      400 - resume not found
-    * @return { message.badrequest_error }      401 - UnauthorizedError
+    * @return { message.bad_request_error }      400 - resume not found
+    * @return { message.bad_request_error }      401 - Unauthorized
     * @return { message.server_error}           500 - Server Error
     */
     async updateLogo(req, res, next) {
@@ -393,8 +393,8 @@ class CompanyController extends Controller {
     * @param { string } id.path.required - company id
     * 
     * @return { company.success }               200 - active company
-    * @return { message.badrequest_error }      400 - company not found
-    * @return { message.badrequest_error }      401 - UnauthorizedError
+    * @return { message.bad_request_error }      400 - company not found
+    * @return { message.bad_request_error }      401 - Unauthorized
     * @return { message.server_error}           500 - Server Error
     */
     async active(req, res, next) {
@@ -421,8 +421,8 @@ class CompanyController extends Controller {
     * @param { string } id.path.required - company id
     * 
     * @return { company.success }               200 - deactive company
-    * @return { message.badrequest_error }      400 - company not found
-    * @return { message.badrequest_error }      401 - UnauthorizedError
+    * @return { message.bad_request_error }      400 - company not found
+    * @return { message.bad_request_error }      401 - Unauthorized
     * @return { message.server_error}           500 - Server Error
     */
     async deActive(req, res, next) {
@@ -450,8 +450,8 @@ class CompanyController extends Controller {
    * @param  { string } id.path.required - company id
    * 
    * @return { company.success } 200 - success response
-   * @return { message.badrequest_error } 400 - bad request respone
-   * @return { message.unauthorized_error }     401 - UnauthorizedError
+   * @return { message.bad_request_error } 400 - BadRequest response
+   * @return { message.unauthorized_error }     401 - Unauthorized
    * @return { message.server_error  }    500 - Server Error
    */
     async resumeByStates(req, res, next) {
@@ -504,8 +504,8 @@ class CompanyController extends Controller {
    * @param  { string } id.path.required - company id
    * 
    * @return { company.success } 200 - success response
-   * @return { message.badrequest_error } 400 - bad request respone
-   * @return { message.unauthorized_error }     401 - UnauthorizedError
+   * @return { message.bad_request_error } 400 - BadRequest response
+   * @return { message.unauthorized_error }     401 - Unauthorized
    * @return { message.server_error  }    500 - Server Error
    */
     async resumeCountByProjects(req, res, next) {
@@ -573,8 +573,8 @@ class CompanyController extends Controller {
    * @param  { string } id.path.required - company id
    * 
    * @return { company.success } 200 - success response
-   * @return { message.badrequest_error } 400 - bad request respone
-   * @return { message.unauthorized_error }     401 - UnauthorizedError
+   * @return { message.bad_request_error } 400 - BadRequest response
+   * @return { message.unauthorized_error }     401 - Unauthorized
    * @return { message.server_error  }    500 - Server Error
    */
     async resumeCountFromMonth(req, res, next) {
@@ -646,8 +646,8 @@ class CompanyController extends Controller {
    * @param  { string } id.path.required - company id
    * 
    * @return { company.success } 200 - success response
-   * @return { message.badrequest_error } 400 - bad request respone
-   * @return { message.unauthorized_error }     401 - UnauthorizedError
+   * @return { message.bad_request_error } 400 - BadRequest response
+   * @return { message.unauthorized_error }     401 - Unauthorized
    * @return { message.server_error  }    500 - Server Error
    */
     async resumeStateInLastMonth(req, res, next) {

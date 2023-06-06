@@ -10,7 +10,7 @@ async function generateJwtToken(data) {
 }
 
 
-async function generateJwtRefeshToken(user_id) {
+async function generateJwtRefreshToken(user_id) {
     const refresh_token = await jsonwebtoken.sign(
         { sub: user_id }, 
         env("JWT_SECRET_REFRESH_TOKEN"), 
@@ -22,4 +22,4 @@ async function generateJwtRefeshToken(user_id) {
     return refresh_token;
 }
 
-export { generateJwtToken, generateJwtRefeshToken }
+export { generateJwtToken, generateJwtRefreshToken }

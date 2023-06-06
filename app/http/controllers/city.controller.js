@@ -13,10 +13,10 @@ class CityController extends Controller {
     * @security BearerAuth
     * 
     * @return { city.success } 200 - success response
-    * @return { message.badrequest_error } 400 - bad request respone
-    * @return { message.badrequest_error } 404 - not found respone
-    * @return { message.unauthorized_error }     401 - UnauthorizedError
-    * @return { message.server_error  }    500 - Server Error
+    * @return { message.bad_request_error }      400 - BadRequest
+    * @return { message.bad_request_error }      404 - NotFound
+    * @return { message.unauthorized_error }     401 - Unauthorized
+    * @return { message.server_error  }          500 - Server Error
     */
     async index(req, res, next) {
         try {
@@ -42,11 +42,11 @@ class CityController extends Controller {
     * 
     * @param  { string } id.path.required - city id
     * 
-    * @return { city.success } 200 - success response
-    * @return { message.badrequest_error } 400 - bad request respone
-    * @return { message.badrequest_error } 404 - not found respone
-    * @return { message.unauthorized_error }     401 - UnauthorizedError
-    * @return { message.server_error  }    500 - Server Error
+    * @return { city.success }                  200 - Success Response
+    * @return { message.bad_request_error }     400 - BadRequest
+    * @return { message.bad_request_error }     404 - NotFound
+    * @return { message.unauthorized_error }    401 - Unauthorized
+    * @return { message.server_error  }         500 - Server Error
     */
     async find(req, res, next) {
         try {

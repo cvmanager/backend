@@ -26,6 +26,7 @@ import positionIdRouter from './positionId.router.js'
 import { resumeAccess } from '../middlewares/resumeAccess.middleware.js'
 import resumeIdRouter from './resumeId.route.js'
 import provinceIdRouter from './provinceId.route.js'
+import profileRouter from './profile.route.js'
 
 
 const router = express.Router({ mergeParams: true });
@@ -51,8 +52,8 @@ router.use('/positions', verifyToken, checkVerifiedMobile, canAccess, positionAc
 router.use('/projects/:id', verifyToken, checkVerifiedMobile ,canAccess, projectAccess, projectIdRouter)
 router.use('/projects', verifyToken,checkVerifiedMobile, canAccess, projectAccess, projectRouter)
 
-router.use('/provinces/:id', verifyToken,checkVerifiedMobile, canAccess, provinceIdRouter)
-router.use('/provinces', verifyToken, checkVerifiedMobile,canAccess, provinceRouter)
+router.use('/provinces/:id', verifyToken,checkVerifiedMobile, provinceIdRouter)
+router.use('/provinces', verifyToken, checkVerifiedMobile, provinceRouter)
 
 
 router.use('/resumes/:id', verifyToken, checkVerifiedMobile, canAccess, resumeAccess, resumeIdRouter)
@@ -62,6 +63,8 @@ router.use('/roles/:id', verifyToken, checkVerifiedMobile , canAccess, roleIdRou
 router.use('/roles', verifyToken, checkVerifiedMobile , canAccess, roleRouter)
 
 router.use('/tags', verifyToken,checkVerifiedMobile, canAccess, TagRouter)
+
+router.use('/profile', verifyToken, profileRouter);
 
 
 

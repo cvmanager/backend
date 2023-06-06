@@ -26,7 +26,7 @@ class ProjectController extends Controller {
      * @security BearerAuth
      * 
      * @return { project.success }                  200 - success response
-     * @return { message.unauthorized_error }       401 - UnauthorizedError
+     * @return { message.unauthorized_error }       401 - Unauthorized
      * @return { message.server_error }             500 - Server Error
      */
     async index(req, res, next) {
@@ -68,7 +68,7 @@ class ProjectController extends Controller {
      * 
      * @param  { string } id.path - project id
      * 
-     * @return { message.unauthorized_error }       401 - UnauthorizedError
+     * @return { message.unauthorized_error }       401 - Unauthorized
      * @return { message.server_error }             500 - Server Error
      */
     async find(req, res, next) {
@@ -96,8 +96,8 @@ class ProjectController extends Controller {
      * @param  { project.create } request.body - project info - application/json
      * 
      * @return { project.success }                  201 - Project successful Created  
-     * @return { message.unauthorized_error }       401 - UnauthorizedError
-     * @return { message.badrequest_error }         400 - Bad Request
+     * @return { message.unauthorized_error }       401 - Unauthorized
+     * @return { message.bad_request_error }         400 - BadRequest
      * @return { message.server_error  }            500 - Server Error
      */
     async create(req, res, next) {
@@ -110,7 +110,7 @@ class ProjectController extends Controller {
             let project = await Project.findOne({ 'name': req.body.name, 'company_id': company._id });
             if (project) throw new AlreadyExists('project.errors.project_already_attached_company');
 
-            req.body.created_by = req.user._id;
+            req.body.created_by = req.user.id;
             project = await Project.create(req.body);
             EventEmitter.emit(ProjectEvents.CREATE, project, req)
 
@@ -130,7 +130,7 @@ class ProjectController extends Controller {
      * @param  { string } id.path - project id
      * @param  { project.update } request.body - project info - application/json
      * 
-     * @return { message.unauthorized_error }       401 - UnauthorizedError
+     * @return { message.unauthorized_error }       401 - Unauthorized
      * @return { message.server_error }             500 - Server Error
      */
     async update(req, res, next) {
@@ -162,14 +162,14 @@ class ProjectController extends Controller {
      * 
      * @param  { string } id.path - project id - application/json
      * 
-     * @return { message.unauthorized_error }     401 - UnauthorizedError
+     * @return { message.unauthorized_error }     401 - Unauthorized
      * @return { message.server_error } 500 - Server Error
      */
     async delete(req, res, next) {
         try {
             let project = await projectService.findByParamId(req)
 
-            await project.delete(req.user._id);
+            await project.delete(req.user.id);
             EventEmitter.emit(ProjectEvents.DELETE, project, req)
 
             AppResponse.builder(res).message("project.messages.project_successfully_deleted").data(project).send();
@@ -188,7 +188,7 @@ class ProjectController extends Controller {
       * @param  { string } id.path - project id - application/json
       * @param  { project.set_manager } request.body - project info - application/json
       *
-      * @return { message.unauthorized_error }     401 - UnauthorizedError
+      * @return { message.unauthorized_error }     401 - Unauthorized
       * @return { message.unauthorized_error }     404 - NotFoundError
       * @return { message.server_error }           500 - Server Error
       */
@@ -202,7 +202,7 @@ class ProjectController extends Controller {
             let manager = await managerService.findOne({ 'entity': "projects", 'entity_id': project.id, 'user_id': user.id });
             if (manager) throw new BadRequestError("project.errors.the_user_is_currently_an_manager_for_project");
 
-            await managerService.create({ user_id: user._id, entity: "projects", entity_id: project._id, created_by: req.user._id });
+            await managerService.create({ user_id: user._id, entity: "projects", entity_id: project._id, created_by: req.user.id });
 
             const projectManagerRole = await roleService.findOne({ name: "Project Manager" })
             await userService.addRole(user._id, projectManagerRole._id)
@@ -224,7 +224,7 @@ class ProjectController extends Controller {
     * @param  { string } id.path - project id - application/json
     * @param  { project.delete_manager } request.body - project info - application/json
     *
-    * @return { message.unauthorized_error }     401 - UnauthorizedError
+    * @return { message.unauthorized_error }     401 - Unauthorized
     * @return { message.unauthorized_error }     404 - NotFoundError
     * @return { message.server_error }           500 - Server Error
     */
@@ -240,7 +240,7 @@ class ProjectController extends Controller {
             if (manager.type === 'owner') throw new BadRequestError("project.errors.the_owner_manager_cannot_be_deleted");
 
             EventEmitter.emit(ProjectEvents.UNSET_MANAGER, project, req)
-            await manager.delete(req.user._id);
+            await manager.delete(req.user.id);
 
             let isProjectManager = await Manager.findOne({ 'entity': "projects", 'user_id': user.id, type: 'moderator' });
             if (!isProjectManager) {
@@ -264,9 +264,9 @@ class ProjectController extends Controller {
     * @param  { string } id.path.required - project id
     * 
     * @return { project.success }               200 - success response
-    * @return { message.badrequest_error }      400 - bad request respone
-    * @return { message.badrequest_error }      404 - not found respone
-    * @return { message.unauthorized_error }    401 - UnauthorizedError
+    * @return { message.bad_request_error }      400 - BadRequest response
+    * @return { message.bad_request_error }      404 - not found response
+    * @return { message.unauthorized_error }    401 - Unauthorized
     * @return { message.server_error  }         500 - Server Error
     */
     async getPositions(req, res, next) {
@@ -291,9 +291,9 @@ class ProjectController extends Controller {
 * @param  { string } id.path.required - project id
 * 
 * @return { project.success }               200 - success response
-* @return { message.badrequest_error }      400 - bad request respone
-* @return { message.badrequest_error }      404 - not found respone
-* @return { message.unauthorized_error }    401 - UnauthorizedError
+* @return { message.bad_request_error }      400 - BadRequest response
+* @return { message.bad_request_error }      404 - not found response
+* @return { message.unauthorized_error }    401 - Unauthorized
 * @return { message.server_error  }         500 - Server Error
 */
     async getManagers(req, res, next) {
@@ -319,9 +319,9 @@ class ProjectController extends Controller {
     * @param  { string } id.path.required - project id
     * 
     * @return { project.success }               200 - success response
-    * @return { message.badrequest_error }      400 - bad request respone
-    * @return { message.badrequest_error }      404 - not found respone
-    * @return { message.unauthorized_error }    401 - UnauthorizedError
+    * @return { message.bad_request_error }      400 - BadRequest response
+    * @return { message.bad_request_error }      404 - not found response
+    * @return { message.unauthorized_error }    401 - Unauthorized
     * @return { message.server_error  }         500 - Server Error
     */
     async getResumes(req, res, next) {
@@ -345,8 +345,8 @@ class ProjectController extends Controller {
      * @param { string } id.path.required - projects id
      * 
      * @return { project.success }               200 - active projects
-     * @return { message.badrequest_error }      400 - projects not found
-     * @return { message.badrequest_error }      401 - UnauthorizedError
+     * @return { message.bad_request_error }      400 - projects not found
+     * @return { message.bad_request_error }      401 - Unauthorized
      * @return { message.server_error}           500 - Server Error
      */
     async active(req, res, next) {
@@ -374,8 +374,8 @@ class ProjectController extends Controller {
     * @param { string } id.path.required - projects id
     * 
     * @return { project.success }               200 - deactive projects
-    * @return { message.badrequest_error }      400 - projects not found
-    * @return { message.badrequest_error }      401 - UnauthorizedError
+    * @return { message.bad_request_error }      400 - projects not found
+    * @return { message.bad_request_error }      401 - Unauthorized
     * @return { message.server_error}           500 - Server Error
     */
     async deActive(req, res, next) {
@@ -404,8 +404,8 @@ class ProjectController extends Controller {
 * @param { project.upload_logo } request.body - project info - multipart/form-data
 * 
 * @return { project.success }               200 - update resume profile
-* @return { message.badrequest_error }      400 - resume not found
-* @return { message.badrequest_error }      401 - UnauthorizedError
+* @return { message.bad_request_error }      400 - resume not found
+* @return { message.bad_request_error }      401 - Unauthorized
 * @return { message.server_error}           500 - Server Error
 */
     async updateLogo(req, res, next) {

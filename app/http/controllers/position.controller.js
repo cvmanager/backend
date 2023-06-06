@@ -29,9 +29,9 @@ class PositionController extends Controller {
     * @security BearerAuth
     * 
     * @return { position.success } 200 - success response
-    * @return { message.badrequest_error } 400 - bad request respone
-    * @return { message.badrequest_error } 404 - not found respone
-    * @return { message.unauthorized_error }     401 - UnauthorizedError
+    * @return { message.bad_request_error } 400 - BadRequest respone
+    * @return { message.bad_request_error } 404 - not found respone
+    * @return { message.unauthorized_error }     401 - Unauthorized
     * @return { message.server_error  }    500 - Server Error
     */
     async index(req, res, next) {
@@ -72,9 +72,9 @@ class PositionController extends Controller {
     * @param  { string } id.path.required - position id
     * 
     * @return { position.success } 200 - success response
-    * @return { message.badrequest_error } 400 - bad request respone
-    * @return { message.badrequest_error } 404 - not found respone
-    * @return { message.unauthorized_error }     401 - UnauthorizedError
+    * @return { message.bad_request_error } 400 - BadRequest respone
+    * @return { message.bad_request_error } 404 - not found respone
+    * @return { message.unauthorized_error }     401 - Unauthorized
     * @return { message.server_error  }    500 - Server Error
     */
     async find(req, res, next) {
@@ -104,9 +104,9 @@ class PositionController extends Controller {
     * @param { position.create } request.body - position info - application/json
     
     * @return { position.success }           201 - success response
-    * @return { message.badrequest_error }  400 - bad request respone
-    * @return { message.badrequest_error }  404 - not found respone
-    * @return { message.badrequest_error }       401 - UnauthorizedError
+    * @return { message.bad_request_error }  400 - BadRequest respone
+    * @return { message.bad_request_error }  404 - not found respone
+    * @return { message.bad_request_error }       401 - Unauthorized
     * @return { message.server_error  }     500 - Server Error
     */
     async create(req, res, next) {
@@ -120,7 +120,7 @@ class PositionController extends Controller {
             let position = await Position.findOne({ 'title': req.body.title, 'project_id': req.body.project_id, 'level': req.body.level });
             if (position) throw new AlreadyExists('position.errors.position_already_exists');
 
-            req.body.created_by = req.user._id;
+            req.body.created_by = req.user.id;
             req.body.company_id = project.company_id;
             position = await Position.create(req.body);
 
@@ -142,9 +142,9 @@ class PositionController extends Controller {
     * @param { position.create } request.body - position info - application/json
     * 
     * @return { position.success }           200 - success response
-    * @return { message.badrequest_error }  400 - bad request respone
-    * @return { message.badrequest_error }  404 - not found respone
-    * @return { message.unauthorized_error }     401 - UnauthorizedError
+    * @return { message.bad_request_error }  400 - BadRequest respone
+    * @return { message.bad_request_error }  404 - not found respone
+    * @return { message.unauthorized_error }     401 - Unauthorized
     * @return { message.server_error  }    500 - Server Error
     */
     async update(req, res, next) {
@@ -179,9 +179,9 @@ class PositionController extends Controller {
     * @param  { string } id.path - position id
     * 
     * @return { position.success } 200 - success response
-    * @return { message.badrequest_error } 400 - bad request respone
-    * @return { message.badrequest_error } 404 - not found respone
-    * @return { message.unauthorized_error }     401 - UnauthorizedError
+    * @return { message.bad_request_error } 400 - BadRequest respone
+    * @return { message.bad_request_error } 404 - not found respone
+    * @return { message.unauthorized_error }     401 - Unauthorized
     * @return { message.server_error  }    500 - Server Error
     */
     async delete(req, res, next) {
@@ -189,7 +189,7 @@ class PositionController extends Controller {
             const position = await positionService.findByParamId(req)
             if (!position) throw new NotFoundError('position.errors.position_notfound');
 
-            await position.delete(req.user._id);
+            await position.delete(req.user.id);
             EventEmitter.emit(PositionEvents.DELETE, position, req);
 
             AppResponse.builder(res).message("position.messages.position_successfully_deleted").data(position).send();
@@ -209,9 +209,9 @@ class PositionController extends Controller {
     * @param { position.set_manager } request.body - position info - application/json
     *    
     * @return { manager.success }           201 - success response
-    * @return { message.badrequest_error } 400 - bad request respone
-    * @return { message.badrequest_error } 404 - not found respone
-    * @return { message.unauthorized_error }     401 - UnauthorizedError
+    * @return { message.bad_request_error } 400 - BadRequest respone
+    * @return { message.bad_request_error } 404 - not found respone
+    * @return { message.unauthorized_error }     401 - Unauthorized
     * @return { message.server_error  }    500 - Server Error
     *
     */
@@ -227,7 +227,7 @@ class PositionController extends Controller {
             let manager = await managerService.findOne({ 'entity': "positions", 'entity_id': position.id, 'user_id': user.id });
             if (manager) throw new BadRequestError("project.errors.the_user_is_currently_an_manager_for_position");
 
-            await managerService.create({ user_id: user._id, entity: "positions", entity_id: position._id, created_by: req.user._id });
+            await managerService.create({ user_id: user._id, entity: "positions", entity_id: position._id, created_by: req.user.id });
 
             const positionManagerRole = await roleService.findOne({ name: "Position Manager" })
             await userService.addRole(user._id, positionManagerRole._id)
@@ -249,9 +249,9 @@ class PositionController extends Controller {
      * @param  { string } id.path.required - position id
      * 
      * @return { position.success }              200 - success response
-     * @return { message.badrequest_error }      400 - bad request respone
-     * @return { message.badrequest_error }      404 - not found respone
-     * @return { message.unauthorized_error }    401 - UnauthorizedError
+     * @return { message.bad_request_error }      400 - BadRequest respone
+     * @return { message.bad_request_error }      404 - not found respone
+     * @return { message.unauthorized_error }    401 - Unauthorized
      * @return { message.server_error  }         500 - Server Error
      */
     async getResumes(req, res, next) {
@@ -304,9 +304,9 @@ class PositionController extends Controller {
  * @param  { string } id.path.required - position id
  * 
  * @return { position.success }              200 - success response
- * @return { message.badrequest_error }      400 - bad request respone
- * @return { message.badrequest_error }      404 - not found respone
- * @return { message.unauthorized_error }    401 - UnauthorizedError
+ * @return { message.bad_request_error }      400 - BadRequest respone
+ * @return { message.bad_request_error }      404 - not found respone
+ * @return { message.unauthorized_error }    401 - Unauthorized
  * @return { message.server_error  }         500 - Server Error
  */
     async getManagers(req, res, next) {
@@ -328,8 +328,8 @@ class PositionController extends Controller {
   * @param { string } id.path.required - position id
   * 
   * @return { position.success }              200 - active positions
-  * @return { message.badrequest_error }      400 - positions not found
-  * @return { message.badrequest_error }      401 - UnauthorizedError
+  * @return { message.bad_request_error }      400 - positions not found
+  * @return { message.bad_request_error }      401 - Unauthorized
   * @return { message.server_error}           500 - Server Error
   */
     async active(req, res, next) {
@@ -358,8 +358,8 @@ class PositionController extends Controller {
     * @param { string } id.path.required - positions id
     * 
     * @return { position.success }              200 - deactive positions
-    * @return { message.badrequest_error }      400 - positions not found
-    * @return { message.badrequest_error }      401 - UnauthorizedError
+    * @return { message.bad_request_error }      400 - positions not found
+    * @return { message.bad_request_error }      401 - Unauthorized
     * @return { message.server_error}           500 - Server Error
     */
     async deActive(req, res, next) {
@@ -389,8 +389,8 @@ class PositionController extends Controller {
 * @param  { string } id.path.required - position id - application/json
 * @param  { position.delete_manager } request.body - position info - application/json
 *
-* @return { message.unauthorized_error }     401 - UnauthorizedError
-* @return { message.badrequest_error }       404 - NotFoundError
+* @return { message.unauthorized_error }     401 - Unauthorized
+* @return { message.bad_request_error }       404 - NotFoundError
 * @return { message.server_error }           500 - Server Error
 * @return { position.success }                200 - success respons
 */
@@ -406,7 +406,7 @@ class PositionController extends Controller {
             if (!manager) throw new BadRequestError("position.errors.the_user_is_not_manager_for_this_position");
             if (manager.type === 'owner') throw new BadRequestError("position.errors.the_owner_manager_cannot_be_deleted");
 
-            await manager.delete(req.user._id);
+            await manager.delete(req.user.id);
             EventEmitter.emit(PositionEvents.UNSET_MANAGER, position, req);
 
             AppResponse.builder(res).message("position.messages.position_manager_deleted").data(position).send()
@@ -425,8 +425,8 @@ class PositionController extends Controller {
    * @param { position.upload_logo } request.body - position info - multipart/form-data
    * 
    * @return { position.success }               200 - update resume profile
-   * @return { message.badrequest_error }      400 - resume not found
-   * @return { message.badrequest_error }      401 - UnauthorizedError
+   * @return { message.bad_request_error }      400 - resume not found
+   * @return { message.bad_request_error }      401 - Unauthorized
    * @return { message.server_error}           500 - Server Error
    */
     async updateLogo(req, res, next) {

@@ -7,7 +7,6 @@ import Company from '../../models/company.model.js';
 import loginHistory from '../../models/loginHistory.model.js';
 import Controller from './controller.js';
 import { UserEvents } from '../../events/subscribers/user.subscriber.js';
-import bcrypt from 'bcrypt'
 import { mergeQuery } from '../../helper/mergeQuery.js';
 import userService from '../../helper/service/user.service.js';
 import fcmTokenService from '../../helper/service/fcmtoken.service.js';
@@ -24,7 +23,7 @@ class UserController extends Controller {
      * @security BearerAuth
      * 
      * @return { user.success }             200 - get list of all users
-     * @return { message.unauthorized_error }     401 - UnauthorizedError
+     * @return { message.unauthorized_error }     401 - Unauthorized
      * @return { message.server_error  }    500 - Server Error
      */
     async index(req, res, next) {
@@ -62,8 +61,8 @@ class UserController extends Controller {
      * @param {string} id.path.required user id
      * 
      * @return { user.success }              200 - find user data
-     * @return { message.badrequest_error }      400 - user not found
-     * @return { message.badrequest_error }      401 - UnauthorizedError
+     * @return { message.bad_request_error }      400 - user not found
+     * @return { message.bad_request_error }      401 - Unauthorized
      * @return { message.server_error}      500 - Server Error
      */
     async find(req, res, next) {
@@ -79,33 +78,7 @@ class UserController extends Controller {
         }
     }
 
-    /**
-     * PATCH /users/{id}/avatar
-     * @summary update user prifile image
-     * @tags User
-     * @security BearerAuth
-     * 
-     * @param { string } id.path.required - user id - application/json
-     * @param { user.avatar } request.body - user avatar - multipart/form-data
-     * 
-     * @return { user.success }              200 - update user profile
-     * @return { message.badrequest_error }      400 - user not found
-     * @return { message.badrequest_error }      401 - UnauthorizedError
-     * @return { message.server_error}      500 - Server Error
-     */
-    async uploadProfileImage(req, res, next) {
-
-        try {
-            let user = await User.findById(req.params.id);
-            if (!user) throw new NotFoundError('user.errors.user_notfound');
-
-            user = await User.findOneAndUpdate({ _id: user._id }, { avatar: req.body.avatar }, { new: true });
-            AppResponse.builder(res).message("user.messages.profile_image_successfully_updated").data(user).send();
-        } catch (err) {
-            next(err);
-        }
-    }
-
+   
     /**
      * POST /users/{id}/ban
      * @summary ban user
@@ -115,8 +88,8 @@ class UserController extends Controller {
      * @param { string } id.path.required - user id - application/json
      * 
      * @return { user.success }             200 - user successfully banded
-     * @return { message.badrequest_error }      400 - user not found
-     * @return { message.badrequest_error }      401 - UnauthorizedError
+     * @return { message.bad_request_error }      400 - user not found
+     * @return { message.bad_request_error }      401 - Unauthorized
      * @return { message.server_error}      500 - Server Error
      */
     async banned(req, res, next) {
@@ -127,7 +100,7 @@ class UserController extends Controller {
             if (user.is_banned) throw new BadRequestError('user.errors.user_is_currently_blocked')
 
             user.is_banned = 1;
-            user.banned_by = req.user._id;
+            user.banned_by = req.user.id;
             user.banned_at = new Date().toISOString();
             await user.save();
 
@@ -141,15 +114,15 @@ class UserController extends Controller {
 
     /**
      * POST /users/{id}/unban
-     * @summary unban user
+     * @summary un-ban user
      * @tags User
      * @security BearerAuth
      * 
      * @param { string } id.path.required - user id - application/json
      * 
-     * @return { user.success }             200 - user successfully unbanded
-     * @return { message.badrequest_error }      400 - user not found
-     * @return { message.badrequest_error }      401 - UnauthorizedError
+     * @return { user.success }             200 - user successfully un banded
+     * @return { message.bad_request_error }      400 - user not found
+     * @return { message.bad_request_error }      401 - Unauthorized
      * @return { message.server_error}      500 - Server Error
      */
     async unbanned(req, res, next) {
@@ -170,79 +143,18 @@ class UserController extends Controller {
         }
     }
 
-    /**
-     * GET /users/get-me
-     * @summary Get authenticated user information
-     * @tags User
-     * @security BearerAuth
-     * 
-     * @return { user.success }             200 - user successfully found
-     * @return { message.badrequest_error } 400 - user not found
-     * @return { message.badrequest_error } 401 - UnauthorizedError
-     * @return { message.server_error}      500 - Server Error
-     */
-    async getMe(req, res, next) {
-        try {
-            let user = await userService.findOne(req.user._id, [
-                { path: 'role', select: ['name', 'id', 'permissions'] },
-                { path: "fcmtokens", select: ['token'] }
-            ])
-            if (!user) throw new NotFoundError('user.errors.user_notfound');
-            await user.populate({
-                path: "role.permissions"
-            })
-
-            AppResponse.builder(res).data(user).message('user.messages.user_founded').send();
-        } catch (err) {
-            next(err);
-        }
-    }
-
-    /**
-    * PATCH /users/change-password
-    * @summary change user prifile password
-    * @tags User
-    * @security BearerAuth
-    * 
-    * @param { user.change-password }  request.body   - application/json
-    *  
-    * @return { user.success }                  200 - update user profile
-    * @return { message.badrequest_error }      401 - UnauthorizedError
-    * @return { message.NotFoundError }         404 - user not found
-    * @return { message.server_error}           500 - Server Error
-    */
-    async changePassword(req, res, next) {
-        try {
-            let user = await User.findById(req.user._id);
-            if (!user) throw new NotFoundError('user.errors.user_notfound')
-
-            let validPassword = await bcrypt.compare(req.body.old_password, user.password)
-            if (!validPassword) throw new BadRequestError('user.errors.incorrect_password');
-
-            let duplicatePassword = await bcrypt.compare(req.body.password, user.password)
-            if (duplicatePassword) throw new BadRequestError('user.errors.duplicate_password');
-
-            let salt = await bcrypt.genSalt(10);
-            let hash_password = await bcrypt.hash(req.body.password, salt);
-            user = await User.findOneAndUpdate({ _id: user._id }, { password: hash_password });
-
-            AppResponse.builder(res).data(user).message('user.messages.password_changed').send(req.user._id);
-        } catch (err) {
-            next(err);
-        }
-    }
 
     /**
     * GET /users/{id}/login-history
-    * @summary get login histiry 
+    * @summary get login history 
     * @tags User
     * @security BearerAuth
     * 
     * @param  { string } id.path.required - user id
     *  
     * @return { user.success }                  200 - get login history
-    * @return { message.badrequest_error }      401 - UnauthorizedError
-    * @return { message.NotFoundError }         404 - user not found
+    * @return { message.bad_request_error }      401 - Unauthorized
+    * @return { message.notfound_error }         404 - user not found
     * @return { message.server_error}           500 - Server Error
     */
     async loginHistory(req, res, next) {
@@ -273,8 +185,8 @@ class UserController extends Controller {
      * @param  { string } id.path.required - user id
      *
      * @return { user.success }             200 - user successfully found
-     * @return { message.badrequest_error } 400 - user not found
-     * @return { message.badrequest_error } 401 - UnauthorizedError
+     * @return { message.bad_request_error } 400 - user not found
+     * @return { message.bad_request_error } 401 - Unauthorized
      * @return { message.server_error}      500 - Server Error
      */
     async companies(req, res, next) {
@@ -306,46 +218,7 @@ class UserController extends Controller {
         }
     }
 
-    /**
-     * PATCH /users/{id}
-     * 
-     * @summary edit user info
-     * @tags User
-     * @security BearerAuth
-     *
-     * @param {string } id.path.required - user id
-     * @param {string} request.body          - edit info - application/json
-     * 
-     * @return { user.success }                 200 - edit successfuly 
-     * @return { message.badrequest_error }     400 - Bad Request
-     * @return { message.badrequest_error }     401 - UnauthorizedError
-     * @return { message.server_error  }        500 - Server Error
-     */
-    async edit(req, res, next) {
-        try {
-
-            let user = await User.findById(req.params.id);
-            if (!user) throw new NotFoundError('user.errors.user_notfound')
-            let userByUserName = await User.findOne({ '_id': { $ne: user._id }, 'username': req.body.username });
-            if (userByUserName) throw new BadRequestError('user.errors.username_already_exists');
-
-            let userByEmail = await User.findOne({ '_id': { $ne: user._id }, 'email': req.body.email });
-            if (userByEmail) throw new BadRequestError('user.errors.email_already_exists');
-
-            user.firstname = req.body.firstname
-            user.lastname = req.body.lastname
-            user.username = req.body.username
-            user.email = req.body.email
-            await user.save();
-
-            EventEmitter.emit(UserEvents.EDIT_USER, user, req);
-
-            AppResponse.builder(res).status(200).data(user).message('user.messages.user_successfuly_edited').send();
-        } catch (err) {
-            next(err);
-        }
-    }
-
+  
     /**
     * PATCH /users/{id}/fcm-token
     * 
@@ -356,18 +229,17 @@ class UserController extends Controller {
     * @param {string } id.path.required - user id
     * @param {user.set_fcm_token } request.body          - fcm token info - application/json
     * 
-    * @return { user.success }                 200 - edit successfuly 
-    * @return { message.badrequest_error }     400 - Bad Request
-    * @return { message.badrequest_error }     401 - UnauthorizedError
+    * @return { user.success }                 200 - edit successfully 
+    * @return { message.bad_request_error }     400 - BadRequest
+    * @return { message.bad_request_error }     401 - Unauthorized
     * @return { message.server_error  }        500 - Server Error
     */
     async setFCMToken(req, res, next) {
         try {
-            let user = await userService.findByParamId(req)
 
             let fcmToken = await fcmTokenService.findOne({ 'token': req.body.token });
             if (fcmToken) {
-                await userService.delete(fcmToken, req.user._id);
+                await userService.delete(fcmToken, req.user.id);
             }
 
             let os = '';
@@ -377,13 +249,13 @@ class UserController extends Controller {
                 })
                 .catch(error => console.error(error));
 
-            req.body.created_by = req.user._id;
+            req.body.created_by = req.user.id;
             req.body.os = os;
             fcmToken = await FCMToken.create(req.body)
 
-            EventEmitter.emit(UserEvents.SET_FCM_TOKEN, user, req)
+            EventEmitter.emit(UserEvents.SET_FCM_TOKEN, req.user, req)
 
-            AppResponse.builder(res).status(200).message("user.messages.set_fcm_token_successfully").data(user).send();
+            AppResponse.builder(res).status(200).message("user.messages.set_fcm_token_successfully").data(req.user).send();
         } catch (err) {
             next(err);
         }
@@ -399,9 +271,9 @@ class UserController extends Controller {
     * @param {string } id.path.required - user id
     * @param {user.set_fcm_token } request.body - fcm token - application/json
     * 
-    * @return { user.success }                 200 - edit successfuly 
-    * @return { message.badrequest_error }     400 - Bad Request
-    * @return { message.badrequest_error }     401 - UnauthorizedError
+    * @return { user.success }                 200 - edit successfully 
+    * @return { message.bad_request_error }     400 - BadRequest
+    * @return { message.bad_request_error }     401 - Unauthorized
     * @return { message.server_error  }        500 - Server Error
     */
     async unsetFCMToken(req, res, next) {
@@ -411,7 +283,7 @@ class UserController extends Controller {
             let fcmToken = await fcmTokenService.findOne({ 'token': req.body.token });
             if (!fcmToken) throw new NotFoundError('user.errors.fcm_token_not_found');
 
-            await userService.delete(fcmToken, req.user._id);
+            await userService.delete(fcmToken, req.user.id);
 
             EventEmitter.emit(UserEvents.UNSET_FCM_TOKEN, user, req)
             AppResponse.builder(res).status(200).message("user.messages.unset_fcm_token_successfully").data(user).send();
@@ -430,9 +302,9 @@ class UserController extends Controller {
     * @param {string } id.path.required - user id
     * @param {user.check_fcm_token } request.body - fcm token - application/json
     * 
-    * @return { user.success }                 200 - edit successfuly 
-    * @return { message.badrequest_error }     400 - Bad Request
-    * @return { message.badrequest_error }     401 - UnauthorizedError
+    * @return { user.success }                 200 - edit successfully 
+    * @return { message.bad_request_error }     400 - BadRequest
+    * @return { message.bad_request_error }     401 - Unauthorized
     * @return { message.server_error  }        500 - Server Error
     */
     async checkFCMToken(req, res, next) {

@@ -18,9 +18,9 @@ class RoleController extends Controller {
     * @security BearerAuth
     * 
     * @return { role.success } 200 - success response
-    * @return { message.badrequest_error } 400 - bad request respone
-    * @return { message.badrequest_error } 404 - not found respone
-    * @return { message.unauthorized_error }     401 - UnauthorizedError
+    * @return { message.bad_request_error } 400 - BadRequest response
+    * @return { message.bad_request_error } 404 - not found response
+    * @return { message.unauthorized_error }     401 - Unauthorized
     * @return { message.server_error  }    500 - Server Error
     */
     async index(req, res, next) {
@@ -48,9 +48,9 @@ class RoleController extends Controller {
     * @security BearerAuth
     * 
     * @return { role.success } 200 - success response
-    * @return { message.badrequest_error } 400 - bad request respone
-    * @return { message.badrequest_error } 404 - not found respone
-    * @return { message.unauthorized_error }     401 - UnauthorizedError
+    * @return { message.bad_request_error } 400 - BadRequest response
+    * @return { message.bad_request_error } 404 - not found response
+    * @return { message.unauthorized_error }     401 - Unauthorized
     * @return { message.server_error  }    500 - Server Error
     */
     async rbac(req, res, next) {
@@ -73,9 +73,9 @@ class RoleController extends Controller {
     * @param  { string } id.path.required - role id
     * 
     * @return { role.success } 200 - success response
-    * @return { message.badrequest_error } 400 - bad request respone
-    * @return { message.badrequest_error } 404 - not found respone
-    * @return { message.unauthorized_error }     401 - UnauthorizedError
+    * @return { message.bad_request_error } 400 - BadRequest response
+    * @return { message.bad_request_error } 404 - not found response
+    * @return { message.unauthorized_error }     401 - Unauthorized
     * @return { message.server_error  }    500 - Server Error
     */
 
@@ -91,9 +91,9 @@ class RoleController extends Controller {
     * @param { role.create } request.body - role info - application/json
     
     * @return { role.success }           201 - success response
-    * @return { message.badrequest_error }  400 - bad request respone
-    * @return { message.badrequest_error }  404 - not found respone
-    * @return { message.badrequest_error }       401 - UnauthorizedError
+    * @return { message.bad_request_error }  400 - BadRequest response
+    * @return { message.bad_request_error }  404 - not found response
+    * @return { message.bad_request_error }       401 - Unauthorized
     * @return { message.server_error  }     500 - Server Error
     */
     async create(req, res, next) {
@@ -113,7 +113,7 @@ class RoleController extends Controller {
                 }
             }
 
-            req.body.created_by = req.user._id;
+            req.body.created_by = req.user.id;
             let createdRole = await roleService.create(req.body);
             await cacheRoles()
 
@@ -135,9 +135,9 @@ class RoleController extends Controller {
     * @param { role.create } request.body - role info - application/json
     * 
     * @return { role.success }           200 - success response
-    * @return { message.badrequest_error }  400 - bad request respone
-    * @return { message.badrequest_error }  404 - not found respone
-    * @return { message.unauthorized_error }     401 - UnauthorizedError
+    * @return { message.bad_request_error }  400 - BadRequest response
+    * @return { message.bad_request_error }  404 - not found response
+    * @return { message.unauthorized_error }     401 - Unauthorized
     * @return { message.server_error  }    500 - Server Error
     */
     async update(req, res, next) {
@@ -174,9 +174,9 @@ class RoleController extends Controller {
     * @param  { string } id.path - role id
     * 
     * @return { role.success } 200 - success response
-    * @return { message.badrequest_error } 400 - bad request respone
-    * @return { message.badrequest_error } 404 - not found respone
-    * @return { message.unauthorized_error }     401 - UnauthorizedError
+    * @return { message.bad_request_error } 400 - BadRequest response
+    * @return { message.bad_request_error } 404 - not found response
+    * @return { message.unauthorized_error }     401 - Unauthorized
     * @return { message.server_error  }    500 - Server Error
     */
     async delete(req, res, next) {
@@ -184,7 +184,7 @@ class RoleController extends Controller {
             let role = await roleService.findOne({ _id: req.params.id, ...req.query });
             if (!role) throw new NotFoundError('document.error.document_notfound');
     
-            await role.delete(req.user._id);
+            await role.delete(req.user.id);
             // delete from cache
             await cacheRoles()
             

@@ -5,6 +5,9 @@ import ServiceBase from "./base.service.js";
 import ResumeComments from '../../models/resumeComment.model.js';
 import Interview from "../../models/interview.model.js";
 import Viewlog from "../../models/viewlog.model.js";
+import notificationService from './notification.service.js'
+import i18n from '../../middlewares/lang.middleware.js'
+import userService from './user.service.js'
 
 const endOfResumeStatus = ['rejected', 'hired'];
 
@@ -31,7 +34,7 @@ class ResumeService extends ServiceBase {
     }
 
     async getResumeViewCount(resume) {
-        let viewCount = await Viewlog.find({ 'entity': 'resumes', 'entityId': resume.resume_id }).count();
+        let viewCount = await Viewlog.find({ 'entity': 'resumes', 'entity_id': resume.id }).count();
         return viewCount;
     }
 
@@ -86,12 +89,43 @@ class ResumeService extends ServiceBase {
             old_status: pervStatus,
             new_status: resume.status,
             createdAt: new Date(),
-            created_by: req.user._id
+            created_by: req.user.id
         };
 
         resume.status_history.push(statusHistoryLog)
         await resume.save();
     }
+
+    async getDefaultUserIdNotificationUpdateStatus(resume) {
+        let userIdList = resume.assigners;
+        userIdList.push(resume.created_by)
+        return [resume.created_by];
+    }
+
+    async getContributorsId(resume) {
+        let contributorsId = [];
+        if (resume.contributors.length === 0) return contributorsId
+
+        for (let contributor of resume.contributors) {
+            contributorsId.push(contributor);
+        }
+        return contributorsId;
+    }
+
+    async setNotificationWhenUpdateStatus(resume, req, step) {
+        let userIdList = await this.getDefaultUserIdNotificationUpdateStatus(resume);
+
+        let title = i18n.__(`notification.messages.title.${step}`)
+        let body = i18n.__(`notification.messages.body.${step}`, {
+            user: req.user.fullname,
+            status: resume.status
+        })
+
+        for (let userId of userIdList) {
+            await notificationService.setNotificationForResume(resume, req, userId, step, title, body);
+        }
+    }
+
 }
 
 export default new ResumeService(Resume);

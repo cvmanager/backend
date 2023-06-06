@@ -15,9 +15,9 @@ class PermissionController extends Controller {
     * @security BearerAuth
     * 
     * @return { permission.success } 200 - success response
-    * @return { message.badrequest_error } 400 - bad request respone
-    * @return { message.badrequest_error } 404 - not found respone
-    * @return { message.unauthorized_error }     401 - UnauthorizedError
+    * @return { message.bad_request_error } 400 - BadRequest respone
+    * @return { message.bad_request_error } 404 - not found respone
+    * @return { message.unauthorized_error }     401 - Unauthorized
     * @return { message.server_error  }    500 - Server Error
     */
     async index(req, res, next) {
@@ -45,9 +45,9 @@ class PermissionController extends Controller {
     * @security BearerAuth
     * 
     * @return { permission.success } 200 - success response
-    * @return { message.badrequest_error } 400 - bad request respone
-    * @return { message.badrequest_error } 404 - not found respone
-    * @return { message.unauthorized_error }     401 - UnauthorizedError
+    * @return { message.bad_request_error } 400 - BadRequest respone
+    * @return { message.bad_request_error } 404 - not found respone
+    * @return { message.unauthorized_error }     401 - Unauthorized
     * @return { message.server_error  }    500 - Server Error
     */
     async entities(req, res, next) {
@@ -69,9 +69,9 @@ class PermissionController extends Controller {
     * @param  { string } id.path.required - permission id
     * 
     * @return { permission.success } 200 - success response
-    * @return { message.badrequest_error } 400 - bad request respone
-    * @return { message.badrequest_error } 404 - not found respone
-    * @return { message.unauthorized_error }     401 - UnauthorizedError
+    * @return { message.bad_request_error } 400 - BadRequest respone
+    * @return { message.bad_request_error } 404 - not found respone
+    * @return { message.unauthorized_error }     401 - Unauthorized
     * @return { message.server_error  }    500 - Server Error
     */
 
@@ -86,9 +86,9 @@ class PermissionController extends Controller {
     * @param { permission.create } request.body - permission info - application/json
     
     * @return { permission.success }           201 - success response
-    * @return { message.badrequest_error }  400 - bad request respone
-    * @return { message.badrequest_error }  404 - not found respone
-    * @return { message.badrequest_error }       401 - UnauthorizedError
+    * @return { message.bad_request_error }  400 - BadRequest respone
+    * @return { message.bad_request_error }  404 - not found respone
+    * @return { message.bad_request_error }       401 - Unauthorized
     * @return { message.server_error  }     500 - Server Error
     */
     async create(req, res, next) {
@@ -96,7 +96,7 @@ class PermissionController extends Controller {
             let permission = await permissionService.findOne({ $or: [{ 'name': req.body.name }, { 'action': req.body.action }] });
             if (permission) throw new AlreadyExists('permission.error.permission_already_exists');
 
-            req.body.created_by = req.user._id
+            req.body.created_by = req.user.id
             let createdPermission = await permissionService.create(req.body)
 
             AppResponse.builder(res).status(201).message("document.message.document_successfully_created").data(createdPermission).send();
@@ -116,9 +116,9 @@ class PermissionController extends Controller {
     * @param { permission.create } request.body - permission info - application/json
     * 
     * @return { permission.success }           200 - success response
-    * @return { message.badrequest_error }  400 - bad request respone
-    * @return { message.badrequest_error }  404 - not found respone
-    * @return { message.unauthorized_error }     401 - UnauthorizedError
+    * @return { message.bad_request_error }  400 - BadRequest respone
+    * @return { message.bad_request_error }  404 - not found respone
+    * @return { message.unauthorized_error }     401 - Unauthorized
     * @return { message.server_error  }    500 - Server Error
     */
     async update(req, res, next) {
@@ -148,16 +148,16 @@ class PermissionController extends Controller {
     * @param  { string } id.path - permission id
     * 
     * @return { permission.success } 200 - success response
-    * @return { message.badrequest_error } 400 - bad request respone
-    * @return { message.badrequest_error } 404 - not found respone
-    * @return { message.unauthorized_error }     401 - UnauthorizedError
+    * @return { message.bad_request_error } 400 - BadRequest respone
+    * @return { message.bad_request_error } 404 - not found respone
+    * @return { message.unauthorized_error }     401 - Unauthorized
     * @return { message.server_error  }    500 - Server Error
     */
     async delete(req, res, next) {
         let permission = await permissionService.findOne({ _id: req.params.id });
         if (!permission) throw new NotFoundError('document.error.document_notfound');
 
-        await permission.delete(req.user._id);
+        await permission.delete(req.user.id);
         // delete from cache
         const redisKey = env("REDIS_KEY_RBAC_PERMISSION") + permission._id.toString()
         await redisClient.del(redisKey)

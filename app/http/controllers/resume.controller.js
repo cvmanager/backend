@@ -14,6 +14,7 @@ import SkillService from '../../helper/service/skill.service.js';
 import resumeService from '../../helper/service/resume.service.js';
 import positionService from '../../helper/service/position.service.js';
 import companyService from '../../helper/service/company.service.js';
+import i18n from '../../middlewares/lang.middleware.js';
 
 
 class ResumeController extends Controller {
@@ -28,9 +29,9 @@ class ResumeController extends Controller {
     * @param  { string } query.path - search for special fields - application/json
     * 
     * @return { resume.success } 200 - success response
-    * @return { message.badrequest_error } 400 - bad request respone
-    * @return { message.badrequest_error } 404 - not found respone
-    * @return { message.unauthorized_error }     401 - UnauthorizedError
+    * @return { message.bad_request_error } 400 - BadRequest response
+    * @return { message.bad_request_error } 404 - not found response
+    * @return { message.unauthorized_error }     401 - Unauthorized
     * @return { message.server_error  }    500 - Server Error
     */
     async index(req, res, next) {
@@ -38,6 +39,9 @@ class ResumeController extends Controller {
             const { page = 1, size = 10, query = '' } = req.query
 
             let searchQuery = {}
+            let resumes = [], promiseResumes = []
+
+            let resumeStates = i18n.__('resume.enums.status')
 
             searchQuery = mergeQuery(searchQuery, req.rbacQuery)
             if (query.length > 0) {
@@ -52,22 +56,32 @@ class ResumeController extends Controller {
                     ]
                 }
             }
+            
+            resumeStates.map((status) => {
+                let resumeList = Resume.find({status, ...searchQuery})
+                .sort([['index', 1]])
+                .populate([
+                    {path: 'interviews', select: ['event_time', 'event_type', 'status', 'type', 'result', 'description', 'rating', 'contribution']},
+                    { path: 'created_by' },
+                        { path: 'assigners', select: ['firstname', 'lastname', 'avatar'] },
+                        { path: 'interviews', select: ['event_time', 'event_type', 'status', 'type', 'result', 'description', 'rating', 'contribution'] },
+                        { path: 'tags', select: ['name', 'color', 'count'] },
+                        { path: 'project_id' },
+                        { path: 'position_id' },
+                        { path: 'company_id' },
+                ])
+                promiseResumes.push(resumeList)
+            })
 
-            const resumeList = await Resume.paginate(searchQuery, {
-                page: (page) || 1,
-                limit: size,
-                sort: { createdAt: -1 },
-                populate: [
-                    { path: 'company_id', select: 'name' },
-                    { path: 'project_id', select: 'name' },
-                    { path: 'created_by', select: ['firstname', 'lastname'] },
-                    { path: 'assigners', select: ['firstname', 'lastname', 'avatar'] },
-                    { path: 'tags', select: ['name', 'color', 'count'] },
-                    { path: 'skills', select: ['title', 'color'] },
-                    { path: 'views', select: ['created_by', 'createdAt'] }
-                ]
-            });
-            AppResponse.builder(res).message("project.messages.resume_list_found").data(resumeList).send();
+            let results = await Promise.all(promiseResumes)
+            
+            for (let i = 0; i < resumeStates.length; i++) {
+                let resume = {}
+                resume[resumeStates[i]] = results[i]
+                resumes.push(resume)
+            }
+
+            AppResponse.builder(res).message("project.messages.resume_list_found").data(resumes).send();
         } catch (err) {
             next(err);
         }
@@ -83,9 +97,9 @@ class ResumeController extends Controller {
     * @param  { string } id.path.required - resume id
     * 
     * @return { resume.success } 200 - success response
-    * @return { message.badrequest_error }  400 - bad request respone
-    * @return { message.badrequest_error }  404 - not found respone
-    * @return { message.badrequest_error }       401 - UnauthorizedError
+    * @return { message.bad_request_error }  400 - BadRequest response
+    * @return { message.bad_request_error }  404 - not found response
+    * @return { message.bad_request_error }       401 - Unauthorized
     * @return { message.server_error  }     500 - Server Error
     */
     async find(req, res, next) {
@@ -148,9 +162,9 @@ class ResumeController extends Controller {
     * @param { resume.create } request.body - resume info - application/json
     * 
     * @return { resume.success } 200 - success response
-    * @return { message.badrequest_error }  400 - bad request respone
-    * @return { message.NotFoundError }  404 - not found respone
-    * @return { message.badrequest_error }  401 - UnauthorizedError
+    * @return { message.bad_request_error }  400 - BadRequest response
+    * @return { message.notfound_error }  404 - not found response
+    * @return { message.bad_request_error }  401 - Unauthorized
     * @return { message.server_error  }     500 - Server Error
     */
     async create(req, res, next) {
@@ -158,7 +172,7 @@ class ResumeController extends Controller {
             let position = await positionService.findById(req.body.position_id);
             if (!position) throw new NotFoundError('position.errors.position_not_found');
 
-            req.body.created_by = req.user._id;
+            req.body.created_by = req.user.id;
             req.body.project_id = position.project_id;
             req.body.company_id = position.company_id;
 
@@ -185,9 +199,9 @@ class ResumeController extends Controller {
     * @param { resume.update } request.body - resume info - application/json
     * 
     * @return { resume.success } 200 - success response
-    * @return { message.badrequest_error }  400 - bad request respone
-    * @return { message.badrequest_error }  404 - not found respone
-    * @return { message.badrequest_error }       401 - UnauthorizedError
+    * @return { message.bad_request_error }  400 - BadRequest response
+    * @return { message.bad_request_error }  404 - not found response
+    * @return { message.bad_request_error }       401 - Unauthorized
     * @return { message.server_error  }     500 - Server Error
     */
     async update(req, res, next) {
@@ -215,16 +229,16 @@ class ResumeController extends Controller {
     * @param  { string } id.path.required - resume id
     * 
     * @return { resume.success } 200 - success response
-    * @return { message.badrequest_error }  400 - bad request respone
-    * @return { message.badrequest_error }  404 - not found respone
-    * @return { message.badrequest_error }       401 - UnauthorizedError
+    * @return { message.bad_request_error }  400 - BadRequest response
+    * @return { message.bad_request_error }  404 - not found response
+    * @return { message.bad_request_error }       401 - Unauthorized
     * @return { message.server_error  }     500 - Server Error
     */
     async delete(req, res, next) {
         try {
             let resume = await resumeService.findByParamId(req);
             resume.deleted_at = Date.now();
-            resume.deleted_by = req.user._id;
+            resume.deleted_by = req.user.id;
 
             await resume.save();
 
@@ -248,9 +262,9 @@ class ResumeController extends Controller {
     * @param { resume.update_status } request.body - resume info - application/json
     * 
     * @return { resume.success } 200 - success response
-    * @return { message.badrequest_error }  400 - bad request respone
-    * @return { message.NotFoundError }     404 - not found respone
-    * @return { message.badrequest_error }  401 - UnauthorizedError
+    * @return { message.bad_request_error }  400 - BadRequest response
+    * @return { message.notfound_error }     404 - not found response
+    * @return { message.bad_request_error }  401 - Unauthorized
     * @return { message.server_error  }     500 - Server Error
     */
     async updateStatus(req, res, next) {
@@ -263,8 +277,7 @@ class ResumeController extends Controller {
             resume.index = req.body.index;
             await resume.save();
 
-            EventEmitter.emit(ResumeEvents.UPDATE_STATUS, resume, req)
-            EventEmitter.emit(ResumeEvents.UPDATE_STATUS_LOG, resume, req, oldStatus)
+            EventEmitter.emit(ResumeEvents.UPDATE_STATUS, resume, req,oldStatus)
 
             AppResponse.builder(res).message("resume.messages.resume_status_successfully_updated").data(resume).send();
         } catch (err) {
@@ -282,8 +295,8 @@ class ResumeController extends Controller {
     * @param { resume.upload_file } request.body - resume info - multipart/form-data
     * 
     * @return { resume.success }              200 - update resume profile
-    * @return { message.badrequest_error }      400 - resume not found
-    * @return { message.badrequest_error }      401 - UnauthorizedError
+    * @return { message.bad_request_error }      400 - resume not found
+    * @return { message.bad_request_error }      401 - Unauthorized
     * @return { message.server_error}      500 - Server Error
     */
     async uploadFile(req, res, next) {
@@ -319,9 +332,9 @@ class ResumeController extends Controller {
     * @param { resume.call_history } request.body - call history info - application/json
     * 
     * @return { resume.call_history_success } 200 - success response
-    * @return { message.badrequest_error }  400 - bad request respone
-    * @return { message.badrequest_error }  401 - UnauthorizedError
-    * @return { message.NotFoundError }     404 - not found respone
+    * @return { message.bad_request_error }  400 - BadRequest response
+    * @return { message.bad_request_error }  401 - Unauthorized
+    * @return { message.notfound_error }     404 - not found response
     * @return { message.server_error }     500 - Server Error
     */
     async comments(req, res, next) {
@@ -347,9 +360,9 @@ class ResumeController extends Controller {
     * @param { resumeComment.create} request.body - resume info - application/json
     * 
     * @return { resumeComment.success }     201 - success response
-    * @return { message.badrequest_error }  400 - bad request respone
-    * @return { message.badrequest_error }  401 - UnauthorizedError
-    * @return { message.NotFoundError }     404 - not found respone
+    * @return { message.bad_request_error }  400 - BadRequest response
+    * @return { message.bad_request_error }  401 - Unauthorized
+    * @return { message.notfound_error }     404 - not found response
     * @return { message.server_error  }     500 - Server Error
     */
     async addComments(req, res, next) {
@@ -358,7 +371,7 @@ class ResumeController extends Controller {
 
             req.body.body = req.body.body
             req.body.resume_id = resume._id
-            req.body.created_by = req.user._id
+            req.body.created_by = req.user.id
 
             let resumeCommentsRes = await ResumeComments.create(req.body)
             EventEmitter.emit(ResumeEvents.ADD_COMMENT, resume, req)
@@ -380,9 +393,9 @@ class ResumeController extends Controller {
       * @param { resume.create } request.body - call history info - application/json
       * 
       * @return { resume.success } 200 - success response
-      * @return { message.badrequest_error }  400 - bad request respone
-      * @return { message.badrequest_error }  404 - not found respone
-      * @return { message.badrequest_error }       401 - UnauthorizedError
+      * @return { message.bad_request_error }  400 - BadRequest response
+      * @return { message.bad_request_error }  404 - not found response
+      * @return { message.bad_request_error }       401 - Unauthorized
       * @return { message.server_error  }     500 - Server Error
       */
     async callHistory(req, res, next) {
@@ -395,7 +408,7 @@ class ResumeController extends Controller {
                 calling_date: calling_date,
                 description: req.body.description,
                 rating: req.body.rating,
-                created_by: req.user._id
+                created_by: req.user.id
             }
 
             let recall_at = null
@@ -429,9 +442,9 @@ class ResumeController extends Controller {
     * @param { resume.set_assigners } request.body - application/json
     * 
     * @return { resume.success }            200 - success response
-    * @return { message.badrequest_error }  400 - bad request respone
-    * @return { message.badrequest_error }  404 - not found respone
-    * @return { message.badrequest_error }  401 - UnauthorizedError
+    * @return { message.bad_request_error }  400 - BadRequest response
+    * @return { message.bad_request_error }  404 - not found response
+    * @return { message.bad_request_error }  401 - Unauthorized
     * @return { message.server_error  }     500 - Server Error
     */
     async setAssigner(req, res, next) {
@@ -466,9 +479,9 @@ class ResumeController extends Controller {
     * @param { resume.unset_assigners } request.body - application/json
     * 
     * @return { resume.success }            200 - success response
-    * @return { message.badrequest_error }  400 - bad request respone
-    * @return { message.badrequest_error }  404 - not found respone
-    * @return { message.badrequest_error }  401 - UnauthorizedError
+    * @return { message.bad_request_error }  400 - BadRequest response
+    * @return { message.bad_request_error }  404 - not found response
+    * @return { message.bad_request_error }  401 - Unauthorized
     * @return { message.server_error  }     500 - Server Error
     */
     async unsetAssigner(req, res, next) {
@@ -483,6 +496,7 @@ class ResumeController extends Controller {
 
             resume.assigners = assigners.filter(e => e != user._id)
             await resume.save();
+            EventEmitter.emit(ResumeEvents.UNSET_ASSIGNER, resume, req)
 
             EventEmitter.emit(ResumeEvents.UNSET_ASSIGNER, resume, req);
 
@@ -502,8 +516,8 @@ class ResumeController extends Controller {
     * @param { resume.upload_avatar } request.body - resume info - multipart/form-data
     * 
     * @return { resume.success }               200 - update resume profile
-    * @return { message.badrequest_error }      400 - resume not found
-    * @return { message.badrequest_error }      401 - UnauthorizedError
+    * @return { message.bad_request_error }      400 - resume not found
+    * @return { message.bad_request_error }      401 - Unauthorized
     * @return { message.server_error}           500 - Server Error
     */
     async updateAvatar(req, res, next) {
@@ -532,9 +546,9 @@ class ResumeController extends Controller {
     * @param  { string } id.path.required - resume id
     * @param { resume.set_tag } request.body - tag info - application/json 
     * @return { tag.success }     201 - success response
-    * @return { message.badrequest_error }  400 - bad request respone
-    * @return { message.badrequest_error }  401 - UnauthorizedError
-    * @return { message.NotFoundError }     404 - not found respone
+    * @return { message.bad_request_error }  400 - BadRequest response
+    * @return { message.bad_request_error }  401 - Unauthorized
+    * @return { message.notfound_error }     404 - not found response
     * @return { message.server_error  }     500 - Server Error
     */
     async setTag(req, res, next) {
@@ -567,9 +581,9 @@ class ResumeController extends Controller {
     * @param { resume.unset_tag } request.body - tag info - application/json
     * 
     * @return { tag.success }     201 - success response
-    * @return { message.badrequest_error }  400 - bad request respone
-    * @return { message.badrequest_error }  401 - UnauthorizedError
-    * @return { message.NotFoundError }     404 - not found respone
+    * @return { message.bad_request_error }  400 - BadRequest response
+    * @return { message.bad_request_error }  401 - Unauthorized
+    * @return { message.notfound_error }     404 - not found response
     * @return { message.server_error  }     500 - Server Error
     */
     async unsetTag(req, res, next) {
@@ -603,9 +617,9 @@ class ResumeController extends Controller {
     * @param { resume.hired } request.body - application/json
     * 
     * @return { resume.success } 200 - success response
-    * @return { message.badrequest_error }  400 - bad request respone
-    * @return { message.badrequest_error }  404 - not found respone
-    * @return { message.badrequest_error }       401 - UnauthorizedError
+    * @return { message.bad_request_error }  400 - BadRequest response
+    * @return { message.bad_request_error }  404 - not found response
+    * @return { message.bad_request_error }       401 - Unauthorized
     * @return { message.server_error  }     500 - Server Error
     */
     async hired(req, res, next) {
@@ -621,7 +635,7 @@ class ResumeController extends Controller {
             resume.income = req.body.income
             await resume.save();
 
-            EventEmitter.emit(ResumeEvents.UPDATE_STATUS_LOG, resume, req, oldStatus)
+            EventEmitter.emit(ResumeEvents.UPDATE_STATUS, resume, req,oldStatus)
 
             AppResponse.builder(res).status(200).message("resume.messages.resume_successfully_hired").data(resume).send();
         } catch (err) {
@@ -640,17 +654,15 @@ class ResumeController extends Controller {
    * @param { resume.reject } request.body - reject info - application/json
    * 
    * @return { resume.success }     200 - success response
-   * @return { message.badrequest_error }  400 - bad request respone
-   * @return { message.badrequest_error }  401 - UnauthorizedError
-   * @return { message.NotFoundError }     404 - not found respone
+   * @return { message.bad_request_error }  400 - BadRequest response
+   * @return { message.bad_request_error }  401 - Unauthorized
+   * @return { message.notfound_error }     404 - not found response
    * @return { message.server_error  }     500 - Server Error
    */
     async reject(req, res, next) {
         try {
             let resume = await resumeService.findByParamId(req);
-            if (resume.status == 'rejected') {
-                throw new BadRequestError('resume.errors.resume_already_rejected');
-            }
+            if (resume.status == 'rejected') throw new BadRequestError('resume.errors.resume_already_rejected');
             let oldStatus = resume.status
 
             resume.status = 'rejected';
@@ -658,7 +670,7 @@ class ResumeController extends Controller {
             resume.reject_description = req.body.reject_description;
             await resume.save();
 
-            EventEmitter.emit(ResumeEvents.UPDATE_STATUS_LOG, resume, req, oldStatus)
+            EventEmitter.emit(ResumeEvents.UPDATE_STATUS, resume, req, oldStatus)
 
             AppResponse.builder(res).status(200).message("resume.messages.resume_successfully_rejected").data(resume).send();
         } catch (err) {
@@ -677,9 +689,9 @@ class ResumeController extends Controller {
     * @param { resume.end_cooperation } request.body - application/json
     * 
     * @return { resume.success } 200 - success response
-    * @return { message.badrequest_error }  400 - bad request respone
-    * @return { message.badrequest_error }  404 - not found respone
-    * @return { message.badrequest_error }       401 - UnauthorizedError
+    * @return { message.bad_request_error }  400 - BadRequest response
+    * @return { message.bad_request_error }  404 - not found response
+    * @return { message.bad_request_error }       401 - Unauthorized
     * @return { message.server_error  }     500 - Server Error
     */
     async endCooperation(req, res, next) {
@@ -697,7 +709,7 @@ class ResumeController extends Controller {
             resume.end_cooperation_description = req.body.end_cooperation_description
             await resume.save();
 
-            EventEmitter.emit(ResumeEvents.UPDATE_STATUS_LOG, resume, req, oldStatus)
+            EventEmitter.emit(ResumeEvents.UPDATE_STATUS, resume, req,oldStatus)
 
             AppResponse.builder(res).status(200).message("resume.messages.resume_successfully_end_cooperation").data(resume).send();
         } catch (err) {
@@ -716,9 +728,9 @@ class ResumeController extends Controller {
     * @param { resume.set_skill } request.body - resume info - application/json
     * 
     * @return { tag.success }     201 - success response
-    * @return { message.badrequest_error }  400 - bad request respone
-    * @return { message.badrequest_error }  401 - UnauthorizedError
-    * @return { message.NotFoundError }     404 - not found respone
+    * @return { message.bad_request_error }  400 - BadRequest response
+    * @return { message.bad_request_error }  401 - Unauthorized
+    * @return { message.notfound_error }     404 - not found response
     * @return { message.server_error  }     500 - Server Error
     */
     async setSkill(req, res, next) {
@@ -732,7 +744,7 @@ class ResumeController extends Controller {
             resume.skills.push(skill._id)
             await resume.save();
 
-            EventEmitter.emit(ResumeEvents.ADD_SKILL, resume, req)
+            EventEmitter.emit(ResumeEvents.SET_SKILL, resume, req)
 
             AppResponse.builder(res).status(200).message("resume.messages.resume_skills_successfully_updated").data(resume).send();
         } catch (err) {
@@ -751,9 +763,9 @@ class ResumeController extends Controller {
     * @param { resume.unset_skill } request.body - resume info - application/json
     * 
     * @return { tag.success }     201 - success response
-    * @return { message.badrequest_error }  400 - bad request respone
-    * @return { message.badrequest_error }  401 - UnauthorizedError
-    * @return { message.NotFoundError }     404 - not found respone
+    * @return { message.bad_request_error }  400 - BadRequest response
+    * @return { message.bad_request_error }  401 - Unauthorized
+    * @return { message.notfound_error }     404 - not found response
     * @return { message.server_error  }     500 - Server Error
     */
     async unsetSkill(req, res, next) {
@@ -768,7 +780,7 @@ class ResumeController extends Controller {
             resume.skills.splice(skillIndex, 1)
             await resume.save();
 
-            EventEmitter.emit(ResumeEvents.REMOVE_SKILL, resume, req)
+            EventEmitter.emit(ResumeEvents.UNSET_SKILL, resume, req)
 
             AppResponse.builder(res).status(200).message("resume.messages.resume_skills_successfully_deleted").data(resume).send();
         } catch (err) {
@@ -787,9 +799,9 @@ class ResumeController extends Controller {
     * @param  { resume.action_interview } request.body    application/json
     * 
     * @return { interview.success } 200 - success response
-    * @return { message.badrequest_error } 400 - bad request respone
-    * @return { message.badrequest_error } 404 - not found respone
-    * @return { message.unauthorized_error }     401 - UnauthorizedError
+    * @return { message.bad_request_error } 400 - BadRequest response
+    * @return { message.bad_request_error } 404 - not found response
+    * @return { message.unauthorized_error }     401 - Unauthorized
     * @return { message.server_error  }    500 - Server Error
     */
     async getInterviews(req, res, next) {
@@ -818,9 +830,9 @@ class ResumeController extends Controller {
     * @param  { resume.action_interview } request.body -  application/json
     * 
     * @return { interview.success }           200 - success response
-    * @return { message.badrequest_error }  400 - bad request respone
-    * @return { message.badrequest_error }  404 - not found respone
-    * @return { message.unauthorized_error }     401 - UnauthorizedError
+    * @return { message.bad_request_error }  400 - BadRequest response
+    * @return { message.bad_request_error }  404 - not found response
+    * @return { message.unauthorized_error }     401 - Unauthorized
     * @return { message.server_error  }    500 - Server Error
     */
     async updateInterview(req, res, next) {
@@ -868,9 +880,9 @@ class ResumeController extends Controller {
     * @param  { interview.create } request.body -  application/json
     * 
     * @return { interview.success }         201 - success response
-    * @return { message.badrequest_error }  400 - bad request respone
-    * @return { message.badrequest_error }  404 - not found respone
-    * @return { message.badrequest_error }  401 - UnauthorizedError
+    * @return { message.bad_request_error }  400 - BadRequest response
+    * @return { message.bad_request_error }  404 - not found response
+    * @return { message.bad_request_error }  401 - Unauthorized
     * @return { message.server_error  }     500 - Server Error
     */
     async createInterview(req, res, next) {
@@ -889,7 +901,7 @@ class ResumeController extends Controller {
             req.body.resume_id = resume._id;
             req.body.contribution = contribution
             req.body.event_time = new Date(req.body.event_time)
-            req.body.created_by = req.user._id
+            req.body.created_by = req.user.id
             let interview = await Interview.create(req.body)
             EventEmitter.emit(ResumesInterviewEvents.CREATE, interview, req)
 
@@ -911,9 +923,9 @@ class ResumeController extends Controller {
     * @param  { resume.action_interview } request.body -  application/json
     * 
     * @return { interview.success } 200 - success response
-    * @return { message.badrequest_error } 400 - bad request respone
-    * @return { message.badrequest_error } 404 - not found respone
-    * @return { message.unauthorized_error }     401 - UnauthorizedError
+    * @return { message.bad_request_error } 400 - BadRequest response
+    * @return { message.bad_request_error } 404 - not found response
+    * @return { message.unauthorized_error }     401 - Unauthorized
     * @return { message.server_error  }    500 - Server Error
     */
     async removeInterview(req, res, next) {
@@ -923,7 +935,7 @@ class ResumeController extends Controller {
             let interview = await Interview.findById(req.body.interview_id);
             if (!interview) throw new NotFoundError('interview.errors.interview_notfound');
 
-            await interview.delete(req.user._id);
+            await interview.delete(req.user.id);
             EventEmitter.emit(ResumesInterviewEvents.DELETE, interview, req)
 
 

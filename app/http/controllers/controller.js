@@ -15,7 +15,7 @@ class Controller {
 
   async create(req, res, next) {
     try {
-        req.body.created_by = req.user._id;
+        req.body.created_by = req.user.id;
         let createdDocument = await _service.get(this).create(req.body);
 
         AppResponse.builder(res).status(201).message(`${this.modelName}.message.${this.modelName}_successfully_created`).data(createdDocument).send();
@@ -52,7 +52,7 @@ class Controller {
         let document = await _service.get(this).findByParamId(req);
         if (!document) throw new NotFoundError(`${this.modelName}.error.${this.modelName}_notfound`);
 
-        await _service.get(this).delete(document, req.user._id)
+        await _service.get(this).delete(document, req.user.id)
 
         AppResponse.builder(res).message(`${this.modelName}.message.${this.modelName}_successfully_deleted`).data(document).send();
     } catch (err) {

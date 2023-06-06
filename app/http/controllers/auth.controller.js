@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt'
 
-import { generateJwtToken, generateJwtRefeshToken } from '../../helper/jwt.js'
+import { generateJwtToken, generateJwtRefreshToken } from '../../helper/jwt.js'
 import BadRequestError from '../../exceptions/BadRequestError.js';
 import redisClient from '../../helper/redis_client.js';
 import AppResponse from '../../helper/response.js';
@@ -24,8 +24,8 @@ class AuthController extends Controller {
      * 
      * @param  { auth.login } request.body - login info - application/json
      * 
-     * @return { auth.success_response }    200 - signup successfully 
-     * @return { auth.user_notfound }       400 - user not found || username or password incorrect
+     * @return { auth.success_response }    200 - Signup Successfully 
+     * @return { auth.user_notfound }       400 - User NotFound
      * @return { message.server_error  }    500 - Server Error
      */
     async login(req, res, next) {
@@ -45,7 +45,7 @@ class AuthController extends Controller {
             if (user.is_banned) throw new BadRequestError('auth.errors.user_is_banned');
 
             const access_token = await generateJwtToken({ _id: user._id, role: user.role })
-            const refresh_token = await generateJwtRefeshToken({ _id: user._id, role: user.role });
+            const refresh_token = await generateJwtRefreshToken({ _id: user._id, role: user.role });
 
             EventEmitter.emit(UserEvents.LOGIN, user, req, access_token, refresh_token);
             AppResponse.builder(res).message('auth.messages.success_login').data({ access_token, refresh_token }).send();
@@ -62,8 +62,8 @@ class AuthController extends Controller {
     *
     * @param { auth.signup } request.body - signup info - application/json
     * 
-    * @return { auth.success_response }        201 - signup successfully 
-    * @return { message.badrequest_error }     400 - Bad Request
+    * @return { auth.success_response }        201 - Signup Successfully 
+    * @return { message.bad_request_error }    400 - BadRequest
     * @return { message.server_error  }        500 - Server Error
     */
     async signup(req, res, next) {
@@ -86,7 +86,7 @@ class AuthController extends Controller {
             });
 
             const access_token = await generateJwtToken({ _id: user._id, role: [ownerRole._id] })
-            const refresh_token = await generateJwtRefeshToken({ _id: user._id, role: [ownerRole._id] });
+            const refresh_token = await generateJwtRefreshToken({ _id: user._id, role: [ownerRole._id] });
 
             EventEmitter.emit(UserEvents.SINGUP, user, req, access_token, refresh_token);
             AppResponse.builder(res).status(201).message("auth.messages.user_successfully_created").data({ access_token, refresh_token }).send();
@@ -104,16 +104,16 @@ class AuthController extends Controller {
      *
      * @param { auth.refresh } request.body - refresh info - application/json
      * 
-     * @return { auth.success_signup }          200 - refresh successfully 
-     * @return { message.badrequest_error }     400 - Bad Request
+     * @return { auth.auth.success }            200 - Refresh Successfully 
+     * @return { message.bad_request_error }    400 - BadRequest
      * @return { message.server_error  }        500 - Server Error
      */
     async refresh(req, res, next) {
         try {
-            const access_token = await generateJwtToken({ _id: req.user._id, role: req.user.role })
-            const refresh_token = await generateJwtRefeshToken({ _id: req.user._id, role: req.user.role });
+            const access_token = await generateJwtToken({ _id: req.user.id, role: req.user.role })
+            const refresh_token = await generateJwtRefreshToken({ _id: req.user.id, role: req.user.role });
 
-            const redisKey = req.user._id.toString() + env("REDIS_KEY_REF_TOKENS")
+            const redisKey = req.user.id + env("REDIS_KEY_REF_TOKENS")
             redisClient.sRem(redisKey, req.body.token)
 
             AppResponse.builder(res).message('auth.messages.success_login').data({ access_token, refresh_token }).send();
@@ -132,14 +132,14 @@ class AuthController extends Controller {
      * @param { auth.refresh } request.body - refresh info - application/json
      * 
      * @return { auth.success_signup }          200 - logout successfully 
-     * @return { message.badrequest_error }     400 - Bad Request
+     * @return { message.bad_request_error }    400 - BadRequest
      * @return { message.server_error  }        500 - Server Error
      */
     async logout(req, res, next) {
         try {
             const token = req.headers.authorization.split(' ')[1];
 
-            const redisKey = req.user._id.toString() + env("REDIS_KEY_REF_TOKENS")
+            const redisKey = req.user.id + env("REDIS_KEY_REF_TOKENS")
             await redisClient.sRem(redisKey, token);
 
             EventEmitter.emit(UserEvents.LOGOUT, token);
@@ -158,8 +158,8 @@ class AuthController extends Controller {
      *
      * @param { auth.refresh } request.body - refresh info - application/json
      * 
-     * @return { auth.success_signup }              200 - logout successfully 
-     * @return { message.unauthorized_error }       401 - UnauthorizedError
+     * @return { auth.success }                     200 - Verify Token Successfully 
+     * @return { message.unauthorized_error }       401 - Unauthorized
      * @return { message.server_error  }            500 - Server Error
      */
     async verifyToken(req, res, next) {
@@ -177,7 +177,7 @@ class AuthController extends Controller {
      * @return { auth.success }                     200 - found successfully 
      * @return { message.server_error  }            500 - Server Error
      */
-    async checkusername(req, res, next) {
+    async checkUsername(req, res, next) {
         try {
             let user = await User.findOne({ username: req.body.username });
             if (user) throw new BadRequestError('auth.errors.username_exist');
@@ -196,29 +196,28 @@ class AuthController extends Controller {
        * @tags Auth 
        * @security BearerAuth
        *
-       * @return { message.badrequest_error }     400 - Bad Request
+       * @return { message.bad_request_error }    400 - BadRequest
        * @return { message.server_error  }        500 - Server Error
     */
     async sendMobileVerificationCode(req, res, next) {
         try {
-            let user = await userService.findById(req.user._id);
-            if (user.mobile_verified_at) throw new BadRequestError('auth.errors.authentication_has_already_been_done')
+            if (req.user.mobile_verified_at) throw new BadRequestError('auth.errors.authentication_has_already_been_done')
 
-            let log = await VerificationRequest.findOne({ 'user_id': req.user._id, 'veriffication_at': null, $or: [{ expire_at: null }, { expire_at: { $gt: new Date() } }] })
+            let log = await VerificationRequest.findOne({ 'user_id': req.user.id, 'veriffication_at': null, $or: [{ expire_at: null }, { expire_at: { $gt: new Date() } }] })
             if (log) throw new BadRequestError('auth.errors.authentication_code_has_already_been_sent')
 
             let currentTime = new Date();
             let verify_code = Math.floor(Math.random() * 90000 + 10000);
-            
-            let sendSmsResult = Kavenegar.builder(user).message(`Your authentication code :‌ ${verify_code} \nCV Manager`).receptor(user.mobile).send();
-            if(!sendSmsResult) new BadRequestError('auth.errors.error_sending_mobile_verification_code')
+
+            let sendSmsResult = Kavenegar.builder(req.user).message(`Your authentication code :‌ ${verify_code} \nCV Manager`).receptor(req.user.mobile).send();
+            if (!sendSmsResult) new BadRequestError('auth.errors.error_sending_mobile_verification_code')
 
 
             await VerificationRequest.create({
-                user_id: req.user._id,
+                user_id: req.user.id,
                 provider: 'sms',
                 code: verify_code,
-                receiver: user.mobile,
+                receiver: req.user.mobile,
                 expire_at: new Date(currentTime.getTime() + (env('SMS_EXPIRATION_TIME_IN_MINUTE') * 60 * 1000)),
             });
 
@@ -237,15 +236,14 @@ class AuthController extends Controller {
       * 
       * @param { auth.checkVerify } request.body - refresh info - application/json
       * 
-      * @return { message.badrequest_error }     400 - Bad Request
-      * @return { message.server_error  }        500 - Server Error
+      * @return { message.bad_request_error }     400 - BadRequest
+      * @return { message.server_error  }         500 - Server Error
       */
     async checkMobileVerificationCode(req, res, next) {
         try {
-            let user = await userService.findById(req.user._id);
-            if (user.mobile_verified_at) throw new BadRequestError('auth.errors.authentication_has_already_been_done')
+            if (req.user.mobile_verified_at) throw new BadRequestError('auth.errors.authentication_has_already_been_done')
 
-            let log = await VerificationRequest.findOne({ 'user_id': req.user._id, 'veriffication_at': null, $or: [{ expire_at: null }, { expire_at: { $gt: new Date() } }] })
+            let log = await VerificationRequest.findOne({ 'user_id': req.user.id, 'veriffication_at': null, $or: [{ expire_at: null }, { expire_at: { $gt: new Date() } }] })
             if (!log) throw new BadRequestError('auth.errors.valid_authentication_code_was_not_found_for_you')
 
             if (req.body.verify_code != log.code) {
@@ -256,12 +254,14 @@ class AuthController extends Controller {
 
             log.veriffication_at = new Date();
             await log.save();
-            EventEmitter.emit(UserEvents.MOBILDE_VERIFICATION, user, req);
+            EventEmitter.emit(UserEvents.MOBILDE_VERIFICATION, req.user, req);
             AppResponse.builder(res).message('auth.messages.authentication_code_sent_successfully').send();
         } catch (err) {
             next(err);
         }
     }
+
+   
 }
 
 

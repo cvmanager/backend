@@ -18,9 +18,9 @@ class TagController extends Controller {
     * @param  { string } query.path - search for special fields - application/json
     * 
     * @return { tag.success } 200 - success response
-    * @return { message.badrequest_error } 400 - bad request respone
-    * @return { message.badrequest_error } 404 - not found respone
-    * @return { message.unauthorized_error }     401 - UnauthorizedError
+    * @return { message.bad_request_error } 400 - BadRequest response
+    * @return { message.bad_request_error } 404 - not found response
+    * @return { message.unauthorized_error }     401 - Unauthorized
     * @return { message.server_error  }    500 - Server Error
     */
     async index(req, res, next) {
@@ -58,9 +58,9 @@ class TagController extends Controller {
     * 
     * @param { tag.create } request.body - tag info - application/json
     * 
-    * @return { message.badrequest_error }  400 - bad request respone
-    * @return { message.NotFoundError }  404 - not found respone
-    * @return { message.badrequest_error }  401 - UnauthorizedError
+    * @return { message.bad_request_error }  400 - BadRequest response
+    * @return { message.notfound_error }  404 - not found response
+    * @return { message.bad_request_error }  401 - Unauthorized
     * @return { message.server_error  }     500 - Server Error
     */
     async create(req, res, next) {
@@ -68,7 +68,7 @@ class TagController extends Controller {
             let tag = await tagService.findOne({ name: req.body.name });
             if (tag) throw new AlreadyExists('tag.errors.duplicate');
 
-            req.body.created_by = req.user._id;
+            req.body.created_by = req.user.id;
             req.body.color = getRandomColor();
             tag = await tagService.create(req.body);
 
