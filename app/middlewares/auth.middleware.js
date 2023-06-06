@@ -1,6 +1,7 @@
 import jsonwebtoken from 'jsonwebtoken';
 
 import BadRequestError from '../exceptions/BadRequestError.js'
+import UnauthorizedError from '../exceptions/UnauthorizedError.js'
 import redisClient from '../helper/redis_client.js'
 import env from '../helper/env.js';
 
@@ -39,9 +40,7 @@ async function verifyRefrshToken(req, res, next) {
 
 async function checkVerifiedMobile(req, res, next) {
     try {
-        let user = await userService.findOne({ _id: req.user._id });
-        if (!user) throw new NotFoundError('user.errors.user_notfound');
-        if (!user.mobile_verified_at) throw new BadRequestError("user.errors.mobile_not_veryfied");
+        if (!req.user.mobile_verified_at) throw new UnauthorizedError("user.errors.mobile_not_veryfied");
         next();
     } catch (err) {
         next(err);
