@@ -13,6 +13,8 @@ profileRouter
     .patch('/change-password', profileValidation.changePassword(), ProfileController.changePassword)
     .patch('/avatar', Upload('users/org/', 'avatar', 'image'), cropImage(avatar_size, cropEvents.Crop_Image), ProfileController.uploadProfileImage)
     .patch('/', profileValidation.edit(), ProfileController.edit)
+    .get('/notifications', profileValidation.notifications(), ProfileController.notifications)
+    .patch('/observed-notifications', ProfileController.observedNotifications)
 
 
 

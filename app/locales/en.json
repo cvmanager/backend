@@ -334,7 +334,7 @@
 			"token_verified": "Token Verified",
 			"username_exist": "The username already exists",
 			"username_is_available": "The username is available",
-			"authentication_code_sent_successfully":"Authentication code sent successfully"
+			"authentication_code_sent_successfully": "Authentication code sent successfully"
 		},
 		"errors": {
 			"user_already_exists": "There is already a user with this information",
@@ -345,12 +345,12 @@
 			"token_not_sended": "Authentication key not sent",
 			"token_not_stored": "Authentication key not stored",
 			"forbidden_access": "Forbidden Access!",
-			"authentication_code_has_already_been_sent" : "Your authentication code has already been sent",
-			"authentication_has_already_been_done" : "Authentication has already been done",
-			"valid_authentication_code_was_not_found_for_you" :"A valid authentication code was not found for you",
-			"authentication_code_sent_is_invalid" :"The authentication code sent is invalid",
-			"your_mobile_has_been_successfully_verified":"Your mobile has been successfully verified",
-			"error_sending_mobile_verification_code":"Error sending mobile verification code"
+			"authentication_code_has_already_been_sent": "Your authentication code has already been sent",
+			"authentication_has_already_been_done": "Authentication has already been done",
+			"valid_authentication_code_was_not_found_for_you": "A valid authentication code was not found for you",
+			"authentication_code_sent_is_invalid": "The authentication code sent is invalid",
+			"your_mobile_has_been_successfully_verified": "Your mobile has been successfully verified",
+			"error_sending_mobile_verification_code": "Error sending mobile verification code"
 		}
 	},
 	"constant": {
@@ -711,16 +711,27 @@
 			],
 			"step": [
 				"update_status"
+			],
+			"list_state": [
+				"all",
+				"read",
+				"unread"
 			]
 		},
-		"validations": {},
+		"validations": {
+			"notification_page_number": "company page must by number",
+			"notification_size_number": "company size must by number",
+			"notification_unvalid_state_send": "unvalid state send"
+		},
 		"messages": {
 			"title": {
 				"update_status": "Resume status changed"
 			},
 			"body": {
 				"update_status": "{{user}} change status to {{status}}"
-			}
+			},
+			"notification_list_found": "notification list",
+			"notification_list_seen": "notification list observed"
 		},
 		"errors": {}
 	}
