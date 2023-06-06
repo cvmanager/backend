@@ -1,6 +1,7 @@
 import jsonwebtoken from 'jsonwebtoken';
 
 import BadRequestError from '../exceptions/BadRequestError.js'
+import UnauthorizedError from '../exceptions/UnauthorizedError.js'
 import redisClient from '../helper/redis_client.js'
 import env from '../helper/env.js';
 import userService from '../helper/service/user.service.js';
@@ -39,4 +40,13 @@ async function verifyRefreshToken(req, res, next) {
     }
 }
 
-export { verifyToken, verifyRefreshToken }
+async function checkVerifiedMobile(req, res, next) {
+    try {
+        if (!req.user.mobile_verified_at) throw new UnauthorizedError("user.errors.mobile_not_veryfied");
+        next();
+    } catch (err) {
+        next(err);
+    }
+}
+
+export { verifyToken, verifyRefreshToken , checkVerifiedMobile }
