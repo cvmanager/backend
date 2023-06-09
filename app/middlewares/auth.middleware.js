@@ -40,8 +40,9 @@ async function verifyRefreshToken(req, res, next) {
     }
 }
 
-async function checkVerifiedMobile(req, res, next) {
+async function checkUserState(req, res, next) {
     try {
+        if (req.user.is_banned) throw new BadRequestError("auth.errors.user_is_banned");
         if (!req.user.mobile_verified_at) throw new UnauthorizedError("user.errors.mobile_is_not_verified");
         next();
     } catch (err) {
@@ -49,4 +50,4 @@ async function checkVerifiedMobile(req, res, next) {
     }
 }
 
-export { verifyToken, verifyRefreshToken , checkVerifiedMobile }
+export { verifyToken, verifyRefreshToken , checkUserState }

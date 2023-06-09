@@ -1,5 +1,5 @@
 import express from 'express'
-import { verifyToken, checkVerifiedMobile } from '../middlewares/auth.middleware.js'
+import { verifyToken, checkUserState } from '../middlewares/auth.middleware.js'
 import projectRouter from './project.route.js'
 import resumeRouter from './resume.route.js'
 import authRouter from './auth.route.js'
@@ -33,36 +33,36 @@ const router = express.Router({ mergeParams: true });
 
 router.use('/auth', authRouter)
 
-router.use('/cities', verifyToken, checkVerifiedMobile, canAccess, cityRouter)
+router.use('/cities', verifyToken, checkUserState, canAccess, cityRouter)
 
-router.use('/companies/:id', verifyToken, checkVerifiedMobile, canAccess, companyAccess, companyIdRouter)
-router.use('/companies', verifyToken, checkVerifiedMobile, canAccess, companyAccess, companyRouter)
+router.use('/companies/:id', verifyToken, checkUserState, canAccess, companyAccess, companyIdRouter)
+router.use('/companies', verifyToken, checkUserState, canAccess, companyAccess, companyRouter)
 
 router.use('/users/:id', verifyToken, canAccess, userAccess, userIdRouter)
-router.use('/users', verifyToken, checkVerifiedMobile, canAccess, userRouter)
+router.use('/users', verifyToken, checkUserState, canAccess, userRouter)
 
 router.use('/constant', verifyToken, constantRouter)
 
-router.use('/permissions/:id', verifyToken, checkVerifiedMobile, canAccess, permissionIdRouter)
-router.use('/permissions', verifyToken, checkVerifiedMobile, canAccess, permissionRouter)
+router.use('/permissions/:id', verifyToken, checkUserState, canAccess, permissionIdRouter)
+router.use('/permissions', verifyToken, checkUserState, canAccess, permissionRouter)
 
-router.use('/positions/:id', verifyToken, checkVerifiedMobile, canAccess, positionAccess, positionIdRouter)
-router.use('/positions', verifyToken, checkVerifiedMobile, canAccess, positionAccess, positionRouter)
+router.use('/positions/:id', verifyToken, checkUserState, canAccess, positionAccess, positionIdRouter)
+router.use('/positions', verifyToken, checkUserState, canAccess, positionAccess, positionRouter)
 
-router.use('/projects/:id', verifyToken, checkVerifiedMobile, canAccess, projectAccess, projectIdRouter)
-router.use('/projects', verifyToken, checkVerifiedMobile, canAccess, projectAccess, projectRouter)
+router.use('/projects/:id', verifyToken, checkUserState, canAccess, projectAccess, projectIdRouter)
+router.use('/projects', verifyToken, checkUserState, canAccess, projectAccess, projectRouter)
 
 router.use('/provinces/:id', verifyToken, provinceIdRouter)
 router.use('/provinces', verifyToken, provinceRouter)
 
 
-router.use('/resumes/:id', verifyToken, checkVerifiedMobile, canAccess, resumeAccess, resumeIdRouter)
-router.use('/resumes', verifyToken, checkVerifiedMobile, canAccess, resumeAccess, resumeRouter)
+router.use('/resumes/:id', verifyToken, checkUserState, canAccess, resumeAccess, resumeIdRouter)
+router.use('/resumes', verifyToken, checkUserState, canAccess, resumeAccess, resumeRouter)
 
-router.use('/roles/:id', verifyToken, checkVerifiedMobile, canAccess, roleIdRouter)
-router.use('/roles', verifyToken, checkVerifiedMobile, canAccess, roleRouter)
+router.use('/roles/:id', verifyToken, checkUserState, canAccess, roleIdRouter)
+router.use('/roles', verifyToken, checkUserState, canAccess, roleRouter)
 
-router.use('/tags', verifyToken, checkVerifiedMobile, canAccess, TagRouter)
+router.use('/tags', verifyToken, checkUserState, canAccess, TagRouter)
 
 router.use('/profile', verifyToken, profileRouter);
 
