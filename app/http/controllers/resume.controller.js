@@ -146,7 +146,7 @@ class ResumeController extends Controller {
 
             EventEmitter.emit(ResumeEvents.FIND, resume, req);
 
-            AppResponse.builder(res).message("resume.messages.project_found").data(resume).send();
+            AppResponse.builder(res).message("resume.messages.resume_found").data(resume).send();
         } catch (err) {
             next(err);
         }
@@ -416,9 +416,7 @@ class ResumeController extends Controller {
                 recall_at = new Date(req.body.recall_at)
                 callHistory.recall_at = recall_at
             }
-            if (recall_at !== null && calling_date > recall_at) {
-                throw new BadRequestError('calling_date must be before recall_at');
-            }
+            if (recall_at !== null && calling_date > recall_at) throw new BadRequestError('resume.errors.calling_date_must_be_before_recall_at');
 
             resume.call_history.push(callHistory)
             await resume.save()
@@ -456,13 +454,13 @@ class ResumeController extends Controller {
             if (!user) throw new NotFoundError('user.errors.user_notfound');
 
 
-            if (resume.assigners && resume.assigners.includes(user._id)) throw new BadRequestError('resume.errors.contributor_could_not_be_duplicate');
+            if (resume.assigners && resume.assigners.includes(user._id)) throw new BadRequestError('resume.errors.assigner_could_not_be_duplicate');
 
             resume.assigners.push(user._id);
             await resume.save();
             EventEmitter.emit(ResumeEvents.SET_ASSIGNER, resume, req);
 
-            AppResponse.builder(res).message("resume.messages.contributor_successfully_added").data(resume).send();
+            AppResponse.builder(res).message("resume.messages.assigner_successfully_added").data(resume).send();
         } catch (err) {
             next(err);
         }
@@ -492,7 +490,7 @@ class ResumeController extends Controller {
             if (!user) throw new NotFoundError('user.errors.user_notfound');
 
             let assigners = resume.assigners
-            if (!resume.assigners.includes(user._id)) throw new BadRequestError('resume.errors.contributor_not_exists');
+            if (!resume.assigners.includes(user._id)) throw new BadRequestError('resume.errors.assigner_not_exists');
 
             resume.assigners = assigners.filter(e => e != user._id)
             await resume.save();
@@ -500,7 +498,7 @@ class ResumeController extends Controller {
 
             EventEmitter.emit(ResumeEvents.UNSET_ASSIGNER, resume, req);
 
-            AppResponse.builder(res).message("resume.messages.contributor_successfully_removed").data(resume).send();
+            AppResponse.builder(res).message("resume.messages.assigner_successfully_removed").data(resume).send();
         } catch (err) {
             next(err);
         }
@@ -812,7 +810,7 @@ class ResumeController extends Controller {
 
             EventEmitter.emit(ResumeEvents.GET_INTERVIEW, resume, req);
 
-            AppResponse.builder(res).message("interview.messages.interview_found").data(interview).send();
+            AppResponse.builder(res).message("resume.messages.list_of_interviews").data(interview).send();
         } catch (err) {
             next(err);
         }
@@ -859,7 +857,7 @@ class ResumeController extends Controller {
             await Interview.findByIdAndUpdate(req.body.interview_id, req.body, { new: true })
                 .then(interview => {
                     EventEmitter.emit(ResumesInterviewEvents.UPDATE, interview, req);
-                    AppResponse.builder(res).message("interview.messages.interview_successfully_updated").data(interview).send();
+                    AppResponse.builder(res).message("resume.messages.interview_successfully_updated").data(interview).send();
                 })
                 .catch(err => {
                     next(err);
@@ -905,7 +903,7 @@ class ResumeController extends Controller {
             let interview = await Interview.create(req.body)
             EventEmitter.emit(ResumesInterviewEvents.CREATE, interview, req)
 
-            AppResponse.builder(res).status(201).message("interview.messages.interview_successfully_created").data(interview).send();
+            AppResponse.builder(res).status(201).message("resume.messages.interview_successfully_created").data(interview).send();
         } catch (err) {
             next(err);
         }
@@ -939,7 +937,7 @@ class ResumeController extends Controller {
             EventEmitter.emit(ResumesInterviewEvents.DELETE, interview, req)
 
 
-            AppResponse.builder(res).message("interview.messages.interview_successfully_deleted").data(interview).send();
+            AppResponse.builder(res).message("resume.messages.interview_successfully_deleted").data(interview).send();
         } catch (err) {
             next(err);
         }

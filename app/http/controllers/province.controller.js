@@ -23,7 +23,7 @@ class ProvinceController extends Controller {
         try {
             const { query = '' } = req.query
             const provinceList = await Province.find({ name: { '$regex': new RegExp(query, "i") } });
-            AppResponse.builder(res).message("province.message.province_list_found").data(provinceList).send();
+            AppResponse.builder(res).message("province.messages.province_list_found").data(provinceList).send();
         } catch (err) {
             next(err);
         }

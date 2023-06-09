@@ -34,7 +34,7 @@ class RoleController extends Controller {
                 limit: size,
             });
             
-            AppResponse.builder(res).message("role.message.role_list_found").data(roleList).send();
+            AppResponse.builder(res).message("role.message.list_of_roles").data(roleList).send();
         } catch (err) {
             next(err);
         }
@@ -99,17 +99,17 @@ class RoleController extends Controller {
     async create(req, res, next) {
         try {
             let role = await Role.findOne({ 'name': req.body.name });
-            if (role) throw new AlreadyExists('role.error.role_already_exists');
+            if (role) throw new AlreadyExists('role.errors.role_already_exists');
             
             if (req.body.parent) {
                 let parentExist = await Role.findOne({ _id: req.body.parent })
-                if (!parentExist) throw new NotFoundError('role.error.parent_not_found'); 
+                if (!parentExist) throw new NotFoundError('role.errors.parent_not_found'); 
             }
 
             if (req.body.permissions && req.body.permissions.length > 0) {
                 for (let permission of req.body.permissions) {
                     let permissionExist = await permissionService.findOne(permission)
-                    if (!permissionExist) throw new NotFoundError('permission.error.permission_not_found'); 
+                    if (!permissionExist) throw new NotFoundError('permission.error.permission_notfound'); 
                 }
             }
 
@@ -117,7 +117,7 @@ class RoleController extends Controller {
             let createdRole = await roleService.create(req.body);
             await cacheRoles()
 
-            AppResponse.builder(res).status(201).message("document.message.document_successfully_created").data(createdRole).send();
+            AppResponse.builder(res).status(201).message("role.messages.role_successfully_created").data(createdRole).send();
         } catch (err) {
             next(err)
         }
@@ -144,21 +144,21 @@ class RoleController extends Controller {
         try {
             if (req.body.name) {
                 let roleExist = await Role.findOne({ name: req.body.name })
-                if (roleExist && !roleExist._id.equals(req.params.id)) throw new AlreadyExists('role.error.name_already_exists');
+                if (roleExist && !roleExist._id.equals(req.params.id)) throw new AlreadyExists('role.errors.name_already_exists');
             }
 
             if (req.body.permissions && req.body.permissions.length > 0) {
                 for (let permission of req.body.permissions) {
                     let permissionExist = await permissionService.findOne(permission)
-                    if (!permissionExist) throw new NotFoundError('permission.error.permission_not_found'); 
+                    if (!permissionExist) throw new NotFoundError('permission.error.permission_notfound'); 
                 }
             }
 
             const updatedRole = await roleService.updateOne({ _id: req.params.id }, req.body)
-            if (!updatedRole) throw new NotFoundError('document.error.document_notfound'); 
+            if (!updatedRole) throw new NotFoundError('role.errors.role_notfound'); 
             await cacheRoles()
 
-            AppResponse.builder(res).message("document.message.document_successfully_updated").data(updatedRole).send()
+            AppResponse.builder(res).message("role.messages.role_successfully_updated").data(updatedRole).send()
         } catch (err) {
             next(err);
         }
@@ -182,13 +182,13 @@ class RoleController extends Controller {
     async delete(req, res, next) {
         try {
             let role = await roleService.findOne({ _id: req.params.id, ...req.query });
-            if (!role) throw new NotFoundError('document.error.document_notfound');
+            if (!role) throw new NotFoundError('role.errors.role_notfound');
     
             await role.delete(req.user.id);
             // delete from cache
             await cacheRoles()
             
-            AppResponse.builder(res).message("document.message.document_successfully_deleted").data().send();
+            AppResponse.builder(res).message("role.messages.role_successfully_deleted").data().send();
         } catch (error) {
             next(error)
         }

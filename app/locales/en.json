@@ -35,278 +35,6 @@
 			"crop_file": "Error in resizing file",
 			"upload_file": "Error in uploading file",
 			"LIMIT_FILE_SIZE": "file is too large"
-		},
-		"auth": {
-			"enums": {},
-			"validations": {
-				"pass_confirm_match": "Password and confirmation are not the same",
-				"password_required": "The password field is required",
-				"password_length": "The password field has a character limit",
-				"first_name_required": "The first name field is required",
-				"username_required": "The username field is required",
-				"username_length": "The username field should greater than 5 and less than 10 character",
-				"first_name_length": "The first name field has a character limit",
-				"last_name_required": "The last name field is required",
-				"last_name_length": "The last name field has a character limit",
-				"mobile_required": "The mobile field is required",
-				"mobile_pattern": "The mobile number entered is invalid",
-				"username_wrong": "The username is wrong",
-				"mobile_wrong": "The username is wrong"
-			},
-			"messages": {
-				"user_successfully_created": "The account was created successfully",
-				"success_login": "You have successfully logged into your account",
-				"success_logout": "You have successfully logged out",
-				"token_verified": "Token Verified",
-				"username_exist": "The username already exists",
-				"username_is_available": "The username is available"
-			},
-			"errors": {
-				"user_already_exists": "There is already a user with this information",
-				"invalid_credentials": "The username or password is incorrect",
-				"username_notfound": "The username not found",
-				"username_not_send": "The username not send",
-				"token_not_same": "Token not same",
-				"token_not_sended": "Authentication key not sent",
-				"token_not_stored": "Authentication key not stored",
-				"forbidden_access": "Forbidden Access!"
-			}
-		},
-		"constant": {
-			"messages": {
-				"constant_list_found": "Constant successfully created"
-			}
-		},
-		"company": {
-			"enums": {},
-			"validations": {
-				"company_id_require": "company is required",
-				"company_id_invalid": "company id invalid",
-				"company_page_number": "company page must by number",
-				"company_size_number": "company size must by number",
-				"company_name_length": "company name length must greater than 3 character and less than 50 character",
-				"company_description_length": "company description length must greater than 3 character and less than 100 character",
-				"company_phone_length": "company description length must greater than 9 character and less than 12 character",
-				"company_phone_number": "company phone should number",
-				"company_address_length": "company address length must greater than 10 character and less than 200 character"
-			},
-			"messages": {
-				"company_list_found": "Company list found",
-				"company_successfully_created": "Company successfully created",
-				"company_managers_found": "Company managers successfully founded",
-				"company_found": "Company successfully founded",
-				"company_resumes_found": "Company resumes successfully founded",
-				"company_projects_found": "Company projects successfully founded",
-				"company_successfully_updated": "Company successfully updated",
-				"company_manager_successfully_created": "company manager successfully created",
-				"company_successfully_activated": "company  successfully activated",
-				"company_successfully_deactivated": "company  successfully deactivated",
-				"company_manager_successfully_removed": "company manager successfully removed"
-			},
-			"errors": {
-				"the_user_is_currently_an_manager_for_company": "The user is currently an manager for company",
-				"the_user_is_not_manager_for_this_company": "This user is not  manager for this company",
-				"the_owner_manager_cannot_be_deleted": "The owner manager cannot be deleted",
-				"company_already_exists": "company name is duplicated, already exists",
-				"company_notfound": "company not found",
-				"company_deactivated_already": "company has deactivated already",
-				"company_activated_already": "company has activated already",
-				"company_deactivate_cant_set_manager": "cant set manager for deactivate company"
-			}
-		},
-		"position": {
-			"enums": {
-				"level": [
-					"senior",
-					"mid",
-					"junior"
-				]
-			},
-			"validations": {
-				"position_page_number": "position page must by number",
-				"position_size_number": "position size must by number",
-				"position_description_length": "position description must greater than 10 character and less than 100 character"
-			},
-			"messages": {
-				"position_list_found": "position list",
-				"position_found": "position found",
-				"position_managers_found": "position managers successfully founded",
-				"position_resumes_found": "Position resumes successfully founded",
-				"position_successfully_deactivated": "position status successfully deactivated",
-				"position_successfully_activated": "position status successfully activated",
-				"position_successfully_created": "Position successfully created",
-				"position_successfully_updated": "Position successfully updated",
-				"position_successfully_deleted": "Position successfully deleted"
-			},
-			"errors": {
-				"position_notfound": "position not found",
-				"position_already_exists": "position already exists",
-				"position_list_found": "position list",
-				"position_found": "position found",
-				"position_managers_found": "position managers successfully founded",
-				"position_resumes_found": "Position resumes successfully founded",
-				"position_deactivated_already": "position has deactivated already",
-				"position_activated_already": "position has activated already",
-				"the_user_is_currently_an_manager_for_position": "The user is currently an manager for position",
-				"position_deactivate_cant_set_manager": "cant set manager for deactivate position"
-			}
-		},
-		"project": {
-			"enums": {},
-			"validations": {
-				"project_id_invalid": "project id invalid",
-				"project_page_number": "project page must by number",
-				"project_size_number": "project size must by number"
-			},
-			"messages": {
-				"project_found": "Project Found",
-				"project_successfully_created": "Project successfully Created",
-				"project_successfully_updated": "Project successfully updated",
-				"project_manager_successfully_updated": "Project manager successfully updated",
-				"project_manager_successfully_deleted": "Project manager successfully deleted",
-				"project_successfully_deleted": "project successfully deleted",
-				"project_resumes_found": "Project resumes successfully founded",
-				"project_managers_found": "Project managers successfully founded",
-				"project_positions_found": "project positions successfully found",
-				"project_successfully_deactivated": "project status successfully deactivated",
-				"project_successfully_activated": "project status successfully activated"
-			},
-			"errors": {
-				"the_user_is_currently_an_manager_for_project": "The user is currently an manager for project",
-				"the_user_is_not_an_manager_for_project": "This user is not defined for the project",
-				"the_owner_manager_cannot_be_deleted": "The owner manager cannot be deleted",
-				"project_not_found": "Project not found",
-				"project_already_attached_company": "Project already attached this company",
-				"project_deactivated_already": "project has deactivated already",
-				"project_activated_already": "project has activated already",
-				"project_deactivate_cant_set_manager": "cant set manager for deactivate project"
-			}
-		},
-		"resume": {
-			"enums": {
-				"status": [
-					"pending",
-					"call_review",
-					"tech_review",
-					"wait_reject",
-					"rejected",
-					"hired",
-					"wait_hire"
-				],
-				"call_history_status": [
-					"rejected",
-					"answered",
-					"busy",
-					"wrong-number",
-					"recall"
-				],
-				"hire_status": [
-					"not_employed",
-					"hired_on"
-				]
-			},
-			"validations": {
-				"company_id_required": "company  is required",
-				"company_id_invalid": "company invalid",
-				"project_id_required": "project is required",
-				"project_id_invalid": "project invalid",
-				"first_name_required": "first name is required",
-				"first_name_length": "resume.validation.first_name_length",
-				"last_name_required": "resume.validation.last_name_required",
-				"last_name_length": "resume.validation.last_name_length",
-				"gender_required": "resume.validation.gender_required",
-				"gender_incorrect": "resume.validation.gender_incorrect",
-				"email_required": "resume.validation.email_required",
-				"email_invalid": "resume.validation.email_invalid",
-				"birth_year_required": "resume.validation.birth_year_required",
-				"birth_year_number": "resume.validation.birth_year_number",
-				"birth_year_length": "resume.validation.birth_year_length",
-				"marital_status_required": "resume.validation.marital_status_required",
-				"marital_status_incorrect": "resume.validation.marital_status_incorrect",
-				"mobile_required": "resume.validation.mobile_required",
-				"residence_city_required": "resume.validation.residence_city_required",
-				"residence_city_invalid": "resume.validation.residence_city_invalid",
-				"work_city_required": "resume.validation.work_city_required",
-				"work_city_invalid": "resume.validation.work_city_invalid",
-				"education_required": "resume.validation.education_required",
-				"education_incorrect": "resume.validation.education_incorrect",
-				"major_required": "resume.validation.major_required",
-				"major_length": "resume.validation.major_length",
-				"result_required": "result is required",
-				"military_status_incorrect_for_men": "military status is required for men",
-				"result_incorrect": "result is incorrect",
-				"calling_date_required": "calling_date is required",
-				"calling_date_must_be_date": "calling_date must be date",
-				"description_length": "description length must be between 0 and 1000",
-				"call_history_recall_at_required": "recall_at is required",
-				"call_history_recall_at_invalid": "recall_at must be date",
-				"reject_reason_value_not_valid": "reject reason value is not valid",
-				"reject_reason": "reject reason is required"
-			},
-			"messages": {
-				"resume_successfully_created": "resume successfully created",
-				"resume_status_successfully_updated": "resume successfully updated",
-				"resume_call_history_successfully_created": "resume call history successfully created",
-				"max_comment_length": "Comment has be between 5 and 1000 character",
-				"resume_page_number": "resume page must by number",
-				"resume_size_number": "resume size must by number"
-			},
-			"errors": {
-				"resume_notfound": "Sorry, Resume not found",
-				"resume_comments_no_content": "Sorry, This resume  don't have any comment",
-				"resume_comments_notfound": "Sorry, Resume not have any comment",
-				"can_not_update_status_to_current": "It is not possible to update the status to the current status",
-				"can_not_save_hired_rejected_status": "It is not possible to update the status to the hired and rejected"
-			}
-		},
-		"user": {
-			"enums": {},
-			"validations": {
-				"user_page_number": "user page must be number",
-				"user_size_number": "user size must be number"
-			},
-			"messages": {
-				"user_founded": "user successfully found",
-				"list_found": "the list of users",
-				"password_changed": "User password successfully changed",
-				"user_login_history_list": "user login history list"
-			},
-			"errors": {
-				"user_notfound": "User not found",
-				"password_length_not_confirm": "password length must be between 8-10",
-				"password_cant_be_empty": "password cant be empty",
-				"old_password_length_not_confirm": "old password length must be between 8-10",
-				"old_password_cant_be_empty": "old password cant be empty",
-				"incorrect_password": "The password is incorrect",
-				"duplicate_password": "New password cant be duplicate with old password",
-				"manager_is_banned": "banned user cant set for manager",
-				"mobile_not_veryfied": "mobile is not verified"
-			}
-		},
-		"manager": {
-			"enums": {},
-			"validations": {},
-			"messages": {
-				"manager_successfully_created": "manager successfully set for position"
-			},
-			"errors": {
-				"duplicate": "This manager set for this position already"
-			}
-		},
-		"province": {
-			"enums": {},
-			"validations": {
-				"province_page_number": "province page must by number",
-				"province_size_number": "province size must by number",
-				"province_id_invalid": "province id invalid"
-			},
-			"messages": {
-				"province_list_found": "province list found",
-				"city_list_found": "city list found"
-			},
-			"errors": {
-				"province_notfound": "province notfound"
-			}
 		}
 	},
 	"auth": {
@@ -335,7 +63,7 @@
 			"token_verified": "Token Verified",
 			"username_exist": "The username already exists",
 			"username_is_available": "The username is available",
-			"authentication_code_sent_successfully": "Authentication code sent successfully"
+			"authentication_code_sent_successfully": "It was successful, the authentication code has been sent to your mobile"
 		},
 		"errors": {
 			"user_already_exists": "There is already a user with this information",
@@ -343,15 +71,16 @@
 			"username_notfound": "The username not found",
 			"username_not_send": "The username not send",
 			"token_not_same": "Token not same",
-			"token_not_sended": "Authentication key not sent",
-			"token_not_stored": "Authentication key not stored",
+			"token_not_sended": "An error occurred, the authentication token was not sent",
+			"token_not_stored": "An error occurred, the authentication token was not saved",
 			"forbidden_access": "Forbidden Access!",
 			"authentication_code_has_already_been_sent": "Your authentication code has already been sent",
 			"authentication_has_already_been_done": "Authentication has already been done",
-			"valid_authentication_code_was_not_found_for_you": "A valid authentication code was not found for you",
-			"authentication_code_sent_is_invalid": "The authentication code sent is invalid",
+			"valid_authentication_code_was_not_found_for_you": "An error occurred, the authentication code entered is invalid",
+			"authentication_code_sent_is_invalid": "An error occurred, the authentication code entered is invalid",
 			"your_mobile_has_been_successfully_verified": "Your mobile has been successfully verified",
-			"error_sending_mobile_verification_code": "Error sending mobile verification code"
+			"error_sending_mobile_verification_code": "An error occurred, we had a problem sending the authentication code. Please try again",
+			"user_is_banned":"Sorry, your account has been blocked"
 		}
 	},
 	"constant": {
@@ -374,24 +103,57 @@
 		},
 		"messages": {
 			"company_list_found": "Company list found",
-			"company_successfully_created": "Company successfully created",
-			"company_managers_found": "Company managers successfully founded",
-			"company_found": "Company successfully founded",
-			"company_resumes_found": "Company resumes successfully founded",
-			"company_projects_found": "Company projects successfully founded",
-			"company_successfully_updated": "Company successfully updated",
-			"company_manager_successfully_created": "company manager successfully created",
-			"company_successfully_activated": "company  successfully activated",
-			"company_successfully_deactivated": "company  successfully deactivated"
+			"company_successfully_created": "The company was created successfully, now you can go to create the first position for the company.",
+			"company_managers_found": "It was successful, the list of company directors was found",
+			"company_resumes_found": "Success, company resume list found",
+			"company_projects_found": "It was successful, the list of company projects was found",
+			"company_successfully_updated": "Company information has been successfully updated",
+			"company_successfully_deactivated": "Success, your company has been deactivated. We are waiting for the company activity again ;)",
+			"company_successfully_deleted" : "The company was successfully deleted",
+			"company_resume_by_states" : "List of resumes found by status",
+			"company_resume_count_by_projects":"A list of resumes was found by project",
+			"company_resume_count_from_month":"A list of the number of resumes found by month",
+			"company_resume_state_in_last_month":"A list of resumes was found based on the last month",
+			"company_found": "Company search was successful",
+			"company_manager_successfully_created": "The selected user has been successfully defined as a company manager",
+			"company_successfully_activated": "It was successful, your company has been reactivated. keep up the good work ;)",
+			"company_manager_successfully_removed": "It was successful, the user was removed from the company manager"
 		},
 		"errors": {
-			"the_user_is_currently_an_manager_for_company": "The user is currently an manager for company",
-			"the_user_is_not_manager_for_this_company": "This user is not  manager for this company",
-			"the_owner_manager_cannot_be_deleted": "The owner manager cannot be deleted",
-			"company_already_exists": "company name is duplicated, already exists",
-			"company_notfound": "company not found",
-			"company_deactivated_already": "company has deactivated already",
-			"company_activated_already": "company has activated already"
+			"the_user_is_currently_an_manager_for_company": "The selected user is currently defined as an manager for the company and cannot be reassigned",
+			"the_user_is_not_manager_for_this_company": "An error occurred, the selected user is not the manager of this company",
+			"the_owner_manager_cannot_be_deleted": "An error occurred, it is not possible to remove the company owner",
+			"company_notfound": "An error occurred, the desired project could not be found. Please try again",
+			"company_activated_already": "The operation failed, the company is currently active",
+			"company_already_exists": "Sorry, but the company name is duplicated",
+			"company_deactivated_already": "The operation failed, the company is currently inactive",
+			"company_deactivate_cant_set_manager": "Sorry, but it is not possible to assign a manager for an inactive company"
+		}
+	},
+	"city": {
+		"enums": {},
+		"validations": {},
+		"messages": {
+			"city_list_found" : "List of cities found successfully.",
+			"city_found":"The city was successfully found"
+		},
+		"errors": {
+			"city_notfound" : "Sorry, but the city was not found"
+		}
+	},
+	"permission": {
+		"enums": {},
+		"validations": {},
+		"messages": {
+			"permission_list_found":"Success, access list found",
+			"permission_successfully_created":"It was successful, the access level was created successfully",
+			"permission_successfully_updated":"Operation completed successfully, access information updated",
+			"permission_successfully_deleted":"Operation completed successfully, access level removed"
+		},
+		"errors": {
+			"permission_already_exists" :"An error occurred, access is already available",
+			"name_already_exists": "An error occurred, an access level with this name already exists",
+			"permission_notfound":"An error occurred, access level not found"
 		}
 	},
 	"position": {
@@ -408,24 +170,27 @@
 			"position_description_length": "position description must greater than 10 character and less than 100 character"
 		},
 		"messages": {
-			"position_list_found": "position list",
-			"position_found": "position found",
+			"position_list_found": "It was successful, the list of positions was successfully found",
+			"position_found": "Success, position found successfully",
 			"position_managers_found": "position managers successfully founded",
 			"position_resumes_found": "Position resumes successfully founded",
 			"position_successfully_deactivated": "position status successfully deactivated",
 			"position_successfully_activated": "position status successfully activated",
-			"position_successfully_created": "position successfully created"
+			"position_successfully_created": "Success, your position has been successfully created. Now you can create position resumes",
+			"position_successfully_updated": "The position information update operation was successfully completed",
+			"position_successfully_deleted": "Position successfully deleted"
 		},
 		"errors": {
-			"position_notfound": "position not found",
-			"position_already_exists": "position already exists",
-			"position_not_found": "position not found",
-			"position_list_found": "position list",
+			"position_notfound": "An error occurred, the position could not be found",
+			"position_already_exists": "An error occurred, the position already exists and it is not possible to create a duplicate position",
+			"position_not_found": "An error occurred, the selected position was not found",
 			"position_found": "position found",
-			"position_managers_found": "position managers successfully founded",
 			"position_resumes_found": "Position resumes successfully founded",
 			"position_deactivated_already": "position has deactivated already",
-			"position_activated_already": "position has activated already"
+			"position_activated_already": "position has activated already",
+			"the_user_is_currently_an_manager_for_position": "An error occurred, the selected user is currently the manager of this position and it is not possible to select again",
+			"position_deactivate_cant_set_manager": "An error occurred, it is not possible to assign an manager for an inactive position",
+			"the_user_is_not_manager_for_this_position":"An error occurred, the selected user is not the manager of this position"
 		}
 	},
 	"project": {
@@ -436,28 +201,30 @@
 			"project_size_number": "project size must by number"
 		},
 		"messages": {
-			"project_found": "Project Found",
-			"project_successfully_created": "Project successfully Created",
-			"project_successfully_updated": "Project successfully updated",
-			"project_manager_successfully_updated": "Project manager successfully updated",
-			"project_manager_successfully_deleted": "Project manager successfully deleted",
-			"project_successfully_deleted": "project successfully deleted",
-			"project_resumes_found": "Project resumes successfully founded",
-			"project_managers_found": "Project managers successfully founded",
-			"project_positions_found": "project positions successfully found",
-			"project_successfully_deactivated": "project status successfully deactivated",
-			"project_successfully_activated": "project status successfully activated"
+			"project_found": "Success, your project was found",
+			"project_successfully_created": "Success, your project has been successfully created. Now you can define your first position for this project",
+			"project_successfully_updated": "Success, project information updated",
+			"project_manager_successfully_updated": "It was successful, the user was defined as the manager of this project",
+			"project_manager_successfully_deleted": "It was successful, the user has been successfully removed from the list of managers for this project",
+			"project_successfully_deleted": "It was successful, the project was deleted",
+			"project_resumes_found": "It was successful, the list of resumes for this project was found",
+			"project_managers_found": "It was successful, the list of managers for this project was found",
+			"project_positions_found": "It was successful, the list of positions for this project was found",
+			"project_successfully_deactivated": "It was successful, the project was deactivated. Hope to work again",
+			"project_successfully_activated": "It was successful, the project was activated successfully. We are happy that your project is active again :)",
+			"position_manager_deleted": "It was successful, the user has been removed from managing this position"
 		},
 		"errors": {
-			"the_user_is_currently_an_manager_for_project": "The user is currently an manager for project",
-			"the_user_is_not_an_manager_for_project": "This user is not defined for the project",
-			"the_owner_manager_cannot_be_deleted": "The owner manager cannot be deleted",
+			"the_user_is_currently_an_manager_for_project": "An error occurred, the selected user is currently defined as the administrator of this project and cannot be defined again.",
+			"the_user_is_not_an_manager_for_project": "An error occurred, the selected user does not exist in the list of managers for this project",
+			"the_owner_manager_cannot_be_deleted": "An error occurred, it is not possible to delete the owner of the position",
 			"project_not_found": "Project not found",
-			"project_already_attached_company": "Project already attached this company",
-			"project_deactivated_already": "project has deactivated already",
-			"project_activated_already": "project has activated already",
+			"project_already_attached_company": "An error occurred, a project with this name has already been created for this company",
+			"project_deactivated_already": "An error occurred, the project is currently inactive",
+			"project_activated_already": "An error occurred, the project is currently active",
 			"disabled_company_create_project_error": "The selected company is currently deactivated and it is not possible to define a new project",
-			"company_is_not_active": "The selected project company is currently disabled and it is not possible to define a new project"
+			"company_is_not_active": "The selected project company is currently disabled and it is not possible to define a new project",
+			"project_deactivate_cant_set_manager": "An error occurred, your project is currently inactive and it is not possible to define an manager"
 		}
 	},
 	"resume": {
@@ -548,34 +315,83 @@
 			"end_cooperation_date_must_be_date": "end cooperation date must be date",
 			"end_cooperation_reason_required": "end cooperation reason",
 			"end_cooperation_reason_not_valid": "end cooperation reason not valid",
-			"end_cooperation_description_length": "end cooperation description length must less than 100"
+			"end_cooperation_description_length": "end cooperation description length must less than 100",
+			"military_status_incorrect_for_men": "military status is required for men",
+			"reject_reason_value_not_valid": "reject reason value is not valid",
+			"reject_reason": "reject reason is required"
 		},
 		"messages": {
-			"resume_successfully_created": "Resume successfully created",
-			"resume_status_successfully_updated": "Resume successfully updated",
-			"resume_call_history_successfully_created": "Resume call history successfully created",
-			"resume_tags_successfully_updated": "Resume tags successfully updated",
-			"resume_tags_successfully_deleted": "Resume tags successfully deleted",
-			"resume_skills_successfully_updated": "Resume skills successfully updated",
-			"resume_skills_successfully_deleted": "Resume skills successfully deleted",
-			"resume_successfully_rejected": "Resume successfully rejected",
-			"resume_successfully_hired": "Resume successfully hired",
-			"resume_successfully_end_cooperation": "Resume successfully end of cooperation",
-			"resume_already_rejected": "Resume already rejected"
+			"resume_successfully_created": "Congratulations, your resume has been successfully created. Continue reviewing the resume",
+			"resume_status_successfully_updated": "It was successful, the status of the diary has been updated",
+			"resume_call_history_successfully_created": "Success, resume call history created successfully",
+			"resume_tags_successfully_updated": "Success, tag successfully added to resume",
+			"resume_tags_successfully_deleted": "Success, the selected tag is removed from the list of resume tags",
+			"resume_skills_successfully_updated": "Successfully, the selected skill is added to the list of skills for this resume",
+			"resume_skills_successfully_deleted": "it was successful, the selected skill will be removed from the skills list of this resume",
+			"resume_successfully_rejected": "Sorry, resume status changed to Rejected.Hope you find a new colleague soon",
+			"resume_successfully_hired": "Congratulations, the resume status has changed to hired",
+			"resume_successfully_end_cooperation": "Completion of cooperation for this day has been confirmed. Good luck to your colleague",
+			"resume_already_rejected": "An error occurred, the resume is currently in rejected status",
+			"max_comment_length": "Comment has be between 5 and 1000 character",
+			"resume_page_number": "resume page must by number",
+			"resume_size_number": "resume size must by number",
+			"resume_list_found": "Success, resume list found",
+			"resume_found":"Success, resume found",
+			"resume_successfully_deleted":"Success, resume information deleted",
+			"resume_file_successfully_upload":"Success, resume attachment uploaded",
+			"resume_comments_list_found":"Success, list of resume comments found",
+			"resume_comment_successfully_created":"Success, new comment successfully added to resume",
+			"assigner_successfully_added":"Success, the user has been successfully assigned to the resume",
+			"assigner_successfully_removed":"It was successful, the selected user is removed from the list of assigned users",
+			"resume_successfully_updated":"Success, resume information updated successfully",
+			"list_of_interviews":"List of interviews",
+			"interview_successfully_updated": "Successful, Interview This resume has been successfully updated",
+			"interview_successfully_created": "It was successful, a new interview was created for this resume",
+			"interview_successfully_deleted": "Successful, this resume's interview has been deleted"
 		},
 		"errors": {
 			"resume_notfound": "Sorry, Resume not found",
 			"resume_comments_no_content": "Sorry, This resume  don't have any comment",
 			"resume_comments_notfound": "Sorry, Resume not have any comment",
 			"can_not_update_status_to_current": "It is not possible to update the status to the current status",
-			"tag_could_not_be_duplicate": "tag could not be duplicate",
-			"skill_could_not_be_duplicate": "skill could not be duplicate",
-			"tag_not_exists": "tag not exists",
-			"skill_not_exists": "skill not exists",
+			"tag_could_not_be_duplicate": "An error occurred, it is not possible to set a duplicate tag for the resume",
+			"skill_could_not_be_duplicate": "An error occurred, the selected skill already exists in the resume skills list and it is not possible to select this skill again",
+			"tag_not_exists": "An error occurred, the selected tag does not exist in the list of resume tags",
+			"skill_not_exists": "An error occurred, the selected skill does not exist in the list of skills for this resume",
 			"from_date_must_be_before_to_date": "from date must be before to date",
-			"resume_already_hired": "resume already hired",
-			"resume_already_end_cooperation": "resume already end of cooperation",
-			"you_can_set_end_cooperation_just_for_hired_resume": "you can set end cooperation just for hired resume"
+			"resume_already_hired": "An error occurred, resume is currently in hired status",
+			"resume_already_end_cooperation": "An error occurred, the resume is currently in a completed state",
+			"you_can_set_end_cooperation_just_for_hired_resume": "An error occurred, only resumes in the status Hiring can be updated to the status end cooperation",
+			"can_not_save_hired_rejected_status": "It is not possible to update the status to the hired and rejected",
+			"calling_date_must_be_before_recall_at": "Calling date must be before recall at",
+			"assigner_could_not_be_duplicate":"An error occurred, it is not possible to assign a duplicate user to resume",
+			"assigner_not_exists":"An error occurred, the selected user does not exist in the list of users assigned to the resume"
+		}
+	},
+	"role":{
+		"enums": {},
+		"validations": {},
+		"messages": {
+			"list_of_roles": "List of roles",
+			"role_list_found": "List of roles found",
+			"role_successfully_created": "Success, role created successfully",
+			"role_successfully_updated":"Success, role updated successfully",
+			"role_successfully_deleted" : "It was successful, the role was successfully deleted"
+		},
+		"errors": {
+			"role_already_exists": "An error occurred, the role already exists in the system",
+			"parent_not_found":"An error occurred, the selected parent role was not found",
+			"role_notfound": "An error occurred, the role was not found"
+		}
+	},
+	"skill": {
+		"enums": {},
+		"validations": {
+		},
+		"messages": {
+		},
+		"errors": {
+			"skill_notfound" : "An error occurred, the selected skill does not exist in the system"
 		}
 	},
 	"user": {
@@ -587,34 +403,44 @@
 			"fcm_token_length": "fcm token length"
 		},
 		"messages": {
-			"user_founded": "user successfully found",
+			"user_founded": "It was successful, the user was successfully found",
 			"list_found": "the list of users",
-			"password_changed": "User password successfully changed",
+			"password_changed": "Success, password updated successfully",
 			"user_login_history_list": "user login history list",
 			"companies_founded": "user companies successfully found",
 			"set_fcm_token_successfully": "set fcm token successfully",
-			"unset_fcm_token_successfully": "unset fcm token successfully"
+			"unset_fcm_token_successfully": "unset fcm token successfully",
+			"user_successfully_edited":"Success, user information updated successfully",
+			"profile_image_successfully_updated":"It was successful, the profile picture has been changed successfully",
+			"notification_list_found":"Success, user notifications list found",
+			"notification_list_seen": "Success, user notification list updated",
+			"user_successfully_blocked":"It was successful, the user account was successfully blocked",
+			"user_successfully_unblocked" : "It was successful, the account was successfully unblocked",
+			"fcm_token_not_valid" : "Firebase token is invalid"
 		},
 		"errors": {
-			"user_notfound": "User not found",
+			"user_notfound": "An error occurred, the user does not exist in the system",
 			"password_length_not_confirm": "password length must be between 8-10",
 			"password_cant_be_empty": "password cant be empty",
 			"old_password_length_not_confirm": "old password length must be between 8-10",
 			"old_password_cant_be_empty": "old password cant be empty",
-			"incorrect_password": "The password is incorrect",
-			"duplicate_password": "New password cant be duplicate with old password",
-			"email_already_exists": "this email is already exists",
-			"username_already_exists": "this username is already exists",
+			"incorrect_password": "An error occurred, the password entered is incorrect",
+			"duplicate_password": "An error occurred, the new password must not be the same as the current password",
+			"email_already_exists": "An error occurred, the email entered by another user is in use",
+			"username_already_exists": "An error occurred, the username entered is already in use by another user",
 			"fcm_token_already_exist": "fcm token already exist",
 			"fcm_token_not_found": "fcm token not found",
-			"fcm_token_expired": "fcm token expired"
+			"fcm_token_expired": "fcm token expired",
+			"manager_is_banned": "banned user cant set for manager",
+			"mobile_is_not_verified": "An error occurred, your mobile number has not been verified in the system. Please confirm your mobile before starting to work",
+			"user_is_currently_blocked": "An error occurred, the user is currently blocked and it is not possible to block again"
 		}
 	},
 	"manager": {
 		"enums": {},
 		"validations": {},
 		"messages": {
-			"manager_successfully_created": "manager successfully set for position"
+			"manager_successfully_created": "The operation was successful, the manager was successful"
 		},
 		"errors": {
 			"duplicate": "This manager set for this position already"
@@ -667,12 +493,10 @@
 			"rating_is_required": "Rating is reauired"
 		},
 		"messages": {
-			"interview_found": "Intervciew found",
-			"interview_successfully_updated": "Intervciew successfully updated",
-			"interview_successfully_deleted": "Intervciew successfully deleted"
+			"interview_found": "Intervciew found"
 		},
 		"errors": {
-			"interview_notfound": "Intervciew not found"
+			"interview_notfound": "An error occurred, the interview was not found"
 		}
 	},
 	"province": {
@@ -681,8 +505,13 @@
 			"province_page_number": "province page must by number",
 			"province_size_number": "province size must by number"
 		},
-		"messages": {},
-		"errors": {}
+		"messages": {
+			"province_list_found" : "Success, list of provinces found",
+			"city_list_found":"Success, list of cities found"
+		},
+		"errors": {
+			"province_notfound" : "An error occurred, the province was not found"
+		}
 	},
 	"tag": {
 		"enums": {},
@@ -699,6 +528,7 @@
 			"tag_successfully_created": "Tag successfully created"
 		},
 		"errors": {
+			"tag_notfound": "An error occurred, tag not found",
 			"duplicate": "Tag could not be duplicate"
 		}
 	},
@@ -730,9 +560,7 @@
 			},
 			"body": {
 				"update_status": "{{user}} change status to {{status}}"
-			},
-			"notification_list_found": "notification list",
-			"notification_list_seen": "notification list observed"
+			}
 		},
 		"errors": {}
 	}

@@ -27,7 +27,7 @@ class CityController extends Controller {
                 limit: size,
                 sort: { createdAt: -1 }
             });
-            AppResponse.builder(res).message("City.message.City_list_found").data(CityList).send();
+            AppResponse.builder(res).message("city.messages.city_list_found").data(CityList).send();
         } catch (err) {
             next(err);
         }

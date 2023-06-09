@@ -42,7 +42,7 @@ async function verifyRefreshToken(req, res, next) {
 
 async function checkVerifiedMobile(req, res, next) {
     try {
-        if (!req.user.mobile_verified_at) throw new UnauthorizedError("user.errors.mobile_not_veryfied");
+        if (!req.user.mobile_verified_at) throw new UnauthorizedError("user.errors.mobile_is_not_verified");
         next();
     } catch (err) {
         next(err);

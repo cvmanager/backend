@@ -90,7 +90,7 @@ class CompanyController extends Controller {
     /**
     * POST /companies
     * 
-    * @summary creates a copmany by id
+    * @summary creates a company by id
     * @tags Company
     * @security BearerAuth
     * 

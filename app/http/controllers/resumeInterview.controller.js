@@ -41,7 +41,7 @@ class ResumeInterviewController extends Controller {
                 sort: { createdAt: -1 },
                 populate: [{ path: 'created_by', select: ['firstname', 'lastname', 'avatar'] }]
             });
-            AppResponse.builder(res).message("project.messages.resume_list_found").data(interviewList).send();
+            AppResponse.builder(res).message("resume.messages.resume_list_found").data(interviewList).send();
         } catch (err) {
             next(err);
         }

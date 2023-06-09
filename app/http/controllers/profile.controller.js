@@ -163,7 +163,7 @@ class ProfileController extends Controller {
                 sort: { createdAt: -1 }
             });
 
-            AppResponse.builder(res).message("notification.messages.notification_list_found").data(notificationList).send();
+            AppResponse.builder(res).message("user.messages.notification_list_found").data(notificationList).send();
         } catch (err) {
             next(err);
         }

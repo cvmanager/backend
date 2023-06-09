@@ -31,7 +31,7 @@ class PermissionController extends Controller {
                 limit: size,
             });
             
-            AppResponse.builder(res).message("permission.message.permission_list_found").data(permissionList).send();
+            AppResponse.builder(res).message("permission.messages.permission_list_found").data(permissionList).send();
         } catch (err) {
             next(err);
         }
@@ -53,7 +53,7 @@ class PermissionController extends Controller {
     async entities(req, res, next) {
         try {
             let permissions = await permissionService.getPermissions()
-            AppResponse.builder(res).message("permission.message.permission_list_found").data(permissions).send();
+            AppResponse.builder(res).message("permission.messages.permission_list_found").data(permissions).send();
         } catch (err) {
             next(err);
         }
@@ -94,12 +94,12 @@ class PermissionController extends Controller {
     async create(req, res, next) {
         try {
             let permission = await permissionService.findOne({ $or: [{ 'name': req.body.name }, { 'action': req.body.action }] });
-            if (permission) throw new AlreadyExists('permission.error.permission_already_exists');
+            if (permission) throw new AlreadyExists('permission.errors.permission_already_exists');
 
             req.body.created_by = req.user.id
             let createdPermission = await permissionService.create(req.body)
 
-            AppResponse.builder(res).status(201).message("document.message.document_successfully_created").data(createdPermission).send();
+            AppResponse.builder(res).status(201).message("permission.messages.permission_successfully_created").data(createdPermission).send();
         } catch (err) {
             next(err)
         }
@@ -125,13 +125,13 @@ class PermissionController extends Controller {
         try {
             if (req.body.name) {
                 let permissionExist = await Permission.findOne({ name: req.body.name })
-                if (permissionExist && !permissionExist._id.equals(req.params.id)) throw new AlreadyExists('permission.error.name_already_exists');
+                if (permissionExist && !permissionExist._id.equals(req.params.id)) throw new AlreadyExists('permission.errors.name_already_exists');
             }
 
             const updatedPermission = await permissionService.updateOne({ _id: req.params.id }, req.body)
-            if (!updatedPermission) throw new NotFoundError('document.error.document_notfound'); 
+            if (!updatedPermission) throw new NotFoundError('permission.errors.permission_notfound'); 
 
-            AppResponse.builder(res).message("document.message.document_successfully_updated").data(updatedPermission).send()
+            AppResponse.builder(res).message("permission.messages.permission_successfully_updated").data(updatedPermission).send()
 
         } catch (err) {
             next(err);
@@ -155,14 +155,14 @@ class PermissionController extends Controller {
     */
     async delete(req, res, next) {
         let permission = await permissionService.findOne({ _id: req.params.id });
-        if (!permission) throw new NotFoundError('document.error.document_notfound');
+        if (!permission) throw new NotFoundError('permission.errors.permission_notfound');
 
         await permission.delete(req.user.id);
         // delete from cache
         const redisKey = env("REDIS_KEY_RBAC_PERMISSION") + permission._id.toString()
         await redisClient.del(redisKey)
         
-        AppResponse.builder(res).message("document.message.document_successfully_deleted").data(document).send();
+        AppResponse.builder(res).message("permission.messages.permission_successfully_deleted").data(document).send();
     }
 }
 
