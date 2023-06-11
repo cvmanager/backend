@@ -34,7 +34,7 @@ class NotificationService extends ServiceBase {
             let fcmTokens = await userService.getFCMTokensOfUser(notification.user_id);
             if (fcmTokens.length > 0) {
                 let notificationData = { title: notification.title, body: notification.body };
-                request_data = sendNotificationToClient(fcmTokens, notificationData);
+                request_data = await sendNotificationToClient(fcmTokens, notificationData);
                 notification.attempts += 1;
                 
                 if (request_data && typeof request_data.successes !== 'undefined' && request_data.successes > 0) {
