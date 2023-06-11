@@ -12,7 +12,7 @@ import { UserEvents } from '../../events/subscribers/user.subscriber.js';
 import roleService from '../../helper/service/role.service.js';
 import userService from '../../helper/service/user.service.js';
 import VerificationRequest from '../../models/verificationRequest.model.js';
-import Kavenegar from '../../helper/kavenegar.js';
+// import Kavenegar from '../../helper/kavenegar.js';
 
 class AuthController extends Controller {
 
@@ -209,8 +209,8 @@ class AuthController extends Controller {
             let currentTime = new Date();
             let verify_code = Math.floor(Math.random() * 90000 + 10000);
 
-            let sendSmsResult = Kavenegar.builder(req.user).message(`Your authentication code :‌ ${verify_code} \nCV Manager`).receptor(req.user.mobile).send();
-            if (!sendSmsResult) new BadRequestError('auth.errors.error_sending_mobile_verification_code')
+            // let sendSmsResult = Kavenegar.builder(req.user).message(`Your authentication code :‌ ${verify_code} \nCV Manager`).receptor(req.user.mobile).send();
+            // if (!sendSmsResult) new BadRequestError('auth.errors.error_sending_mobile_verification_code')
 
 
             await VerificationRequest.create({
