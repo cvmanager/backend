@@ -1,7 +1,7 @@
 import managerService from "../helper/service/manager.service.js";
 
 export async function userAccess(req, res, next) {
-    let query = { $or: [] }
+    let query = { $or: [{}] }
 
     if (!req.roles || req.roles.length === 0) query = {}
 
