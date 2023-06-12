@@ -11,7 +11,7 @@ const config = {
     },
     'file': {
         types: ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'],
-        maxSize: 0.1 * 1048576, // 1048576 Bytes = 1 MB
+        maxSize: 2 * 1048576, // 1048576 Bytes = 1 MB
     }
 }
 
