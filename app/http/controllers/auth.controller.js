@@ -12,6 +12,7 @@ import { UserEvents } from '../../events/subscribers/user.subscriber.js';
 import roleService from '../../helper/service/role.service.js';
 import userService from '../../helper/service/user.service.js';
 import VerificationRequest from '../../models/verificationRequest.model.js';
+import { Smsir } from 'smsir-js'
 // import Kavenegar from '../../helper/kavenegar.js';
 
 class AuthController extends Controller {
@@ -212,6 +213,15 @@ class AuthController extends Controller {
             // let sendSmsResult = Kavenegar.builder(req.user).message(`Your authentication code :‌ ${verify_code} \nCV Manager`).receptor(req.user.mobile).send();
             // if (!sendSmsResult) new BadRequestError('auth.errors.error_sending_mobile_verification_code')
 
+            let api_key = env('SMSIR_APIKEY');
+            const smsir = new Smsir(api_key, null)
+            let parameters = [
+                {
+                    "name": "Code",
+                    "value": String(verify_code)
+                }
+            ]
+            smsir.SendVerifyCode('989186218286', 560788, parameters)
 
             await VerificationRequest.create({
                 user_id: req.user.id,
@@ -261,7 +271,7 @@ class AuthController extends Controller {
         }
     }
 
-   
+
 }
 
 
