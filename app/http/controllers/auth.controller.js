@@ -221,7 +221,7 @@ class AuthController extends Controller {
                     "value": String(verify_code)
                 }
             ]
-            smsir.SendVerifyCode('989186218286', 560788, parameters)
+            smsir.SendVerifyCode(req.user.mobile, 560788, parameters)
 
             await VerificationRequest.create({
                 user_id: req.user.id,
