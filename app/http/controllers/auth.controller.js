@@ -12,6 +12,7 @@ import { UserEvents } from '../../events/subscribers/user.subscriber.js';
 import roleService from '../../helper/service/role.service.js';
 import userService from '../../helper/service/user.service.js';
 import VerificationRequest from '../../models/verificationRequest.model.js';
+import ApiLog from '../../models/apiLog.model.js';
 import { Smsir } from 'smsir-js'
 // import Kavenegar from '../../helper/kavenegar.js';
 
@@ -221,7 +222,21 @@ class AuthController extends Controller {
                     "value": String(verify_code)
                 }
             ]
-            smsir.SendVerifyCode(req.user.mobile, 560788, parameters)
+            let apilog = await ApiLog.create({
+                uri: 'https://api.sms.ir/v1/send/verify',
+                param: JSON.stringify({
+                    "mobile": req.user.mobile,
+                    "templateId": 560788,
+                    "parameters": parameters
+                })
+            });
+
+            let smsirResponse = await smsir.SendVerifyCode(req.user.mobile, 560788, parameters)
+
+            apilog.response = JSON.stringify(smsirResponse.data)
+            apilog.response_code = smsirResponse.status
+            apilog.response_time = new Date()
+            apilog.save()
 
             await VerificationRequest.create({
                 user_id: req.user.id,
