@@ -87,6 +87,75 @@ class ResumeController extends Controller {
         }
     }
 
+
+    /**
+    * GET /resumes/by-states
+    * 
+    * @summary get a list of all resumes grouped by states
+    * @tags Resume
+    * @security BearerAuth
+    * 
+    * @param  { string } query.path - search for special fields - application/json
+    * 
+    * @return { resume.success } 200 - success response
+    * @return { message.bad_request_error } 400 - BadRequest response
+    * @return { message.bad_request_error } 404 - not found response
+    * @return { message.unauthorized_error }     401 - Unauthorized
+    * @return { message.server_error  }    500 - Server Error
+    */
+    async resumesByStates(req, res, next) {
+        try {
+            const { page = 1, size = 10, query = '' } = req.query
+
+            let resumes = [], promiseResumes = []
+
+            let resumeStates = i18n.__('resume.enums.status')
+            let searchQuery = {}
+            searchQuery = mergeQuery(searchQuery, req.rbacQuery)
+            if (query.length > 0) {
+                searchQuery = {
+                    $or: [
+                        { firstname: { '$regex': new RegExp(query, "i") } },
+                        { lastname: { '$regex': new RegExp(query, "i") } },
+                        { email: { '$regex': query } },
+                        { mobile: { '$regex': query } },
+                        { education: { '$regex': query } },
+                        { phone: { '$regex': query } },
+                    ]
+                }
+            }
+            
+            resumeStates.map((status) => {
+                let resumeList = Resume.find({status, ...searchQuery})
+                .sort([['index', 1]])
+                .populate([
+                    {path: 'interviews', select: ['event_time', 'event_type', 'status', 'type', 'result', 'description', 'rating', 'contribution']},
+                    { path: 'created_by' },
+                        { path: 'assigners', select: ['firstname', 'lastname', 'avatar'] },
+                        { path: 'interviews', select: ['event_time', 'event_type', 'status', 'type', 'result', 'description', 'rating', 'contribution'] },
+                        { path: 'tags', select: ['name', 'color', 'count'] },
+                        { path: 'project_id' },
+                        { path: 'position_id' },
+                        { path: 'company_id' },
+                ])
+                promiseResumes.push(resumeList)
+            })
+
+            let results = await Promise.all(promiseResumes)
+            
+            for (let i = 0; i < resumeStates.length; i++) {
+                let resume = {}
+                resume[resumeStates[i]] = results[i]
+                resumes.push(resume)
+            }
+
+            AppResponse.builder(res).message("project.messages.resume_list_found").data(resumes).send();
+        } catch (err) {
+            next(err);
+        }
+    }
+
+
     /**
     * GET /resumes/{id}
     * 

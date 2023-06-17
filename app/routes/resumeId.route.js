@@ -6,6 +6,7 @@ import { toLowerCase } from '../middlewares/lowerCase.middleware.js';
 const resumeIdRouter = express.Router({ mergeParams: true });
 
 resumeIdRouter
+    .get('/by-states', ResumeValidation.index(), toLowerCase, ResumeController.resumesByStates)
     .get('', ResumeValidation.find(), ResumeController.find)
     .patch('', ResumeValidation.update(), toLowerCase, ResumeController.update)
     .delete('', ResumeValidation.remove(), ResumeController.delete)
