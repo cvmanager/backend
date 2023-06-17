@@ -5,3 +5,4 @@ public/uploads/*
 logs
 mongo_db
 redis_db
+google-application-credentials.json
