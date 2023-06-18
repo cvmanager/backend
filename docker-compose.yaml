@@ -1,37 +1,47 @@
 version: "3.9"
 
 services:
-
-  mongo_db:
-    container_name: db_container
-    image: mongo:latest
-    restart: always
+  cv_nginx:
+    image: nginx:stable-alpine
     volumes:
-      - mongo_db:/data/db
-  redis:
-    image: redis:latest
-    restart: always
-    expose:
-      - 6379
-    volumes:
-      - redis_db:/data/myredis
-
-  app:
-    container_name: app_container
-    build: .
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
     ports:
-      - 4000:3000
-    environment:
-      APP_PORT: 3000
-      JWT_SECRET_TOKEN: 'fdsfdsfasdasdasgffgvfdsbgv'
-      JWT_EXPIRATION_TIME_TOKEN: '15m'
-      JWT_SECRET_REFRESH_TOKEN: 'dsadasdasdasdasdasdasdasdfdsfds'
-      JWT_EXPIRATION_TIME_REFRESH_TOKEN: '30d'
-      DB_URL: 'mongodb://mongo_db/cvmanager'
-      REDIS_URL: 'redis://redis:6379'      
+      - "80:80"
+      - "443:443"
     depends_on:
-      - mongo_db
-      - redis
+      - cv_app
+  cv_app:
+    build:
+      context: .
+      args:
+        - NODE_ENV=production
+    restart: always
+    volumes:
+      - ./:/app/backend
+    depends_on:
+      - cv_mongo
+      - cv_redis
+  cv_mongo:
+    restart: always
+    image: mongo:4.2.23
+    command: mongod --port 27018 
+    ports:
+      - "27018:27018"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: 'yP6tZ3LwD7VrB'
+      MONGO_INITDB_DATABASE: cvmanager
+    volumes:
+      - ./mongo_db:/data/db
+  cv_redis:
+    image: redis:7.0-alpine
+    restart: always
+    command: --port 6380
+    ports:
+      - "6380:6380"
+    volumes:
+      - ./redis_db:/data/myredis
 volumes:
   mongo_db: {}
   redis_db: {}
+ 

@@ -1,8 +1,9 @@
 class UnauthorizedError extends Error {
-    message = 'exceptions.no_authentication';
+    message = 'auth.errors.no_authentication';
     constructor(message) {
         super(message);
-        this.message = message;
+        if(message) this.message = message 
+
     }
 }
 

@@ -2,12 +2,13 @@ import mongoose from 'mongoose';
 
 import basePlugin from '../helper/mongoose/base.plugin.js';
 
+
 const schema = new mongoose.Schema(
     {
         company_id: {
             type: mongoose.Schema.Types.ObjectId,
             required: true,
-            ref: 'Company'
+            ref: 'companies'
         },
         name: {
             type: String,
@@ -21,13 +22,24 @@ const schema = new mongoose.Schema(
             type: Boolean,
             default: 1
         },
+        logo: {
+            type: String,
+            default: null
+        },
         created_by: {
             type: mongoose.Schema.Types.ObjectId,
             required: true,
-            ref: 'User'
+            ref: 'users'
         }
     }
 );
+
+
+schema.virtual("managers", {
+    ref: 'managers',
+    localField: "_id",
+    foreignField: "entity_id"
+});
 
 schema.plugin(basePlugin)
 

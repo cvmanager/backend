@@ -1,14 +1,11 @@
 import express from 'express'
 import ProjectController from '../http/controllers/project.controller.js';
-import { create, find, update, remove } from '../validators/project.validation.js'
+import ProjectValidation from '../validators/project.validation.js'
+import { toLowerCase } from '../middlewares/lowerCase.middleware.js';
 
 const projectRouter = express.Router();
 
 projectRouter
-    .get('/', ProjectController.index)
-    .get('/:id', find, ProjectController.find)
-    .post('/', create, ProjectController.create)
-    .patch('/:id', update, ProjectController.update)
-    .delete('/:id', remove, ProjectController.delete)
-
+    .get('/', ProjectValidation.index(), ProjectController.index)
+    .post('/', ProjectValidation.create(), toLowerCase, ProjectController.create)
 export default projectRouter

@@ -1,5 +1,5 @@
- class AppResponse {
-    responseMessage = "Successfuly";
+class AppResponse {
+    responseMessage = "successfully";
     responseData = [];
     responseErrors = [];
     responseStatus = 200;
@@ -18,6 +18,7 @@
     }
 
     data(data) {
+        data = Array.isArray(data) ? data : [data]
         this.responseData = data;
         return this;
     }

@@ -16,13 +16,43 @@ const schema = new mongoose.Schema(
             type: Boolean,
             default: 1
         },
+        description: {
+            type: String,
+            default: null
+        },
+        phone: {
+            type: String,
+            default: null
+        },
+        address: {
+            type: String,
+            default: null
+        },
         created_by: {
             type: mongoose.Schema.Types.ObjectId,
             required: true,
-            ref: 'User'
+            ref: 'users'
         }
     }
 )
+
+schema.virtual("projects", {
+    ref: 'projects',
+    localField: "_id",
+    foreignField: "company_id"
+});
+
+schema.virtual("managers", {
+    ref: 'managers',
+    localField: "_id",
+    foreignField: "entity_id"
+});
+
+schema.virtual("positions", {
+    ref: 'positions',
+    localField: "_id",
+    foreignField: "position_id"
+});
 
 schema.plugin(basePlugin)
 

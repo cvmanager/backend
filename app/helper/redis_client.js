@@ -1,14 +1,20 @@
 import redis from 'redis';
+import env from './env.js';
 
-const redisClient = redis.createClient(
-    {
-        url: process.env.REDIS_URL,
-        legacyMode: true,
-    }
-);
+let redisClient;
+const connect = async () => {
+     redisClient = redis.createClient({
+        socket: {
+            host: env('REDIS_HOST'),
+            port: env('REDIS_PORT'),
+        },
+    });
 
-redisClient.on("error", (err) => console.log("Error " + err))
-redisClient.connect();
+    redisClient.on("error", (err) => {
+        console.log(err)
+    })
+    await redisClient.connect();
+}
+connect();
 
 export default redisClient
-
