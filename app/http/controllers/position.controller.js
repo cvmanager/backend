@@ -445,6 +445,301 @@ class PositionController extends Controller {
         }
     }
 
+
+    /**
+   * GET /positions/{id}/statistics/resume-by-states
+   * 
+   * @summary returns position resumes number by states
+   * @tags Position
+   * @security BearerAuth
+   * 
+   * @param  { string } id.path.required - position id
+   * 
+   * @return { position.success } 200 - success response
+   * @return { message.bad_request_error } 400 - BadRequest response
+   * @return { message.unauthorized_error }     401 - Unauthorized
+   * @return { message.server_error  }    500 - Server Error
+   */
+    async resumeByStates(req, res, next) {
+        try {
+            let position = await positionService.findByParamId(req)
+
+            let statusArray = i18n.__("resume.enums.status");
+            let totalResumeByStates = await Resume.aggregate([
+                {
+                    $match: {
+                        position_id: position._id
+                    }
+                },
+                {
+                    "$group": {
+                        "_id": "$status",
+                        "count": {
+                            $sum: 1
+                        }
+                    }
+                },
+                {
+                    '$project': {
+                        'state': '$_id',
+                        '_id': 0,
+                        'count': 1
+                    }
+                }
+            ])
+
+            statusArray.forEach(element => {
+                if (totalResumeByStates.find(resume => resume.state !== element)) {
+                    totalResumeByStates.push({ 'count': 0, 'state': element });
+                }
+            })
+
+            AppResponse.builder(res).message("position.messages.position_resume_by_states").data(totalResumeByStates).send()
+        } catch (err) {
+            next(err);
+        }
+    }
+
+        /**
+     * GET /positions/{id}/statistics/resume-count-from-month
+     * 
+     * @summary This will return received resumes per month for position
+     * @tags Position
+     * @security BearerAuth
+     * 
+     * @param { string } id.path.required - position id
+     * 
+     * @return { position.success } 200 - success response
+     * @return { message.bad_request_error } 400 - BadRequest response
+     * @return { message.unauthorized_error }     401 - Unauthorized
+     * @return { message.server_error  }    500 - Server Error
+     * 
+     */
+        async resumeCountFromMonth(req, res, next) {
+            try {
+                let position = await positionService.findByParamId(req)
+    
+                let date = new Date();
+                let date7MonthAgo = date.setMonth(date.getMonth() - 7)
+                date7MonthAgo = new Date(date7MonthAgo);
+                const monthsArray = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']
+    
+                let resumeCountFromMonth = await Resume.aggregate([
+                    {
+                        $match: {
+                            position_id: position._id,
+                            // createdAt: { $gte: YEAR_BEFORE, $lte: TODAY }
+                            createdAt: { $gte: date7MonthAgo }
+                        }
+                    },
+                    {
+                        $group: {
+                            _id: { "year_month": { $substrCP: ["$createdAt", 0, 7] } },
+                            count: { $sum: 1 }
+                        }
+                    },
+                    {
+                        $sort: { "_id.year_month": -1 }
+                    },
+                    {
+                        $project: {
+                            _id: 0,
+                            count: 1,
+                            month_year: {
+                                $concat: [
+                                    { $arrayElemAt: [monthsArray, { $subtract: [{ $toInt: { $substrCP: ["$_id.year_month", 5, 2] } }, 1] }] },
+                                    "-",
+                                    { $substrCP: ["$_id.year_month", 0, 4] }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        $group: {
+                            _id: null,
+                            data: { $push: { k: "$month_year", v: "$count" } }
+                        }
+                    },
+                    {
+                        $project: {
+                            data: { $arrayToObject: "$data" },
+                            _id: 0
+                        }
+                    }
+                ])
+    
+                AppResponse.builder(res).message('position.message.position_resume_count_from_month').data(resumeCountFromMonth).send()
+            } catch (err) {
+                next(err)
+            }
+        }
+    
+    
+        /**
+       * GET /positions/{id}/statistics/resume-state-in-last-month
+       * 
+       * @summary This will return the position resumes number by states in last month
+       * @tags position
+       * @security BearerAuth
+       * 
+       * @param  { string } id.path.required - position id
+       * 
+       * @return { position.success } 200 - success response
+       * @return { message.bad_request_error } 400 - BadRequest response
+       * @return { message.unauthorized_error }     401 - Unauthorized
+       * @return { message.server_error  }    500 - Server Error
+       */
+        async resumeStateInLastMonth(req, res, next) {
+            try {
+                let position = await positionService.findByParamId(req)
+    
+                let date = new Date();
+                let date1MonthAgo = date.setMonth(date.getMonth() - 1)
+                date1MonthAgo = new Date(date1MonthAgo)
+    
+                date = new Date();
+                let date2MonthAgo = date.setMonth(date.getMonth() - 2)
+                date2MonthAgo = new Date(date2MonthAgo)
+    
+                let receivedResumeInLastMonth = await Resume.aggregate([
+                    {
+                        $match: {
+                            position_id: position._id
+                        }
+                    },
+                    {
+                        $facet: {
+                            'resent_month': [
+                                {
+                                    $match: {
+                                        createdAt: {
+                                            $gte: date1MonthAgo
+                                        }
+                                    }
+                                },
+                                {
+                                    "$group": {
+                                        "_id": "",
+                                        "count": {
+                                            $sum: 1
+                                        }
+                                    }
+                                },
+                                {
+                                    '$project': {
+                                        '_id': 0,
+                                        'count': 1
+                                    }
+                                }
+                            ],
+                            'last_month': [
+                                {
+                                    $match: {
+                                        createdAt: {
+                                            $gte: date2MonthAgo,
+                                            $lt: date1MonthAgo
+                                        }
+                                    }
+                                },
+                                {
+                                    "$group": {
+                                        "_id": "",
+                                        "count": {
+                                            $sum: 1
+                                        }
+                                    }
+                                },
+                                {
+                                    '$project': {
+                                        '_id': 0,
+                                        'count': 1
+                                    }
+                                }
+                            ]
+                        }
+                    }
+    
+                ])
+                let hiredResumeInLastMonth = await this.resumeCountByStateAndMonth(position, 'hired', date1MonthAgo, date2MonthAgo);
+                let rejectedResumeInLastMonth = await this.resumeCountByStateAndMonth(position, 'rejected', date1MonthAgo, date2MonthAgo);
+    
+                let resumeStateInLastMonth = {
+                    'received': receivedResumeInLastMonth,
+                    'hired': hiredResumeInLastMonth,
+                    'rejected': rejectedResumeInLastMonth,
+                }
+    
+                AppResponse.builder(res).message("position.messages.position_resume_state_in_last_month").data(resumeStateInLastMonth).send()
+            } catch (err) {
+                next(err);
+            }
+        }
+    
+        async resumeCountByStateAndMonth(position, status, start, end) {
+            let resumeInMonth = await Resume.aggregate([
+                {
+                    $match: {
+                        position_id: position._id
+                    }
+                },
+                {
+                    $facet: {
+                        'resent_month': [
+                            {
+                                $match: {
+                                    'status': status,
+                                    createdAt: {
+                                        $gte: start
+                                    }
+                                }
+                            },
+                            {
+                                "$group": {
+                                    "_id": "$status",
+                                    "count": {
+                                        $sum: 1
+                                    }
+                                }
+                            },
+                            {
+                                '$project': {
+                                    '_id': 0,
+                                    'count': 1
+                                }
+                            }
+                        ],
+                        'last_month': [
+                            {
+                                $match: {
+                                    'status': status,
+                                    createdAt: {
+                                        $gte: end,
+                                        $lt: start
+                                    }
+                                }
+                            },
+                            {
+                                "$group": {
+                                    "_id": "$status",
+                                    "count": {
+                                        $sum: 1
+                                    }
+                                }
+                            },
+                            {
+                                '$project': {
+                                    '_id': 0,
+                                    'count': 1
+                                }
+                            }
+                        ]
+                    }
+                }
+    
+            ])
+            return resumeInMonth;
+        }
+
 }
 
 export default new PositionController
