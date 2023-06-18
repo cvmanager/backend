@@ -49,7 +49,7 @@ class ProjectController extends Controller {
                 limit: size,
                 sort: { createdAt: -1 },
                 populate: [
-                    { path: 'company_id', select: 'name' },
+                    { path: 'company_id', select: ['name', 'logo'] },
                     { path: 'managers', populate: { path: 'user_id', select: ['firstname', 'lastname', 'avatar'] }, select: ['user_id', 'type'] },
                     { path: 'created_by', select: ['firstname', 'lastname'] }
                 ],
