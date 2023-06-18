@@ -4,9 +4,9 @@ async function stringTrim(req, res, next) {
             let body =  req.body;
             for (const key in body) {
                 if (typeof body[key] === "object" || Array.isArray(body[key])) {
-                    trim(body[key]);
+                    // trim(body[key]);
                 } else if (typeof body[key] === 'string') {
-                    body[key] = body[key].trim();
+                    // body[key] = body[key].trim();
                 }
             }
         }

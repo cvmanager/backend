@@ -181,6 +181,7 @@
 			"position_successfully_activated": "position status successfully activated",
 			"position_successfully_created": "Success, your position has been successfully created. Now you can create position resumes",
 			"position_successfully_updated": "The position information update operation was successfully completed",
+			"position_latest_interviews": "Latest Resumes Interviews For Position Found",
 			"position_successfully_deleted": "Position successfully deleted"
 		},
 		"errors": {

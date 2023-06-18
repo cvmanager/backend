@@ -970,7 +970,7 @@ class ResumeController extends Controller {
             req.body.event_time = new Date(req.body.event_time)
             req.body.created_by = req.user.id
             let interview = await Interview.create(req.body)
-            EventEmitter.emit(ResumesInterviewEvents.CREATE, interview, req)
+            // EventEmitter.emit(ResumesInterviewEvents.CREATE, interview, req)
 
             AppResponse.builder(res).status(201).message("resume.messages.interview_successfully_created").data(interview).send();
         } catch (err) {
