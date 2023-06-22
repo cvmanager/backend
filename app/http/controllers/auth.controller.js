@@ -32,13 +32,8 @@ class AuthController extends Controller {
      */
     async login(req, res, next) {
         try {
-            let user = await userService.findOne({
-                $or: [
-                    { mobile: req.body.mobile },
-                    { username: req.body.mobile }
-                ]
-            })
 
+            let user = await userService.findOne({ mobile: req.body.mobile })
             if (!user) throw new BadRequestError('auth.errors.invalid_credentials');
 
             let validPassword = await bcrypt.compare(req.body.password, user.password)
