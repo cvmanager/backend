@@ -8,12 +8,15 @@ import userService from '../helper/service/user.service.js';
 
 async function verifyToken(req, res, next) {
     try {
-        if (!req.headers.authorization) {
-            throw new BadRequestError('auth.errors.token_not_sended');
-        }
+        if (!req.headers.authorization) throw new BadRequestError('auth.errors.token_not_sended');
         let token = req.headers.authorization.split(' ')[1];
         let payload = await jsonwebtoken.verify(token, env('JWT_SECRET_TOKEN'));
-        req.user = await userService.findById(payload.sub._id);
+        
+        req.user = await userService.findById(payload.sub._id, [
+            { path: 'role', select: ['name', 'id', 'permissions'] },
+            { path: "fcmtokens", select: ['token'] },
+            { path: "role.permissions" }
+        ]);
 
         next();
     } catch (err) {
@@ -50,4 +53,4 @@ async function checkUserState(req, res, next) {
     }
 }
 
-export { verifyToken, verifyRefreshToken , checkUserState }
+export { verifyToken, verifyRefreshToken, checkUserState }
