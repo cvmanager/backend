@@ -26,16 +26,7 @@ class ProfileController extends Controller {
       */
     async getMe(req, res, next) {
         try {
-            console.log("My User", req.user.id);
-            let user = await userService.findOne(req.user.id, [
-                { path: 'role', select: ['name', 'id', 'permissions'] },
-                { path: "fcmtokens", select: ['token'] }
-            ])
-            if (!user) throw new NotFoundError('user.errors.user_notfound');
-
-            await user.populate({ path: "role.permissions" })
-
-            AppResponse.builder(res).data(user).message('user.messages.user_founded').send();
+            AppResponse.builder(res).data(req.user).message('user.messages.user_founded').send();
         } catch (err) {
             next(err);
         }
