@@ -6,7 +6,7 @@ import userService from "../helper/service/user.service.js";
 
 
 mongoose.connect(
-    `mongodb://${env('DB_USER_NAME')}:${env('DB_PASSWORD')}@${env('DB_HOST')}:${env('DB_PORT')}/${env('DB_NAME')}`,
+    `mongodb://${env('DB_USER_NAME')}:${env('DB_PASSWORD')}@${env('DB_HOST')}:${env('DB_PORT')}/${env('DB_NAME')}?authSource=admin`,
     {
         useNewUrlParser: true,
         useUnifiedTopology: true,
