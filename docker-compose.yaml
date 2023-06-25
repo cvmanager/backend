@@ -16,8 +16,6 @@ services:
       args:
         - NODE_ENV=production
     restart: always
-    volumes:
-      - ./:/app/backend
     depends_on:
       - cv_mongo
       - cv_redis
