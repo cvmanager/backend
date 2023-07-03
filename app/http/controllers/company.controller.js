@@ -104,13 +104,13 @@ class CompanyController extends Controller {
     */
     async create(req, res, next) {
         try {
-            let company = await companyService.findOne({ 'name': req.body.name })
-            if (company) throw new AlreadyExists('company.errors.company_already_exists');
+            let isCompanyDouplicate = await companyService.isCompanyDouplicate({ 'name': req.body.name }, req.user)
+            if (isCompanyDouplicate) throw new AlreadyExists('company.errors.company_already_exists');
 
             req.body.created_by = req.user.id;
-            company = await companyService.create(req.body);
+            let company = await companyService.create(req.body);
 
-            EventEmitter.emit(CompanyEvents.CREATE, company,req);
+            EventEmitter.emit(CompanyEvents.CREATE, company, req);
 
             AppResponse.builder(res).status(201).message('company.messages.company_successfully_created').data(company).send();
         } catch (err) {
@@ -138,12 +138,12 @@ class CompanyController extends Controller {
         try {
             let company = await companyService.findByParamId(req)
             if (req.body.name !== undefined) {
-                let duplicateCompany = await companyService.findOne({ '_id': { $ne: company._id }, 'name': req.body.name })
-                if (duplicateCompany && duplicateCompany._id !== company._id) throw new AlreadyExists('company.errors.company_already_exists');
+                let isCompanyDouplicate = await companyService.isCompanyDouplicate({ 'name': req.body.name }, req.user, company._id)
+                if (isCompanyDouplicate) throw new AlreadyExists('company.errors.company_already_exists');
             }
 
             company = await companyService.updateOne({ '_id': req.params.id }, req.body)
-            EventEmitter.emit(CompanyEvents.UPDATE,company,req);
+            EventEmitter.emit(CompanyEvents.UPDATE, company, req);
             AppResponse.builder(res).message("company.messages.company_successfully_updated").data(company).send()
         } catch (err) {
             next(err);
