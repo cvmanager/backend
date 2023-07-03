@@ -17,6 +17,7 @@ import roleService from '../../helper/service/role.service.js';
 import userService from '../../helper/service/user.service.js';
 import managerService from '../../helper/service/manager.service.js';
 import i18n from '../../middlewares/lang.middleware.js';
+import { getEnume } from '../../helper/helper.js';
 
 class ProjectController extends Controller {
     /**
@@ -444,7 +445,7 @@ async resumeByStates(req, res, next) {
     try {
         let project = await projectService.findByParamId(req)
 
-        let statusArray = i18n.__("resume.enums.status");
+        let statusArray = getEnume("resume","status");
         let totalResumeByStates = await Resume.aggregate([
             {
                 $match: {

@@ -15,7 +15,7 @@ import userService from '../../helper/service/user.service.js';
 import roleService from '../../helper/service/role.service.js';
 import managerService from '../../helper/service/manager.service.js';
 import projectService from '../../helper/service/project.service.js';
-import i18n from '../../middlewares/lang.middleware.js';
+import {getEnume} from '../../helper/helper.js';
 
 class CompanyController extends Controller {
 
@@ -143,7 +143,7 @@ class CompanyController extends Controller {
             }
 
             company = await companyService.updateOne({ '_id': req.params.id }, req.body)
-            EventEmitter.emit(CompanyEvents.UPDATE,company,req);
+            EventEmitter.emit(CompanyEvents.UPDATE, company, req);
             AppResponse.builder(res).message("company.messages.company_successfully_updated").data(company).send()
         } catch (err) {
             next(err);
@@ -458,7 +458,7 @@ class CompanyController extends Controller {
         try {
             let company = await companyService.findByParamId(req)
 
-            let statusArray = i18n.__("resume.enums.status");
+            let statusArray = getEnume("resume" ,"status" ) ;
             let totalResumeByStates = await Resume.aggregate([
                 {
                     $match: {

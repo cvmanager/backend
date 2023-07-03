@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
-import i18n from '../middlewares/lang.middleware.js'
 import basePlugin from '../helper/mongoose/base.plugin.js';
+import { getEnume } from '../helper/helper.js';
 
 const schema = new mongoose.Schema(
     {
@@ -34,7 +34,7 @@ const schema = new mongoose.Schema(
         gender: {
             type: String,
             required: true,
-            enum: i18n.__("system.enums.gender")
+            enum: getEnume("system", "gender")
         },
         email: {
             type: String,
@@ -47,13 +47,13 @@ const schema = new mongoose.Schema(
         marital_status: {
             type: String,
             required: true,
-            enum: i18n.__("system.enums.marital_status")
+            enum: getEnume("system","marital_status")
         },
         status: {
             type: String,
             required: true,
             default: 'pending',
-            enum: i18n.__("resume.enums.status")
+            enum: getEnume("resume","status")
         },
         reject_reason: {
             type: String,
@@ -81,7 +81,7 @@ const schema = new mongoose.Schema(
         education: {
             type: String,
             required: true,
-            enum: i18n.__("system.enums.education")
+            enum: getEnume("system","education")
         },
         phone: {
             type: String,
@@ -106,7 +106,7 @@ const schema = new mongoose.Schema(
         military_status: {
             type: String,
             default: null,
-            // enum: i18n.__("system.enums.military_status")
+            // enum: getEnume("system","military_status")
         },
         status_updated_at: {
             type: Date,
@@ -118,12 +118,12 @@ const schema = new mongoose.Schema(
                     old_status: {
                         type: String,
                         required: true,
-                        enum: i18n.__("resume.enums.status")
+                        enum: getEnume("resume","status")
                     },
                     new_status: {
                         type: String,
                         required: true,
-                        enum: i18n.__("resume.enums.status")
+                        enum: getEnume("resume","status")
                     },
                     created_by: {
                         type: mongoose.Schema.Types.ObjectId,
@@ -144,7 +144,7 @@ const schema = new mongoose.Schema(
                     result: {
                         type: String,
                         default: null,
-                        enum: i18n.__("resume.enums.call_history_status")
+                        enum: getEnume("resume","call_history_status")
                     },
                     calling_date: {
                         type: Date,
@@ -167,9 +167,9 @@ const schema = new mongoose.Schema(
                         required: true,
                         ref: 'users'
                     },
-                    createdAt : {
+                    createdAt: {
                         type: Date,
-                        default: Date.now 
+                        default: Date.now
                     }
                 }
             ],
@@ -191,7 +191,7 @@ const schema = new mongoose.Schema(
         hire_status: {
             type: String,
             default: 'not_employed',
-            enum: i18n.__("resume.enums.hire_status")
+            enum: getEnume("resume","hire_status")
         },
         income: {
             type: Number,

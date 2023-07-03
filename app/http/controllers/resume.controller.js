@@ -15,6 +15,7 @@ import resumeService from '../../helper/service/resume.service.js';
 import positionService from '../../helper/service/position.service.js';
 import companyService from '../../helper/service/company.service.js';
 import i18n from '../../middlewares/lang.middleware.js';
+import { getEnume } from '../../helper/helper.js';
 
 
 class ResumeController extends Controller {
@@ -41,7 +42,7 @@ class ResumeController extends Controller {
             let searchQuery = {}
             let resumes = [], promiseResumes = []
 
-            let resumeStates = i18n.__('resume.enums.status')
+            let resumeStates = getEnume("resume", "status");
 
             searchQuery = mergeQuery(searchQuery, req.rbacQuery)
             if (query.length > 0) {
@@ -109,7 +110,7 @@ class ResumeController extends Controller {
 
             let resumes = [], promiseResumes = []
 
-            let resumeStates = i18n.__('resume.enums.status')
+            let resumeStates = getEnume('resume','status');
             let searchQuery = {}
             searchQuery = mergeQuery(searchQuery, req.rbacQuery)
             if (query.length > 0) {

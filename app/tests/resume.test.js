@@ -12,11 +12,9 @@ import ProjectData from './data/project.data';
 import PositionData from './data/position.data';
 import UsersData from './data/user.data';
 import SkillData from './data/skill.data';
-import i18n from '../middlewares/lang.middleware.js';
 import * as path from 'path';
 import InterviewData from './data/interview.data.js';
-import ManagerData from './data/manager.data';
-import { resumes } from './data/data.js';
+import { getEnume } from '../helper/helper.js';
 
 let token;
 let resumeItem;
@@ -362,7 +360,7 @@ describe("Resumes Routes", () => {
                 .send(newResume);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
-        it(`should get ${httpStatus.BAD_REQUEST} if gender is not in ${i18n.__("system.enums.gender")}`, async () => {
+        it(`should get ${httpStatus.BAD_REQUEST} if gender is not in ${getEnume("system","gender")}`, async () => {
             newResume.gender = faker.random.alpha(5);
             const response = await request(app)
                 .post(`/api/V1/resumes`)
@@ -426,7 +424,7 @@ describe("Resumes Routes", () => {
                 .send(newResume);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
-        it(`should get ${httpStatus.BAD_REQUEST} if marital_status is not in ${i18n.__("system.enums.marital_status")}`, async () => {
+        it(`should get ${httpStatus.BAD_REQUEST} if marital_status is not in ${getEnume("system","marital_status")}`, async () => {
             newResume.marital_status = faker.random.alpha(5);
             const response = await request(app)
                 .post(`/api/V1/resumes`)
@@ -562,7 +560,7 @@ describe("Resumes Routes", () => {
                 .send(newResume);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
-        it(`should get ${httpStatus.BAD_REQUEST} if gender is men and military_status is not in ${i18n.__("system.enums.military_status")}`, async () => {
+        it(`should get ${httpStatus.BAD_REQUEST} if gender is men and military_status is not in ${getEnume("system","military_status")}`, async () => {
             newResume.gender = 'men'
             newResume.military_status = faker.random.alpha(5);
             const response = await request(app)
@@ -649,7 +647,7 @@ describe("Resumes Routes", () => {
                 .send(updateResume);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
-        it(`should get ${httpStatus.BAD_REQUEST} if gender is not in ${i18n.__("system.enums.gender")}`, async () => {
+        it(`should get ${httpStatus.BAD_REQUEST} if gender is not in ${getEnume("system","gender")}`, async () => {
             updateResume.gender = faker.random.alpha(5);
             const response = await request(app)
                 .patch(`/api/V1/resumes/${resume._id}`)
@@ -689,7 +687,7 @@ describe("Resumes Routes", () => {
                 .send(updateResume);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
-        it(`should get ${httpStatus.BAD_REQUEST} if marital_status is not in ${i18n.__("system.enums.marital_status")}`, async () => {
+        it(`should get ${httpStatus.BAD_REQUEST} if marital_status is not in ${getEnume("system","marital_status")}`, async () => {
             updateResume.marital_status = faker.random.alpha(5);
             const response = await request(app)
                 .patch(`/api/V1/resumes/${resume._id}`)
@@ -769,7 +767,7 @@ describe("Resumes Routes", () => {
                 .send(updateResume);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
-        it(`should get ${httpStatus.BAD_REQUEST} if military_status is not in ${i18n.__("system.enums.military_status")}`, async () => {
+        it(`should get ${httpStatus.BAD_REQUEST} if military_status is not in ${getEnume("system","military_status")}`, async () => {
             updateResume.military_status = faker.random.alpha(5);
             const response = await request(app)
                 .patch(`/api/V1/resumes/${resume._id}`)
@@ -1815,7 +1813,7 @@ describe("Resumes Routes", () => {
                 .send(endCooperationResume);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
-        it(`should get ${httpStatus.BAD_REQUEST} if end_cooperation_reason is not in ${i18n.__("resume.enums.end_cooperation_reason")}`, async () => {
+        it(`should get ${httpStatus.BAD_REQUEST} if end_cooperation_reason is not in ${getEnume("resume","end_cooperation_reason")}`, async () => {
             endCooperationResume.end_cooperation_reason = faker.random.alpha(5);
             const response = await request(app)
                 .patch(`/api/V1/resumes/${resume._id}/end-cooperation`)

@@ -2,6 +2,7 @@ import { body, param, query } from 'express-validator'
 import i18n from '../middlewares/lang.middleware.js';
 
 import generalValidator from '../helper/validator.js';
+import { getEnume } from '../helper/helper.js';
 
 
 class ProfileValidator {
@@ -35,7 +36,7 @@ class ProfileValidator {
                 .isNumeric().withMessage('notification.validations.notification_size_number').trim(),
             query('state')
                 .optional({ nullable: true, checkFalsy: true })
-                .isIn(i18n.__("notification.enums.list_state")).withMessage('notification.validations.notification_unvalid_state_send').trim(),
+                .isIn(getEnume("notification","list_state")).withMessage('notification.validations.notification_unvalid_state_send').trim(),
             generalValidator
         ];
     }

@@ -8,10 +8,10 @@ import ManagerData from './data/manager.data';
 import prepareDB from './utils/prepareDB'
 import { Types } from 'mongoose';
 import { faker } from '@faker-js/faker';
-import i18n from '../middlewares/lang.middleware.js'
 import * as path from 'path';
 import EventEmitter from '../events/emitter.js';
 import CompanyData from './data/company.data';
+import { getEnume } from '../helper/helper.js';
 
 let token;
 let user;
@@ -269,7 +269,7 @@ describe(`Position Routes`, () => {
                 .send(newPosition);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
-        it(`should get ${httpStatus.BAD_REQUEST} if level not in ${i18n.__('position.enums.level')}`, async () => {
+        it(`should get ${httpStatus.BAD_REQUEST} if level not in ${getEnume('position','level')}`, async () => {
             newPosition.level = 'wrong level';
             const response = await request(app)
                 .post(`/api/V1/positions`)
@@ -352,7 +352,7 @@ describe(`Position Routes`, () => {
                 .send(updatePosition);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
-        it(`should get ${httpStatus.BAD_REQUEST} if level not in ${i18n.__('position.enums.level')}`, async () => {
+        it(`should get ${httpStatus.BAD_REQUEST} if level not in ${getEnume('position','level')}`, async () => {
             updatePosition.level = 'wrong level';
             const response = await request(app)
                 .patch(`/api/V1/positions/${position._id}`)

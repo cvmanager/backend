@@ -18,6 +18,7 @@ import userService from "../../helper/service/user.service.js";
 import { mergeQuery } from "../../helper/mergeQuery.js";
 import managerService from "../../helper/service/manager.service.js";
 import Interview from "../../models/interview.model.js";
+import { getEnume } from "../../helper/helper.js";
 
 class PositionController extends Controller {
   /**
@@ -315,7 +316,8 @@ class PositionController extends Controller {
       let resumes = [];
       let promiseResumes = [];
 
-      let statuses = i18n.__("resume.enums.status");
+      
+      let statuses = getEnume("resume","status");
       for (let status of statuses) {
         let resumeList = Resume.find({
           position_id: position._id,
@@ -581,7 +583,7 @@ class PositionController extends Controller {
     try {
       let position = await positionService.findByParamId(req);
 
-      let statusArray = i18n.__("resume.enums.status");
+      let statusArray = getEnume("resume","status");
       let totalResumeByStates = await Resume.aggregate([
         {
           $match: {

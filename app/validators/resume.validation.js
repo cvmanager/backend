@@ -1,9 +1,7 @@
 import { body, param, query } from 'express-validator';
 
 import generalValidator from '../helper/validator.js';
-import i18n from '../middlewares/lang.middleware.js';
-import { mobileFormat } from '../helper/helper.js';
-import { json } from 'express';
+import { getEnume, mobileFormat } from '../helper/helper.js';
 class ResumeValidation {
     index() {
         return [
@@ -40,7 +38,7 @@ class ResumeValidation {
             body('gender')
                 .notEmpty()
                 .withMessage('resume.validations.gender_required')
-                .isIn(i18n.__("system.enums.gender"))
+                .isIn(getEnume("system","gender"))
                 .withMessage('resume.validations.gender_incorrect')
                 .trim(),
             body('email')
@@ -60,7 +58,7 @@ class ResumeValidation {
             body('marital_status')
                 .notEmpty()
                 .withMessage('resume.validations.marital_status_required')
-                .isIn(i18n.__("system.enums.marital_status"))
+                .isIn(getEnume("system","marital_status"))
                 .withMessage('resume.validations.marital_status_incorrect')
                 .trim(),
             body('mobile')
@@ -84,7 +82,7 @@ class ResumeValidation {
             body('education')
                 .notEmpty()
                 .withMessage('resume.validations.education_required')
-                .isIn(i18n.__("system.enums.education"))
+                .isIn(getEnume("system","education"))
                 .withMessage('resume.validations.education_incorrect')
                 .trim(),
             body('phone')
@@ -114,8 +112,8 @@ class ResumeValidation {
                 .withMessage('resume.validations.work_exp_numeric')
                 .trim(),
             body('military_status')
-                .if(body('gender').isIn('men', i18n.__('system.enums.gender')))
-                .isIn(i18n.__("system.enums.military_status"))
+                .if(body('gender').isIn('men', getEnume('system","gender')))
+                .isIn(getEnume("system","military_status"))
                 .withMessage('resume.validations.military_status_incorrect_for_men')
                 .trim(),
             generalValidator
@@ -142,7 +140,7 @@ class ResumeValidation {
                 .trim(),
             body('gender')
                 .optional({ nullable: true, checkFalsy: true })
-                .isIn(i18n.__("system.enums.gender"))
+                .isIn(getEnume("system","gender"))
                 .withMessage('resume.validations.gender_incorrect')
                 .trim(),
             body('email')
@@ -159,7 +157,7 @@ class ResumeValidation {
                 .trim(),
             body('marital_status')
                 .optional({ nullable: true, checkFalsy: true })
-                .isIn(i18n.__("system.enums.marital_status"))
+                .isIn(getEnume("system","marital_status"))
                 .withMessage('resume.validations.marital_status_incorrect')
                 .trim(),
             body('mobile')
@@ -179,7 +177,7 @@ class ResumeValidation {
                 .trim(),
             body('education')
                 .optional({ nullable: true, checkFalsy: true })
-                .isIn(i18n.__("system.enums.education"))
+                .isIn(getEnume("system","education"))
                 .withMessage('resume.validations.education_incorrect')
                 .trim(),
             body('phone')
@@ -210,7 +208,7 @@ class ResumeValidation {
                 .trim(),
             body('military_status')
                 .optional({ nullable: true, checkFalsy: true })
-                .isIn(i18n.__("system.enums.military_status"))
+                .isIn(getEnume("system","military_status"))
                 .withMessage('resume.validations.military_status_incorrect')
                 .trim(),
             generalValidator
@@ -230,7 +228,7 @@ class ResumeValidation {
                 .withMessage('resume.validations.status_required')
                 .not().isIn(['hired', 'rejected', 'end_cooperation'])
                 .withMessage('resume.errors.can_not_save_hired_rejected_status')
-                .isIn(i18n.__("resume.enums.status"))
+                .isIn(getEnume("resume","status"))
                 .withMessage('resume.validations.status_required')
                 .trim(),
             body('index')
@@ -249,7 +247,7 @@ class ResumeValidation {
             body('result')
                 .notEmpty()
                 .withMessage('resume.validations.result_required')
-                .isIn(i18n.__('resume.enums.call_history_status'))
+                .isIn(getEnume('resume','call_history_status'))
                 .withMessage('resume.validations.result_incorrect')
                 .trim(),
             body('calling_date')
@@ -265,7 +263,7 @@ class ResumeValidation {
                 .withMessage('resume.validations.description_length')
                 .trim(),
             body('recall_at')
-                .if(body('result').isIn('recall', i18n.__('resume.enums.call_history_status')))
+                .if(body('result').isIn('recall', getEnume('resume','call_history_status')))
                 .notEmpty()
                 .withMessage('recall_at is required')
                 .isISO8601()
@@ -350,7 +348,7 @@ class ResumeValidation {
                 .withMessage('resume.validations.resume_id_invalid')
                 .trim(),
             body('reject_reason')
-                .isIn(i18n.__("resume.enums.reject_reason"))
+                .isIn(getEnume("resume","reject_reason"))
                 .withMessage('resume.validations.reject_reason_value_not_valid')
                 .notEmpty()
                 .withMessage('resume.validations.reject_reason')
@@ -431,7 +429,7 @@ class ResumeValidation {
             body('end_cooperation_reason')
                 .notEmpty()
                 .withMessage('resume.validations.end_cooperation_reason_required')
-                .isIn(i18n.__("resume.enums.end_cooperation_reason"))
+                .isIn(getEnume("resume","end_cooperation_reason"))
                 .withMessage('resume.validations.end_cooperation_reason_not_valid')
                 .trim(),
             body('end_cooperation_description')
@@ -466,13 +464,13 @@ class ResumeValidation {
                 .toDate()
                 .withMessage('interview.validations.event_time_invalid').trim(),
             body('event_type').notEmpty().withMessage('interview.validations.event_type_required')
-                .isIn(i18n.__("interview.enums.event_type"))
+                .isIn(getEnume("interview","event_type"))
                 .withMessage('interview.validations.event_type_incorrect')
                 .trim(),
             body('type')
                 .notEmpty()
                 .withMessage('interview.validations.type_required')
-                .isIn(i18n.__("interview.enums.type"))
+                .isIn(getEnume("interview","type"))
                 .withMessage('interview.validations.type_incorrect')
                 .trim(),
             body('description')
@@ -528,12 +526,12 @@ class ResumeValidation {
             }),
             body('event_type')
                 .optional({ nullable: true, checkFalsy: true })
-                .isIn(i18n.__("interview.enums.event_type"))
+                .isIn(getEnume("interview","event_type"))
                 .withMessage('interview.validations.event_type_incorrect')
                 .trim(),
             body('type')
                 .optional({ nullable: true, checkFalsy: true })
-                .isIn(i18n.__("interview.enums.type"))
+                .isIn(getEnume("interview","type"))
                 .withMessage('interview.validations.type_incorrect')
                 .trim(),
             body('description')
@@ -547,12 +545,12 @@ class ResumeValidation {
                 .withMessage('interview.validations.contribution_array'),
             body('status')
                 .notEmpty()
-                .isIn(i18n.__("interview.enums.status"))
+                .isIn(getEnume("interview","status"))
                 .withMessage('interview.validations.status_incorrect')
                 .trim(),
             body('result')
                 .notEmpty()
-                .isIn(i18n.__("interview.enums.result"))
+                .isIn(getEnume("interview","result"))
                 .withMessage('interview.validations.result_incorrect')
                 .trim(),
             body('rating')
