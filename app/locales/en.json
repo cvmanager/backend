@@ -1,29 +1,29 @@
 {
 	"system": {
 		"enums": {
-			"gender": [
-				"men",
-				"women"
-			],
-			"marital_status": [
-				"single",
-				"married",
-				"isolated",
-				"unknow"
-			],
-			"education": [
-				"phd",
-				"diploma",
-				"associate_degree",
-				"bachelors_degree",
-				"masters"
-			],
-			"military_status": [
-				"included",
-				"end",
-				"exemption-edu",
-				"exemption-spo"
-			]
+			"gender": {
+				"man" : "Man",
+				"woman" : "Woman"
+			},
+			"marital_status": {
+				"single" : "Single",
+				"married": "Married",
+				"isolated": "Isolated",
+				"unknow": "Unknow"
+			},
+			"education":{
+				"diploma" : "First Professional Degree",
+				"associate_degree": "Associate's Degree",
+				"bachelors_degree": "Bachelor's Degree",
+				"masters": "Master's Degree",
+				"phd": "Doctroal Degree"
+			},
+			"military_status": {
+				"included" : "Included",
+				"end" : "End",
+				"exemption-edu" :"Education Exemption",
+				"exemption-med":"Medical Exemption"
+			}
 		},
 		"errors": {
 			"server_error": "Server Error",
@@ -158,11 +158,11 @@
 	},
 	"position": {
 		"enums": {
-			"level": [
-				"senior",
-				"mid",
-				"junior"
-			]
+			"level": {
+				"junior" : "Junior",
+				"mid-level": "Mid-level",
+				"senior": "Senior"
+			}
 		},
 		"validations": {
 			"position_page_number": "position page must by number",
@@ -237,39 +237,47 @@
 	},
 	"resume": {
 		"enums": {
-			"status": [
-				"pending",
-				"call_review",
-				"tech_review",
-				"wait_reject",
-				"rejected",
-				"hired",
-				"wait_hire",
-				"end_cooperation"
-			],
-			"call_history_status": [
-				"rejected",
-				"answered",
-				"busy",
-				"wrong-number",
-				"recall"
-			],
-			"hire_status": [
-				"not_employed",
-				"hired_on"
-			],
-			"reject_reason": [
-				"user_busy_working",
-				"user_withdrawal",
-				"technically_rejected",
-				"rejected_initial_interview",
-				"not_matching_salary_with_position",
-				"unresponsive_user"
-			],
-			"end_cooperation_reason": [
-				"find_a_new_job",
-				"retrenchment"
-			]
+			"status": {
+				"pending" : "Pending",
+				"call_review" : "Call Review",
+				"tech_review" : "Technical Review",
+				"wait_reject" : "Wait Reject",
+				"rejected" : "Rejected",
+				"hired" : "Hired",
+				"wait_hire" : "Wait Hire",
+				"end_cooperation" :"End Cooperation"
+			},
+			"call_history_status": {
+				"rejected" : "Rejected",
+				"answered": "Answered",
+				"busy": "Busy",
+				"wrong_number": "Wrong Number",
+				"recall": "Recall"
+			},
+			"hire_status": {
+				"not_employed" : "Not Employed",
+				"hired" :"Hired"
+			},
+			"reject_reason": {
+				"user_busy_working" : "User got busy",
+				"user_withdrawal" : "User withdrawal",
+				"unresponsive_user" :"User not responding",
+				"technically_rejected" : "Technically Rejected",
+				"rejected_in_hr_interview" : "Rejected in HR interview",
+				"not_matching_salary_with_position" : "The salary does not match the job position",
+				"over_qualified":"Over Qualified",
+				"the_distance_is_far" : "Incompatibility of residence with workplace",
+				"incomplete_resume_information":"Incomplete resume information",
+				"job_position_filling":"Job position filling",
+				"irrelevance_of_gender":"Irrelevance of gender",
+				"irrelevance_of_experiences" : "Irrelevance of experiences",
+				"age_mismatch":"Age mismatch",
+				"other":"Other"
+		},
+			"end_cooperation_reason": {
+				"find_a_new_job" : "Find A New Job",
+				"retrenchment" : "Retrenchment"
+			}
 		},
 		"validations": {
 			"company_id_required": "resume.validation.company_id_required",
@@ -456,24 +464,24 @@
 	},
 	"interview": {
 		"enums": {
-			"event_type": [
-				"online",
-				"inperson",
-				"inphone"
-			],
-			"status": [
-				"pending",
-				"done",
-				"canceled"
-			],
-			"type": [
-				"person",
-				"personality"
-			],
-			"result": [
-				"rejected",
-				"accepted"
-			]
+			"event_type": {
+				"online": "Online",
+				"inperson" : "In person",
+				"inphone": "In phone"
+			},
+			"status": {
+				"pending" : "Pending",
+				"canceled": "Canceled",
+				"done" : "Done"
+			},
+			"type": {
+				"technical" : "Technical",
+				"human_resource": "HR"
+			},
+			"result": {
+				"rejected" : "Rejected",
+				"accepted": "Accepted"
+			}
 		},
 		"validations": {
 			"interview_id_required": "interview id required",
@@ -542,20 +550,20 @@
 	},
 	"notification": {
 		"enums": {
-			"entity": [
-				"companies",
-				"projects",
-				"positions",
-				"resumes"
-			],
-			"step": [
-				"update_status"
-			],
-			"list_state": [
-				"all",
-				"read",
-				"unread"
-			]
+			"entity": {
+				"companies" : "Companies",
+				"projects" : "Projects",
+				"positions" : "Positions",
+				"resumes":"Resumes"
+			},
+			"step": {
+				"update_status":"Update Status"
+			},
+			"list_state": {
+				"all" : "All",
+				"read" : "Read",
+				"unread":"Unread"
+			}
 		},
 		"validations": {
 			"notification_page_number": "company page must by number",
