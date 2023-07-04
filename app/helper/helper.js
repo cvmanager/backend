@@ -1,6 +1,6 @@
 
 let mobileFormat = /^98\d{10}\s*?$/;
-import i18n from './middlewares/lang.middleware.js'
+import i18n from '../middlewares/lang.middleware.js'
 
 function getRandomColor() {
     var letters = '0123456789ABCDEF';
