@@ -33,6 +33,11 @@ class ManagerService extends ServiceBase {
         return (await super.getAll({ user_id: userId, entity: 'projects', type: 'moderator' })).map(entity => entity.entity_id)
     }
 
+    async getUserAllProjects(userId) {
+        let companies = await super.getAll({ user_id: userId, entity: 'projects' })
+        return companies.map(entity => entity.entity_id)
+    }
+
     async getUserOwnPositions(userId) {
         let positions = await super.getAll({ user_id: userId, entity: 'positions', type: 'owner' })
         return positions.map(entity => entity.entity_id)
@@ -40,6 +45,11 @@ class ManagerService extends ServiceBase {
 
     async getUserModeratorPositions(userId) {
         let positions = await super.getAll({ user_id: userId, entity: 'positions', type: 'moderator' })
+        return positions.map(entity => entity.entity_id)
+    }
+
+    async getUserAllPositions(userId) {
+        let positions = await super.getAll({ user_id: userId, entity: 'positions' })
         return positions.map(entity => entity.entity_id)
     }
 
