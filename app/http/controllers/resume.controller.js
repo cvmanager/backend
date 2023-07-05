@@ -246,7 +246,7 @@ class ResumeController extends Controller {
             req.body.project_id = position.project_id;
             req.body.company_id = position.company_id;
 
-            if (req.body.birth_year.length && req.body.marital_status.length && req.body.education.length) {
+            if (req.body?.birth_year?.length && req.body?.marital_status?.length && req.body?.education?.length) {
                 req.body.status = 'pending';
             }
 
