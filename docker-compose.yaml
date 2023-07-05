@@ -16,29 +16,25 @@ services:
       args:
         - NODE_ENV=production
     restart: always
-    volumes:
-      - ./:/app/backend
     depends_on:
       - cv_mongo
       - cv_redis
   cv_mongo:
     restart: always
     image: mongo:4.2.23
-    command: mongod --port 27018 
     ports:
-      - "27018:27018"
+      - "27017:27017"
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: 'yP6tZ3LwD7VrB'
-      MONGO_INITDB_DATABASE: cvmanager
+      MONGO_INITDB_ROOT_USERNAME: 
+      MONGO_INITDB_ROOT_PASSWORD: ''
+      MONGO_INITDB_DATABASE: 
     volumes:
       - ./mongo_db:/data/db
   cv_redis:
     image: redis:7.0-alpine
     restart: always
-    command: --port 6380
     ports:
-      - "6380:6380"
+      - "6379:6379"
     volumes:
       - ./redis_db:/data/myredis
 volumes:

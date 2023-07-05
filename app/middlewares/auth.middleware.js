@@ -32,7 +32,7 @@ async function verifyRefreshToken(req, res, next) {
         let payload = await jsonwebtoken.verify(token, env('JWT_SECRET_REFRESH_TOKEN'));
         req.user = await userService.findById(payload.sub._id);
 
-        const redisKey = payload.sub.toString() + env("REDIS_KEY_REF_TOKENS")
+        const redisKey = req.user.id + env("REDIS_KEY_REF_TOKENS")
         const tokenExist = await redisClient.sIsMember(redisKey, token)
 
         if (!tokenExist) throw new BadRequestError('auth.errors.token_not_stored');

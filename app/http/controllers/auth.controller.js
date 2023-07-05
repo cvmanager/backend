@@ -41,8 +41,8 @@ class AuthController extends Controller {
 
             if (user.is_banned) throw new BadRequestError('auth.errors.user_is_banned');
 
-            const access_token = await generateJwtToken({ _id: user._id, role: user.role })
-            const refresh_token = await generateJwtRefreshToken({ _id: user._id, role: user.role });
+            const access_token = await generateJwtToken({ _id: user.id, role: user.role })
+            const refresh_token = await generateJwtRefreshToken({ _id: user.id, role: user.role });
 
             EventEmitter.emit(UserEvents.LOGIN, user, req, access_token, refresh_token);
             AppResponse.builder(res).message('auth.messages.success_login').data({ access_token, refresh_token }).send();
@@ -82,8 +82,8 @@ class AuthController extends Controller {
                 role: ((ownerRole && ownerRole._id) ? [ownerRole._id] : [])
             });
 
-            const access_token = await generateJwtToken({ _id: user._id, role: [ownerRole._id] })
-            const refresh_token = await generateJwtRefreshToken({ _id: user._id, role: [ownerRole._id] });
+            const access_token = await generateJwtToken({ _id: user.id, role: [ownerRole._id] })
+            const refresh_token = await generateJwtRefreshToken({ _id: user.id, role: [ownerRole._id] });
 
             EventEmitter.emit(UserEvents.SINGUP, user, req, access_token, refresh_token);
             AppResponse.builder(res).status(201).message("auth.messages.user_successfully_created").data({ access_token, refresh_token }).send();
