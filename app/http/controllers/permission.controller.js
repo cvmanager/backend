@@ -4,6 +4,7 @@ import AppResponse from '../../helper/response.js';
 import Controller from './controller.js';
 import permissionService from '../../helper/service/permission.service.js';
 import Permission from '../../models/permission.model.js';
+import env from '../../helper/env.js'
 
 class PermissionController extends Controller {
 
