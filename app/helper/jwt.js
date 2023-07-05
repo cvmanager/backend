@@ -10,14 +10,13 @@ async function generateJwtToken(data) {
 }
 
 
-async function generateJwtRefreshToken(user_id) {
+async function generateJwtRefreshToken(user_json) {
     const refresh_token = await jsonwebtoken.sign(
-        { sub: user_id }, 
+        { sub: user_json }, 
         env("JWT_SECRET_REFRESH_TOKEN"), 
         { expiresIn: env("JWT_EXPIRATION_TIME_REFRESH_TOKEN") }
     );
-
-    await redisClient.sAdd(user_id.toString() + env("REDIS_KEY_REF_TOKENS"), refresh_token)
+    await redisClient.sAdd(user_json._id + env("REDIS_KEY_REF_TOKENS"), refresh_token)
 
     return refresh_token;
 }
