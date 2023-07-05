@@ -238,6 +238,7 @@
 	"resume": {
 		"enums": {
 			"status": {
+				"draft": "Draft",
 				"pending" : "Pending",
 				"call_review" : "Call Review",
 				"tech_review" : "Technical Review",
@@ -381,7 +382,8 @@
 			"can_not_save_hired_rejected_status": "It is not possible to update the status to the hired and rejected",
 			"calling_date_must_be_before_recall_at": "Calling date must be before recall at",
 			"assigner_could_not_be_duplicate":"An error occurred, it is not possible to assign a duplicate user to resume",
-			"assigner_not_exists":"An error occurred, the selected user does not exist in the list of users assigned to the resume"
+			"assigner_not_exists":"An error occurred, the selected user does not exist in the list of users assigned to the resume",
+			"resume_information_is_not_complete_to_change_status": "Resume information is not complete to change status (Education, Marital Status, Birth Year , ...)"
 		}
 	},
 	"role":{

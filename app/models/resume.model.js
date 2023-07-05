@@ -38,21 +38,21 @@ const schema = new mongoose.Schema(
         },
         email: {
             type: String,
-            required: true
+            default: null,
         },
         birth_year: {
             type: Number,
-            required: true
+            default: null,
         },
         marital_status: {
             type: String,
-            required: true,
-            enum: getEnume("system","marital_status")
+            default: null,
+            // enum: getEnume("system","marital_status")
         },
         status: {
             type: String,
             required: true,
-            default: 'pending',
+            default: 'draft',
             enum: getEnume("resume","status")
         },
         reject_reason: {
@@ -80,8 +80,8 @@ const schema = new mongoose.Schema(
         },
         education: {
             type: String,
-            required: true,
-            enum: getEnume("system","education")
+            default:null,
+            // enum: getEnume("system","education")
         },
         phone: {
             type: String,
@@ -98,10 +98,6 @@ const schema = new mongoose.Schema(
             default: null,
             minlength: 0,
             maxlength: 1000000000
-        },
-        work_experience: {
-            type: Number,
-            default: null
         },
         military_status: {
             type: String,

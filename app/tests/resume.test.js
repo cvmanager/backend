@@ -142,7 +142,6 @@ describe("Resumes Routes", () => {
             expect(data).toHaveProperty('phone')
             expect(data).toHaveProperty('min_salary')
             expect(data).toHaveProperty('max_salary')
-            expect(data).toHaveProperty('work_experience')
             expect(data).toHaveProperty('military_status')
             expect(data).toHaveProperty('status_updated_at')
             expect(data).toHaveProperty('created_by')
@@ -208,7 +207,6 @@ describe("Resumes Routes", () => {
             expect(data).toHaveProperty('phone')
             expect(data).toHaveProperty('min_salary')
             expect(data).toHaveProperty('max_salary')
-            expect(data).toHaveProperty('work_experience')
             expect(data).toHaveProperty('military_status')
             expect(data).toHaveProperty('status_updated_at')
             expect(data).toHaveProperty('created_by')
@@ -242,7 +240,6 @@ describe("Resumes Routes", () => {
                 "phone": faker.phone.number('989#########'),
                 "min_salary": 100000,
                 "max_salary": 100000,
-                "work_experience": 4,
                 "education": "diploma",
                 "created_by": user._id
             }
@@ -552,14 +549,6 @@ describe("Resumes Routes", () => {
                 .send(newResume);
             expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
         })
-        it(`should get ${httpStatus.BAD_REQUEST} if work_experience is not send`, async () => {
-            newResume.work_experience = faker.random.alpha(5);
-            const response = await request(app)
-                .post(`/api/V1/resumes`)
-                .set(`Authorization`, token)
-                .send(newResume);
-            expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
-        })
         it(`should get ${httpStatus.BAD_REQUEST} if gender is men and military_status is not in ${getEnume("system","military_status")}`, async () => {
             newResume.gender = 'men'
             newResume.military_status = faker.random.alpha(5);
@@ -596,7 +585,6 @@ describe("Resumes Routes", () => {
                 "phone": faker.phone.number('989#########'),
                 "min_salary": 100000,
                 "max_salary": 100000,
-                "work_experience": 4,
                 "education": "diploma",
             }
         })

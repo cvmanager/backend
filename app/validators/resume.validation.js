@@ -38,27 +38,24 @@ class ResumeValidation {
             body('gender')
                 .notEmpty()
                 .withMessage('resume.validations.gender_required')
-                .isIn(getEnume("system","gender"))
+                .isIn(getEnume("system", "gender"))
                 .withMessage('resume.validations.gender_incorrect')
                 .trim(),
             body('email')
-                .notEmpty()
-                .withMessage('resume.validations.email_required')
+                .optional({ nullable: true, checkFalsy: true })
                 .isEmail()
                 .withMessage('resume.validations.email_invalid')
                 .trim(),
             body('birth_year')
-                .notEmpty()
-                .withMessage('resume.validations.birth_year_required')
+                .optional({ nullable: true, checkFalsy: true })
                 .isNumeric()
                 .withMessage('resume.validations.birth_year_numeric')
                 .isLength({ min: 4, max: 4 })
                 .withMessage('resume.validations.birth_year_length')
                 .trim(),
             body('marital_status')
-                .notEmpty()
-                .withMessage('resume.validations.marital_status_required')
-                .isIn(getEnume("system","marital_status"))
+                .optional({ nullable: true, checkFalsy: true })
+                .isIn(getEnume("system", "marital_status"))
                 .withMessage('resume.validations.marital_status_incorrect')
                 .trim(),
             body('mobile')
@@ -73,16 +70,9 @@ class ResumeValidation {
                 .isMongoId()
                 .withMessage('resume.validations.residence_city_id_invalid')
                 .trim(),
-            // body('work_city')
-            //     .notEmpty()
-            //     .withMessage('resume.validations.work_city_required')
-            //     .isMongoId()
-            //     .withMessage('resume.validations.work_city_id_invalid')
-            //     .trim(),
             body('education')
-                .notEmpty()
-                .withMessage('resume.validations.education_required')
-                .isIn(getEnume("system","education"))
+                .optional({ nullable: true, checkFalsy: true })
+                .isIn(getEnume("system", "education"))
                 .withMessage('resume.validations.education_incorrect')
                 .trim(),
             body('phone')
@@ -106,14 +96,9 @@ class ResumeValidation {
                 .isInt({ min: 0, max: 1000000000 })
                 .withMessage('resume.validations.max_salary_length')
                 .trim(),
-            body('work_experience')
-                .optional({ nullable: true, checkFalsy: true })
-                .isNumeric()
-                .withMessage('resume.validations.work_exp_numeric')
-                .trim(),
             body('military_status')
                 .if(body('gender').isIn('men', getEnume('system","gender')))
-                .isIn(getEnume("system","military_status"))
+                .isIn(getEnume("system", "military_status"))
                 .withMessage('resume.validations.military_status_incorrect_for_men')
                 .trim(),
             generalValidator
@@ -140,7 +125,7 @@ class ResumeValidation {
                 .trim(),
             body('gender')
                 .optional({ nullable: true, checkFalsy: true })
-                .isIn(getEnume("system","gender"))
+                .isIn(getEnume("system", "gender"))
                 .withMessage('resume.validations.gender_incorrect')
                 .trim(),
             body('email')
@@ -157,7 +142,7 @@ class ResumeValidation {
                 .trim(),
             body('marital_status')
                 .optional({ nullable: true, checkFalsy: true })
-                .isIn(getEnume("system","marital_status"))
+                .isIn(getEnume("system", "marital_status"))
                 .withMessage('resume.validations.marital_status_incorrect')
                 .trim(),
             body('mobile')
@@ -177,7 +162,7 @@ class ResumeValidation {
                 .trim(),
             body('education')
                 .optional({ nullable: true, checkFalsy: true })
-                .isIn(getEnume("system","education"))
+                .isIn(getEnume("system", "education"))
                 .withMessage('resume.validations.education_incorrect')
                 .trim(),
             body('phone')
@@ -201,14 +186,9 @@ class ResumeValidation {
                 .isInt({ min: 0, max: 1000000000 })
                 .withMessage('resume.validations.max_salary_length')
                 .trim(),
-            body('work_experience')
-                .optional({ nullable: true, checkFalsy: true })
-                .isNumeric()
-                .withMessage('resume.validations.work_exp_numeric')
-                .trim(),
             body('military_status')
                 .optional({ nullable: true, checkFalsy: true })
-                .isIn(getEnume("system","military_status"))
+                .isIn(getEnume("system", "military_status"))
                 .withMessage('resume.validations.military_status_incorrect')
                 .trim(),
             generalValidator
@@ -228,7 +208,7 @@ class ResumeValidation {
                 .withMessage('resume.validations.status_required')
                 .not().isIn(['hired', 'rejected', 'end_cooperation'])
                 .withMessage('resume.errors.can_not_save_hired_rejected_status')
-                .isIn(getEnume("resume","status"))
+                .isIn(getEnume("resume", "status"))
                 .withMessage('resume.validations.status_required')
                 .trim(),
             body('index')
@@ -247,7 +227,7 @@ class ResumeValidation {
             body('result')
                 .notEmpty()
                 .withMessage('resume.validations.result_required')
-                .isIn(getEnume('resume','call_history_status'))
+                .isIn(getEnume('resume', 'call_history_status'))
                 .withMessage('resume.validations.result_incorrect')
                 .trim(),
             body('calling_date')
@@ -263,7 +243,7 @@ class ResumeValidation {
                 .withMessage('resume.validations.description_length')
                 .trim(),
             body('recall_at')
-                .if(body('result').isIn('recall', getEnume('resume','call_history_status')))
+                .if(body('result').isIn('recall', getEnume('resume', 'call_history_status')))
                 .notEmpty()
                 .withMessage('recall_at is required')
                 .isISO8601()
@@ -348,7 +328,7 @@ class ResumeValidation {
                 .withMessage('resume.validations.resume_id_invalid')
                 .trim(),
             body('reject_reason')
-                .isIn(getEnume("resume","reject_reason"))
+                .isIn(getEnume("resume", "reject_reason"))
                 .withMessage('resume.validations.reject_reason_value_not_valid')
                 .notEmpty()
                 .withMessage('resume.validations.reject_reason')
@@ -429,7 +409,7 @@ class ResumeValidation {
             body('end_cooperation_reason')
                 .notEmpty()
                 .withMessage('resume.validations.end_cooperation_reason_required')
-                .isIn(getEnume("resume","end_cooperation_reason"))
+                .isIn(getEnume("resume", "end_cooperation_reason"))
                 .withMessage('resume.validations.end_cooperation_reason_not_valid')
                 .trim(),
             body('end_cooperation_description')
@@ -464,13 +444,13 @@ class ResumeValidation {
                 .toDate()
                 .withMessage('interview.validations.event_time_invalid').trim(),
             body('event_type').notEmpty().withMessage('interview.validations.event_type_required')
-                .isIn(getEnume("interview","event_type"))
+                .isIn(getEnume("interview", "event_type"))
                 .withMessage('interview.validations.event_type_incorrect')
                 .trim(),
             body('type')
                 .notEmpty()
                 .withMessage('interview.validations.type_required')
-                .isIn(getEnume("interview","type"))
+                .isIn(getEnume("interview", "type"))
                 .withMessage('interview.validations.type_incorrect')
                 .trim(),
             body('description')
@@ -526,12 +506,12 @@ class ResumeValidation {
             }),
             body('event_type')
                 .optional({ nullable: true, checkFalsy: true })
-                .isIn(getEnume("interview","event_type"))
+                .isIn(getEnume("interview", "event_type"))
                 .withMessage('interview.validations.event_type_incorrect')
                 .trim(),
             body('type')
                 .optional({ nullable: true, checkFalsy: true })
-                .isIn(getEnume("interview","type"))
+                .isIn(getEnume("interview", "type"))
                 .withMessage('interview.validations.type_incorrect')
                 .trim(),
             body('description')
@@ -545,12 +525,12 @@ class ResumeValidation {
                 .withMessage('interview.validations.contribution_array'),
             body('status')
                 .notEmpty()
-                .isIn(getEnume("interview","status"))
+                .isIn(getEnume("interview", "status"))
                 .withMessage('interview.validations.status_incorrect')
                 .trim(),
             body('result')
                 .notEmpty()
-                .isIn(getEnume("interview","result"))
+                .isIn(getEnume("interview", "result"))
                 .withMessage('interview.validations.result_incorrect')
                 .trim(),
             body('rating')
