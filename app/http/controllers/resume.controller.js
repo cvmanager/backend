@@ -212,7 +212,7 @@ class ResumeController extends Controller {
                 { path: 'created_by', select: ['firstname', 'lastname', 'avatar'] },
             ])
 
-            if (!resume) throw new NotFoundError('resume.error.resume_notfound');
+            if (!resume) throw new NotFoundError('resume.errors.resume_notfound');
 
             EventEmitter.emit(ResumeEvents.FIND, resume, req);
 
@@ -394,7 +394,7 @@ class ResumeController extends Controller {
 
             EventEmitter.emit(ResumeEvents.ADD_FILE, resume, req)
 
-            AppResponse.builder(res).message("resume.message.resume_file_successfully_upload").data(resume).send()
+            AppResponse.builder(res).message("resume.messages.resume_file_successfully_upload").data(resume).send()
         } catch (err) {
             next(err);
         }
