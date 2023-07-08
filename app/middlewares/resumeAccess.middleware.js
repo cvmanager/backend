@@ -24,8 +24,12 @@ export async function resumeAccess(req, res, next) {
                 break;
             case 'Owner':
                 query.$or.push({ created_by: req.user.id })
-                const ownCompanies = await managerService.getUserOwnCompanies(req.user.id)
-                query.$or.push({ company_id: { $in: ownCompanies } })
+                const userPositions = await managerService.getUserAllPositions(req.user.id)
+                query.$or.push({ position_id: { $in: userPositions } })
+                const userProjects = await managerService.getUserAllProjects(req.user.id)
+                query.$or.push({ project_id: { $in: userProjects } })
+                const userCompanies = await managerService.getUserAllCompanies(req.user.id)
+                query.$or.push({ company_id: { $in: userCompanies } })
                 break;
             default:
                 break;

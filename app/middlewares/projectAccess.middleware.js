@@ -19,10 +19,10 @@ export async function projectAccess(req, res, next) {
                 query.$or.push({ _id: { $in: moderatorProjects } })
                 break;
             case 'Owner':
-                const ownProjects = await managerService.getUserOwnProjects(req.user.id)
-                query.$or.push({ _id: { $in: ownProjects } })
-                const ownCompanies = await managerService.getUserOwnCompanies(req.user.id)
-                query.$or.push({ company_id: { $in: ownCompanies } })
+                const userProjects = await managerService.getUserAllProjects(req.user.id)
+                query.$or.push({ _id: { $in: userProjects } })
+                const userCompanies = await managerService.getUserAllCompanies(req.user.id)
+                query.$or.push({ company_id: { $in: userCompanies } })
                 break;
             default:
                 break;
