@@ -19,7 +19,6 @@
 * @property { string }  phone
 * @property { number }  min_salary
 * @property { number }  max_salary
-* @property { number }  work_experience
 * @property { string }  military_status
 * @property { data }    status_updated_at
 * @property { string }  created_by
@@ -34,17 +33,16 @@
 * @property { string } firstname.required - resume firstname
 * @property { string } lastname.required - resume lastname
 * @property { string } gender.required - resume gender
-* @property { string } email.required - resume email
-* @property { number } birth_year.required - resume birth_year
+* @property { string } email - resume email
+* @property { number } birth_year - resume birth_year
 * @property { string } marital_status - resume marital_status
 * @property { string } mobile.required - resume mobile
 * @property { string } residence_city.required - resume residence_city
 * @property { string } work_city.required - resume work_city
-* @property { string } education.required - resume education
+* @property { string } education - resume education
 * @property { string } phone - resume phone
 * @property { number } min_salary - resume min_salary
 * @property { number } max_salary - resume max_salary
-* @property { number } work_experience - resume work_experience
 * @property { string } military_status - resume military_status
 */
 
@@ -67,7 +65,6 @@
 * @property { string } phone - resume phone
 * @property { number } min_salary - resume min_salary
 * @property { number } max_salary - resume max_salary
-* @property { number } work_experience - resume work_experience
 * @property { string } military_status - resume military_status
 */
 

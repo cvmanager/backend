@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import i18n from '../middlewares/lang.middleware.js'
 import basePlugin from '../helper/mongoose/base.plugin.js';
+import { getEnume } from '../helper/helper.js';
 
 const schema = new mongoose.Schema(
     {
@@ -21,7 +22,7 @@ const schema = new mongoose.Schema(
         level: {
             type: String,
             required: true,
-            enum: i18n.__("position.enums.level")
+            enum: getEnume("position", "level")
         },
         is_active: {
             type: Boolean,
@@ -43,10 +44,10 @@ const schema = new mongoose.Schema(
     }
 )
 
-schema.virtual("managers" , {
-    ref : 'managers',
-    localField : '_id',
-    foreignField : 'entity_id',
+schema.virtual("managers", {
+    ref: 'managers',
+    localField: '_id',
+    foreignField: 'entity_id',
 })
 
 schema.plugin(basePlugin)

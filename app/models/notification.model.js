@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import basePlugin from '../helper/mongoose/base.plugin.js';
 import i18n from '../middlewares/lang.middleware.js'
+import { getEnume } from '../helper/helper.js';
 
 const schema = new mongoose.Schema(
     {
@@ -12,7 +13,7 @@ const schema = new mongoose.Schema(
         entity: {
             type: String,
             required: true,
-            enum: i18n.__("notification.enums.entity")
+            enum: getEnume("notification", "entity")
         },
         entity_id: {
             type: mongoose.Schema.Types.ObjectId,
@@ -41,7 +42,7 @@ const schema = new mongoose.Schema(
         step: {
             type: String,
             required: true,
-            enum: i18n.__("notification.enums.step")
+            enum: getEnume("notification", "step")
         },
         response: {
             type: String,

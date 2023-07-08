@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import i18n from '../middlewares/lang.middleware.js'
 import basePlugin from '../helper/mongoose/base.plugin.js';
+import { getEnume } from '../helper/helper.js';
 
 const schema = new mongoose.Schema(
     {
@@ -16,22 +17,22 @@ const schema = new mongoose.Schema(
         event_type: {
             type: String,
             required: true,
-            enum: i18n.__("interview.enums.event_type")
+            enum: getEnume("interview", "event_type")
         },
         status: {
             type: String,
             default: 'pending',
-            enum: i18n.__("interview.enums.status")
+            enum: getEnume("interview", "status")
         },
         type: {
             type: String,
             required: true,
-            enum: i18n.__("interview.enums.type")
+            enum: getEnume ("interview","type")
         },
         result: {
             type: String,
             required: false,
-            enum: i18n.__("interview.enums.result")
+            enum:getEnume("interview","result")
         },
         description: {
             type: String,

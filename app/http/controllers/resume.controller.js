@@ -15,6 +15,7 @@ import resumeService from '../../helper/service/resume.service.js';
 import positionService from '../../helper/service/position.service.js';
 import companyService from '../../helper/service/company.service.js';
 import i18n from '../../middlewares/lang.middleware.js';
+import { getEnume } from '../../helper/helper.js';
 
 
 class ResumeController extends Controller {
@@ -41,7 +42,7 @@ class ResumeController extends Controller {
             let searchQuery = {}
             let resumes = [], promiseResumes = []
 
-            let resumeStates = i18n.__('resume.enums.status')
+            let resumeStates = getEnume("resume", "status");
 
             searchQuery = mergeQuery(searchQuery, req.rbacQuery)
             if (query.length > 0) {
@@ -56,25 +57,25 @@ class ResumeController extends Controller {
                     ]
                 }
             }
-            
+
             resumeStates.map((status) => {
-                let resumeList = Resume.find({status, ...searchQuery})
-                .sort([['index', 1]])
-                .populate([
-                    {path: 'interviews', select: ['event_time', 'event_type', 'status', 'type', 'result', 'description', 'rating', 'contribution']},
-                    { path: 'created_by' },
+                let resumeList = Resume.find({ status, ...searchQuery })
+                    .sort([['index', 1]])
+                    .populate([
+                        { path: 'interviews', select: ['event_time', 'event_type', 'status', 'type', 'result', 'description', 'rating', 'contribution'] },
+                        { path: 'created_by' },
                         { path: 'assigners', select: ['firstname', 'lastname', 'avatar'] },
                         { path: 'interviews', select: ['event_time', 'event_type', 'status', 'type', 'result', 'description', 'rating', 'contribution'] },
                         { path: 'tags', select: ['name', 'color', 'count'] },
                         { path: 'project_id' },
                         { path: 'position_id' },
                         { path: 'company_id' },
-                ])
+                    ])
                 promiseResumes.push(resumeList)
             })
 
             let results = await Promise.all(promiseResumes)
-            
+
             for (let i = 0; i < resumeStates.length; i++) {
                 let resume = {}
                 resume[resumeStates[i]] = results[i]
@@ -109,7 +110,7 @@ class ResumeController extends Controller {
 
             let resumes = [], promiseResumes = []
 
-            let resumeStates = i18n.__('resume.enums.status')
+            let resumeStates = getEnume('resume', 'status');
             let searchQuery = {}
             searchQuery = mergeQuery(searchQuery, req.rbacQuery)
             if (query.length > 0) {
@@ -124,25 +125,25 @@ class ResumeController extends Controller {
                     ]
                 }
             }
-            
+
             resumeStates.map((status) => {
-                let resumeList = Resume.find({status, ...searchQuery})
-                .sort([['index', 1]])
-                .populate([
-                    {path: 'interviews', select: ['event_time', 'event_type', 'status', 'type', 'result', 'description', 'rating', 'contribution']},
-                    { path: 'created_by' },
+                let resumeList = Resume.find({ status, ...searchQuery })
+                    .sort([['index', 1]])
+                    .populate([
+                        { path: 'interviews', select: ['event_time', 'event_type', 'status', 'type', 'result', 'description', 'rating', 'contribution'] },
+                        { path: 'created_by' },
                         { path: 'assigners', select: ['firstname', 'lastname', 'avatar'] },
                         { path: 'interviews', select: ['event_time', 'event_type', 'status', 'type', 'result', 'description', 'rating', 'contribution'] },
                         { path: 'tags', select: ['name', 'color', 'count'] },
                         { path: 'project_id' },
                         { path: 'position_id' },
                         { path: 'company_id' },
-                ])
+                    ])
                 promiseResumes.push(resumeList)
             })
 
             let results = await Promise.all(promiseResumes)
-            
+
             for (let i = 0; i < resumeStates.length; i++) {
                 let resume = {}
                 resume[resumeStates[i]] = results[i]
@@ -245,6 +246,10 @@ class ResumeController extends Controller {
             req.body.project_id = position.project_id;
             req.body.company_id = position.company_id;
 
+            if (req.body?.birth_year?.length && req.body?.marital_status?.length && req.body?.education?.length) {
+                req.body.status = 'pending';
+            }
+
             let company = await companyService.findById(position.company_id);
             if (!company.is_active) throw new BadRequestError('company.errors.company_is_not_active');
             let resume = await Resume.create(req.body)
@@ -340,13 +345,18 @@ class ResumeController extends Controller {
         try {
             let resume = await resumeService.findByParamId(req);
             if (resume.status == req.body.status) throw new BadRequestError('resume.errors.can_not_update_status_to_current')
+
+            if (resume.status == 'draft' && (!resume.education.length || !resume.marital_status.length || !resume.birth_year.length)) {
+                throw new BadRequestError('resume.errors.resume_information_is_not_complete_to_change_status')
+            }
+
             let oldStatus = resume.status
 
             resume.status = req.body.status;
             resume.index = req.body.index;
             await resume.save();
 
-            EventEmitter.emit(ResumeEvents.UPDATE_STATUS, resume, req,oldStatus)
+            EventEmitter.emit(ResumeEvents.UPDATE_STATUS, resume, req, oldStatus)
 
             AppResponse.builder(res).message("resume.messages.resume_status_successfully_updated").data(resume).send();
         } catch (err) {
@@ -702,7 +712,7 @@ class ResumeController extends Controller {
             resume.income = req.body.income
             await resume.save();
 
-            EventEmitter.emit(ResumeEvents.UPDATE_STATUS, resume, req,oldStatus)
+            EventEmitter.emit(ResumeEvents.UPDATE_STATUS, resume, req, oldStatus)
 
             AppResponse.builder(res).status(200).message("resume.messages.resume_successfully_hired").data(resume).send();
         } catch (err) {
@@ -776,7 +786,7 @@ class ResumeController extends Controller {
             resume.end_cooperation_description = req.body.end_cooperation_description
             await resume.save();
 
-            EventEmitter.emit(ResumeEvents.UPDATE_STATUS, resume, req,oldStatus)
+            EventEmitter.emit(ResumeEvents.UPDATE_STATUS, resume, req, oldStatus)
 
             AppResponse.builder(res).status(200).message("resume.messages.resume_successfully_end_cooperation").data(resume).send();
         } catch (err) {

@@ -1,6 +1,6 @@
 import { body, param, query } from 'express-validator'
 import generalValidator from '../helper/validator.js';
-import i18n from '../middlewares/lang.middleware.js'
+import { getEnume } from '../helper/helper.js';
 
 class PositionValidation {
     index() {
@@ -32,7 +32,7 @@ class PositionValidation {
             body('level')
                 .notEmpty()
                 .withMessage('position.validations.position_level_required')
-                .isIn(i18n.__("position.enums.level"))
+                .isIn(getEnume("position","level"))
                 .withMessage('position.validations.position_level_incorrect')
                 .trim(),
             body('description')
@@ -75,7 +75,7 @@ class PositionValidation {
                 .withMessage('position.validations.position_title_length').trim(),
             body('level')
                 .optional({ nullable: true, checkFalsy: true })
-                .isIn(i18n.__("position.enums.level"))
+                .isIn(getEnume("position","level"))
                 .withMessage('position.validations.position_level_incorrect')
                 .trim(),
             body('description')

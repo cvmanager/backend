@@ -9,7 +9,7 @@ class ManagerService extends ServiceBase {
         this.model = model
         autoBind(this)
     }
-    
+
     async getUserOwnCompanies(userId) {
         let companies = await super.getAll({ user_id: userId, entity: 'companies', type: 'owner' })
         return companies.map(entity => entity.entity_id)
@@ -17,6 +17,11 @@ class ManagerService extends ServiceBase {
 
     async getUserModeratorCompanies(userId) {
         return (await super.getAll({ user_id: userId, entity: 'companies', type: 'moderator' })).map(entity => entity.entity_id)
+    }
+
+    async getUserAllCompanies(userId) {
+        let companies = await super.getAll({ user_id: userId, entity: 'companies' })
+        return companies.map(entity => entity.entity_id)
     }
 
     async getUserOwnProjects(userId) {
