@@ -23,10 +23,12 @@ export async function positionAccess(req, res, next) {
                 query.$or.push({ project_id: { $in: moderatorPositions } })
                 break;
             case 'Owner':
-                const ownPositions = await managerService.getUserAllPositions(req.user.id)
-                query.$or.push({ _id: { $in: ownPositions } })
-                const ownCompanies = await managerService.getUserAllCompanies(req.user.id)
-                query.$or.push({ company_id: { $in: ownCompanies } })
+                const userPositions = await managerService.getUserAllPositions(req.user.id)
+                query.$or.push({ _id: { $in: userPositions } })
+                const userProjects = await managerService.getUserAllProjects(req.user.id)
+                query.$or.push({ project_id: { $in: userProjects } })
+                const userCompanies = await managerService.getUserAllCompanies(req.user.id)
+                query.$or.push({ company_id: { $in: userCompanies } })
                 break;
             default:
                 break;
