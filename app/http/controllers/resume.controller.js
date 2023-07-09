@@ -346,7 +346,7 @@ class ResumeController extends Controller {
             let resume = await resumeService.findByParamId(req);
             if (resume.status == req.body.status) throw new BadRequestError('resume.errors.can_not_update_status_to_current')
 
-            if (resume.status == 'draft' && (!resume.education.length || !resume.marital_status.length || !resume.birth_year.length)) {
+            if (resume.status == 'draft' && (!resume.education.length || !resume.marital_status.length || !resume.birth_year)) {
                 throw new BadRequestError('resume.errors.resume_information_is_not_complete_to_change_status')
             }
 
