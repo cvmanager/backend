@@ -34,7 +34,7 @@ class RoleController extends Controller {
                 limit: size,
             });
             
-            AppResponse.builder(res).message("role.message.list_of_roles").data(roleList).send();
+            AppResponse.builder(res).message("role.messages.list_of_roles").data(roleList).send();
         } catch (err) {
             next(err);
         }
@@ -57,7 +57,7 @@ class RoleController extends Controller {
         try {
             let roles = await roleService.rbac()
 
-            AppResponse.builder(res).message("role.message.role_list_found").data(roles).send();
+            AppResponse.builder(res).message("role.messages.role_list_found").data(roles).send();
         } catch (err) {
             next(err);
         }
@@ -109,7 +109,7 @@ class RoleController extends Controller {
             if (req.body.permissions && req.body.permissions.length > 0) {
                 for (let permission of req.body.permissions) {
                     let permissionExist = await permissionService.findOne(permission)
-                    if (!permissionExist) throw new NotFoundError('permission.error.permission_notfound'); 
+                    if (!permissionExist) throw new NotFoundError('permission.errors.permission_notfound'); 
                 }
             }
 
@@ -150,7 +150,7 @@ class RoleController extends Controller {
             if (req.body.permissions && req.body.permissions.length > 0) {
                 for (let permission of req.body.permissions) {
                     let permissionExist = await permissionService.findOne(permission)
-                    if (!permissionExist) throw new NotFoundError('permission.error.permission_notfound'); 
+                    if (!permissionExist) throw new NotFoundError('permission.errors.permission_notfound'); 
                 }
             }
 

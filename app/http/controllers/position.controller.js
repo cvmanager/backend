@@ -714,7 +714,7 @@ class PositionController extends Controller {
       ]);
 
       AppResponse.builder(res)
-        .message("position.message.position_resume_count_from_month")
+        .message("position.messages.position_resume_count_from_month")
         .data(resumeCountFromMonth)
         .send();
     } catch (err) {

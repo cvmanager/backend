@@ -618,7 +618,7 @@ async resumeByStates(req, res, next) {
                 }
             ])
 
-            AppResponse.builder(res).message('project.message.project_resume_count_from_month').data(resumeCountFromMonth).send()
+            AppResponse.builder(res).message('project.messages.project_resume_count_from_month').data(resumeCountFromMonth).send()
         } catch (err) {
             next(err)
         }
