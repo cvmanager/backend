@@ -10,7 +10,7 @@ services:
     image: img_back:${IMAGE_TAG}
     container_name: cv_app
     env_file:
-    - .env
+      - .env
     hostname: cv_app
     restart: always
     depends_on:
@@ -22,7 +22,6 @@ services:
       - cv_net
     volumes:
       - "./public:/app/backend/public"
-      - "/app/backend/node_modules"
   
   cv_mongo:
     container_name: cv_mongo
