@@ -7,7 +7,7 @@ services:
       context: .
       args:
         - NODE_ENV=production
-    image: img_back:${IMAGE_TAG}
+    image: img_back:latest
     container_name: cv_app
     env_file:
       - .env
