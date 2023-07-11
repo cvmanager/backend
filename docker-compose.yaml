@@ -50,6 +50,7 @@ services:
       - "./redis_db:/data"
     networks:
       - cv_net
+      
 networks:
   cv_net:
 volumes:
