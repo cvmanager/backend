@@ -273,7 +273,7 @@
 				"irrelevance_of_gender":"Irrelevance of gender",
 				"irrelevance_of_experiences" : "Irrelevance of experiences",
 				"age_mismatch":"Age mismatch",
-				"other":"Other"
+				"other_reasons":"Other"
 		},
 			"end_cooperation_reason": {
 				"find_a_new_job" : "Find A New Job",
