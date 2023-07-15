@@ -243,10 +243,10 @@
 				"call_review" : "Call Review",
 				"tech_review" : "Technical Review",
 				"wait_reject" : "Wait Reject",
-				"rejected" : "Rejected",
-				"hired" : "Hired",
 				"wait_hire" : "Wait Hire",
-				"end_cooperation" :"End Cooperation"
+				"hired" : "Hired",
+				"end_cooperation" :"End Cooperation",
+				"rejected" : "Rejected"
 			},
 			"call_history_status": {
 				"rejected" : "Rejected",
