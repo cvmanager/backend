@@ -71,12 +71,15 @@ const schema = new mongoose.Schema(
         },
         residence_city: {
             type: mongoose.Schema.Types.ObjectId,
-            required: true
+            required: false,
+            default: null,
+            ref: "cities"
         },
         work_city: {
-            type: String,
+            type: mongoose.Schema.Types.ObjectId,
             required: false,
-            default: null
+            default: null,
+            ref: "cities"
         },
         education: {
             type: String,

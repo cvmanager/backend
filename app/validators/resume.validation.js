@@ -65,10 +65,14 @@ class ResumeValidation {
                 .withMessage('auth.validations.mobile_pattern')
                 .trim(),
             body('residence_city')
-                .notEmpty()
-                .withMessage('resume.validations.residence_city_required')
+                .optional({ nullable: true, checkFalsy: true })
                 .isMongoId()
                 .withMessage('resume.validations.residence_city_id_invalid')
+                .trim(),
+            body('work_city')
+                .optional({ nullable: true, checkFalsy: true })
+                .isMongoId()
+                .withMessage('resume.validations.work_city_id_invalid')
                 .trim(),
             body('education')
                 .optional({ nullable: true, checkFalsy: true })

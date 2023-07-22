@@ -70,6 +70,18 @@ class ResumeController extends Controller {
                         { path: 'project_id' },
                         { path: 'position_id' },
                         { path: 'company_id' },
+                        {
+                            path: 'residence_city',
+                            populate: [
+                                { path: 'province_id' }
+                            ],
+                        },
+                        {
+                            path: 'work_city',
+                            populate: [
+                                { path: 'province_id' }
+                            ],
+                        }
                     ])
                 promiseResumes.push(resumeList)
             })
@@ -138,6 +150,18 @@ class ResumeController extends Controller {
                         { path: 'project_id' },
                         { path: 'position_id' },
                         { path: 'company_id' },
+                        {
+                            path: 'residence_city',
+                            populate: [
+                                { path: 'province_id' }
+                            ],
+                        },
+                        {
+                            path: 'work_city',
+                            populate: [
+                                { path: 'province_id' }
+                            ],
+                        }
                     ])
                 promiseResumes.push(resumeList)
             })
@@ -210,6 +234,18 @@ class ResumeController extends Controller {
                     select: ['resume_id', 'body', 'created_by', 'createdAt']
                 },
                 { path: 'created_by', select: ['firstname', 'lastname', 'avatar'] },
+                {
+                    path: 'residence_city',
+                    populate: [
+                        { path: 'province_id' }
+                    ],
+                },
+                {
+                    path: 'work_city',
+                    populate: [
+                        { path: 'province_id' }
+                    ],
+                }
             ])
 
             if (!resume) throw new NotFoundError('resume.errors.resume_notfound');
