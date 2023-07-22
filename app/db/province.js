@@ -1165,7 +1165,7 @@ const provinces = [
         ]
     },
     {
-        "name": "کرج",
+        "name": "البرز",
         "cities": [
             {
                 "name": "طالقان",

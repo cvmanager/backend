@@ -1,7 +1,12 @@
-*node_modules/*
 .dockerignore
 docker-compose.yaml
 Dokcerfile
 mongo_db
 redis_db
 package-lock.json
+.env
+.env.example
+public
+.gitignore
+.git
+Dockerfile

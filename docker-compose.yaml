@@ -1,25 +1,31 @@
 version: "3.9"
 
 services:
-  cv_nginx:
-    image: nginx:stable-alpine
-    volumes:
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
-    ports:
-      - "80:80"
-      - "443:443"
-    depends_on:
-      - cv_app
+  
   cv_app:
     build:
       context: .
       args:
         - NODE_ENV=production
+    image: img_back:latest
+    container_name: cv_app
+    env_file:
+      - .env
+    hostname: cv_app
     restart: always
     depends_on:
       - cv_mongo
       - cv_redis
+    ports:
+      - "3080:3080"
+    networks:
+      - cv_net
+    volumes:
+      - "./public:/app/backend/public"
+  
   cv_mongo:
+    container_name: cv_mongo
+    hostname: cv_mongo
     restart: always
     image: mongo:4.2.23
     ports:
@@ -29,15 +35,25 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: ''
       MONGO_INITDB_DATABASE: 
     volumes:
-      - ./mongo_db:/data/db
+      - "./mongo_db:/data/db"
+    networks:
+      - cv_net
+
   cv_redis:
-    image: redis:7.0-alpine
+    container_name: cv_redis
+    hostname: cv_redis
+    image: redis:6.0.16
     restart: always
     ports:
       - "6379:6379"
     volumes:
-      - ./redis_db:/data/myredis
+      - "./redis_db:/data"
+    networks:
+      - cv_net
+      
+networks:
+  cv_net:
 volumes:
-  mongo_db: {}
-  redis_db: {}
+  mongo_db: 
+  redis_db: 
  
