@@ -72,7 +72,7 @@ async function addCallHistory(Resume, req) {
 }
 
 async function addFile(Resume, req) {
-    await resumeService.updateSummeryCount(Resume, 'file', Resume.call_history.length)
+    await resumeService.updateSummeryCount(Resume, 'file', Resume.file.length)
 }
 
 async function setTag(Resume, req) {
