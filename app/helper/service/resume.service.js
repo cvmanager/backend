@@ -34,8 +34,21 @@ class ResumeService extends ServiceBase {
     }
 
     async getResumeViewCount(resume) {
-        let viewCount = await Viewlog.find({ 'entity': 'resumes', 'entity_id': resume.id }).count();
-        return viewCount;
+        let viewCount = await Viewlog.aggregate([
+            {
+                $match: {
+                    entity: 'resumes',
+                    entity_id: resume._id
+                },
+            },
+            {
+                $group: {
+                    _id: "$created_by",
+                    count: { $sum: 1 }
+                },
+            }
+        ]);
+        return viewCount.length;
     }
 
     async updateSummeryCount(resume, field, count) {

@@ -11,7 +11,7 @@ class ViewlogService extends ServiceBase {
     }
 
     async setViewlog(entity, entity_id, req) {
-        if (await this.allowSetViewlog(entity, entity_id)) {
+        if (await this.allowSetViewlog(entity, entity_id, req.user.id)) {
             let data = {
                 "entity": entity,
                 "entity_id": entity_id,
