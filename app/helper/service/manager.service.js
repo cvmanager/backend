@@ -63,6 +63,11 @@ class ManagerService extends ServiceBase {
     async addDefaultManagerForCompany(company) {
         await super.create({ user_id: company.created_by, entity: "companies", entity_id: company._id, created_by: company.created_by, type: "owner" });
     }
+
+    async getManagersIdByEntity(entity, entity_id) {
+        let managers = await super.getAll({ 'entity': entity, 'entity_id': entity_id });
+        return managers.map(entity => entity.user_id)
+    }
 }
 
 export default new ManagerService(Manager);
