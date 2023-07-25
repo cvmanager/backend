@@ -5,7 +5,7 @@ import City from '../../models/city.model.js'
 export const fillProvinceTable = async () => {
     let provinceArray = [];
     provinces.map((item) => {
-        provinceArray.push({ name: item.name });
+        provinceArray.push({ name: item.name, name_en: item.name_en });
     })
     await Province.deleteMany({});
     await Province.insertMany(provinceArray)
@@ -17,6 +17,7 @@ export const fillProvinceTable = async () => {
                     let object = {
                         province_id: province._id,
                         name: hi.name,
+                        name_en: hi.name_en,
                         latitude: hi.latitude,
                         longitude: hi.longitude,
                     }
