@@ -277,6 +277,18 @@ class ResumeController extends Controller {
         try {
             let position = await positionService.findById(req.body.position_id);
             if (!position) throw new NotFoundError('position.errors.position_not_found');
+            if (!position.is_active)
+                throw new BadRequestError("resume.errors.position_is_not_active");
+
+            let project = await projectService.findById(req.body.project_id);
+            if (!project) throw new NotFoundError('project.errors.project_not_found');
+            if (!project.is_active)
+                throw new BadRequestError("resume.errors.project_is_not_active");
+
+            let company = await companyService.findById(req.body.company_id);
+            if (!company) throw new NotFoundError('company.errors.company_not_found');
+            if (!company.is_active)
+                throw new BadRequestError("resume.errors.company_is_not_active");
 
             req.body.created_by = req.user.id;
             req.body.project_id = position.project_id;
@@ -286,8 +298,6 @@ class ResumeController extends Controller {
                 req.body.status = 'pending';
             }
 
-            let company = await companyService.findById(position.company_id);
-            if (!company.is_active) throw new BadRequestError('company.errors.company_is_not_active');
             let resume = await Resume.create(req.body)
 
             EventEmitter.emit(ResumeEvents.CREATE, resume, req)

@@ -124,8 +124,11 @@ class PositionController extends Controller {
     try {
       let project = await Project.findById(req.body.project_id);
       if (!project) throw new NotFoundError("project.errors.project_notfound");
+      if (!project.is_active)
+        throw new BadRequestError("project.errors.project_is_not_active");
 
       let company = await Company.findById(project.company_id);
+      if (!company) throw new NotFoundError("company.errors.company_notfound");
       if (!company.is_active)
         throw new BadRequestError("project.errors.company_is_not_active");
 

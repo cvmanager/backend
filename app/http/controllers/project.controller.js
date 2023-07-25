@@ -106,7 +106,6 @@ class ProjectController extends Controller {
         try {
             let company = await Company.findOne({ '_id': req.body.company_id });
             if (!company) throw new NotFoundError('company.errors.company_notfound');
-
             if (!company.is_active) throw new BadRequestError('project.errors.disabled_company_create_project_error')
 
             let project = await Project.findOne({ 'name': req.body.name, 'company_id': company._id });
@@ -197,8 +196,8 @@ class ProjectController extends Controller {
     async manager(req, res, next) {
         try {
             let project = await projectService.findByParamId(req)
-            if (!project.is_active)  throw new BadRequestError("project.errors.project_deactivate_cant_set_manager");
-            
+            if (!project.is_active) throw new BadRequestError("project.errors.project_deactivate_cant_set_manager");
+
             let user = await userService.findOne({ _id: req.body.manager_id });
 
             let manager = await managerService.findOne({ 'entity': "projects", 'entity_id': project.id, 'user_id': user.id });
@@ -427,74 +426,74 @@ class ProjectController extends Controller {
 
 
 
-/**
-   * GET /projects/{id}/statistics/resume-by-states
-   * 
-   * @summary returns project resumes number by states
-   * @tags Project
-   * @security BearerAuth
-   * 
-   * @param  { string } id.path.required - project id
-   * 
-   * @return { project.success } 200 - success response
-   * @return { message.bad_request_error } 400 - BadRequest response
-   * @return { message.unauthorized_error }     401 - Unauthorized
-   * @return { message.server_error  }    500 - Server Error
-   */
-async resumeByStates(req, res, next) {
-    try {
-        let project = await projectService.findByParamId(req)
+    /**
+       * GET /projects/{id}/statistics/resume-by-states
+       * 
+       * @summary returns project resumes number by states
+       * @tags Project
+       * @security BearerAuth
+       * 
+       * @param  { string } id.path.required - project id
+       * 
+       * @return { project.success } 200 - success response
+       * @return { message.bad_request_error } 400 - BadRequest response
+       * @return { message.unauthorized_error }     401 - Unauthorized
+       * @return { message.server_error  }    500 - Server Error
+       */
+    async resumeByStates(req, res, next) {
+        try {
+            let project = await projectService.findByParamId(req)
 
-        let statusArray = getEnume("resume","status");
-        let totalResumeByStates = await Resume.aggregate([
-            {
-                $match: {
-                    project_id: project._id
-                }
-            },
-            {
-                "$group": {
-                    "_id": "$status",
-                    "count": {
-                        $sum: 1
+            let statusArray = getEnume("resume", "status");
+            let totalResumeByStates = await Resume.aggregate([
+                {
+                    $match: {
+                        project_id: project._id
+                    }
+                },
+                {
+                    "$group": {
+                        "_id": "$status",
+                        "count": {
+                            $sum: 1
+                        }
+                    }
+                },
+                {
+                    '$project': {
+                        'state': '$_id',
+                        '_id': 0,
+                        'count': 1
                     }
                 }
-            },
-            {
-                '$project': {
-                    'state': '$_id',
-                    '_id': 0,
-                    'count': 1
+            ])
+
+            statusArray.forEach(element => {
+                if (totalResumeByStates.find(resume => resume.state !== element)) {
+                    totalResumeByStates.push({ 'count': 0, 'state': element });
                 }
-            }
-        ])
+            })
 
-        statusArray.forEach(element => {
-            if (totalResumeByStates.find(resume => resume.state !== element)) {
-                totalResumeByStates.push({ 'count': 0, 'state': element });
-            }
-        })
-
-        AppResponse.builder(res).message("project.messages.project_resume_by_states").data(totalResumeByStates).send()
-    } catch (err) {
-        next(err);
+            AppResponse.builder(res).message("project.messages.project_resume_by_states").data(totalResumeByStates).send()
+        } catch (err) {
+            next(err);
+        }
     }
-}
 
-/**
-   * GET /positions/{id}/statistics/resume-count-by-positions
-   * 
-   * @summary gets a project resume count by positions
-   * @tags Project
-   * @security BearerAuth
-   * 
-   * @param  { string } id.path.required - project id
-   * 
-   * @return { project.success } 200 - success response
-   * @return { message.bad_request_error } 400 - BadRequest response
-   * @return { message.unauthorized_error }     401 - Unauthorized
-   * @return { message.server_error  }    500 - Server Error
-   */
+    /**
+       * GET /positions/{id}/statistics/resume-count-by-positions
+       * 
+       * @summary gets a project resume count by positions
+       * @tags Project
+       * @security BearerAuth
+       * 
+       * @param  { string } id.path.required - project id
+       * 
+       * @return { project.success } 200 - success response
+       * @return { message.bad_request_error } 400 - BadRequest response
+       * @return { message.unauthorized_error }     401 - Unauthorized
+       * @return { message.server_error  }    500 - Server Error
+       */
     async resumeCountByPositions(req, res, next) {
         try {
             let project = await projectService.findByParamId(req)
@@ -549,7 +548,7 @@ async resumeByStates(req, res, next) {
             next(err);
         }
     }
-    
+
     /**
      * GET /projects/{id}/statistics/resume-count-from-month
      * 
