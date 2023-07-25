@@ -16,6 +16,7 @@ resumeIdRouter
     .get('/comments', ResumeValidation.comments(), ResumeController.comments)
     .patch('/avatar', Upload('resumes', 'avatar', 'image'), ResumeValidation.avatar(), ResumeController.updateAvatar)
     .patch('/comments', ResumeValidation.addComments(), ResumeController.addComments)
+    .get('/view-logs', ResumeValidation.find(), ResumeController.lastViewLogs)
 
     .patch('/assigners', ResumeValidation.setAssigner(), ResumeController.setAssigner)
     .delete('/assigners', ResumeValidation.unsetAssigner(), ResumeController.unsetAssigner)

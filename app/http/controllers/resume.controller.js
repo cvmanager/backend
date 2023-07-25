@@ -1057,6 +1057,32 @@ class ResumeController extends Controller {
             next(err);
         }
     }
+
+    /**
+   * GET /resumes/{id}/view-logs
+   * 
+   * @summary get last view logs of resume
+   * @tags Resume
+   * 
+   * @param  { string } id.path.required - resume id
+   * 
+   * @return { interview.success } 200 - success response
+   * @return { message.bad_request_error } 400 - BadRequest response
+   * @return { message.bad_request_error } 404 - not found response
+   * @return { message.unauthorized_error }     401 - Unauthorized
+   * @return { message.server_error  }    500 - Server Error
+   */
+    async lastViewLogs(req, res, next) {
+        try {
+            let resume = await resumeService.findByParamId(req);
+            let results = await resumeService.getUniqueResumeView(resume)
+
+
+            AppResponse.builder(res).message("resume.messages.view_logs_list_found").data(results).send();
+        } catch (err) {
+            next(err);
+        }
+    }
 }
 
 export default new ResumeController;
