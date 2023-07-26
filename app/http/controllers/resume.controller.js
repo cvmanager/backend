@@ -75,12 +75,6 @@ class ResumeController extends Controller {
                             populate: [
                                 { path: 'province_id' }
                             ],
-                        },
-                        {
-                            path: 'work_city',
-                            populate: [
-                                { path: 'province_id' }
-                            ],
                         }
                     ])
                 promiseResumes.push(resumeList)
@@ -152,12 +146,6 @@ class ResumeController extends Controller {
                         { path: 'company_id' },
                         {
                             path: 'residence_city',
-                            populate: [
-                                { path: 'province_id' }
-                            ],
-                        },
-                        {
-                            path: 'work_city',
                             populate: [
                                 { path: 'province_id' }
                             ],
@@ -236,12 +224,6 @@ class ResumeController extends Controller {
                 { path: 'created_by', select: ['firstname', 'lastname', 'avatar'] },
                 {
                     path: 'residence_city',
-                    populate: [
-                        { path: 'province_id' }
-                    ],
-                },
-                {
-                    path: 'work_city',
                     populate: [
                         { path: 'province_id' }
                     ],
