@@ -8,6 +8,8 @@ import Viewlog from "../../models/viewlog.model.js";
 import notificationService from './notification.service.js'
 import i18n from '../../middlewares/lang.middleware.js'
 import userService from './user.service.js'
+import managerService from "./manager.service.js";
+import { removeDuplicates } from "../helper.js";
 
 const endOfResumeStatus = ['rejected', 'hired'];
 
@@ -109,12 +111,6 @@ class ResumeService extends ServiceBase {
         await resume.save();
     }
 
-    async getDefaultUserIdNotificationUpdateStatus(resume) {
-        let userIdList = resume.assigners;
-        userIdList.push(resume.created_by)
-        return [resume.created_by];
-    }
-
     async getContributorsId(resume) {
         let contributorsId = [];
         if (resume.contributors.length === 0) return contributorsId
@@ -126,12 +122,49 @@ class ResumeService extends ServiceBase {
     }
 
     async setNotificationWhenUpdateStatus(resume, req, step) {
-        let userIdList = await this.getDefaultUserIdNotificationUpdateStatus(resume);
+        //position manager
+        let userIdList = await managerService.getManagersIdByEntity('positions', resume.position_id);
+
+        //resume owner
+        userIdList.push(resume.created_by._id)
+
+        //resume assigners
+        userIdList = userIdList.concat(resume.assigners)
+
+        if (['hired', 'end_cooperation'].includes(resume.status)) {
+            //project manager
+            userIdList = userIdList.concat(await managerService.getManagersIdByEntity('projects', resume.project_id))
+            
+            //company manager
+            userIdList = userIdList.concat(await managerService.getManagersIdByEntity('companies', resume.company_id))
+        }
+
+        // remove douplicate and login user 
+        userIdList = removeDuplicates(userIdList)
+        userIdList = userIdList.filter(item => !item.equals(req.user._id))
 
         let title = i18n.__(`notification.messages.title.${step}`)
         let body = i18n.__(`notification.messages.body.${step}`, {
             user: req.user.fullname,
             status: resume.status
+        })
+
+        for (let userId of userIdList) {
+            await notificationService.setNotificationForResume(resume, req, userId, step, title, body);
+        }
+    }
+
+    async setNotificationWhenResumeCreate(resume, req, step) {
+        //position manager
+        let userIdList = await managerService.getManagersIdByEntity('positions', resume.position_id);
+
+        // remove douplicate and login user 
+        userIdList = removeDuplicates(userIdList)
+        userIdList = userIdList.filter(item => !item.equals(req.user._id))
+
+        let title = i18n.__(`notification.messages.title.${step}`)
+        let body = i18n.__(`notification.messages.body.${step}`, {
+            user: req.user.fullname
         })
 
         for (let userId of userIdList) {
