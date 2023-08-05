@@ -42,6 +42,7 @@ async function find(Resume, req) {
 
 async function create(Resume, req) {
     await resumeService.fillIndexOfResume(Resume);
+    await resumeService.setNotificationWhenResumeCreate(Resume, req, 'create_resume');
 }
 
 function softdelete(Resume, req) {
@@ -56,7 +57,7 @@ function update(Resume, req) {
 async function updateStatus(Resume, req, oldStatus) {
     await resumeService.addUpdateStatusLog(Resume, req, oldStatus)
     await resumeService.setProccessDuration(Resume)
-    await resumeService.setNotificationWhenUpdateStatus(Resume, req, 'update_status');
+    await resumeService.setNotificationWhenUpdateStatus(Resume, req, Resume.status + '_status');
 
 }
 

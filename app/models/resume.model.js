@@ -78,8 +78,7 @@ const schema = new mongoose.Schema(
         work_city: {
             type: mongoose.Schema.Types.ObjectId,
             required: false,
-            default: null,
-            ref: "cities"
+            default: null
         },
         education: {
             type: String,
