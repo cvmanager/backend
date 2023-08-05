@@ -172,6 +172,60 @@ class ResumeService extends ServiceBase {
         }
     }
 
+    async getUniqueResumeView(resume) {
+        let viewLogs = await Viewlog.aggregate([
+            {
+                $match: {
+                    entity: 'resumes',
+                    entity_id: resume._id
+                },
+            },
+            {
+                $group: {
+                    _id: { entity_id: '$entity_id', created_by: '$created_by' },
+                    count: { $sum: 1 },
+                    createdAt: { $last: '$createdAt' },
+                },
+            },
+            {
+                $lookup: {
+                    from: 'users',
+                    let: { createdBy: '$_id.created_by' },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: { $eq: ['$_id', '$$createdBy'] },
+                            },
+                        },
+                        {
+                            $project: {
+                                _id: 1,
+                                firstname: 1,
+                                lastname: 1,
+                                fullname: 1,
+                                mobile: 1,
+                            },
+                        },
+                    ],
+                    as: 'created_by_data',
+                },
+            },
+            {
+                $sort: {
+                    createdAt: -1,
+                },
+            },
+            {
+                $project: {
+                    _id: 0,
+                    created_by: { $arrayElemAt: ['$created_by_data', 0] },
+                    createdAt: 1,
+                },
+            },
+        ]);
+        return viewLogs;
+    }
+
 }
 
 export default new ResumeService(Resume);
