@@ -387,7 +387,7 @@
 			"resume_information_is_not_complete_to_change_status": "Resume information is not complete to change status (Education, Marital Status, Birth Year , ...)",
 			"position_is_not_active": "The selected position is currently disabled and it is not possible to define a new resume",
 			"project_is_not_active": "The selected project is currently disabled and it is not possible to define a new resume",
-			"company_is_not_active": "The selected company is currently disabled and it is not possible to define a new resume",
+			"company_is_not_active": "The selected company is currently disabled and it is not possible to define a new resume"
 		}
 	},
 	"role":{
