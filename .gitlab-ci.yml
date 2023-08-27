@@ -1,7 +1,7 @@
 build-job:
   stage: build
   script:
-    - docker pull busybox
+    - ls -la
 
 test-job1:
   stage: test
