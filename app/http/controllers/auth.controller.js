@@ -72,6 +72,7 @@ class AuthController extends Controller {
             let hash_password = await bcrypt.hash(req.body.password, salt);
 
             const ownerRole = await roleService.findOne({ name: "Owner" })
+            let roleId = (ownerRole && ownerRole._id) ? [ownerRole._id] : [];
 
             user = await User.create({
                 firstname: req.body.firstname,
@@ -79,11 +80,11 @@ class AuthController extends Controller {
                 mobile: req.body.mobile,
                 username: req.body.username,
                 password: hash_password,
-                role: ((ownerRole && ownerRole._id) ? [ownerRole._id] : [])
+                role: roleId
             });
 
-            const access_token = await generateJwtToken({ _id: user.id, role: [ownerRole._id] })
-            const refresh_token = await generateJwtRefreshToken({ _id: user.id, role: [ownerRole._id] });
+            const access_token = await generateJwtToken({ _id: user.id, role: roleId })
+            const refresh_token = await generateJwtRefreshToken({ _id: user.id, role: roleId });
 
             EventEmitter.emit(UserEvents.SINGUP, user, req, access_token, refresh_token);
             AppResponse.builder(res).status(201).message("auth.messages.user_successfully_created").data({ access_token, refresh_token }).send();
