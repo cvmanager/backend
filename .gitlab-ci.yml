@@ -1,7 +1,7 @@
 build-job:
   stage: build
   script:
-    - apt update
+    - docker pull busybox
 
 test-job1:
   stage: test
