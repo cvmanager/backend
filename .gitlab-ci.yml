@@ -2,11 +2,15 @@ build-job:
   stage: build
   script:
     - docker compose build 
+  tags:
+    - cv
 
 check:
   stage: test
   script:
     - docker images
+  tags:
+    - cv
 
 test-job2:
   stage: test
@@ -21,3 +25,5 @@ deploy-prod:
   script:
     - echo "This job deploys something from the $CI_COMMIT_BRANCH branch."
   environment: production
+  tags:
+    - cv
