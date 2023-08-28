@@ -1,12 +1,12 @@
 build-job:
   stage: build
   script:
-    - ls -la
+    - docker compose build 
 
-test-job1:
+check:
   stage: test
   script:
-    - curl https://gitlab.com
+    - docker images
 
 test-job2:
   stage: test
