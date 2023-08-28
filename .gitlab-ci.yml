@@ -2,7 +2,7 @@ build-job:
   stage: build
   script:
     - echo "Building the image...."
-    - docker build -t img:cv_front_v:1.0 .
+    - docker build -t img:cv-front-v1.0 .
   tags:
     - cv
 
