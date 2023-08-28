@@ -2,7 +2,7 @@ build-job:
   stage: build
   script:
     - echo "Building the image...."
-    - docker build -t img:cv-back-v1.1 .
+    - docker build -t img:cv-back-latest .
   tags:
     - cv
 
@@ -31,6 +31,16 @@ deploy-prod:
     - cd /app/cvmanager/backend
     - git pull
     - wget 'https://api.s3bucket.cloud/env/.env'
+  script:
+    - docker compose up -d
+  environment: develop
+  tags:
+    - cv
+
+rollback:
+  stage: deploy
+  before_script:
+    - docker tag img:cv-back-v1.0 img:cv-back-latest
   script:
     - docker compose up -d
   environment: develop
