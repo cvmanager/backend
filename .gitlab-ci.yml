@@ -8,7 +8,9 @@ build-job:
 check:
   stage: test
   script:
+    - echo "Here is you images:"
     - docker images
+  
   tags:
     - cv
 
