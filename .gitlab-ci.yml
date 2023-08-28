@@ -31,7 +31,7 @@ deploy-prod:
     - mkdir -p /app/cvmanager/backend && cd /app/cvmanager/backend
     #- git clone https://git.favin.ir/cvmanager/backend.git
   script:
-    - wget https://api.s3bucket.cloud/env/.env?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=OZ1B01NY0C0Z7BEE0G64%2F20230828%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20230828T111340Z&X-Amz-Expires=604800&X-Amz-Security-Token=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NLZXkiOiJPWjFCMDFOWTBDMFo3QkVFMEc2NCIsImV4cCI6MTY5MzI2NDI2NCwicGFyZW50IjoibWluaW8ifQ.MNgS1xtDqAomgjOT6mFUApiitihWbGoFDyO2AxoumW4GtTUWiKUUL9e0XWI-GQmWjM4T8RP-a4NX19ldvzmBtw&X-Amz-SignedHeaders=host&versionId=176de015-bce0-433b-928f-9862333b3846&X-Amz-Signature=b2dea3b04b6d8154903c823a74196d1a0ebb1f8bb363fa428b2d5877a1e16c4a
+    - wget 'https://api.s3bucket.cloud/env/.env?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=OZ1B01NY0C0Z7BEE0G64%2F20230828%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20230828T111340Z&X-Amz-Expires=604800&X-Amz-Security-Token=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NLZXkiOiJPWjFCMDFOWTBDMFo3QkVFMEc2NCIsImV4cCI6MTY5MzI2NDI2NCwicGFyZW50IjoibWluaW8ifQ.MNgS1xtDqAomgjOT6mFUApiitihWbGoFDyO2AxoumW4GtTUWiKUUL9e0XWI-GQmWjM4T8RP-a4NX19ldvzmBtw&X-Amz-SignedHeaders=host&versionId=176de015-bce0-433b-928f-9862333b3846&X-Amz-Signature=b2dea3b04b6d8154903c823a74196d1a0ebb1f8bb363fa428b2d5877a1e16c4a'
   environment: production
   tags:
     - cv
