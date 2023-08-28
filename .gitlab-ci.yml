@@ -10,7 +10,7 @@ check:
   stage: test
   script:
     - echo "Here is your images:"
-    - docker images
+    - docker images  grep "cv-back"
   
   tags:
     - cv
@@ -43,6 +43,7 @@ deploy-prod:
 rollback:
   stage: deploy
   before_script:
+    - cd /app/cvmanager/backend
     - docker tag img:cv-back-v1.0 img:cv-back-latest
   script:
     - docker compose up -d
