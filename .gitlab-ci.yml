@@ -1,14 +1,15 @@
 build-job:
   stage: build
   script:
-    - docker build .
+    - echo "Building the image...."
+    - docker build -t img:front-v:1.0 .
   tags:
     - cv
 
 check:
   stage: test
   script:
-    - echo "Here is you images:"
+    - echo "Here is your images:"
     - docker images
   
   tags:
