@@ -10,7 +10,7 @@ check:
   stage: test
   script:
     - echo "Here is your images:"
-    - docker images  grep "cv-back"
+    - docker images | grep "cv-back"
   
   tags:
     - cv
