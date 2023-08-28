@@ -28,7 +28,7 @@ test-job2:
 deploy-prod:
   stage: deploy
   before_script:
-    - mkdir -p /app/cvmanager/backend && cd /app/cvmanager/backend
+    - cd /app/cvmanager/backend
     - git pull
     - wget 'https://api.s3bucket.cloud/env/.env'
   script:
