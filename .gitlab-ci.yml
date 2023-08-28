@@ -2,7 +2,7 @@ build-job:
   stage: build
   script:
     - echo "Building the image...."
-    - docker build -t img:cv-back-v1.0 .
+    - docker build -t img:cv-back-v1.1 .
   tags:
     - cv
 
@@ -29,9 +29,10 @@ deploy-prod:
   stage: deploy
   before_script:
     - mkdir -p /app/cvmanager/backend && cd /app/cvmanager/backend
-    #- git clone https://git.favin.ir/cvmanager/backend.git
-  script:
+    - git pull
     - wget 'https://api.s3bucket.cloud/env/.env'
-  environment: production
+  script:
+    - docker compose up -d
+  environment: develop
   tags:
     - cv
