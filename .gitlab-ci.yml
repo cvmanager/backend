@@ -16,7 +16,7 @@ check:
     - cv
 
 test-job2:
-  stage: good
+  stage: test
   script:
     - echo "This job tests something, but takes more time than test-job1."
     - echo "After the echo commands complete, it runs the sleep command for 20 seconds"
