@@ -1,4 +1,9 @@
-build-job:
+stages:
+  - build
+  - test
+  - deploy
+
+build-develop:
   stage: build
   script:
     - echo "Building the image...."
@@ -14,7 +19,8 @@ check:
   
   tags:
     - cv
-  when: manual
+  needs:
+    - build
 
 test-job2:
   stage: test
@@ -27,7 +33,7 @@ test-job2:
     - cv
   when: manual
 
-deploy-prod:
+deploy-develop:
   stage: deploy
   before_script:
     - cd /app/cvmanager/backend
