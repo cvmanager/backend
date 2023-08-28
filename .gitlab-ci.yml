@@ -14,6 +14,7 @@ check:
   
   tags:
     - cv
+  when: manual
 
 test-job2:
   stage: test
@@ -24,6 +25,7 @@ test-job2:
     - sleep 2
   tags:
     - cv
+  when: manual
 
 deploy-prod:
   stage: deploy
@@ -36,6 +38,7 @@ deploy-prod:
   environment: develop
   tags:
     - cv
+  when: manual
 
 rollback:
   stage: deploy
@@ -46,3 +49,4 @@ rollback:
   environment: develop
   tags:
     - cv
+  when: manual
