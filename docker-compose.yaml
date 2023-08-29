@@ -3,11 +3,11 @@ version: "3.9"
 services:
   
   cv_app:
-    build:
-      context: .
-      args:
-        - NODE_ENV=production
-    image: img_back:latest
+    #build:
+    #  context: .
+    #  args:
+    #    - NODE_ENV=production
+    image: img:cv-back-dev
     container_name: cv_app
     env_file:
       - .env
@@ -22,6 +22,7 @@ services:
       - cv_net
     volumes:
       - "./public:/app/backend/public"
+      - "./google-application-credentials.json:/app/backend/google-application-credentials.json"
   
   cv_mongo:
     container_name: cv_mongo
@@ -30,10 +31,8 @@ services:
     image: mongo:4.2.23
     ports:
       - "27017:27017"
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: 
-      MONGO_INITDB_ROOT_PASSWORD: ''
-      MONGO_INITDB_DATABASE: 
+    env_file:
+      - .env_mongo 
     volumes:
       - "./mongo_db:/data/db"
     networks:
