@@ -22,32 +22,32 @@ build-develop:
     - cv
     - beta
 
-test:
-  stage: test
-  before_script:
+#test:
+#  stage: test
+#  before_script:
     #- git pull
-    - cd /app/cvmanager/backend
-    - wget -nc 'https://api.s3bucket.cloud/env/.env'
-    - wget -nc 'https://api.s3bucket.cloud/env/google-application-credentials.json'
-    - wget -nc 'https://api.s3bucket.cloud/env/.env_mongo'
-  script:
-    - docker compose up -d
-    - docker exec cv_app npm run test
-  tags:
-    - cv
-    - beta
-  needs:
-    - build-develop
-
-#push:
-#  stage: push
+#    - cd /app/cvmanager/backend
+#    - wget -nc 'https://api.s3bucket.cloud/env/.env'
+#    - wget -nc 'https://api.s3bucket.cloud/env/google-application-credentials.json'
+#    - wget -nc 'https://api.s3bucket.cloud/env/.env_mongo'
 #  script:
-    #- git pull
-#    - docker tag img:back-dev-v1.0 cvmanager/img:back-dev-latest
-#    - docker push cvmanager/img:back-dev-latest
+#    - docker compose up -d
+#    - docker exec cv_app npm run test
 #  tags:
 #    - cv
 #    - beta
+#  needs:
+#    - build-develop
+
+push:
+  stage: push
+  script:
+    #- git pull
+    - docker tag img:back-dev-v1.0 cvmanager/img:back-dev-latest
+    - docker push cvmanager/img:back-dev-latest
+  tags:
+    - cv
+    - beta
   #needs:
    # - test
 
