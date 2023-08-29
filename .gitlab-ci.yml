@@ -16,7 +16,7 @@ build-develop:
     - cd /app/cvmanager/backend
   script:
     - echo "Building the image...."
-    - docker build -t cvmanager/img:back-dev-v1.0 .
+    - docker build -t img:back-dev-v1.0 .
     # --build-arg NODE_ENV=$NODE_ENV 
   tags:
     - cv
@@ -32,7 +32,7 @@ test:
     - wget -nc 'https://api.s3bucket.cloud/env/.env_mongo'
   script:
     - docker compose up -d
-    #- docker logs -f cv_app
+    - docker exec -it cv_app npm run test
   tags:
     - cv
     - beta
