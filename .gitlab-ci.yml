@@ -9,7 +9,6 @@ variables:
 
 before_script:
   - cd /app/cvmanager/backend
-
 build-develop:
   stage: build
   script:
@@ -35,9 +34,9 @@ deploy-develop:
   before_script:
     #- git pull
     - cd /app/cvmanager/backend
-    - wget -N 'https://api.s3bucket.cloud/env/.env'
-    - wget -N 'https://api.s3bucket.cloud/env/google-application-credentials.json'
-         #- wget 'https://api.s3bucket.cloud/env/google-application-credentials.json'
+    - wget -nc 'https://api.s3bucket.cloud/env/.env'
+    - wget -nc 'https://api.s3bucket.cloud/env/google-application-credentials.json'
+    - wget -nc 'https://api.s3bucket.cloud/env/.env_mongo'
   script:
     - docker compose up -d
   environment: develop
