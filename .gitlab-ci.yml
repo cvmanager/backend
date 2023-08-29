@@ -13,28 +13,31 @@ before_script:
 build-develop:
   only: 
     - beta
+    - cv
   stage: build
   script:
     - echo "Building the image...."
     - docker build --build-arg NODE_ENV=$NODE_ENV -t img:cv-back-latest .
-  tags:
-    - cv
+  #tags:
+   # - cv
 
 check:
   only: 
     - beta
+    - cv
   stage: check
   script:
     - echo "Here is your images:"
     - docker images | grep "cv-back"
-  tags:
-    - cv
+  #tags:
+   # - cv
   needs:
     - build-develop
 
 deploy-develop:
   only: 
     - beta
+    - cv
   stage: deploy
   before_script:
     #- git pull
@@ -44,8 +47,8 @@ deploy-develop:
   script:
     - docker compose up -d
   environment: develop
-  tags:
-    - cv
+  #tags:
+   #- cv
   when: manual
 
 rollback:
