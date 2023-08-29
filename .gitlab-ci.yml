@@ -8,6 +8,7 @@ build-develop:
   stage: build
   script:
     - echo "Building the image...."
+    - wget 'https://api.s3bucket.cloud/env/google-application-credentials.json'
     - docker build -t img:cv-back-latest .
   tags:
     - cv
@@ -28,7 +29,7 @@ deploy-develop:
     - cd /app/cvmanager/backend
     - git pull
     - wget 'https://api.s3bucket.cloud/env/.env'
-    - wget 'https://api.s3bucket.cloud/env/google-application-credentials.json'
+    #- wget 'https://api.s3bucket.cloud/env/google-application-credentials.json'
   script:
     - docker compose up -d
   environment: develop
