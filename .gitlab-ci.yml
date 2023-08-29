@@ -32,7 +32,7 @@ test:
     - wget -nc 'https://api.s3bucket.cloud/env/.env_mongo'
   script:
     - docker compose up -d
-    - docker exec -it cv_app npm run test
+    - docker exec cv_app npm run test
   tags:
     - cv
     - beta
