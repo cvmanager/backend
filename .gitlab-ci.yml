@@ -34,8 +34,8 @@ deploy-develop:
   stage: deploy
   before_script:
     #- git pull
-    - wget 'https://api.s3bucket.cloud/env/.env'
-    - wget 'https://api.s3bucket.cloud/env/google-application-credentials.json'
+    - wget -N 'https://api.s3bucket.cloud/env/.env'
+    - wget -N 'https://api.s3bucket.cloud/env/google-application-credentials.json'
          #- wget 'https://api.s3bucket.cloud/env/google-application-credentials.json'
   script:
     - docker compose up -d
