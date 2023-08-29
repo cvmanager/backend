@@ -1,11 +1,11 @@
 stages:
   - build
-  - check
+  - test
   - deploy
   - rollback
 
-variables:
-  NODE_ENV: "development"
+#variables:
+ # NODE_ENV: "development"
 
 before_script:
   - cd /app/cvmanager/backend
@@ -13,16 +13,22 @@ build-develop:
   stage: build
   script:
     - echo "Building the image...."
-    - docker build --build-arg NODE_ENV=$NODE_ENV -t img:cv-back-dev .
+    - docker build -t img:cv-back-dev .
+    # --build-arg NODE_ENV=$NODE_ENV 
   tags:
     - cv
     - beta
 
-check:
-  stage: check
+test:
+  stage: test
+  before_script:
+    #- git pull
+    - cd /app/cvmanager/backend
+    - wget -nc 'https://api.s3bucket.cloud/env/.env'
+    - wget -nc 'https://api.s3bucket.cloud/env/google-application-credentials.json'
+    - wget -nc 'https://api.s3bucket.cloud/env/.env_mongo'
   script:
-    - echo "Here is your images:"
-    - docker images | grep "cv-back"
+    - docker compose up -d
   tags:
     - cv
     - beta
