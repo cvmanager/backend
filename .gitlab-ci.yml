@@ -5,7 +5,7 @@ stages:
   - rollback
 
 variables:
-  NODE_ENV: "develop"
+  NODE_ENV: "development"
 
 before_script:
   - cd /app/cvmanager/backend
