@@ -32,6 +32,7 @@ test:
     - wget -nc 'https://api.s3bucket.cloud/env/.env_mongo'
   script:
     - docker compose up -d
+    #- docker logs -f cv_app
   tags:
     - cv
     - beta
