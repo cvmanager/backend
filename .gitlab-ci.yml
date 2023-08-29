@@ -7,10 +7,11 @@ stages:
 #variables:
  # NODE_ENV: "development"
 
-before_script:
-  - cd /app/cvmanager/backend
+
 build-develop:
   stage: build
+  before_script:
+    - cd /app/cvmanager/backend
   script:
     - echo "Building the image...."
     - docker build -t img:cv-back-dev .
