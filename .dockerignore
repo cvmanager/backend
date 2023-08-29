@@ -6,7 +6,10 @@ redis_db
 package-lock.json
 .env
 .env.example
+.env_mongo
+.env_mongo.example
 public
 .gitignore
 .git
 Dockerfile
+google-application-credentials.json
