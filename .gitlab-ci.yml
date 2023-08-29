@@ -1,7 +1,8 @@
 stages:
   - build
-  - test
+  - check
   - deploy
+  - rollback
 
 build-develop:
   stage: build
@@ -12,26 +13,14 @@ build-develop:
     - cv
 
 check:
-  stage: test
+  stage: check
   script:
     - echo "Here is your images:"
     - docker images | grep "cv-back"
-  
   tags:
     - cv
   needs:
     - build-develop
-
-test-job2:
-  stage: test
-  script:
-    - echo "This job tests something, but takes more time than test-job1."
-    - echo "After the echo commands complete, it runs the sleep command for 20 seconds"
-    - echo "which simulates a test that runs 20 seconds longer than test-job1"
-    - sleep 2
-  tags:
-    - cv
-  when: manual
 
 deploy-develop:
   stage: deploy
@@ -39,6 +28,7 @@ deploy-develop:
     - cd /app/cvmanager/backend
     - git pull
     - wget 'https://api.s3bucket.cloud/env/.env'
+    - wget 'https://api.s3bucket.cloud/env/google-application-credentials.json'
   script:
     - docker compose up -d
   environment: develop
@@ -47,7 +37,7 @@ deploy-develop:
   when: manual
 
 rollback:
-  stage: deploy
+  stage: rollback
   before_script:
     - cd /app/cvmanager/backend
     - docker tag img:cv-back-v1.0 img:cv-back-latest
