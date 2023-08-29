@@ -11,6 +11,8 @@ before_script:
   - cd /app/cvmanager/backend
 
 build-develop:
+  only: 
+    - beta
   stage: build
   script:
     - echo "Building the image...."
@@ -19,6 +21,8 @@ build-develop:
     - cv
 
 check:
+  only: 
+    - beta
   stage: check
   script:
     - echo "Here is your images:"
@@ -29,6 +33,8 @@ check:
     - build-develop
 
 deploy-develop:
+  only: 
+    - beta
   stage: deploy
   before_script:
     #- git pull
@@ -43,6 +49,8 @@ deploy-develop:
   when: manual
 
 rollback:
+  only: 
+    - beta
   stage: rollback
   before_script:
     - docker tag img:cv-back-v1.0 img:cv-back-latest
