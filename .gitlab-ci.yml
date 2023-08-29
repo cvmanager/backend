@@ -13,7 +13,7 @@ build-develop:
   stage: build
   script:
     - echo "Building the image...."
-    - docker build --build-arg NODE_ENV=$NODE_ENV -t img:cv-back-latest .
+    - docker build --build-arg NODE_ENV=$NODE_ENV -t img:cv-back-dev .
   tags:
     - cv
     - beta
@@ -48,7 +48,7 @@ deploy-develop:
 rollback:
   stage: rollback
   before_script:
-    - docker tag img:cv-back-v1.0 img:cv-back-latest
+    - docker tag img:cv-back-v1.0 img:cv-back-dev
   script:
     - docker compose up -d
   environment: develop
