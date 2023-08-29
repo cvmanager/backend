@@ -9,19 +9,6 @@ stages:
 
 #variables:
  # NODE_ENV: "development"
-auto_increment:
-  stage: init
-  variables:
-    VAR_NAME: BUILD_NUMBER
-    VAR: ${BUILD_NUMBER}
-    TOKEN: ${CI_PIPELINE_IID_TOKEN}
-  script:
-  - " i=$((VAR + 1)) "
-  - " curl -X PUT -s -f --header \"PRIVATE-TOKEN: ${TOKEN}\" \"https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/variables/${VAR_NAME}\" -d \"value=${i}\" "
-  - "echo $i"
-  tags:
-    - cv
-    - beta
 
 
 build-develop:
