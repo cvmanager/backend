@@ -7,7 +7,7 @@ services:
     #  context: .
     #  args:
     #    - NODE_ENV=production
-    image: img:cv-back-dev
+    image: cvmanager/img:back-dev-latest
     container_name: cv_app
     env_file:
       - .env
