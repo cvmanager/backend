@@ -10,8 +10,11 @@ stages:
  # NODE_ENV: "development"
 
 
-build-develop:
+build:
   stage: build
+  only:
+    - main
+    - develop
   script:
     - echo "Building the image...."
     - docker build -t img:back-dev-v1.0 .
@@ -22,6 +25,9 @@ build-develop:
 
 test:
   stage: test
+  only:
+    - main
+    - develop
   before_script:
     #- git pull
     - cd /app/cvmanager/backend
@@ -35,10 +41,13 @@ test:
     - cv
     - beta
   needs:
-    - build-develop
+    - build
 
 push:
   stage: push
+  only:
+    - main
+    - develop
   script:
     - docker tag img:back-dev-v1.0 cvmanager/img:back-dev-latest
     - docker push cvmanager/img:back-dev-latest
@@ -48,7 +57,7 @@ push:
   needs:
     - test
 
-deploy-develop:
+deploy:
   stage: deploy
   before_script:
     #- git pull
@@ -69,6 +78,7 @@ rollback:
   before_script:
     - cd /app/cvmanager/backend
     - docker tag cvmanager/img:back-dev-v1.0 cvmanager/img:back-dev-latest
+    - docker push cvmanager/img:back-dev-latest
   script:
     - docker compose up -d
   environment: develop
