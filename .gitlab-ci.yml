@@ -1,3 +1,8 @@
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event' 
+    - if: $CI_COMMIT_BRANCH == 'develop' || $CI_COMMIT_BRANCH == 'master'
+
 stages:
   - build
   - test
@@ -13,7 +18,6 @@ stages:
 build:
   stage: build
   only:
-    - main
     - develop
   script:
     - echo "Building the image...."
@@ -26,7 +30,6 @@ build:
 test:
   stage: test
   only:
-    - main
     - develop
   before_script:
     #- git pull
@@ -46,7 +49,6 @@ test:
 push:
   stage: push
   only:
-    - main
     - develop
   script:
     - docker tag img:back-dev-v1.0 cvmanager/img:back-dev-latest
