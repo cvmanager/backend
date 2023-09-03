@@ -56,8 +56,8 @@ push:
   tags:
     - cv
     - beta
-  needs:
-    - test
+  #needs:
+    #- test
 
 deploy:
   stage: deploy
