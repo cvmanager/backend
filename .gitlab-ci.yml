@@ -21,7 +21,7 @@ build:
     - develop
   script:
     - echo "Building the image...."
-    - docker build -t img:back-dev-v1.0 .
+    - docker build -t img:back-v1.0 .
     # --build-arg NODE_ENV=$NODE_ENV 
   tags:
     - cv
@@ -51,8 +51,8 @@ push:
   only:
     - master
   script:
-    - docker tag img:back-dev-v1.0 cvmanager/img:back-dev-latest
-    - docker push cvmanager/img:back-dev-latest
+    - docker tag img:back-v1.0 cvmanager/img:back-latest
+    - docker push cvmanager/img:back-latest
   tags:
     - cv
     - beta
@@ -79,8 +79,8 @@ rollback:
   stage: rollback
   before_script:
     - cd /app/cvmanager/backend
-    - docker tag cvmanager/img:back-dev-v1.0 cvmanager/img:back-dev-latest
-    - docker push cvmanager/img:back-dev-latest
+    - docker tag cvmanager/img:back-v1.0 cvmanager/img:back-latest
+    - docker push cvmanager/img:back-latest
   script:
     - docker compose up -d
   environment: develop
