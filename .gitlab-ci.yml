@@ -11,8 +11,8 @@ stages:
   - rollback
 
 
-variables:
-  NODE_ENV: "production"
+#variables:
+ # NODE_ENV: "development"
 
 
 build:
@@ -21,7 +21,7 @@ build:
     - develop
   script:
     - echo "Building the image...."
-    - docker build --build-arg NODE_ENV=$NODE_ENV -t img:back-v1.0 .
+    - docker build -t img:back-v1.0 .
     # --build-arg NODE_ENV=$NODE_ENV 
   tags:
     - cv
