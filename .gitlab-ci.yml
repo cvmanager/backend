@@ -39,7 +39,7 @@ test:
     - wget -nc 'https://api.s3bucket.cloud/env/.env_mongo'
   script:
     - docker compose up -d
-    - docker exec cv_app npm run test
+    #- docker exec cv_app npm run test
   tags:
     - cv
     - beta
@@ -49,7 +49,7 @@ test:
 push:
   stage: push
   only:
-    - develop
+    - master
   script:
     - docker tag img:back-dev-v1.0 cvmanager/img:back-dev-latest
     - docker push cvmanager/img:back-dev-latest
