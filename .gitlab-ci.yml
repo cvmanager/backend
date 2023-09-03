@@ -17,8 +17,6 @@ stages:
 
 build:
   stage: build
-  only:
-    - develop
   script:
     - echo "Building the image...."
     - docker build -t img:back-v1.0 .
