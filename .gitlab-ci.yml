@@ -1,7 +1,7 @@
 workflow:
   rules:
-    - if: $CI_PIPELINE_SOURCE == 'merge_request_event' 
-    - if: $CI_COMMIT_BRANCH == 'develop' || $CI_COMMIT_BRANCH == 'master'
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_COMMIT_BRANCH == 'develop'
+    #- if: $CI_COMMIT_BRANCH == 'develop' || $CI_COMMIT_BRANCH == 'master'
 
 stages:
   - build
@@ -29,8 +29,6 @@ build:
 
 test:
   stage: test
-  only:
-    - develop
   before_script:
     #- git pull
     - cd /app/cvmanager/backend
@@ -49,7 +47,7 @@ test:
 push:
   stage: push
   only:
-    - master
+    - develop
   script:
     - docker tag img:back-v1.0 cvmanager/img:back-latest
     - docker push cvmanager/img:back-latest
@@ -61,6 +59,8 @@ push:
 
 deploy:
   stage: deploy
+  only:
+    - develop
   before_script:
     #- git pull
     - cd /app/cvmanager/backend
@@ -77,6 +77,8 @@ deploy:
 
 rollback:
   stage: rollback
+  only:
+    - develop
   before_script:
     - cd /app/cvmanager/backend
     - docker tag cvmanager/img:back-v1.0 cvmanager/img:back-latest
