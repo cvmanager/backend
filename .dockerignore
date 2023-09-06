@@ -13,3 +13,4 @@ public
 .git
 Dockerfile
 google-application-credentials.json
+.gitlab-ci.yml
