@@ -124,7 +124,7 @@ deploy:
   tags:
     - test
     - shared
-  when: manual
+  #when: manual
 
 rollback:
   stage: rollback
