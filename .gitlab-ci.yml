@@ -31,7 +31,7 @@ workflow:
     #- if: $CI_COMMIT_BRANCH == "develop" #|| $CI_COMMIT_BRANCH == "main"
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push"
       when: always
-    - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop" || $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"
+    - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop" || $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master" || $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "feature/CVMAN-DevOps-1"
       when: always
     - when: never
 
@@ -43,9 +43,21 @@ stages:
   - rollback
 
 
-#variables:
+variables:
+  WORKING_DIR: "/home/ali/test"
  # NODE_ENV: "development"
-
+clone:
+  stage: .pre
+  only:
+    - master
+    - develop 
+    - feature/CVMAN-DevOps-1
+  script:
+    - cd $WORKING_DIR
+    - git clone --branch=feature/CVMAN-DevOps-1 git@git.favin.ir:cvmanager/backend.git
+  tags:
+    - shared
+    - fedora
 
 build:
   stage: build
@@ -54,11 +66,12 @@ build:
     - develop
   script:
     - echo "Building the image...."
-    - docker build -t img:back-v1.0 .
+    - docker build -t img:back-v1.$CI_PIPELINE_IID -t img:back-latest .
+    - docker images
     # --build-arg NODE_ENV=$NODE_ENV 
-  tags:
-    - cv
-    - beta
+  #tags:
+  #  - fedora
+  #  - shared
 
 test:
   stage: test
@@ -75,8 +88,8 @@ test:
     - docker compose up -d
     #- docker exec cv_app npm run test
   tags:
-    - cv
-    - beta
+    - fedora
+    - shared
   needs:
     - build
 
@@ -86,19 +99,19 @@ push:
     - master
     - develop
   script:
-    - docker tag img:back-v1.0 cvmanager/img:back-latest
+    - docker tag img:back-v1.$CI_PIPELINE_IID cvmanager/img:back-latest
     - docker push cvmanager/img:back-latest
   tags:
-    - cv
-    - beta
+    - fedora
+    - shared
   needs:
     - test
 
 deploy:
   stage: deploy
   only:
-    - master
-    - develop
+    - fedora
+    - shared
   before_script:
     #- git pull
     - cd /app/cvmanager/backend
@@ -109,8 +122,8 @@ deploy:
     - docker compose up -d
   environment: develop
   tags:
-    - cv
-    - beta
+    - fedora
+    - shared
   when: manual
 
 rollback:
@@ -120,12 +133,12 @@ rollback:
     - develop
   before_script:
     - cd /app/cvmanager/backend
-    - docker tag cvmanager/img:back-v1.0 cvmanager/img:back-latest
+    - docker tag cvmanager/img:back-v1.$CI_PIPELINE_IID cvmanager/img:back-latest
     - docker push cvmanager/img:back-latest
   script:
     - docker compose up -d
   environment: develop
   tags:
-    - cv
-    - beta
+    - fedora
+    - shared
   when: manual
