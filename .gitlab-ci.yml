@@ -85,6 +85,7 @@ test:
     - cd /app/cvmanager/backend
     - sudo wget -nc https://api.s3bucket.cloud/env/{.env,google-application-credentials.json,.env_mongo}
   script:
+    - cd /app/cvmanager/backend
     - docker compose up -d
     - chmod +x check.sh
     - ./check.sh
