@@ -73,18 +73,14 @@ build:
     - master
     - develop
   script:
+    - cd $WORKING_DIR/backend
     - echo "Building the image...."
     - docker build -t img:back-v1.$CI_PIPELINE_IID -t img:back-latest .
     - chmod +x check.sh
     - ./check.sh
-    - chmod +x check.sh
-    - ./check.sh
-    - chmod +x check2.sh
-    - ./check2.sh
   artifacts:
     reports:
       junit: report.xml # this is the JUnit report file
-        #- report2.xml
     
     # --build-arg NODE_ENV=$NODE_ENV 
   #tags:
@@ -136,7 +132,6 @@ deploy:
     - develop
   before_script:
     - cd /app/cvmanager/backend
-    - sudo git pull
     - sudo wget -nc https://api.s3bucket.cloud/env/{.env,google-application-credentials.json,.env_mongo}
   script:
     - docker compose up -d
