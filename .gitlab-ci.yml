@@ -93,7 +93,7 @@ test:
   script:
     - cd /app/cvmanager/backend
     - docker compose up -d
-    - chmod +x check2.sh
+    - sudo chmod +x check2.sh
     - ./check2.sh
   artifacts:
     reports:
