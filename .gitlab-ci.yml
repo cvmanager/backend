@@ -91,12 +91,13 @@ test:
     - cd /app/cvmanager/backend
     - sudo wget -nc https://api.s3bucket.cloud/env/{.env,google-application-credentials.json,.env_mongo}
   script:
+    - cd /app/cvmanager/backend
     - docker compose up -d
     - chmod +x check2.sh
     - ./check2.sh
   artifacts:
     reports:
-      junit: ./report.xml # this is the JUnit report file
+      junit: $WORKING_DIR/backend/report.xml # this is the JUnit report file
     #- docker exec cv_app npm run test
   tags:
     - test
