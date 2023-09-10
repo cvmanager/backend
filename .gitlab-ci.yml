@@ -42,8 +42,10 @@ stages:
   - push
   - deploy
   - rollback
+
 variables:
-  WORKING_DIR: "/app/cvmanager"  
+  WORKING_DIR: "/app/cvmanager" 
+  NODE_ENV: "development" 
 
 .cvmanager:
   stage: start child pipelines
@@ -73,7 +75,7 @@ build:
     - master
     - develop
   script:
-    - cd $WORKING_DIR/backend/api
+    #- cd $WORKING_DIR/backend/api
     - echo "Building the image...."
     - docker build -t img:back-v1.$CI_PIPELINE_IID -t img:back-latest .
   #  - chmod +x check.sh
