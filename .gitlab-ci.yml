@@ -103,8 +103,9 @@ test:
     - sudo wget -nc https://api.s3bucket.cloud/env/{.env,google-application-credentials.json,.env_mongo}
   script:
     - cd  $WORKING_DIR/backend
-    - docker compose up -d- sudo chmod +x check2.sh
+    - docker compose up -d
     - sudo ./check2.sh
+    - sudo chmod +x check2.sh
     - sudo chmod 755 $WORKING_DIR/backend/report.xml
     - sudo chown gitlab-runner:gitlab-runner $WORKING_DIR/backend/report.xml
   artifacts:
