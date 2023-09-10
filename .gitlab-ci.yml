@@ -112,7 +112,7 @@ push:
   allow_failure: true
   needs:
     - test
-  when: manual
+  #when: manual
 
 deploy:
   stage: deploy
