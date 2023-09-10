@@ -91,7 +91,7 @@ test:
     - ./check.sh
   artifacts:
     reports:
-      junit: WORKING_DIR/backend/report.xml # this is the JUnit report file
+      junit: $WORKING_DIR/backend/report.xml # this is the JUnit report file
     #- docker exec cv_app npm run test
   tags:
     - test
