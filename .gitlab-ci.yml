@@ -44,8 +44,8 @@ stages:
   - rollback
 
 
-variables:
-  WORKING_DIR: "/app/cvmanager"
+#variables:
+  #WORKING_DIR: "/app/cvmanager"
   # NODE_ENV: "development"
   
 
