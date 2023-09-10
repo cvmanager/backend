@@ -84,9 +84,7 @@ test:
   before_script:
     #- git pull
     - cd /app/cvmanager/backend
-    - sudo wget -nrc 'https://api.s3bucket.cloud/env'
-    #- sudo wget -nc 'https://api.s3bucket.cloud/env/google-application-credentials.json'
-    #- sudo wget -nc 'https://api.s3bucket.cloud/env/.env_mongo'
+    - sudo wget -nc https://api.s3bucket.cloud/env/{.env,google-application-credentials.json,.env_mongo}
   script:
     - docker compose up -d
     #- docker exec cv_app npm run test
@@ -119,9 +117,7 @@ deploy:
   before_script:
     #- git pull
     - cd /app/cvmanager/backend
-    - sudo wget -nrc 'https://api.s3bucket.cloud/env'
-    #- wget -nc 'https://api.s3bucket.cloud/env/google-application-credentials.json'
-    #- wget -nc 'https://api.s3bucket.cloud/env/.env_mongo'
+    - sudo wget -nc https://api.s3bucket.cloud/env/{.env,google-application-credentials.json,.env_mongo}
   script:
     - docker compose up -d
   environment: develop
