@@ -94,7 +94,7 @@ test:
     - cd /app/cvmanager/backend
     - docker compose up -d
     - sudo chmod +x check2.sh
-    - ./check2.sh
+    - sudo ./check2.sh
   artifacts:
     reports:
       junit: $WORKING_DIR/backend/report.xml # this is the JUnit report file
