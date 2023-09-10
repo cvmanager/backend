@@ -87,8 +87,8 @@ test:
     - sudo wget -nc https://api.s3bucket.cloud/env/{.env,google-application-credentials.json,.env_mongo}
   script:
     - docker compose up -d
-    - chmod +x check.sh
-    - ./check.sh
+    - sudo chmod +x check.sh
+    - sudo ./check.sh
   artifacts:
     reports:
       junit: report.xml # this is the JUnit report file
