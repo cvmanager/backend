@@ -67,11 +67,6 @@ build:
   script:
     - echo "Building the image...."
     - docker build -t img:back-v1.$CI_PIPELINE_IID -t img:back-latest .
-    - chmod +x check.sh
-    - ./check.sh
-  artifacts:
-    reports:
-      junit: report.xml # this is the JUnit report file
     # --build-arg NODE_ENV=$NODE_ENV 
   #tags:
   #  - fedora
@@ -91,6 +86,11 @@ test:
     - sudo wget -nc https://api.s3bucket.cloud/env/{.env,google-application-credentials.json,.env_mongo}
   script:
     - docker compose up -d
+    - chmod +x check.sh
+    - ./check.sh
+  artifacts:
+    reports:
+      junit: report.xml # this is the JUnit report file
     #- docker exec cv_app npm run test
   tags:
     - test
@@ -109,6 +109,7 @@ push:
   tags:
     - test
     - shared
+  allow_failure: true
   needs:
     - test
   when: manual
@@ -130,7 +131,7 @@ deploy:
     - shared
   needs: 
     - push
-  #when: manual
+  when: manual
 
 rollback:
   stage: rollback
