@@ -111,7 +111,7 @@ push:
     - shared
   needs:
     - test
-  when: always
+  when: manual
 
 deploy:
   stage: deploy
