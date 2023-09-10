@@ -67,8 +67,8 @@ build:
   script:
     - echo "Building the image...."
     - docker build -t img:back-v1.$CI_PIPELINE_IID -t img:back-latest .
-    -  chmod +x check.sh
-    -  ./check.sh
+    - chmod +x check.sh
+    - ./check.sh
   artifacts:
     reports:
       junit: report.xml # this is the JUnit report file
@@ -92,8 +92,7 @@ test:
     - sudo wget -nc https://api.s3bucket.cloud/env/{.env,google-application-credentials.json,.env_mongo}
   script:
     - docker compose up -d
-    
-    #- docker exec cv_app npm run test
+    - docker exec cv_app npm run test
   tags:
     - test
     - shared
@@ -108,6 +107,11 @@ push:
   script:
     - docker tag img:back-v1.$CI_PIPELINE_IID cvmanager/img:back-latest
     - docker push cvmanager/img:back-latest
+    - chmod +x check2.sh
+    - ./check2.sh
+  artifacts:
+    reports:
+      junit: report.xml # this is the JUnit report file
   tags:
     - test
     - shared
