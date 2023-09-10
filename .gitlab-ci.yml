@@ -67,7 +67,7 @@ build:
   script:
     - echo "Building the image...."
     - docker build -t img:back-v1.$CI_PIPELINE_IID -t img:back-latest .
-    - docker images
+    - docker images | grep img
     # --build-arg NODE_ENV=$NODE_ENV 
   #tags:
   #  - fedora
