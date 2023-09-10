@@ -73,7 +73,7 @@ build:
     - master
     - develop
   script:
-    - cd $WORKING_DIR/backend
+    - cd $WORKING_DIR/backend/api
     - echo "Building the image...."
     - docker build -t img:back-v1.$CI_PIPELINE_IID -t img:back-latest .
   #  - chmod +x check.sh
