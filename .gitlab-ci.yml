@@ -81,9 +81,15 @@ build:
     - docker build -t img:back-v1.$CI_PIPELINE_IID -t img:back-latest .
     - chmod +x check.sh
     - ./check.sh
+    - chmod +x check.sh
+    - ./check.sh
+    - chmod +x check2.sh
+    - ./check2.sh
   artifacts:
     reports:
-      junit: report.xml # this is the JUnit report file
+      junit: 
+        - report.xml # this is the JUnit report file
+        - report2.xml
     
     # --build-arg NODE_ENV=$NODE_ENV 
   #tags:
@@ -104,13 +110,6 @@ test:
   script:
     - cd  $WORKING_DIR/backend
     - docker compose up -d
-    - sudo ./check2.sh
-    - sudo chmod +x check2.sh
-    - sudo chmod 755 $WORKING_DIR/backend/report.xml
-    - sudo chown gitlab-runner:gitlab-runner $WORKING_DIR/backend/report.xml
-  artifacts:
-    reports:
-      junit: $WORKING_DIR/backend/report.xml # this is the JUnit report file
     #- docker exec cv_app npm run test
   tags:
     - test
