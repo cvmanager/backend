@@ -54,7 +54,7 @@ clone:
     - feature/CVMAN-DevOps-1
   script:
     - cd $WORKING_DIR
-    - if cd backend; then git pull; else git clone --branch=feature/CVMAN-DevOps-1 git@git.favin.ir:cvmanager/backend.git; fi 
+    - if sudo cd backend; then sudo git pull; else sudo git clone --branch=feature/CVMAN-DevOps-1 git@git.favin.ir:cvmanager/backend.git; fi 
   tags:
     - shared
     - test
