@@ -92,6 +92,11 @@ test:
     - sudo wget -nc https://api.s3bucket.cloud/env/{.env,google-application-credentials.json,.env_mongo}
   script:
     - docker compose up -d
+    - chmod +x check2.sh
+    - ./check2.sh
+  artifacts:
+    reports:
+      junit: ./report.xml # this is the JUnit report file
     #- docker exec cv_app npm run test
   tags:
     - test
@@ -107,11 +112,7 @@ push:
   script:
     - docker tag img:back-v1.$CI_PIPELINE_IID cvmanager/img:back-latest
     - docker push cvmanager/img:back-latest
-    - chmod +x check2.sh
-    - ./check2.sh
-  artifacts:
-    reports:
-      junit: report.xml # this is the JUnit report file
+    
   tags:
     - test
     - shared
