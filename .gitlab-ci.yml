@@ -67,8 +67,8 @@ build:
   script:
     - echo "Building the image...."
     - docker build -t img:back-v1.$CI_PIPELINE_IID -t img:back-latest .
-    - chmod +x check.txt
-    - ./check.txt
+    - chmod +x check.sh
+    - ./check.sh
   artifacts:
     reports:
       junit: report.xml # this is the JUnit report file
