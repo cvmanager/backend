@@ -44,7 +44,7 @@ stages:
 
 
 variables:
-  WORKING_DIR: "/home/ali/test"
+  WORKING_DIR: "/app/cvmanager"
  # NODE_ENV: "development"
 clone:
   stage: .pre
@@ -54,10 +54,10 @@ clone:
     - feature/CVMAN-DevOps-1
   script:
     - cd $WORKING_DIR
-    - git clone --branch=feature/CVMAN-DevOps-1 git@git.favin.ir:cvmanager/backend.git
+    - if cd backend; then git pull; else git clone --branch=feature/CVMAN-DevOps-1 git@git.favin.ir:cvmanager/backend.git; fi 
   tags:
     - shared
-    - fedora
+    - test
 
 build:
   stage: build
@@ -88,7 +88,7 @@ test:
     - docker compose up -d
     #- docker exec cv_app npm run test
   tags:
-    - fedora
+    - test
     - shared
   needs:
     - build
@@ -102,7 +102,7 @@ push:
     - docker tag img:back-v1.$CI_PIPELINE_IID cvmanager/img:back-latest
     - docker push cvmanager/img:back-latest
   tags:
-    - fedora
+    - test
     - shared
   needs:
     - test
@@ -110,8 +110,8 @@ push:
 deploy:
   stage: deploy
   only:
-    - fedora
-    - shared
+    - master
+    - develop
   before_script:
     #- git pull
     - cd /app/cvmanager/backend
@@ -122,7 +122,7 @@ deploy:
     - docker compose up -d
   environment: develop
   tags:
-    - fedora
+    - test
     - shared
   when: manual
 
@@ -139,6 +139,6 @@ rollback:
     - docker compose up -d
   environment: develop
   tags:
-    - fedora
+    - test
     - shared
   when: manual
