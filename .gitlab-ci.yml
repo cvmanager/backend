@@ -109,6 +109,7 @@ push:
     - shared
   needs:
     - test
+  when: always
 
 deploy:
   stage: deploy
