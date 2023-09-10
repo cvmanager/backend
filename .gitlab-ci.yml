@@ -120,8 +120,8 @@ deploy:
     - master
     - develop
   before_script:
-    #- git pull
     - cd /app/cvmanager/backend
+    - sudo git pull
     - sudo wget -nc https://api.s3bucket.cloud/env/{.env,google-application-credentials.json,.env_mongo}
   script:
     - docker compose up -d
