@@ -95,6 +95,7 @@ test:
     - docker compose up -d
     - sudo chmod +x check2.sh
     - sudo ./check2.sh
+    - sudo chmod 755 $WORKING_DIR/backend/report.xml
   artifacts:
     reports:
       junit: $WORKING_DIR/backend/report.xml # this is the JUnit report file
