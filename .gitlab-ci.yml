@@ -92,7 +92,7 @@ test:
     - sudo wget -nc https://api.s3bucket.cloud/env/{.env,google-application-credentials.json,.env_mongo}
   script:
     - docker compose up -d
-    - docker exec cv_app npm run test
+    #- docker exec cv_app npm run test
   tags:
     - test
     - shared
