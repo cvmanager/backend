@@ -68,7 +68,9 @@ clone:
   tags:
     - shared
     - test
-
+#-------------------------------------------#
+#    Builds the     #
+#-------------------------------------------#
 build:
   stage: build
   only:
@@ -92,6 +94,9 @@ build:
     - shared
     - test
 
+#-------------------------------------------#
+#              Runs the tests               # 
+#-------------------------------------------#
 test:
   stage: test
   only:
@@ -103,13 +108,18 @@ test:
   script:
     - cd  $WORKING_DIR/backend
     - docker compose up -d
-    #- docker exec cv_app npm run test
+    - docker exec cv_app npm run test
+    - docker compose down
+  allow_failure: true
   tags:
     - test
     - shared
   needs:
     - build
 
+#-------------------------------------------#
+#        Push the the latest version        #
+#-------------------------------------------#
 push:
   stage: push
   only:
@@ -118,7 +128,6 @@ push:
   script:
     - docker tag img:back-v1.$CI_PIPELINE_IID cvmanager/img:back-latest
     - docker push cvmanager/img:back-latest
-    
   tags:
     - test
     - shared
@@ -127,6 +136,9 @@ push:
     - test
   #when: manual
 
+#-------------------------------------------#
+#         Deploy the latest version         #
+#-------------------------------------------#
 deploy:
   stage: deploy
   only:
@@ -145,6 +157,9 @@ deploy:
     - push
   when: manual
 
+#-------------------------------------------#
+#    Rollback to the last stable version    #
+#-------------------------------------------#
 rollback:
   stage: deploy
   only:
