@@ -128,7 +128,8 @@ deploy:
   tags:
     - test
     - shared
-  needs: push
+  needs: 
+    - push
   #when: manual
 
 rollback:
