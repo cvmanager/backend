@@ -42,12 +42,8 @@ stages:
   - push
   - deploy
   - rollback
-
-
-#variables:
-  #WORKING_DIR: "/app/cvmanager"
-  # NODE_ENV: "development"
-  
+variables:
+  WORKING_DIR: "/app/cvmanager"  
 
 .cvmanager:
   stage: start child pipelines
