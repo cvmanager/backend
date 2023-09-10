@@ -72,6 +72,9 @@ build:
   #tags:
   #  - fedora
   #  - shared
+  tags:
+    - shared
+    - test
 
 test:
   stage: test
