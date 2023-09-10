@@ -24,7 +24,9 @@
 
 
   
-
+#-------------------------------------------#
+#         Conditional statements            #
+#-------------------------------------------#
 workflow:
   rules:
     #- if: $CI_PIPELINE_SOURCE
@@ -35,6 +37,9 @@ workflow:
       when: always
     - when: never
 
+#-------------------------------------------#
+#             Stages of pipeline            #
+#-------------------------------------------#
 stages:
   - start child pipelines
   - build
@@ -43,6 +48,9 @@ stages:
   - deploy
   - rollback
 
+#-------------------------------------------#
+#     Variables used throughout pipeline    #
+#-------------------------------------------#
 variables:
   WORKING_DIR: "/app/cvmanager" 
   NODE_ENV: "development" 
@@ -55,7 +63,9 @@ variables:
     include: .gitlab-ci.yml
     strategy: depend
 
- 
+#-------------------------------------------#
+#        pulls or clones the project        #
+#-------------------------------------------#
 clone:
   stage: .pre
   only:
@@ -68,8 +78,9 @@ clone:
   tags:
     - shared
     - test
+
 #-------------------------------------------#
-#    Builds the     #
+#             Builds the image              #
 #-------------------------------------------#
 build:
   stage: build
@@ -118,13 +129,12 @@ test:
     - build
 
 #-------------------------------------------#
-#        Push the the latest version        #
+#         Pushes the latest version         #
 #-------------------------------------------#
 push:
   stage: push
   only:
     - master
-    - develop
   script:
     - docker tag img:back-v1.$CI_PIPELINE_IID cvmanager/img:back-latest
     - docker push cvmanager/img:back-latest
@@ -134,16 +144,14 @@ push:
   allow_failure: true
   needs:
     - test
-  #when: manual
 
 #-------------------------------------------#
-#         Deploy the latest version         #
+#         Deploys the latest version        #
 #-------------------------------------------#
 deploy:
   stage: deploy
   only:
     - master
-    - develop
   before_script:
     - cd /app/cvmanager/backend
     - sudo wget -nc https://api.s3bucket.cloud/env/{.env,google-application-credentials.json,.env_mongo}
@@ -158,13 +166,12 @@ deploy:
   when: manual
 
 #-------------------------------------------#
-#    Rollback to the last stable version    #
+#     Rollbacks to last stable version      #
 #-------------------------------------------#
 rollback:
   stage: deploy
   only:
     - master
-    - develop
   before_script:
     - cd /app/cvmanager/backend
     - docker tag cvmanager/img:back-v1.$CI_PIPELINE_IID cvmanager/img:back-latest
