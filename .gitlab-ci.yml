@@ -36,6 +36,7 @@ workflow:
     - when: never
 
 stages:
+  - start child pipelines
   - build
   - test
   - push
@@ -45,7 +46,18 @@ stages:
 
 variables:
   WORKING_DIR: "/app/cvmanager"
- # NODE_ENV: "development"
+  # NODE_ENV: "development"
+  
+
+.cvmanager:
+  stage: start child pipelines
+  variables:
+    CHILD_PIPELINE_EXECUTION_CONTEXT: "$WORKING_DIR"
+  trigger:
+    include: .gitlab-ci.yml
+    strategy: depend
+
+ 
 clone:
   stage: .pre
   only:
@@ -88,14 +100,13 @@ test:
     - develop
   before_script:
     #- git pull
-    - cd /app/cvmanager/backend
     - sudo wget -nc https://api.s3bucket.cloud/env/{.env,google-application-credentials.json,.env_mongo}
   script:
-    - cd /app/cvmanager/backend
-    - docker compose up -d
-    - sudo chmod +x check2.sh
+    - cd  $WORKING_DIR/backend
+    - docker compose up -d- sudo chmod +x check2.sh
     - sudo ./check2.sh
     - sudo chmod 755 $WORKING_DIR/backend/report.xml
+    - sudo chown gitlab-runner:gitlab-runner $WORKING_DIR/backend/report.xml
   artifacts:
     reports:
       junit: $WORKING_DIR/backend/report.xml # this is the JUnit report file
