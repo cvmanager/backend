@@ -12,8 +12,8 @@ duration=$((end_time - start_time))
 # Format the output as JUnit XML
 cat <<EOF > report.xml
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="ls" tests="1" failures="$((exit_code != 0 ? 1 : 0))" errors="0" skipped="0" time="$duration">
-  <testcase name="ls" classname="ls" time="$duration">
+<testsuite name="images" tests="1" failures="$((exit_code != 0 ? 1 : 0))" errors="0" skipped="0" time="$duration">
+  <testcase name="images" classname="images" time="$duration">
     $(if [ $exit_code != 0 ]; then echo "<failure message=\"Command failed with exit code $exit_code\">$output</failure>"; fi)
     <system-out>$output</system-out>
   </testcase>
