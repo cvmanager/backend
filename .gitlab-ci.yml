@@ -117,9 +117,16 @@ test:
     - sudo wget -nc https://api.s3bucket.cloud/env/{.env,google-application-credentials.json,.env_mongo}
   script:
     - cd  $WORKING_DIR/backend
+    - cd -
     - docker compose up -d
     - docker exec cv_app npm run test
+    - chmod +x check.sh
+    - ./check.sh
     - docker compose down
+  artifacts:
+    reports:
+      junit: report.xml # this is the JUnit report file
+   
   allow_failure: true
   tags:
     - shared
