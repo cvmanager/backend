@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Run the command and capture the output
-output=$(docker images | grep img 2>&1)
+output=$docker exec cv_app npm run test 2>&1)
 # Get the exit code
 exit_code=$?
 # Get the execution time in seconds
