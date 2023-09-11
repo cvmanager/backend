@@ -69,15 +69,14 @@ variables:
 clone:
   stage: .pre
   only:
-    - master
+    #- master
     - develop 
-    - feature/CVMAN-DevOps-1
   script:
     - cd $WORKING_DIR
-    - if sudo bash -c "cd backend"; then cd backend ; sudo git pull; else sudo git clone --branch=feature/CVMAN-DevOps-1 git@git.favin.ir:cvmanager/backend.git; fi 
+    - if sudo bash -c "cd backend"; then cd backend ; sudo git pull; else sudo git clone --branch=develop git@git.favin.ir:cvmanager/backend.git; fi 
   tags:
     - shared
-    - test
+
 
 #-------------------------------------------#
 #             Builds the image              #
@@ -103,7 +102,7 @@ build:
   #  - shared
   tags:
     - shared
-    - test
+
 
 #-------------------------------------------#
 #              Runs the tests               # 
@@ -123,7 +122,6 @@ test:
     - docker compose down
   allow_failure: true
   tags:
-    - test
     - shared
   needs:
     - build
@@ -139,7 +137,6 @@ push:
     - docker tag img:back-v1.$CI_PIPELINE_IID cvmanager/img:back-latest
     - docker push cvmanager/img:back-latest
   tags:
-    - test
     - shared
   allow_failure: true
   needs:
@@ -159,7 +156,6 @@ deploy:
     - docker compose up -d
   environment: develop
   tags:
-    - test
     - shared
   needs: 
     - push
@@ -180,6 +176,5 @@ rollback:
     - docker compose up -d
   environment: develop
   tags:
-    - test
     - shared
   when: manual
