@@ -16,7 +16,7 @@
 # This specific template is located at:
 #workflow:
   #rules:
-    #- if: $CI_PIPELINE_SOURCE == 'merge_request_eveent'
+    #- if: $CI_PIPELINE_SOURCE == 'merge_request_eveeent'
     #- if: $CI_COMMIT_BRANCH == 'main'
 # https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Getting-Started.gitlab-ci.yml
 
