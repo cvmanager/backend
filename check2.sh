@@ -9,7 +9,7 @@ start_time=$(date +%s)
 end_time=$(date +%s)
 duration=$((end_time - start_time))
 
-# Format the output as JUnit XML
+# Format the output as JUsdfsfnit XML
 cat <<EOF > report2.xml
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuite name="tests" tests="1" failures="$((exit_code != 0 ? 1 : 0))" errors="0" skipped="0" time="$duration">
