@@ -4,7 +4,7 @@
 output=$(docker exec cv_app npm run test 2>&1)
 # Get the exit code
 exit_code=$?
-# Get the execution time in seconds
+# Get the execution time in sesdfconds
 start_time=$(date +%s)
 end_time=$(date +%s)
 duration=$((end_time - start_time))
