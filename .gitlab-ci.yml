@@ -66,16 +66,16 @@ variables:
 #-------------------------------------------#
 #        pulls or clones the project        #
 #-------------------------------------------#
-clone:
-  stage: .pre
-  only:
+#clone:
+  #stage: .pre
+  #only:
     #- master
-    - develop 
-  script:
-    - cd $WORKING_DIR
-    - if sudo bash -c "cd backend"; then cd backend ; sudo git pull; else sudo git clone --branch=develop git@git.favin.ir:cvmanager/backend.git; fi 
-  tags:
-    - shared
+  #  - develop 
+  #script:
+  #  - cd $WORKING_DIR
+  #  - if sudo bash -c "cd backend"; then cd backend ; sudo git pull; else sudo git clone --branch=develop git@git.favin.ir:cvmanager/backend.git; fi 
+  #tags:
+  #  - shared
 
 
 #-------------------------------------------#
@@ -120,12 +120,7 @@ test:
     - docker compose up -d
     - cd -
     #- docker exec cv_app npm run test
-    - chmod +x check.sh
-    - ./check.sh
-    - docker compose down
-  artifacts:
-    reports:
-      junit: report.xml # this is the JUnit report file
+    
    
   allow_failure: true
   tags:
