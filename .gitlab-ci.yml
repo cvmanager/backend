@@ -31,11 +31,11 @@ workflow:
   rules:
     #- if: $CI_PIPELINE_SOURCE
     #- if: $CI_COMMIT_BRANCH == "develop" #|| $CI_COMMIT_BRANCH == "main"
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push"
-      when: always
-    - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop" || $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"
-      when: always
-    - when: never
+    #- if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push"
+     # when: always
+    #- if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop" || $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"
+    #  when: always
+    #- when: never
 
 #-------------------------------------------#
 #             Stages of pipeline            #
@@ -66,16 +66,16 @@ variables:
 #-------------------------------------------#
 #        pulls or clones the project        #
 #-------------------------------------------#
-#clone:
-  #stage: .pre
-  #only:
-    #- master
-  #  - develop 
-  #script:
-  #  - cd $WORKING_DIR
-  #  - if sudo bash -c "cd backend"; then cd backend ; sudo git pull; else sudo git clone --branch=develop git@git.favin.ir:cvmanager/backend.git; fi 
-  #tags:
-  #  - shared
+.clone:
+  stage: .pre
+  only:
+    - master
+    - develop 
+  script:
+    - cd $WORKING_DIR
+    - if sudo bash -c "cd backend"; then cd backend ; sudo git pull; else sudo git clone --branch=develop git@git.favin.ir:cvmanager/backend.git; fi 
+  tags:
+    - shared
 
 
 #-------------------------------------------#
@@ -100,8 +100,7 @@ build:
   #tags:
   #  - fedora home
   #  - shared
-  tags:
-    - shared
+  
 
 
 #-------------------------------------------#
@@ -113,18 +112,11 @@ test:
     - master
     - develop
   before_script:
-    #- git pull
-    - sudo wget -nc https://api.s3bucket.cloud/env/{.env,google-application-credentials.json,.env_mongo}
+    - wget -nc https://pool.favin.ir/var/{.env,google-application-credentials.json,.env_mongo}
   script:
-    - cd  $WORKING_DIR/backend
     - docker compose up -d
-    - cd -
-    #- docker exec cv_app npm run test
-    
-   
+    - docker exec cv_app npm run test
   allow_failure: true
-  tags:
-    - shared
   needs:
     - build
 
@@ -133,13 +125,9 @@ test:
 #-------------------------------------------#
 push:
   stage: push
-  only:
-    - master
   script:
     - docker tag img:back-v1.$CI_PIPELINE_IID cvmanager/img:back-latest
     - docker push cvmanager/img:back-latest
-  tags:
-    - shared
   allow_failure: true
   needs:
     - test
@@ -153,7 +141,7 @@ deploy:
     - master
   before_script:
     - cd /app/cvmanager/backend
-    - sudo wget -nc https://api.s3bucket.cloud/env/{.env,google-application-credentials.json,.env_mongo}
+    - wget -nc https://pool.favin.ir/var/{.env,google-application-credentials.json,.env_mongo}
   script:
     - docker compose up -d
   environment: develop
