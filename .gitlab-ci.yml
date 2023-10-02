@@ -73,7 +73,7 @@ build:
   #  - ./check.sh
   #artifacts:
     #reports:
-     # junit: report.xml # this is the JUnit report file
+     # junit: report.xml # this is the JUnit report files
     
     # --build-arg NODE_ENV=$NODE_ENV 
   tags:
