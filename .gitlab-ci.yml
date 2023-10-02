@@ -92,6 +92,7 @@ test:
   script:
     - docker compose up -d
     - docker exec cv_app npm run test
+    - docker compose down -v 
   allow_failure: true
   tags:
     - shared
