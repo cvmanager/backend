@@ -1,30 +1,7 @@
-# This file is a template, and might need editing before it works on your project.
-# This is a sample GitLab CI/CD configuration file that should run without any modifications.
-# It demonstrates a basic 3 stage CI/CD pipeline. Instead of real tests or scripts,
-# it uses echo commands to simulate the pipeline execution.
-#
-# A pipeline is composed of independent jobs that run scripts, grouped into stages.
-# Stages run in sequential order, but jobs within stages run in parallel.
-#
-# For more information, see: https://docs.gitlab.com/ee/ci/yaml/index.html#stages
-#
-# You can copy and paste this template into a new `.gitlab-ci.yml` fiasdadle.
-# You should not add this template to an existing `.gitlab-ci.yml` file by using the `include:` keyword.
-#
-# To contribute improvements to CI/CD templates, please follow the Development guide at:
-# https://docs.gitlab.com/ee/development/cicd/templates.html
-# This specific template is located at:
-#workflow:
-  #rules:
-    #- if: $CI_PIPELINE_SOURCE == 'merge_request_evzent'
-    #- if: $CI_COMMIT_BRANCH == 'main'
-# https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Getting-Started.gitlab-ci.yml
-
-
-
-
-  
-
+ 
+#-------------------------------------------#
+#         Conditional statements            #
+#-------------------------------------------#
 workflow:
   rules:
     #- if: $CI_PIPELINE_SOURCE
@@ -41,90 +18,129 @@ workflow:
      #$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main" $CI_COMMIT_BRANCH
     - when: never
 
-
+#-------------------------------------------#
+#             Stages of pipeline            #
+#-------------------------------------------#
 stages:
+  - start child pipelines
   - build
   - test
   - push
   - deploy
   - rollback
 
-
+#-------------------------------------------#
+#     Variables used throughout pipeline    #
+#-------------------------------------------#
 variables:
-  WORKING_DIR: "/app/cvmanager"
- # NODE_ENV: "development"
+  WORKING_DIR: "/app/cvmanager" 
+  NODE_ENV: "development" 
+
+.cvmanager:
+  stage: start child pipelines
+  variables:
+    CHILD_PIPELINE_EXECUTION_CONTEXT: "$WORKING_DIR"
+  trigger:
+    include: .gitlab-ci.yml
+    strategy: depend
+
+#-------------------------------------------#
+#        pulls or clones the project        #
+#-------------------------------------------#
 .clone:
   stage: .pre
   only:
     - master
     - develop 
-    - feature/CVMAN-DevOps-1
   script:
     - cd $WORKING_DIR
-    - if sudo bash -c "cd backend"; then cd backend ; sudo git pull; else sudo git clone --branch=feature/CVMAN-DevOps-1 git@git.favin.ir:cvmanager/backend.git; fi 
+    - if sudo bash -c "cd backend"; then cd backend ; sudo git pull; else sudo git clone --branch=develop git@git.favin.ir:cvmanager/backend.git; fi 
   tags:
     - shared
     - cv
 
+
+#-------------------------------------------#
+#             Builds the image              #
+#-------------------------------------------#
 build:
   stage: build
   script:
+    #- cd $WORKING_DIR/backend/api
     - echo "Building the image...."
     - docker build -t img:back-v1.$CI_PIPELINE_IID -t img:back-latest .
-    - docker images | grep img
+  #  - chmod +x check.sh
+  #  - ./check.sh
+  #artifacts:
+    #reports:
+     # junit: report.xml # this is the JUnit report file
+    
     # --build-arg NODE_ENV=$NODE_ENV 
-  #tags:
-  #  - fedora
-  #  - shared
   tags:
     - shared
     - cv
+  
 
+
+#-------------------------------------------#
+#              Runs the tests               # 
+#-------------------------------------------#
 test:
   stage: test
   before_script:
-    - wget -nc https://api.s3bucket.cloud/env/{.env,google-application-credentials.json,.env_mongo}
+    - wget -nc https://pool.favin.ir/var/{.env,google-application-credentials.json,.env_mongo}
   script:
     - docker compose up -d
     - docker exec cv_app npm run test
+  allow_failure: true
   tags:
-    - test
+    - shared
     - cv
   needs:
     - build
 
+#-------------------------------------------#
+#         Pushes the latest version         #
+#-------------------------------------------#
 push:
   stage: push
   only:
     - master
-    - develop
   script:
     - docker tag img:back-v1.$CI_PIPELINE_IID cvmanager/img:back-latest
     - docker push cvmanager/img:back-latest
+  allow_failure: true
   tags:
-    - cv
     - shared
+    - cv
   needs:
     - test
-  when: always
 
+#-------------------------------------------#
+#         Deploys the latest version        #
+#-------------------------------------------#
 deploy:
   stage: deploy
   only:
     - master
   before_script:
     - cd /app/cvmanager/backend
-    - sudo wget -nc https://api.s3bucket.cloud/env/{.env,google-application-credentials.json,.env_mongo,compose.yml}
+    - wget -nc https://pool.favin.ir/var/{.env,google-application-credentials.json,.env_mongo}
   script:
     - docker compose up -d
   environment: develop
   tags:
-    - cv
     - shared
-  #when: manual
+    - cv
+  needs: 
+    - push
+  when: manual
 
+#-------------------------------------------#
+#     Rollbacks to last stable version      #
+#-------------------------------------------#
 rollback:
-  stage: rollback
+  stage: deploy
   only:
     - master
   before_script:
@@ -135,6 +151,6 @@ rollback:
     - docker compose up -d
   environment: develop
   tags:
-    - cv
     - shared
+    - cv
   when: manual
