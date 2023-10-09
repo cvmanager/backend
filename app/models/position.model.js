@@ -40,6 +40,11 @@ const schema = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             required: true,
             ref: 'users'
+        },
+        skills: {
+            type: Array,
+            default: null,
+            ref: 'skills'
         }
     }
 )
