@@ -16,6 +16,10 @@ const schema = new mongoose.Schema(
             type: String,
             required: true,
         },
+        name_en: {
+            type: String,
+            required: true,
+        },
         latitude: {
             type: Number,
             required: true,

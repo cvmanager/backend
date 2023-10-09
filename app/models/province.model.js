@@ -7,6 +7,10 @@ const schema = new mongoose.Schema(
         name: {
             type: String,
             required: true,
+        },
+        name_en: {
+            type: String,
+            required: true,
         }
     }
 )
