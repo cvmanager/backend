@@ -274,7 +274,12 @@ class ProjectController extends Controller {
         try {
             let project = await projectService.findByParamId(req, ['created_by'])
 
-            let positions = await Position.find({ 'project_id': project.id }).populate('created_by');
+            let positions = await Position.find({ 'project_id': project.id }).populate(
+                [
+                    { path: 'created_by' },
+                    { path: 'managers', populate: { path: 'user_id', select: ['firstname', 'lastname', 'avatar'] }, select: ['user_id', 'type'] },
+                ]
+            );
 
             AppResponse.builder(res).message('project.messages.project_positions_found').data(positions).send();
         } catch (err) {
@@ -301,7 +306,12 @@ class ProjectController extends Controller {
         try {
             let project = await projectService.findByParamId(req, ['created_by'])
 
-            let managers = await Manager.find({ 'entity': "projects", 'entity_id': project.id }).populate('user_id');
+            let managers = await Manager.find({ 'entity': "projects", 'entity_id': project.id }).populate(
+                [
+                    { path: 'user_id' },
+                    { path: 'created_by' }
+                ]
+            );
 
             AppResponse.builder(res).message('project.messages.project_managers_found').data(managers).send();
         } catch (err) {

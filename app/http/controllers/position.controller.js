@@ -381,34 +381,35 @@ class PositionController extends Controller {
     }
   }
 
-  /**
-   * GET /positions/{id}/managers
-   *
-   * @summary gets  position managers list by position id
-   * @tags Position
-   * @security BearerAuth
-   *
-   * @param  { string } id.path.required - position id
-   *
-   * @return { position.success }              200 - success response
-   * @return { message.bad_request_error }      400 - BadRequest respone
-   * @return { message.bad_request_error }      404 - not found respone
-   * @return { message.unauthorized_error }    401 - Unauthorized
-   * @return { message.server_error  }         500 - Server Error
-   */
-  async getManagers(req, res, next) {
-    try {
-      const position = await positionService.findByParamId(req);
-      let managers = await Manager.find({
-        entity: "positions",
-        entity_id: position.id,
-      }).populate("user_id");
-      AppResponse.builder(res)
-        .message("position.messages.position_managers_found")
-        .data(managers)
-        .send();
-    } catch (err) {
-      next(err);
+
+    /**
+ * GET /positions/{id}/managers
+ * 
+ * @summary gets  position managers list by position id
+ * @tags Position
+ * @security BearerAuth
+ * 
+ * @param  { string } id.path.required - position id
+ * 
+ * @return { position.success }              200 - success response
+ * @return { message.badrequest_error }      400 - bad request respone
+ * @return { message.badrequest_error }      404 - not found respone
+ * @return { message.unauthorized_error }    401 - UnauthorizedError
+ * @return { message.server_error  }         500 - Server Error
+ */
+    async getManagers(req, res, next) {
+        try {
+            const position = await positionService.findByParamId(req)
+            let managers = await Manager.find({ 'entity': "positions", 'entity_id': position.id }).populate(
+                [
+                    { path: 'user_id' },
+                    { path: 'created_by' }
+                ]
+            );
+            AppResponse.builder(res).message('position.messages.position_managers_found').data(managers).send();
+        } catch (err) {
+            next(err);
+        }
     }
   }
 

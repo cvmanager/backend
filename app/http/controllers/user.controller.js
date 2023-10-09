@@ -43,6 +43,7 @@ class UserController extends Controller {
                 limit: size,
                 sort: { createdAt: -1 },
                 populate: [
+                    { path: 'role', select: ['name', 'id', 'permissions'] },
                     { path: "fcmtokens", select: ['token'] }
                 ]
             });
@@ -68,6 +69,7 @@ class UserController extends Controller {
     async find(req, res, next) {
         try {
             let user = await User.findById(req.params.id).populate([
+                { path: 'role', select: ['name', 'id', 'permissions'] },
                 { path: "fcmtokens", select: ['token'] }
             ]);
             if (!user) throw new NotFoundError('user.errors.user_notfound');
