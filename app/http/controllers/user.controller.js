@@ -12,6 +12,8 @@ import userService from '../../helper/service/user.service.js';
 import fcmTokenService from '../../helper/service/fcmtoken.service.js';
 import FCMToken from '../../models/fcmToken.model.js';
 import systemInfo from "systeminformation";
+import Role from '../../models/role.model.js';
+import roleService from '../../helper/service/role.service.js';
 
 class UserController extends Controller {
 
@@ -318,6 +320,41 @@ class UserController extends Controller {
 
             EventEmitter.emit(UserEvents.CHECK_FCM_TOKEN, user, req)
             AppResponse.builder(res).status(200).message("user.messages.fcm_token_not_valid").data(fcmToken).send();
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
+ * PATCH /users/{id}/role
+ * 
+ * @summary update user role
+ * @tags User
+ * @security BearerAuth
+ *
+ * @param {string } id.path.required - user id
+ * @param {user.role} request.body          - role id - application/json
+ * 
+ * @return { user.success }                 200 - role updated successfuly 
+ * @return { message.badrequest_error }     400 - Bad Request
+ * @return { message.badrequest_error }     401 - UnauthorizedError
+ * @return { message.server_error  }        500 - Server Error
+ */
+    async role(req, res, next) {
+        try {
+            let user = await userService.findByParamId(req);
+
+            let role = await roleService.findById(req.body.role_id);
+            if (!role) throw new NotFoundError('user.errors.role_notfound')
+
+            if (user.role.includes(role._id)) throw new BadRequestError('user.errors.role_already_exist')
+
+            user.role = [role._id]
+            await user.save();
+
+            EventEmitter.emit(UserEvents.ROLE, user, req);
+
+            AppResponse.builder(res).status(200).data(user).message('user.messages.user_role_successfuly_updated').send();
         } catch (err) {
             next(err);
         }

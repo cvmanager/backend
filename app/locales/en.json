@@ -443,7 +443,8 @@
 			"notification_list_seen": "Success, user notification list updated",
 			"user_successfully_blocked":"It was successful, the user account was successfully blocked",
 			"user_successfully_unblocked" : "It was successful, the account was successfully unblocked",
-			"fcm_token_not_valid" : "Firebase token is invalid"
+			"fcm_token_not_valid" : "Firebase token is invalid",
+			"user_role_successfuly_updated": "user role   successfully updated"
 		},
 		"errors": {
 			"user_notfound": "An error occurred, the user does not exist in the system",
@@ -497,6 +498,8 @@
 		"validations": {
 			"interview_id_required": "interview id required",
 			"interview_id_invalid": "interview id invalid",
+			"user_id_invalid": "user id invalid",
+			"role_id_invalid": "invalid id invalid",
 			"resume_id_required": "resume id required",
 			"resume_id_invalid": "resume id invalid",
 			"event_time_required": "event time required",

@@ -12,8 +12,9 @@ userRouter
     .post('/unban', UserValidation.unban(), UserController.unbanned)
     .get('/login-history', UserValidation.loginHistory(), UserController.loginHistory)
     .get('/companies', UserValidation.companies(), UserController.companies)
-
     .get('/fcm-token', UserValidation.check_fcm_token(), UserController.checkFCMToken)
     .patch('/fcm-token', UserValidation.set_fcm_token(), UserController.setFCMToken)
-    .delete('/fcm-token', UserValidation.unset_fcm_token(), UserController.unsetFCMToken);
+    .delete('/fcm-token', UserValidation.unset_fcm_token(), UserController.unsetFCMToken)
+    .patch('/avatar', Upload('users/org/', 'avatar', 'image'), cropImage(avatar_size, cropEvents.Crop_Image), UserValidation.updateProfileImage(), UserController.uploadProfileImage)
+    .patch('/role', UserValidation.role(), UserController.role);
 export default userRouter

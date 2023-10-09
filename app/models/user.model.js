@@ -58,7 +58,11 @@ const schema = new mongoose.Schema(
         },
         role: {
             type: [mongoose.Schema.Types.ObjectId],
-            ref: Role
+            ref: 'roles'
+        },
+        fullname: {
+            type: String,
+            default: null
         }
     }
 );

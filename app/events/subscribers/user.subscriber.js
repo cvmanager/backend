@@ -12,7 +12,8 @@ export const UserEvents = {
     "SET_FCM_TOKEN": "Set FCM Token",
     "UNSET_FCM_TOKEN": "Uset FCM Token",
     "CHECK_FCM_TOKEN": "Check FCM Token",
-    "MOBILDE_VERIFICATION": "Mobile verification"
+    "MOBILDE_VERIFICATION": "Mobile verification",
+    "ROLE": "update User role"
 }
 
 EventEmitter.on(UserEvents.LOGIN, login);
@@ -25,6 +26,7 @@ EventEmitter.on(UserEvents.SET_FCM_TOKEN, setFCMToken);
 EventEmitter.on(UserEvents.UNSET_FCM_TOKEN, unsetFCMToken);
 EventEmitter.on(UserEvents.CHECK_FCM_TOKEN, checkFCMToken);
 EventEmitter.on(UserEvents.MOBILDE_VERIFICATION, mobileVerification);
+EventEmitter.on(UserEvents.ROLE, role);
 
 
 function login(user, req, access_token, refresh_token) {
@@ -65,4 +67,8 @@ function checkFCMToken(user, req) {
 async function mobileVerification(user, req) {
     user.mobile_verified_at = new Date();
     await user.save();
+}
+
+async function role(user) {
+    console.log(UserEvents.ROLE + " event called", user)
 }

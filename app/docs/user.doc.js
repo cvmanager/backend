@@ -31,6 +31,21 @@
 
 
 /**
+* change user password
+* @typedef { object } user.change-password
+* @property { string } password.required - user profile password
+* @property { string } old_password.required - user profile password
+*/
+
+
+/**
+* user update role
+* @typedef { object } user.role
+* @property { string } role_id.required
+*/
+
+
+/**
 * ckeck user fcm token
 * @typedef { object } user.check_fcm_token
 * @property { string } token.required - token

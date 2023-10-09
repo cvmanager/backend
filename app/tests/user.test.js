@@ -7,6 +7,8 @@ import prepareDB from './utils/prepareDB'
 import { Types } from 'mongoose'
 import { faker } from '@faker-js/faker'
 import * as path from 'path'
+import roles from "../db/roles.js";
+let companyManager = roles.find(role => role.name === 'Owner')
 
 let token
 let users
@@ -847,6 +849,79 @@ describe('User Routes', () => {
         .send(deleteFCMToken);
       expect(response.statusCode).toBe(httpStatus.OK);
     })
+  describe(`PATCH /users/id/role`, () => {
+
+    let params
+    beforeEach(() => {
+      params = {
+        role_id: companyManager._id
+      }
+    })
+
+    it(`should get ${httpStatus.BAD_REQUEST} user id is not mongo id`, async () => {
+      const response = await request(app)
+        .patch(`/api/V1/users/id/role`)
+        .set(`Authorization`, token)
+        .send(params)
+      expect(response.statusCode).toBe(httpStatus.BAD_REQUEST)
+    })
+
+
+    it(`should get ${httpStatus.NOT_FOUND} user not found`, async () => {
+      const response = await request(app)
+        .patch(`/api/V1/users/${Types.ObjectId()}/role`)
+        .set(`Authorization`, token)
+        .send(params)
+      expect(response.statusCode).toBe(httpStatus.NOT_FOUND)
+    })
+
+    it(`should get ${httpStatus.BAD_REQUEST} role id is not a mongo id`, async () => {
+      params.role_id = 'fakeid';
+
+      const response = await request(app)
+        .patch(`/api/V1/users/${user._id}/role`)
+        .set(`Authorization`, token)
+        .send(params)
+      expect(response.statusCode).toBe(httpStatus.BAD_REQUEST)
+    })
+
+    it(`should get ${httpStatus.BAD_REQUEST} role id is empty`, async () => {
+      delete params.role_id
+
+      const response = await request(app)
+        .patch(`/api/V1/users/${user._id}/role`)
+        .set(`Authorization`, token)
+        .send(params)
+      expect(response.statusCode).toBe(httpStatus.BAD_REQUEST)
+    })
+
+    it(`should get ${httpStatus.BAD_REQUEST} role id is not mongo id`, async () => {
+      params.role_id = Types.ObjectId();
+
+      const response = await request(app)
+        .patch(`/api/V1/users/${user._id}/role`)
+        .set(`Authorization`, token)
+        .send(params)
+      expect(response.statusCode).toBe(httpStatus.BAD_REQUEST)
+    })
+
+    it(`should get ${httpStatus.BAD_REQUEST} user role already exist `, async () => {
+      params.role_id = user.role[0];
+      const response = await request(app)
+        .patch(`/api/V1/users/${user._id}/role`)
+        .set(`Authorization`, token)
+        .send(params)
+      expect(response.statusCode).toBe(httpStatus.BAD_REQUEST)
+    })
+
+    it(`should get ${httpStatus.OK} user role successfully updated `, async () => {
+      const response = await request(app)
+        .patch(`/api/V1/users/${user._id}/role`)
+        .set(`Authorization`, token)
+        .send(params)
+      expect(response.statusCode).toBe(httpStatus.OK)
+    })
+
   })
 
 })
