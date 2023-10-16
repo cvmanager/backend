@@ -15,7 +15,13 @@ CV Manager is a simple and practical software to improve the recruiting and hiri
 
 ## Setup guide
 
-We will update soon ...
+First of all, you need to have Docker and Docker Compose installed on your machine. Then you can run the following command for starting the project and running related containers:
+
+```
+docker compose up -d
+```
+
+After installing all packages, you can access to the API from localhost:3080.
 
 ## Cv Manager    Sponsors
 
